@@ -1,21 +1,52 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# OLA B2B Monitoring - Monorepo
 
-# Run and deploy your AI Studio app
+GCP BigQuery 데이터를 불러오는 B2B 로그 모니터링 시스템입니다.
 
-This contains everything you need to run your app locally.
+## 프로젝트 구조
 
-View your app in AI Studio: https://ai.studio/apps/drive/1ZnZGPzm9rkVzXKqbuyoUINd_iePUbDYW
+```
+ola-b2b-monitoring/
+├── apps/
+│   ├── frontend/          # React + Vite 프론트엔드
+│   └── backend/           # NestJS API 백엔드
+├── package.json           # 루트 package.json (workspace 설정)
+└── pnpm-workspace.yaml    # pnpm workspace 설정
+```
 
-## Run Locally
+## 시작하기
 
-**Prerequisites:**  Node.js
+### 1. 환경 변수 설정
 
+#### Backend (`apps/backend/.env`)
+```env
+PORT=3000
+GCP_PROJECT_ID=your-gcp-project-id
+GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
+BIGQUERY_DATASET=your_dataset_name
+CORS_ORIGIN=http://localhost:5173
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
-# ola-b2b-monitoring
+### 2. 개발 서버 실행
+
+**루트 디렉토리에서 실행:**
+
+```bash
+# 전체 스택 동시 실행
+pnpm dev
+
+# 개별 실행
+pnpm dev:frontend  # 프론트엔드만
+pnpm dev:backend   # 백엔드만
+```
+
+## API 엔드포인트
+
+- `POST /bigquery/query` - 커스텀 SQL 쿼리 실행
+- `GET /bigquery/datasets` - 데이터셋 목록 조회
+- `GET /bigquery/tables/:datasetId` - 테이블 목록
+- `GET /bigquery/logs?limit=100` - 샘플 로그 조회
+
+## 기술 스택
+
+- **Frontend**: React 19, Vite, Tailwind CSS, Recharts
+- **Backend**: NestJS, @google-cloud/bigquery, TypeScript

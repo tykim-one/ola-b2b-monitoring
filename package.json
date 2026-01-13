@@ -1,0 +1,17 @@
+{
+    "name": "ola-b2b-monitoring-monorepo",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "pnpm --parallel -r dev",
+        "dev:frontend": "pnpm --filter frontend dev",
+        "dev:backend": "pnpm --filter backend start:dev",
+        "build": "pnpm -r build",
+        "build:frontend": "pnpm --filter frontend build",
+        "build:backend": "pnpm --filter backend build",
+        "install:all": "pnpm install"
+    },
+    "devDependencies": {
+        "typescript": "~5.8.2"
+    }
+}
