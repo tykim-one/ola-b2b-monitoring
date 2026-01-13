@@ -4,10 +4,13 @@
     "private": true,
     "scripts": {
         "dev": "pnpm --parallel -r dev",
+        "dev:all": "pnpm --parallel --filter frontend-next --filter backend dev",
         "dev:frontend": "pnpm --filter frontend dev",
+        "dev:frontend-next": "pnpm --filter frontend-next dev",
         "dev:backend": "pnpm --filter backend start:dev",
         "build": "pnpm -r build",
         "build:frontend": "pnpm --filter frontend build",
+        "build:frontend-next": "pnpm --filter frontend-next build",
         "build:backend": "pnpm --filter backend build",
         "install:all": "pnpm install"
     },
