@@ -1,24 +1,30 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import LogExplorer from '@/components/LogExplorer';
 import { B2BLog } from '@/types';
-import { generateMockLogs } from '@/lib/constants';
 
-export default function LogsPage() {
-  const [logs, setLogs] = useState<B2BLog[]>([]);
+async function getLogs(): Promise<B2BLog[]> {
+  try {
+    const res = await fetch('http://localhost:3000/bigquery/logs?limit=50', {
+      cache: 'no-store',
+    });
+    
+    if (!res.ok) {
+      console.error('Failed to fetch logs:', res.statusText);
+      return [];
+    }
+    
+    const response = await res.json();
+    if (response.success && Array.isArray(response.data)) {
+      return response.data;
+    }
+    return [];
+  } catch (error) {
+    console.error('Error fetching logs:', error);
+    return [];
+  }
+}
 
-  useEffect(() => {
-    setLogs(generateMockLogs(200));
-
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      const newLogs = generateMockLogs(2);
-      setLogs(prev => [...newLogs, ...prev].slice(0, 500)); // Keep buffer of 500
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
+export default async function LogsPage() {
+  const logs = await getLogs();
+  
   return <LogExplorer logs={logs} />;
 }

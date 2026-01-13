@@ -6,15 +6,17 @@ export enum LogLevel {
 }
 
 export interface B2BLog {
-  id: string;
-  timestamp: string;
-  service: string;
-  level: LogLevel;
-  message: string;
-  latencyMs: number;
-  partnerId: string;
-  traceId: string;
-  statusCode: number;
+  user_input: string;
+  timestamp: { value: string } | string; // Handle both BigQuery object format and potential strings
+  tenant_id: string;
+  llm_response: string;
+  // Optional legacy fields or future fields
+  id?: string;
+  level?: LogLevel;
+  service?: string;
+  latencyMs?: number;
+  traceId?: string;
+  statusCode?: number;
 }
 
 export interface MetricData {

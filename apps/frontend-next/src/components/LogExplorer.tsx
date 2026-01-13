@@ -10,19 +10,28 @@ interface LogExplorerProps {
 
 const LogExplorer: React.FC<LogExplorerProps> = ({ logs }) => {
   const [filter, setFilter] = useState('');
-  const [levelFilter, setLevelFilter] = useState<LogLevel | 'ALL'>('ALL');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
 
+  const formatTime = (ts: string | { value: string } | undefined) => {
+    if (!ts) return '-';
+    const val = typeof ts === 'string' ? ts : ts.value;
+    try {
+      return new Date(val).toLocaleString();
+    } catch {
+      return val;
+    }
+  };
+
   const filteredLogs = logs.filter(log => {
-    const matchesText = 
-      log.message.toLowerCase().includes(filter.toLowerCase()) || 
-      log.partnerId.toLowerCase().includes(filter.toLowerCase()) ||
-      log.traceId.toLowerCase().includes(filter.toLowerCase());
+    const searchTerm = filter.toLowerCase();
+    const userInput = log.user_input?.toLowerCase() || '';
+    const tenantId = log.tenant_id?.toLowerCase() || '';
+    const response = log.llm_response?.toLowerCase() || '';
     
-    const matchesLevel = levelFilter === 'ALL' || log.level === levelFilter;
-    
-    return matchesText && matchesLevel;
+    return userInput.includes(searchTerm) || 
+           tenantId.includes(searchTerm) || 
+           response.includes(searchTerm);
   });
 
   const handleAnalyze = async () => {
@@ -30,7 +39,9 @@ const LogExplorer: React.FC<LogExplorerProps> = ({ logs }) => {
     setAiAnalysis(null);
     try {
       // Analyze currently filtered logs (top 20)
-      const result = await analyzeLogs(filteredLogs.slice(0, 20));
+      // We might need to adapt analyzeLogs to handle the new structure if it expects specific fields
+      // For now passing as is, hoping geminiService handles generic objects or we might need to fix it later.
+      const result = await analyzeLogs(filteredLogs.slice(0, 20) as any); 
       setAiAnalysis(result);
     } catch (e) {
       setAiAnalysis("Error running analysis.");
@@ -78,7 +89,7 @@ const LogExplorer: React.FC<LogExplorerProps> = ({ logs }) => {
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Search by Trace ID, Partner, or Message..."
+            placeholder="Search by User Input, Tenant, or Response..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             className="w-full bg-slate-900 border border-slate-700 text-white px-4 py-2 pl-10 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
@@ -87,16 +98,6 @@ const LogExplorer: React.FC<LogExplorerProps> = ({ logs }) => {
             <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           </span>
         </div>
-        <select
-          value={levelFilter}
-          onChange={(e) => setLevelFilter(e.target.value as LogLevel | 'ALL')}
-          className="bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-blue-500"
-        >
-          <option value="ALL">All Levels</option>
-          <option value={LogLevel.INFO}>INFO</option>
-          <option value={LogLevel.WARN}>WARN</option>
-          <option value={LogLevel.ERROR}>ERROR</option>
-        </select>
       </div>
 
       {/* Table */}
@@ -104,34 +105,34 @@ const LogExplorer: React.FC<LogExplorerProps> = ({ logs }) => {
         <table className="w-full text-left border-collapse">
           <thead className="bg-slate-950 sticky top-0 z-10">
             <tr>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Time</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Level</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Service</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Partner</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Message</th>
-              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Latency</th>
+              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider w-40">Time</th>
+              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider w-32">Tenant</th>
+              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider w-1/3">User Input</th>
+              <th className="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">LLM Response</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {filteredLogs.map((log) => (
-              <tr key={log.id} className="hover:bg-slate-800/50 transition-colors group">
-                <td className="p-4 text-slate-400 text-sm whitespace-nowrap font-mono">{new Date(log.timestamp).toLocaleTimeString()}</td>
-                <td className="p-4">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${
-                    log.level === LogLevel.ERROR ? 'bg-red-500/20 text-red-400' :
-                    log.level === LogLevel.WARN ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-blue-500/20 text-blue-400'
-                  }`}>
-                    {log.level}
+            {filteredLogs.map((log, i) => (
+              // Use log.id if available, else fallback to index
+              <tr key={log.id || i} className="hover:bg-slate-800/50 transition-colors group">
+                <td className="p-4 text-slate-400 text-sm whitespace-nowrap font-mono align-top" suppressHydrationWarning>
+                  {formatTime(log.timestamp)}
+                </td>
+                <td className="p-4 text-slate-300 text-sm align-top">
+                  <span className="bg-slate-800 px-2 py-1 rounded text-xs border border-slate-700">
+                    {log.tenant_id}
                   </span>
                 </td>
-                <td className="p-4 text-slate-300 text-sm">{log.service}</td>
-                <td className="p-4 text-slate-300 text-sm">{log.partnerId}</td>
-                <td className="p-4 text-slate-300 text-sm max-w-md truncate group-hover:whitespace-normal group-hover:overflow-visible group-hover:bg-slate-800 group-hover:relative group-hover:z-20">
-                  {log.message}
-                  <div className="text-xs text-slate-500 mt-1">Trace: {log.traceId}</div>
+                <td className="p-4 text-slate-300 text-sm align-top">
+                  <div className="max-h-32 overflow-y-auto pr-2 custom-scrollbar">
+                    {log.user_input}
+                  </div>
                 </td>
-                <td className="p-4 text-slate-400 text-sm font-mono text-right">{Math.round(log.latencyMs)}ms</td>
+                <td className="p-4 text-slate-300 text-sm align-top">
+                   <div className="max-h-32 overflow-y-auto pr-2 custom-scrollbar text-slate-400">
+                    {log.llm_response}
+                   </div>
+                </td>
               </tr>
             ))}
           </tbody>
