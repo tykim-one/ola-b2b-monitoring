@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ViewState, B2BLog, MetricData } from './types';
 import { generateMockLogs, generateMetrics } from './constants';
 import Dashboard from './components/Dashboard';
 import LogExplorer from './components/LogExplorer';
 import ArchitectureView from './components/ArchitectureView';
 
-const App: React.FC = () => {
+const App = () => {
   const [view, setView] = useState<ViewState>(ViewState.DASHBOARD);
   const [logs, setLogs] = useState<B2BLog[]>([]);
   const [metrics, setMetrics] = useState<MetricData[]>([]);
@@ -32,7 +32,7 @@ const App: React.FC = () => {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
           </div>
-          <h1 className="text-xl font-bold tracking-tight">LogSentinel</h1>
+          <h1 className="text-xl font-bold tracking-tight">OLA-B2B Monitoring</h1>
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
@@ -70,7 +70,7 @@ const App: React.FC = () => {
         <div className="p-4 border-t border-slate-800">
           <div className="bg-slate-900 rounded-lg p-3 text-xs text-slate-500 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            NestJS Backend: Connected
+            NestJS 백엔드: 연결됨
           </div>
         </div>
       </aside>

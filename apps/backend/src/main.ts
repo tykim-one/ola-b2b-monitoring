@@ -8,7 +8,7 @@ async function bootstrap() {
   
   // Enable CORS for frontend
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true,
   });
 
@@ -31,7 +31,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3001;
   await app.listen(port);
   console.log(`🚀 NestJS Backend running on http://localhost:${port}`);
   console.log(`📑 Swagger Documentation available at http://localhost:${port}/api`);
