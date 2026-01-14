@@ -3,7 +3,7 @@ import { B2BLog } from '@/types';
 
 async function getLogs(): Promise<B2BLog[]> {
   try {
-    const res = await fetch('http://localhost:3000/bigquery/logs?limit=50', {
+    const res = await fetch('http://localhost:3000/projects/ibks/bigquery/logs?limit=5', {
       cache: 'no-store',
     });
     

@@ -4,18 +4,18 @@ import { BigQueryService } from './bigquery.service';
 import { QueryDto } from './dto/query.dto';
 
 @ApiTags('bigquery')
-@Controller('bigquery')
+@Controller('projects/:projectId/bigquery')
 export class BigQueryController {
   constructor(private readonly bigQueryService: BigQueryService) {}
 
   /**
-   * POST /bigquery/query
+   * POST /projects/:projectId/bigquery/query
    * Execute a custom BigQuery SQL query
    */
   @ApiOperation({ summary: 'Execute custom SQL query' })
   @ApiResponse({ status: 200, description: 'Query executed successfully' })
   @Post('query')
-  async executeQuery(@Body() queryDto: QueryDto) {
+  async executeQuery(@Param('projectId') projectId: string, @Body() queryDto: QueryDto) {
     const results = await this.bigQueryService.executeQuery(queryDto);
     return {
       success: true,
@@ -25,7 +25,7 @@ export class BigQueryController {
   }
 
   /**
-   * GET /bigquery/datasets
+   * GET /projects/:projectId/bigquery/datasets
    * Get list of available datasets
    */
   @ApiOperation({ summary: 'List all datasets' })
@@ -40,7 +40,7 @@ export class BigQueryController {
   }
 
   /**
-   * GET /bigquery/tables/:datasetId
+   * GET /projects/:projectId/bigquery/tables/:datasetId
    * Get tables in a specific dataset
    */
   @ApiOperation({ summary: 'List tables in a dataset' })
@@ -56,16 +56,16 @@ export class BigQueryController {
   }
 
   /**
-   * GET /bigquery/logs
+   * GET /projects/:projectId/bigquery/logs
    * Get sample logs from the configured dataset
    */
   @ApiOperation({ summary: 'Get sample logs' })
   @ApiQuery({ name: 'limit', required: false, description: 'Limit number of logs (default: 100)' })
   @ApiResponse({ status: 200, description: 'Sample logs returned' })
   @Get('logs')
-  async getSampleLogs(@Query('limit') limit?: string) {
+  async getSampleLogs(@Param('projectId') projectId: string, @Query('limit') limit?: string) {
     const limitNum = limit ? parseInt(limit, 10) : 100;
-    const logs = await this.bigQueryService.getSampleLogs(limitNum);
+    const logs = await this.bigQueryService.getSampleLogs(projectId, limitNum);
     return {
       success: true,
       count: logs.length,

@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BigQuery } from '@google-cloud/bigquery';
 import { QueryDto } from './dto/query.dto';
+import { DefaultProjectStrategy } from '../common/strategies/default.project.strategy';
 
 @Injectable()
 export class BigQueryService implements OnModuleInit {
@@ -12,7 +13,10 @@ export class BigQueryService implements OnModuleInit {
   private tableName: string;
   private location: string;
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private projectStrategy: DefaultProjectStrategy,
+  ) {}
 
   onModuleInit() {
     this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
@@ -88,16 +92,19 @@ export class BigQueryService implements OnModuleInit {
   /**
    * Get sample logs from the configured dataset
    */
-  async getSampleLogs(limit: number = 100): Promise<any[]> {
-    // Note: If querying a view that doesn't have a timestamp column, this ORDER BY might fail.
-    // We try to select * and limit first.
+  async getSampleLogs(projectId: string, limit: number = 100): Promise<any[]> {
+    const filterClause = this.projectStrategy.getFilterQuery(projectId);
+    
     const query = `
       SELECT *
       FROM \`${this.projectId}.${this.datasetId}.${this.tableName}\`
+      WHERE ${filterClause}
+      ORDER BY timestamp DESC
       LIMIT ${limit}
     `;
 
-    return this.executeQuery({ query, maxResults: limit });
+    const rows = await this.executeQuery({ query, maxResults: limit });
+    return rows.map(row => this.projectStrategy.parseLog(row));
   }
 
   /**
