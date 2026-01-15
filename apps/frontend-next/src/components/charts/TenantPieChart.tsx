@@ -1,0 +1,95 @@
+'use client';
+
+import React from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+
+interface TenantData {
+  tenant_id: string;
+  total_tokens: number;
+  request_count: number;
+}
+
+interface TenantPieChartProps {
+  data: TenantData[];
+  title?: string;
+  dataKey?: 'total_tokens' | 'request_count';
+}
+
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#f43f5e', '#06b6d4', '#84cc16'];
+
+const TenantPieChart: React.FC<TenantPieChartProps> = ({
+  data,
+  title = '테넌트별 사용량',
+  dataKey = 'total_tokens',
+}) => {
+  const total = data.reduce((sum, item) => sum + item[dataKey], 0);
+
+  const chartData = data.map((item, index) => ({
+    name: item.tenant_id,
+    value: item[dataKey],
+    percentage: ((item[dataKey] / total) * 100).toFixed(1),
+    fill: COLORS[index % COLORS.length],
+  }));
+
+  const formatValue = (value: number): string => {
+    if (dataKey === 'total_tokens') {
+      if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+      if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+    }
+    return value.toLocaleString();
+  };
+
+  return (
+    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+      <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+      <div className="h-[300px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={100}
+              paddingAngle={2}
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#0f172a',
+                borderColor: '#334155',
+                borderRadius: '8px',
+              }}
+              formatter={(value) => {
+                const numValue = typeof value === 'number' ? value : 0;
+                return [formatValue(numValue), dataKey === 'total_tokens' ? '토큰' : '요청'];
+              }}
+            />
+            <Legend
+              layout="vertical"
+              align="right"
+              verticalAlign="middle"
+              formatter={(value) => (
+                <span className="text-slate-300 text-sm">{value}</span>
+              )}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Summary */}
+      <div className="mt-4 pt-4 border-t border-slate-700">
+        <div className="text-slate-400 text-sm">
+          총 {dataKey === 'total_tokens' ? '토큰' : '요청'}:{' '}
+          <span className="text-white font-medium">{formatValue(total)}</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TenantPieChart;

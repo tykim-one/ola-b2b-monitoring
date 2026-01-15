@@ -1,4 +1,5 @@
-import { B2BLog, LogLevel, MetricData } from '@/types';
+import type { B2BLog, MetricData } from '@/types';
+import { LogLevel } from '@ola/shared-types';
 
 export const PARTNERS = ['Corp-A', 'Logistic-B', 'Retail-C', 'FinTech-D'];
 export const SERVICES = ['auth-service', 'order-processor', 'inventory-sync', 'notification-gateway'];
@@ -23,10 +24,15 @@ export const generateMockLogs = (count: number): B2BLog[] => {
     logs.push({
       id: `log-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date(now - timeOffset).toISOString(),
+      tenant_id: partner,
+      user_input: `Query for ${service}`,
+      llm_response: isError
+        ? `Failed to process transaction for ${partner}: Timeout waiting for upstream.`
+        : `Successfully processed batch sync for ${partner}.`,
       service: service,
       level: level,
-      message: isError 
-        ? `Failed to process transaction for ${partner}: Timeout waiting for upstream.` 
+      message: isError
+        ? `Failed to process transaction for ${partner}: Timeout waiting for upstream.`
         : `Successfully processed batch sync for ${partner}.`,
       latencyMs: isError ? 5000 + Math.random() * 2000 : 50 + Math.random() * 200,
       partnerId: partner,
@@ -34,7 +40,11 @@ export const generateMockLogs = (count: number): B2BLog[] => {
       statusCode: isError ? 500 : 200,
     });
   }
-  return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  return logs.sort((a, b) => {
+    const timeA = typeof a.timestamp === 'string' ? a.timestamp : a.timestamp.value;
+    const timeB = typeof b.timestamp === 'string' ? b.timestamp : b.timestamp.value;
+    return new Date(timeB).getTime() - new Date(timeA).getTime();
+  });
 };
 
 export const generateMetrics = (): MetricData[] => {

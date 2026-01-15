@@ -5,23 +5,25 @@ import { ProjectStrategy } from './project.strategy.interface';
 @Injectable()
 export class DefaultProjectStrategy implements ProjectStrategy {
   parseLog(raw: any): B2BLog {
-    // Default mapping (matches current logic)
+    // Cloud Logging Sink 스키마에 맞춤 (jsonPayload는 STRUCT 타입)
+    const payload = raw.jsonPayload || {};
+
     return {
-        id: raw.id || crypto.randomUUID(),
-        timestamp: raw.created_at || raw.timestamp, // BigQuery timestamp usually
-        level: this.mapLevel(raw.severity || raw.level),
-        message: raw.message || raw.textPayload || raw.jsonPayload?.message || '',
-        user_input: raw.user_input || '',
-        llm_response: raw.llm_response || '',
-        tenant_id: raw.tenant_id || '',
-        service: raw.service_name || 'unknown',
-        latencyMs: raw.latency ? parseFloat(raw.latency) : 0,
+        id: raw.insertId || crypto.randomUUID(),
+        timestamp: raw.timestamp, // BigQuery timestamp
+        level: this.mapLevel(raw.severity || 'INFO'),
+        message: payload.llm_response || raw.textPayload || '',
+        user_input: payload.user_input || '',
+        llm_response: payload.llm_response || '',
+        tenant_id: payload.tenant_id || '',
+        service: raw.resource?.labels?.service_name || 'unknown',
+        latencyMs: payload.latency ? parseFloat(payload.latency) : 0,
     };
   }
 
   getFilterQuery(projectId: string): string {
-    // Default strategy: assumes 'tenant_id' column matches 'projectId'
-    return `tenant_id = '${projectId}'`;
+    // Cloud Logging Sink 스키마: jsonPayload.tenant_id 사용
+    return `jsonPayload.tenant_id IS NOT NULL`;
   }
 
   private mapLevel(level: string): LogLevel {

@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { BigQuery } from '@google-cloud/bigquery';
 import { QueryDto } from './dto/query.dto';
 import { DefaultProjectStrategy } from '../common/strategies/default.project.strategy';
+import { CacheService, CacheTTL } from '../cache/cache.service';
+import { MetricsQueries } from './queries/metrics.queries';
 
 @Injectable()
 export class BigQueryService implements OnModuleInit {
@@ -16,6 +18,7 @@ export class BigQueryService implements OnModuleInit {
   constructor(
     private configService: ConfigService,
     private projectStrategy: DefaultProjectStrategy,
+    private cacheService: CacheService,
   ) {}
 
   onModuleInit() {
@@ -23,9 +26,9 @@ export class BigQueryService implements OnModuleInit {
     this.datasetId = this.configService.get<string>('BIGQUERY_DATASET') || '';
     this.tableName = this.configService.get<string>('BIGQUERY_TABLE') || 'logs';
     this.location = this.configService.get<string>('GCP_BQ_LOCATION') || 'asia-northeast3';
-    
+
     const credentials = this.configService.get<string>('GOOGLE_APPLICATION_CREDENTIALS');
-    
+
     this.bigQueryClient = new BigQuery({
       projectId: this.projectId,
       keyFilename: credentials,
@@ -42,10 +45,10 @@ export class BigQueryService implements OnModuleInit {
 
     try {
       this.logger.log(`Executing query: ${query.substring(0, 100)}...`);
-      
+
       const options = {
         query,
-        location: this.location, // Adjust based on your dataset location
+        location: this.location,
         maxResults,
       };
 
@@ -94,7 +97,7 @@ export class BigQueryService implements OnModuleInit {
    */
   async getSampleLogs(projectId: string, limit: number = 100): Promise<any[]> {
     const filterClause = this.projectStrategy.getFilterQuery(projectId);
-    
+
     const query = `
       SELECT *
       FROM \`${this.projectId}.${this.datasetId}.${this.tableName}\`
@@ -107,75 +110,181 @@ export class BigQueryService implements OnModuleInit {
     return rows.map(row => this.projectStrategy.parseLog(row));
   }
 
-  /**
-   * Helper: Generate Mock Logs
-   */
-  private generateMockLogs(count: number): any[] {
-     // ... (Previous implementation remains same, but omitted here for brevity if allowed, but must match strict replacement rules)
-     // Since I need to replace the block, I'll copy the generateMockLogs content back in or just keep the structure if I can using careful ranges.
-     // To avoid complexity, I will just rewrite the methods I changed.
-     // Wait, I cannot skip lines inside a ReplaceFileContent.
-     // I will use MultiReplaceFile if needed or just replace the upper part and the lower part separately.
-     // Let's replace the whole file content for safety or use precise chunks.
-    const logs = [];
-    const now = new Date().getTime();
-    const partners = ['Corp-A', 'Logistic-B', 'Retail-C', 'FinTech-D'];
-    const services = ['auth-service', 'order-processor', 'inventory-sync', 'notification-gateway'];
-    const levels = ['INFO', 'WARN', 'ERROR', 'DEBUG'];
+  // ==================== 메트릭 API (캐싱 적용) ====================
 
-    for (let i = 0; i < count; i++) {
-        const timeOffset = Math.floor(Math.random() * 1000 * 60 * 60 * 24);
-        const partner = partners[Math.floor(Math.random() * partners.length)];
-        const service = services[Math.floor(Math.random() * services.length)];
-        const level = levels[Math.floor(Math.random() * levels.length)];
-        
-        logs.push({
-            id: `log-${Math.random().toString(36).substr(2, 9)}`,
-            timestamp: new Date(now - timeOffset).toISOString(),
-            service,
-            level,
-            message: `Mock log message for ${service} related to ${partner}`,
-            latencyMs: Math.random() * 500,
-            partnerId: partner,
-            traceId: `trc-${Math.random().toString(36).substr(2, 12)}`,
-            statusCode: level === 'ERROR' ? 500 : 200,
-        });
-    }
-    return logs;
+  /**
+   * 실시간 KPI 메트릭 (캐시 TTL: 5분)
+   */
+  async getRealtimeKPI(): Promise<any> {
+    const cacheKey = CacheService.generateKey('metrics', 'realtime', 'kpi');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.realtimeKPI(this.projectId, this.datasetId, this.tableName);
+        const rows = await this.executeQuery({ query, maxResults: 1 });
+        return rows[0] || null;
+      },
+      CacheTTL.SHORT,
+    );
   }
 
-
-  /*
   /**
-   * Seed Mock Logs (Commented out for safety)
-   *
-   * This method inserts generated mock logs into the BigQuery table.
-   * Use this only for testing purposes.
+   * 시간별 트래픽 (캐시 TTL: 15분)
    */
-  /*
-  async insertMockLogs(count: number = 50): Promise<void> {
-    try {
-      const rows = this.generateMockLogs(count);
-      const tableId = 'logs'; // Ensure this table exists
+  async getHourlyTraffic(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'hourly', 'traffic');
 
-      this.logger.log(`Inserting ${count} mock logs into table '${tableId}'...`);
-
-      // Insert data into BigQuery
-      await this.bigQueryClient
-        .dataset(this.datasetId)
-        .table(tableId)
-        .insert(rows);
-
-      this.logger.log(`Successfully inserted ${count} rows.`);
-    } catch (error) {
-      this.logger.error(`Failed to insert mock logs: ${error.message}`, error.stack);
-      if (error.errors) {
-         error.errors.forEach(err => {
-             this.logger.error(`Validation Error: ${JSON.stringify(err)}`);
-         });
-      }
-      throw new Error(`Failed to insert mock logs: ${error.message}`);
-    }
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.hourlyTraffic(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 100 });
+      },
+      CacheTTL.MEDIUM,
+    );
   }
-  */
+
+  /**
+   * 일별 트래픽 (캐시 TTL: 15분)
+   */
+  async getDailyTraffic(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'daily', 'traffic');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.dailyTraffic(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 100 });
+      },
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 테넌트별 사용량 (캐시 TTL: 15분)
+   */
+  async getTenantUsage(days: number = 7): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'tenant', 'usage', days);
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.tenantUsage(this.projectId, this.datasetId, this.tableName, days);
+        return this.executeQuery({ query, maxResults: 100 });
+      },
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 사용량 히트맵 (캐시 TTL: 15분)
+   */
+  async getUsageHeatmap(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'usage', 'heatmap');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.usageHeatmap(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 200 });
+      },
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 에러 분석 (캐시 TTL: 5분)
+   */
+  async getErrorAnalysis(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'error', 'analysis');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.errorAnalysis(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 100 });
+      },
+      CacheTTL.SHORT,
+    );
+  }
+
+  /**
+   * 토큰 효율성 분석 (캐시 TTL: 15분)
+   */
+  async getTokenEfficiency(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'token', 'efficiency');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.tokenEfficiency(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 1000 });
+      },
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 이상 탐지용 통계 (캐시 TTL: 5분)
+   */
+  async getAnomalyStats(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'anomaly', 'stats');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.anomalyStats(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 100 });
+      },
+      CacheTTL.SHORT,
+    );
+  }
+
+  /**
+   * 비용 트렌드 (캐시 TTL: 15분)
+   */
+  async getCostTrend(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'cost', 'trend');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.costTrend(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 100 });
+      },
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 사용자 질의 패턴 (캐시 TTL: 15분)
+   */
+  async getQueryPatterns(): Promise<any[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'query', 'patterns');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const query = MetricsQueries.queryPatterns(this.projectId, this.datasetId, this.tableName);
+        return this.executeQuery({ query, maxResults: 500 });
+      },
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 캐시 통계 조회
+   */
+  getCacheStats() {
+    return this.cacheService.getStats();
+  }
+
+  /**
+   * 캐시 초기화
+   */
+  flushCache() {
+    this.cacheService.flush();
+    return { message: 'Cache flushed successfully' };
+  }
 }

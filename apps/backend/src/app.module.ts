@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BigQueryModule } from './bigquery/bigquery.module';
+import { CacheModule } from './cache/cache.module';
+import { MlModule } from './ml/ml.module';
 
 @Module({
   imports: [
@@ -10,7 +12,9 @@ import { BigQueryModule } from './bigquery/bigquery.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    CacheModule,
     BigQueryModule,
+    MlModule,
   ],
   controllers: [AppController],
   providers: [AppService],
