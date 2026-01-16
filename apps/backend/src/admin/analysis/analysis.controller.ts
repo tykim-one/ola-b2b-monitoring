@@ -6,7 +6,6 @@ import {
   Body,
   Param,
   Query,
-  UseGuards,
   Request,
 } from '@nestjs/common';
 import {
@@ -19,8 +18,6 @@ import {
 import { AnalysisService } from './analysis.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { SendMessageDto } from './dto/send-message.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { Permissions } from '../auth/decorators/permissions.decorator';
 
 /**
@@ -28,11 +25,11 @@ import { Permissions } from '../auth/decorators/permissions.decorator';
  *
  * Manages AI-powered analysis sessions and conversations.
  * All routes require authentication and appropriate permissions.
+ * Guards are applied globally via AdminModule (JwtAuthGuard, PermissionsGuard).
  */
 @ApiTags('Admin Analysis')
 @ApiBearerAuth()
-@Controller('admin/analysis')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Controller('api/admin/analysis')
 export class AnalysisController {
   constructor(private readonly analysisService: AnalysisService) {}
 
@@ -62,7 +59,7 @@ export class AnalysisController {
     description: 'Forbidden - Missing analysis:write permission',
   })
   async createSession(@Request() req: any, @Body() dto: CreateSessionDto) {
-    const userId = req.user.sub;
+    const userId = req.user.userId;
     return this.analysisService.createSession(userId, dto);
   }
 
@@ -106,11 +103,13 @@ export class AnalysisController {
   })
   async getSessions(
     @Request() req: any,
-    @Query('page') page?: number,
-    @Query('pageSize') pageSize?: number,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
   ) {
-    const userId = req.user.sub;
-    return this.analysisService.getSessions(userId, page, pageSize);
+    const userId = req.user.userId;
+    const pageNum = page ? parseInt(page, 10) : undefined;
+    const pageSizeNum = pageSize ? parseInt(pageSize, 10) : undefined;
+    return this.analysisService.getSessions(userId, pageNum, pageSizeNum);
   }
 
   /**
@@ -159,7 +158,7 @@ export class AnalysisController {
   @ApiResponse({ status: 403, description: 'Forbidden - Access denied' })
   @ApiResponse({ status: 404, description: 'Session not found' })
   async getSession(@Request() req: any, @Param('id') sessionId: string) {
-    const userId = req.user.sub;
+    const userId = req.user.userId;
     return this.analysisService.getSession(sessionId, userId);
   }
 
@@ -212,7 +211,7 @@ export class AnalysisController {
     @Param('id') sessionId: string,
     @Body() dto: SendMessageDto,
   ) {
-    const userId = req.user.sub;
+    const userId = req.user.userId;
     return this.analysisService.sendMessage(sessionId, userId, dto);
   }
 
@@ -233,7 +232,7 @@ export class AnalysisController {
   @ApiResponse({ status: 403, description: 'Forbidden - Access denied' })
   @ApiResponse({ status: 404, description: 'Session not found' })
   async deleteSession(@Request() req: any, @Param('id') sessionId: string) {
-    const userId = req.user.sub;
+    const userId = req.user.userId;
     return this.analysisService.deleteSession(sessionId, userId);
   }
 }

@@ -24,7 +24,7 @@ export class GeminiProvider implements LLMProvider {
   constructor(private readonly configService: ConfigService) {
     this.modelName = this.configService.get<string>(
       'GEMINI_MODEL',
-      'gemini-1.5-flash',
+      'gemini-2.0-flash',
     );
     this.initialize();
   }

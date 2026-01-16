@@ -26,6 +26,12 @@ import {
   UserQuestionPattern,
   UserListItem,
   UserActivityDetail,
+  EmergingQueryPattern,
+  SentimentAnalysisResult,
+  RephrasedQueryPattern,
+  SessionAnalytics,
+  TenantQualitySummary,
+  ResponseQualityMetrics,
 } from '@ola/shared-types';
 
 @Injectable()
@@ -447,6 +453,112 @@ export class MetricsService implements OnModuleInit {
           offset,
         ),
       CacheTTL.SHORT,
+    );
+  }
+
+  // ==================== 챗봇 품질 분석 API ====================
+
+  /**
+   * 신규/급증 질문 패턴 (캐시 TTL: 15분)
+   */
+  async getEmergingQueryPatterns(
+    recentDays: number = 7,
+    historicalDays: number = 90,
+  ): Promise<EmergingQueryPattern[]> {
+    const cacheKey = CacheService.generateKey(
+      'quality',
+      'emerging',
+      'patterns',
+      recentDays,
+      historicalDays,
+    );
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () =>
+        this.metricsDataSource.getEmergingQueryPatterns(
+          recentDays,
+          historicalDays,
+        ),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 감정 분석 결과 (캐시 TTL: 5분)
+   */
+  async getSentimentAnalysis(
+    days: number = 7,
+  ): Promise<SentimentAnalysisResult[]> {
+    const cacheKey = CacheService.generateKey('quality', 'sentiment', days);
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getSentimentAnalysis(days),
+      CacheTTL.SHORT,
+    );
+  }
+
+  /**
+   * 재질문 패턴 (캐시 TTL: 15분)
+   */
+  async getRephrasedQueryPatterns(
+    days: number = 7,
+  ): Promise<RephrasedQueryPattern[]> {
+    const cacheKey = CacheService.generateKey('quality', 'rephrased', days);
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getRephrasedQueryPatterns(days),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 세션 분석 (캐시 TTL: 15분)
+   */
+  async getSessionAnalytics(days: number = 7): Promise<SessionAnalytics[]> {
+    const cacheKey = CacheService.generateKey('quality', 'session', days);
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getSessionAnalytics(days),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 테넌트별 품질 요약 (캐시 TTL: 15분)
+   */
+  async getTenantQualitySummary(
+    days: number = 7,
+  ): Promise<TenantQualitySummary[]> {
+    const cacheKey = CacheService.generateKey(
+      'quality',
+      'tenant',
+      'summary',
+      days,
+    );
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getTenantQualitySummary(days),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 응답 품질 지표 (캐시 TTL: 15분)
+   */
+  async getResponseQualityMetrics(
+    days: number = 30,
+  ): Promise<ResponseQualityMetrics[]> {
+    const cacheKey = CacheService.generateKey('quality', 'response', days);
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getResponseQualityMetrics(days),
+      CacheTTL.MEDIUM,
     );
   }
 

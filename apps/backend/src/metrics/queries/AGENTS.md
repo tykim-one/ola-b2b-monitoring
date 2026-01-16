@@ -12,6 +12,13 @@ BigQuery SQL 쿼리 빌더입니다. 메트릭별 SQL 쿼리를 생성하는 정
 - **Core Metrics**: realtimeKPI, hourlyTraffic, dailyTraffic, tenantUsage, usageHeatmap, errorAnalysis, tokenEfficiency, anomalyStats, costTrend, queryPatterns
 - **Quality Analysis**: tokenEfficiencyTrend, queryResponseCorrelation, repeatedQueryPatterns
 - **User Analytics**: userRequestCounts, userTokenUsage, userQuestionPatterns, userList, userActivityDetail
+- **Chatbot Quality Analysis** (신규):
+  - `emergingQueryPatterns` - 신규/급증 질문 패턴 탐지
+  - `sentimentAnalysis` - 감정/불만 키워드 분석
+  - `rephrasedQueryPatterns` - 재질문 패턴 탐지 (불만족 신호)
+  - `sessionAnalytics` - 세션별 대화 분석
+  - `tenantQualitySummary` - 테넌트별 품질 요약
+  - `responseQualityMetrics` - 응답 품질 지표
 
 ## For AI Agents
 - SQL 쿼리는 정적 메서드로 구성

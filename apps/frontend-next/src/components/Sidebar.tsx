@@ -127,6 +127,18 @@ const Sidebar = () => {
             </svg>
           ),
         },
+        {
+          href: '/dashboard/admin/batch-analysis',
+          label: 'Batch Analysis',
+          icon: (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="4" width="18" height="4" rx="1"/>
+              <rect x="3" y="10" width="18" height="4" rx="1"/>
+              <rect x="3" y="16" width="18" height="4" rx="1"/>
+              <path d="M7 6h.01M7 12h.01M7 18h.01"/>
+            </svg>
+          ),
+        },
       ],
     },
     {

@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import { FloatingChatbot } from '@/components/chatbot';
 
 export default function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -17,6 +18,7 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
         <main className="flex-1 bg-slate-950 overflow-hidden relative">
           {children}
         </main>
+        <FloatingChatbot />
       </div>
     );
   }

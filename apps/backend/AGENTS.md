@@ -24,6 +24,8 @@ NestJS 기반 REST API 서버입니다. GCP BigQuery에서 B2B LLM 로그 데이
 ## Dependencies
 - `@google-cloud/bigquery` - BigQuery 클라이언트
 - `@nestjs/*` - NestJS 프레임워크
+- `@nestjs/schedule` - 크론 스케줄링
 - `node-cache` - 인메모리 캐싱
 - `class-validator` / `class-transformer` - DTO 유효성 검사
+- `cookie-parser` - 쿠키 파싱 (리프레시 토큰용)
 - `@ola/shared-types` - 공유 타입

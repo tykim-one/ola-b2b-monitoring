@@ -9,6 +9,7 @@
 - `roles/` - 역할 관리 페이지
 - `filters/` - 데이터 필터 관리 페이지
 - `analysis/` - LLM 분석 세션 관리 페이지
+- `batch-analysis/` - 배치 분석 작업 관리 페이지 (작업 생성, 결과 조회, 프롬프트 관리)
 
 ## For AI Agents
 - 모든 페이지는 JWT 인증 필요 (AuthContext 사용)

@@ -68,6 +68,21 @@ export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
  * 외부 통합용 API 키 (마이그레이션 Phase 2용)
  */
 export type ApiKey = $Result.DefaultSelection<Prisma.$ApiKeyPayload>
+/**
+ * Model BatchAnalysisJob
+ * 배치 분석 작업
+ */
+export type BatchAnalysisJob = $Result.DefaultSelection<Prisma.$BatchAnalysisJobPayload>
+/**
+ * Model BatchAnalysisResult
+ * 개별 분석 결과
+ */
+export type BatchAnalysisResult = $Result.DefaultSelection<Prisma.$BatchAnalysisResultPayload>
+/**
+ * Model AnalysisPromptTemplate
+ * 분석 프롬프트 템플릿
+ */
+export type AnalysisPromptTemplate = $Result.DefaultSelection<Prisma.$AnalysisPromptTemplatePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -295,6 +310,36 @@ export class PrismaClient<
     * ```
     */
   get apiKey(): Prisma.ApiKeyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.batchAnalysisJob`: Exposes CRUD operations for the **BatchAnalysisJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BatchAnalysisJobs
+    * const batchAnalysisJobs = await prisma.batchAnalysisJob.findMany()
+    * ```
+    */
+  get batchAnalysisJob(): Prisma.BatchAnalysisJobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.batchAnalysisResult`: Exposes CRUD operations for the **BatchAnalysisResult** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BatchAnalysisResults
+    * const batchAnalysisResults = await prisma.batchAnalysisResult.findMany()
+    * ```
+    */
+  get batchAnalysisResult(): Prisma.BatchAnalysisResultDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.analysisPromptTemplate`: Exposes CRUD operations for the **AnalysisPromptTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AnalysisPromptTemplates
+    * const analysisPromptTemplates = await prisma.analysisPromptTemplate.findMany()
+    * ```
+    */
+  get analysisPromptTemplate(): Prisma.AnalysisPromptTemplateDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -739,7 +784,10 @@ export namespace Prisma {
     AnalysisSession: 'AnalysisSession',
     AnalysisMessage: 'AnalysisMessage',
     AuditLog: 'AuditLog',
-    ApiKey: 'ApiKey'
+    ApiKey: 'ApiKey',
+    BatchAnalysisJob: 'BatchAnalysisJob',
+    BatchAnalysisResult: 'BatchAnalysisResult',
+    AnalysisPromptTemplate: 'AnalysisPromptTemplate'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -755,7 +803,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey"
+      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1573,6 +1621,228 @@ export namespace Prisma {
           }
         }
       }
+      BatchAnalysisJob: {
+        payload: Prisma.$BatchAnalysisJobPayload<ExtArgs>
+        fields: Prisma.BatchAnalysisJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BatchAnalysisJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BatchAnalysisJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>
+          }
+          findFirst: {
+            args: Prisma.BatchAnalysisJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BatchAnalysisJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>
+          }
+          findMany: {
+            args: Prisma.BatchAnalysisJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>[]
+          }
+          create: {
+            args: Prisma.BatchAnalysisJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>
+          }
+          createMany: {
+            args: Prisma.BatchAnalysisJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BatchAnalysisJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>[]
+          }
+          delete: {
+            args: Prisma.BatchAnalysisJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>
+          }
+          update: {
+            args: Prisma.BatchAnalysisJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.BatchAnalysisJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BatchAnalysisJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BatchAnalysisJobUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>[]
+          }
+          upsert: {
+            args: Prisma.BatchAnalysisJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisJobPayload>
+          }
+          aggregate: {
+            args: Prisma.BatchAnalysisJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBatchAnalysisJob>
+          }
+          groupBy: {
+            args: Prisma.BatchAnalysisJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BatchAnalysisJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BatchAnalysisJobCountArgs<ExtArgs>
+            result: $Utils.Optional<BatchAnalysisJobCountAggregateOutputType> | number
+          }
+        }
+      }
+      BatchAnalysisResult: {
+        payload: Prisma.$BatchAnalysisResultPayload<ExtArgs>
+        fields: Prisma.BatchAnalysisResultFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BatchAnalysisResultFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BatchAnalysisResultFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>
+          }
+          findFirst: {
+            args: Prisma.BatchAnalysisResultFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BatchAnalysisResultFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>
+          }
+          findMany: {
+            args: Prisma.BatchAnalysisResultFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>[]
+          }
+          create: {
+            args: Prisma.BatchAnalysisResultCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>
+          }
+          createMany: {
+            args: Prisma.BatchAnalysisResultCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BatchAnalysisResultCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>[]
+          }
+          delete: {
+            args: Prisma.BatchAnalysisResultDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>
+          }
+          update: {
+            args: Prisma.BatchAnalysisResultUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>
+          }
+          deleteMany: {
+            args: Prisma.BatchAnalysisResultDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BatchAnalysisResultUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BatchAnalysisResultUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>[]
+          }
+          upsert: {
+            args: Prisma.BatchAnalysisResultUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchAnalysisResultPayload>
+          }
+          aggregate: {
+            args: Prisma.BatchAnalysisResultAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBatchAnalysisResult>
+          }
+          groupBy: {
+            args: Prisma.BatchAnalysisResultGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BatchAnalysisResultGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BatchAnalysisResultCountArgs<ExtArgs>
+            result: $Utils.Optional<BatchAnalysisResultCountAggregateOutputType> | number
+          }
+        }
+      }
+      AnalysisPromptTemplate: {
+        payload: Prisma.$AnalysisPromptTemplatePayload<ExtArgs>
+        fields: Prisma.AnalysisPromptTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AnalysisPromptTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AnalysisPromptTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.AnalysisPromptTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AnalysisPromptTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.AnalysisPromptTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.AnalysisPromptTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.AnalysisPromptTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AnalysisPromptTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.AnalysisPromptTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>
+          }
+          update: {
+            args: Prisma.AnalysisPromptTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.AnalysisPromptTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AnalysisPromptTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AnalysisPromptTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.AnalysisPromptTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisPromptTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.AnalysisPromptTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAnalysisPromptTemplate>
+          }
+          groupBy: {
+            args: Prisma.AnalysisPromptTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisPromptTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AnalysisPromptTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisPromptTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1692,6 +1962,9 @@ export namespace Prisma {
     analysisMessage?: AnalysisMessageOmit
     auditLog?: AuditLogOmit
     apiKey?: ApiKeyOmit
+    batchAnalysisJob?: BatchAnalysisJobOmit
+    batchAnalysisResult?: BatchAnalysisResultOmit
+    analysisPromptTemplate?: AnalysisPromptTemplateOmit
   }
 
   /* Types for Logging */
@@ -1942,6 +2215,37 @@ export namespace Prisma {
    */
   export type AnalysisSessionCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AnalysisMessageWhereInput
+  }
+
+
+  /**
+   * Count Type BatchAnalysisJobCountOutputType
+   */
+
+  export type BatchAnalysisJobCountOutputType = {
+    results: number
+  }
+
+  export type BatchAnalysisJobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    results?: boolean | BatchAnalysisJobCountOutputTypeCountResultsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BatchAnalysisJobCountOutputType without action
+   */
+  export type BatchAnalysisJobCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJobCountOutputType
+     */
+    select?: BatchAnalysisJobCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BatchAnalysisJobCountOutputType without action
+   */
+  export type BatchAnalysisJobCountOutputTypeCountResultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BatchAnalysisResultWhereInput
   }
 
 
@@ -14077,6 +14381,3484 @@ export namespace Prisma {
 
 
   /**
+   * Model BatchAnalysisJob
+   */
+
+  export type AggregateBatchAnalysisJob = {
+    _count: BatchAnalysisJobCountAggregateOutputType | null
+    _avg: BatchAnalysisJobAvgAggregateOutputType | null
+    _sum: BatchAnalysisJobSumAggregateOutputType | null
+    _min: BatchAnalysisJobMinAggregateOutputType | null
+    _max: BatchAnalysisJobMaxAggregateOutputType | null
+  }
+
+  export type BatchAnalysisJobAvgAggregateOutputType = {
+    sampleSize: number | null
+    totalItems: number | null
+    processedItems: number | null
+    failedItems: number | null
+  }
+
+  export type BatchAnalysisJobSumAggregateOutputType = {
+    sampleSize: number | null
+    totalItems: number | null
+    processedItems: number | null
+    failedItems: number | null
+  }
+
+  export type BatchAnalysisJobMinAggregateOutputType = {
+    id: string | null
+    status: string | null
+    targetDate: Date | null
+    tenantId: string | null
+    sampleSize: number | null
+    promptTemplate: string | null
+    totalItems: number | null
+    processedItems: number | null
+    failedItems: number | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type BatchAnalysisJobMaxAggregateOutputType = {
+    id: string | null
+    status: string | null
+    targetDate: Date | null
+    tenantId: string | null
+    sampleSize: number | null
+    promptTemplate: string | null
+    totalItems: number | null
+    processedItems: number | null
+    failedItems: number | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type BatchAnalysisJobCountAggregateOutputType = {
+    id: number
+    status: number
+    targetDate: number
+    tenantId: number
+    sampleSize: number
+    promptTemplate: number
+    totalItems: number
+    processedItems: number
+    failedItems: number
+    startedAt: number
+    completedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type BatchAnalysisJobAvgAggregateInputType = {
+    sampleSize?: true
+    totalItems?: true
+    processedItems?: true
+    failedItems?: true
+  }
+
+  export type BatchAnalysisJobSumAggregateInputType = {
+    sampleSize?: true
+    totalItems?: true
+    processedItems?: true
+    failedItems?: true
+  }
+
+  export type BatchAnalysisJobMinAggregateInputType = {
+    id?: true
+    status?: true
+    targetDate?: true
+    tenantId?: true
+    sampleSize?: true
+    promptTemplate?: true
+    totalItems?: true
+    processedItems?: true
+    failedItems?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+  }
+
+  export type BatchAnalysisJobMaxAggregateInputType = {
+    id?: true
+    status?: true
+    targetDate?: true
+    tenantId?: true
+    sampleSize?: true
+    promptTemplate?: true
+    totalItems?: true
+    processedItems?: true
+    failedItems?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+  }
+
+  export type BatchAnalysisJobCountAggregateInputType = {
+    id?: true
+    status?: true
+    targetDate?: true
+    tenantId?: true
+    sampleSize?: true
+    promptTemplate?: true
+    totalItems?: true
+    processedItems?: true
+    failedItems?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type BatchAnalysisJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BatchAnalysisJob to aggregate.
+     */
+    where?: BatchAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisJobs to fetch.
+     */
+    orderBy?: BatchAnalysisJobOrderByWithRelationInput | BatchAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BatchAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BatchAnalysisJobs
+    **/
+    _count?: true | BatchAnalysisJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BatchAnalysisJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BatchAnalysisJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BatchAnalysisJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BatchAnalysisJobMaxAggregateInputType
+  }
+
+  export type GetBatchAnalysisJobAggregateType<T extends BatchAnalysisJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateBatchAnalysisJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBatchAnalysisJob[P]>
+      : GetScalarType<T[P], AggregateBatchAnalysisJob[P]>
+  }
+
+
+
+
+  export type BatchAnalysisJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BatchAnalysisJobWhereInput
+    orderBy?: BatchAnalysisJobOrderByWithAggregationInput | BatchAnalysisJobOrderByWithAggregationInput[]
+    by: BatchAnalysisJobScalarFieldEnum[] | BatchAnalysisJobScalarFieldEnum
+    having?: BatchAnalysisJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BatchAnalysisJobCountAggregateInputType | true
+    _avg?: BatchAnalysisJobAvgAggregateInputType
+    _sum?: BatchAnalysisJobSumAggregateInputType
+    _min?: BatchAnalysisJobMinAggregateInputType
+    _max?: BatchAnalysisJobMaxAggregateInputType
+  }
+
+  export type BatchAnalysisJobGroupByOutputType = {
+    id: string
+    status: string
+    targetDate: Date
+    tenantId: string | null
+    sampleSize: number
+    promptTemplate: string
+    totalItems: number
+    processedItems: number
+    failedItems: number
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date
+    _count: BatchAnalysisJobCountAggregateOutputType | null
+    _avg: BatchAnalysisJobAvgAggregateOutputType | null
+    _sum: BatchAnalysisJobSumAggregateOutputType | null
+    _min: BatchAnalysisJobMinAggregateOutputType | null
+    _max: BatchAnalysisJobMaxAggregateOutputType | null
+  }
+
+  type GetBatchAnalysisJobGroupByPayload<T extends BatchAnalysisJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BatchAnalysisJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BatchAnalysisJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BatchAnalysisJobGroupByOutputType[P]>
+            : GetScalarType<T[P], BatchAnalysisJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BatchAnalysisJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    sampleSize?: boolean
+    promptTemplate?: boolean
+    totalItems?: boolean
+    processedItems?: boolean
+    failedItems?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    results?: boolean | BatchAnalysisJob$resultsArgs<ExtArgs>
+    _count?: boolean | BatchAnalysisJobCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["batchAnalysisJob"]>
+
+  export type BatchAnalysisJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    sampleSize?: boolean
+    promptTemplate?: boolean
+    totalItems?: boolean
+    processedItems?: boolean
+    failedItems?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["batchAnalysisJob"]>
+
+  export type BatchAnalysisJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    sampleSize?: boolean
+    promptTemplate?: boolean
+    totalItems?: boolean
+    processedItems?: boolean
+    failedItems?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["batchAnalysisJob"]>
+
+  export type BatchAnalysisJobSelectScalar = {
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    sampleSize?: boolean
+    promptTemplate?: boolean
+    totalItems?: boolean
+    processedItems?: boolean
+    failedItems?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type BatchAnalysisJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "targetDate" | "tenantId" | "sampleSize" | "promptTemplate" | "totalItems" | "processedItems" | "failedItems" | "startedAt" | "completedAt" | "createdAt", ExtArgs["result"]["batchAnalysisJob"]>
+  export type BatchAnalysisJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    results?: boolean | BatchAnalysisJob$resultsArgs<ExtArgs>
+    _count?: boolean | BatchAnalysisJobCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BatchAnalysisJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type BatchAnalysisJobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $BatchAnalysisJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BatchAnalysisJob"
+    objects: {
+      results: Prisma.$BatchAnalysisResultPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      status: string
+      targetDate: Date
+      tenantId: string | null
+      sampleSize: number
+      promptTemplate: string
+      totalItems: number
+      processedItems: number
+      failedItems: number
+      startedAt: Date | null
+      completedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["batchAnalysisJob"]>
+    composites: {}
+  }
+
+  type BatchAnalysisJobGetPayload<S extends boolean | null | undefined | BatchAnalysisJobDefaultArgs> = $Result.GetResult<Prisma.$BatchAnalysisJobPayload, S>
+
+  type BatchAnalysisJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BatchAnalysisJobFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BatchAnalysisJobCountAggregateInputType | true
+    }
+
+  export interface BatchAnalysisJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BatchAnalysisJob'], meta: { name: 'BatchAnalysisJob' } }
+    /**
+     * Find zero or one BatchAnalysisJob that matches the filter.
+     * @param {BatchAnalysisJobFindUniqueArgs} args - Arguments to find a BatchAnalysisJob
+     * @example
+     * // Get one BatchAnalysisJob
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BatchAnalysisJobFindUniqueArgs>(args: SelectSubset<T, BatchAnalysisJobFindUniqueArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BatchAnalysisJob that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BatchAnalysisJobFindUniqueOrThrowArgs} args - Arguments to find a BatchAnalysisJob
+     * @example
+     * // Get one BatchAnalysisJob
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BatchAnalysisJobFindUniqueOrThrowArgs>(args: SelectSubset<T, BatchAnalysisJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BatchAnalysisJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisJobFindFirstArgs} args - Arguments to find a BatchAnalysisJob
+     * @example
+     * // Get one BatchAnalysisJob
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BatchAnalysisJobFindFirstArgs>(args?: SelectSubset<T, BatchAnalysisJobFindFirstArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BatchAnalysisJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisJobFindFirstOrThrowArgs} args - Arguments to find a BatchAnalysisJob
+     * @example
+     * // Get one BatchAnalysisJob
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BatchAnalysisJobFindFirstOrThrowArgs>(args?: SelectSubset<T, BatchAnalysisJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BatchAnalysisJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BatchAnalysisJobs
+     * const batchAnalysisJobs = await prisma.batchAnalysisJob.findMany()
+     * 
+     * // Get first 10 BatchAnalysisJobs
+     * const batchAnalysisJobs = await prisma.batchAnalysisJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const batchAnalysisJobWithIdOnly = await prisma.batchAnalysisJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BatchAnalysisJobFindManyArgs>(args?: SelectSubset<T, BatchAnalysisJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BatchAnalysisJob.
+     * @param {BatchAnalysisJobCreateArgs} args - Arguments to create a BatchAnalysisJob.
+     * @example
+     * // Create one BatchAnalysisJob
+     * const BatchAnalysisJob = await prisma.batchAnalysisJob.create({
+     *   data: {
+     *     // ... data to create a BatchAnalysisJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends BatchAnalysisJobCreateArgs>(args: SelectSubset<T, BatchAnalysisJobCreateArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BatchAnalysisJobs.
+     * @param {BatchAnalysisJobCreateManyArgs} args - Arguments to create many BatchAnalysisJobs.
+     * @example
+     * // Create many BatchAnalysisJobs
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BatchAnalysisJobCreateManyArgs>(args?: SelectSubset<T, BatchAnalysisJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BatchAnalysisJobs and returns the data saved in the database.
+     * @param {BatchAnalysisJobCreateManyAndReturnArgs} args - Arguments to create many BatchAnalysisJobs.
+     * @example
+     * // Create many BatchAnalysisJobs
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BatchAnalysisJobs and only return the `id`
+     * const batchAnalysisJobWithIdOnly = await prisma.batchAnalysisJob.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BatchAnalysisJobCreateManyAndReturnArgs>(args?: SelectSubset<T, BatchAnalysisJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BatchAnalysisJob.
+     * @param {BatchAnalysisJobDeleteArgs} args - Arguments to delete one BatchAnalysisJob.
+     * @example
+     * // Delete one BatchAnalysisJob
+     * const BatchAnalysisJob = await prisma.batchAnalysisJob.delete({
+     *   where: {
+     *     // ... filter to delete one BatchAnalysisJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BatchAnalysisJobDeleteArgs>(args: SelectSubset<T, BatchAnalysisJobDeleteArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BatchAnalysisJob.
+     * @param {BatchAnalysisJobUpdateArgs} args - Arguments to update one BatchAnalysisJob.
+     * @example
+     * // Update one BatchAnalysisJob
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BatchAnalysisJobUpdateArgs>(args: SelectSubset<T, BatchAnalysisJobUpdateArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BatchAnalysisJobs.
+     * @param {BatchAnalysisJobDeleteManyArgs} args - Arguments to filter BatchAnalysisJobs to delete.
+     * @example
+     * // Delete a few BatchAnalysisJobs
+     * const { count } = await prisma.batchAnalysisJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BatchAnalysisJobDeleteManyArgs>(args?: SelectSubset<T, BatchAnalysisJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BatchAnalysisJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BatchAnalysisJobs
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BatchAnalysisJobUpdateManyArgs>(args: SelectSubset<T, BatchAnalysisJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BatchAnalysisJobs and returns the data updated in the database.
+     * @param {BatchAnalysisJobUpdateManyAndReturnArgs} args - Arguments to update many BatchAnalysisJobs.
+     * @example
+     * // Update many BatchAnalysisJobs
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BatchAnalysisJobs and only return the `id`
+     * const batchAnalysisJobWithIdOnly = await prisma.batchAnalysisJob.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BatchAnalysisJobUpdateManyAndReturnArgs>(args: SelectSubset<T, BatchAnalysisJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BatchAnalysisJob.
+     * @param {BatchAnalysisJobUpsertArgs} args - Arguments to update or create a BatchAnalysisJob.
+     * @example
+     * // Update or create a BatchAnalysisJob
+     * const batchAnalysisJob = await prisma.batchAnalysisJob.upsert({
+     *   create: {
+     *     // ... data to create a BatchAnalysisJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BatchAnalysisJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BatchAnalysisJobUpsertArgs>(args: SelectSubset<T, BatchAnalysisJobUpsertArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BatchAnalysisJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisJobCountArgs} args - Arguments to filter BatchAnalysisJobs to count.
+     * @example
+     * // Count the number of BatchAnalysisJobs
+     * const count = await prisma.batchAnalysisJob.count({
+     *   where: {
+     *     // ... the filter for the BatchAnalysisJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends BatchAnalysisJobCountArgs>(
+      args?: Subset<T, BatchAnalysisJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BatchAnalysisJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BatchAnalysisJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BatchAnalysisJobAggregateArgs>(args: Subset<T, BatchAnalysisJobAggregateArgs>): Prisma.PrismaPromise<GetBatchAnalysisJobAggregateType<T>>
+
+    /**
+     * Group by BatchAnalysisJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BatchAnalysisJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BatchAnalysisJobGroupByArgs['orderBy'] }
+        : { orderBy?: BatchAnalysisJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BatchAnalysisJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBatchAnalysisJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BatchAnalysisJob model
+   */
+  readonly fields: BatchAnalysisJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BatchAnalysisJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BatchAnalysisJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    results<T extends BatchAnalysisJob$resultsArgs<ExtArgs> = {}>(args?: Subset<T, BatchAnalysisJob$resultsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BatchAnalysisJob model
+   */
+  interface BatchAnalysisJobFieldRefs {
+    readonly id: FieldRef<"BatchAnalysisJob", 'String'>
+    readonly status: FieldRef<"BatchAnalysisJob", 'String'>
+    readonly targetDate: FieldRef<"BatchAnalysisJob", 'DateTime'>
+    readonly tenantId: FieldRef<"BatchAnalysisJob", 'String'>
+    readonly sampleSize: FieldRef<"BatchAnalysisJob", 'Int'>
+    readonly promptTemplate: FieldRef<"BatchAnalysisJob", 'String'>
+    readonly totalItems: FieldRef<"BatchAnalysisJob", 'Int'>
+    readonly processedItems: FieldRef<"BatchAnalysisJob", 'Int'>
+    readonly failedItems: FieldRef<"BatchAnalysisJob", 'Int'>
+    readonly startedAt: FieldRef<"BatchAnalysisJob", 'DateTime'>
+    readonly completedAt: FieldRef<"BatchAnalysisJob", 'DateTime'>
+    readonly createdAt: FieldRef<"BatchAnalysisJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BatchAnalysisJob findUnique
+   */
+  export type BatchAnalysisJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisJob to fetch.
+     */
+    where: BatchAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisJob findUniqueOrThrow
+   */
+  export type BatchAnalysisJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisJob to fetch.
+     */
+    where: BatchAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisJob findFirst
+   */
+  export type BatchAnalysisJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisJob to fetch.
+     */
+    where?: BatchAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisJobs to fetch.
+     */
+    orderBy?: BatchAnalysisJobOrderByWithRelationInput | BatchAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BatchAnalysisJobs.
+     */
+    cursor?: BatchAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BatchAnalysisJobs.
+     */
+    distinct?: BatchAnalysisJobScalarFieldEnum | BatchAnalysisJobScalarFieldEnum[]
+  }
+
+  /**
+   * BatchAnalysisJob findFirstOrThrow
+   */
+  export type BatchAnalysisJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisJob to fetch.
+     */
+    where?: BatchAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisJobs to fetch.
+     */
+    orderBy?: BatchAnalysisJobOrderByWithRelationInput | BatchAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BatchAnalysisJobs.
+     */
+    cursor?: BatchAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BatchAnalysisJobs.
+     */
+    distinct?: BatchAnalysisJobScalarFieldEnum | BatchAnalysisJobScalarFieldEnum[]
+  }
+
+  /**
+   * BatchAnalysisJob findMany
+   */
+  export type BatchAnalysisJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisJobs to fetch.
+     */
+    where?: BatchAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisJobs to fetch.
+     */
+    orderBy?: BatchAnalysisJobOrderByWithRelationInput | BatchAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BatchAnalysisJobs.
+     */
+    cursor?: BatchAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisJobs.
+     */
+    skip?: number
+    distinct?: BatchAnalysisJobScalarFieldEnum | BatchAnalysisJobScalarFieldEnum[]
+  }
+
+  /**
+   * BatchAnalysisJob create
+   */
+  export type BatchAnalysisJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BatchAnalysisJob.
+     */
+    data: XOR<BatchAnalysisJobCreateInput, BatchAnalysisJobUncheckedCreateInput>
+  }
+
+  /**
+   * BatchAnalysisJob createMany
+   */
+  export type BatchAnalysisJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BatchAnalysisJobs.
+     */
+    data: BatchAnalysisJobCreateManyInput | BatchAnalysisJobCreateManyInput[]
+  }
+
+  /**
+   * BatchAnalysisJob createManyAndReturn
+   */
+  export type BatchAnalysisJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * The data used to create many BatchAnalysisJobs.
+     */
+    data: BatchAnalysisJobCreateManyInput | BatchAnalysisJobCreateManyInput[]
+  }
+
+  /**
+   * BatchAnalysisJob update
+   */
+  export type BatchAnalysisJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BatchAnalysisJob.
+     */
+    data: XOR<BatchAnalysisJobUpdateInput, BatchAnalysisJobUncheckedUpdateInput>
+    /**
+     * Choose, which BatchAnalysisJob to update.
+     */
+    where: BatchAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisJob updateMany
+   */
+  export type BatchAnalysisJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BatchAnalysisJobs.
+     */
+    data: XOR<BatchAnalysisJobUpdateManyMutationInput, BatchAnalysisJobUncheckedUpdateManyInput>
+    /**
+     * Filter which BatchAnalysisJobs to update
+     */
+    where?: BatchAnalysisJobWhereInput
+    /**
+     * Limit how many BatchAnalysisJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchAnalysisJob updateManyAndReturn
+   */
+  export type BatchAnalysisJobUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * The data used to update BatchAnalysisJobs.
+     */
+    data: XOR<BatchAnalysisJobUpdateManyMutationInput, BatchAnalysisJobUncheckedUpdateManyInput>
+    /**
+     * Filter which BatchAnalysisJobs to update
+     */
+    where?: BatchAnalysisJobWhereInput
+    /**
+     * Limit how many BatchAnalysisJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchAnalysisJob upsert
+   */
+  export type BatchAnalysisJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BatchAnalysisJob to update in case it exists.
+     */
+    where: BatchAnalysisJobWhereUniqueInput
+    /**
+     * In case the BatchAnalysisJob found by the `where` argument doesn't exist, create a new BatchAnalysisJob with this data.
+     */
+    create: XOR<BatchAnalysisJobCreateInput, BatchAnalysisJobUncheckedCreateInput>
+    /**
+     * In case the BatchAnalysisJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BatchAnalysisJobUpdateInput, BatchAnalysisJobUncheckedUpdateInput>
+  }
+
+  /**
+   * BatchAnalysisJob delete
+   */
+  export type BatchAnalysisJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter which BatchAnalysisJob to delete.
+     */
+    where: BatchAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisJob deleteMany
+   */
+  export type BatchAnalysisJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BatchAnalysisJobs to delete
+     */
+    where?: BatchAnalysisJobWhereInput
+    /**
+     * Limit how many BatchAnalysisJobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchAnalysisJob.results
+   */
+  export type BatchAnalysisJob$resultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    where?: BatchAnalysisResultWhereInput
+    orderBy?: BatchAnalysisResultOrderByWithRelationInput | BatchAnalysisResultOrderByWithRelationInput[]
+    cursor?: BatchAnalysisResultWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BatchAnalysisResultScalarFieldEnum | BatchAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * BatchAnalysisJob without action
+   */
+  export type BatchAnalysisJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisJob
+     */
+    select?: BatchAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisJob
+     */
+    omit?: BatchAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisJobInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BatchAnalysisResult
+   */
+
+  export type AggregateBatchAnalysisResult = {
+    _count: BatchAnalysisResultCountAggregateOutputType | null
+    _avg: BatchAnalysisResultAvgAggregateOutputType | null
+    _sum: BatchAnalysisResultSumAggregateOutputType | null
+    _min: BatchAnalysisResultMinAggregateOutputType | null
+    _max: BatchAnalysisResultMaxAggregateOutputType | null
+  }
+
+  export type BatchAnalysisResultAvgAggregateOutputType = {
+    latencyMs: number | null
+    inputTokens: number | null
+    outputTokens: number | null
+  }
+
+  export type BatchAnalysisResultSumAggregateOutputType = {
+    latencyMs: number | null
+    inputTokens: number | null
+    outputTokens: number | null
+  }
+
+  export type BatchAnalysisResultMinAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    originalTimestamp: Date | null
+    tenantId: string | null
+    sessionId: string | null
+    userInput: string | null
+    llmResponse: string | null
+    analysisPrompt: string | null
+    analysisResult: string | null
+    modelName: string | null
+    latencyMs: number | null
+    inputTokens: number | null
+    outputTokens: number | null
+    status: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type BatchAnalysisResultMaxAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    originalTimestamp: Date | null
+    tenantId: string | null
+    sessionId: string | null
+    userInput: string | null
+    llmResponse: string | null
+    analysisPrompt: string | null
+    analysisResult: string | null
+    modelName: string | null
+    latencyMs: number | null
+    inputTokens: number | null
+    outputTokens: number | null
+    status: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type BatchAnalysisResultCountAggregateOutputType = {
+    id: number
+    jobId: number
+    originalTimestamp: number
+    tenantId: number
+    sessionId: number
+    userInput: number
+    llmResponse: number
+    analysisPrompt: number
+    analysisResult: number
+    modelName: number
+    latencyMs: number
+    inputTokens: number
+    outputTokens: number
+    status: number
+    errorMessage: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type BatchAnalysisResultAvgAggregateInputType = {
+    latencyMs?: true
+    inputTokens?: true
+    outputTokens?: true
+  }
+
+  export type BatchAnalysisResultSumAggregateInputType = {
+    latencyMs?: true
+    inputTokens?: true
+    outputTokens?: true
+  }
+
+  export type BatchAnalysisResultMinAggregateInputType = {
+    id?: true
+    jobId?: true
+    originalTimestamp?: true
+    tenantId?: true
+    sessionId?: true
+    userInput?: true
+    llmResponse?: true
+    analysisPrompt?: true
+    analysisResult?: true
+    modelName?: true
+    latencyMs?: true
+    inputTokens?: true
+    outputTokens?: true
+    status?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type BatchAnalysisResultMaxAggregateInputType = {
+    id?: true
+    jobId?: true
+    originalTimestamp?: true
+    tenantId?: true
+    sessionId?: true
+    userInput?: true
+    llmResponse?: true
+    analysisPrompt?: true
+    analysisResult?: true
+    modelName?: true
+    latencyMs?: true
+    inputTokens?: true
+    outputTokens?: true
+    status?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type BatchAnalysisResultCountAggregateInputType = {
+    id?: true
+    jobId?: true
+    originalTimestamp?: true
+    tenantId?: true
+    sessionId?: true
+    userInput?: true
+    llmResponse?: true
+    analysisPrompt?: true
+    analysisResult?: true
+    modelName?: true
+    latencyMs?: true
+    inputTokens?: true
+    outputTokens?: true
+    status?: true
+    errorMessage?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type BatchAnalysisResultAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BatchAnalysisResult to aggregate.
+     */
+    where?: BatchAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisResults to fetch.
+     */
+    orderBy?: BatchAnalysisResultOrderByWithRelationInput | BatchAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BatchAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BatchAnalysisResults
+    **/
+    _count?: true | BatchAnalysisResultCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BatchAnalysisResultAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BatchAnalysisResultSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BatchAnalysisResultMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BatchAnalysisResultMaxAggregateInputType
+  }
+
+  export type GetBatchAnalysisResultAggregateType<T extends BatchAnalysisResultAggregateArgs> = {
+        [P in keyof T & keyof AggregateBatchAnalysisResult]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBatchAnalysisResult[P]>
+      : GetScalarType<T[P], AggregateBatchAnalysisResult[P]>
+  }
+
+
+
+
+  export type BatchAnalysisResultGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BatchAnalysisResultWhereInput
+    orderBy?: BatchAnalysisResultOrderByWithAggregationInput | BatchAnalysisResultOrderByWithAggregationInput[]
+    by: BatchAnalysisResultScalarFieldEnum[] | BatchAnalysisResultScalarFieldEnum
+    having?: BatchAnalysisResultScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BatchAnalysisResultCountAggregateInputType | true
+    _avg?: BatchAnalysisResultAvgAggregateInputType
+    _sum?: BatchAnalysisResultSumAggregateInputType
+    _min?: BatchAnalysisResultMinAggregateInputType
+    _max?: BatchAnalysisResultMaxAggregateInputType
+  }
+
+  export type BatchAnalysisResultGroupByOutputType = {
+    id: string
+    jobId: string
+    originalTimestamp: Date
+    tenantId: string
+    sessionId: string | null
+    userInput: string
+    llmResponse: string
+    analysisPrompt: string
+    analysisResult: string
+    modelName: string
+    latencyMs: number
+    inputTokens: number
+    outputTokens: number
+    status: string
+    errorMessage: string | null
+    createdAt: Date
+    _count: BatchAnalysisResultCountAggregateOutputType | null
+    _avg: BatchAnalysisResultAvgAggregateOutputType | null
+    _sum: BatchAnalysisResultSumAggregateOutputType | null
+    _min: BatchAnalysisResultMinAggregateOutputType | null
+    _max: BatchAnalysisResultMaxAggregateOutputType | null
+  }
+
+  type GetBatchAnalysisResultGroupByPayload<T extends BatchAnalysisResultGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BatchAnalysisResultGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BatchAnalysisResultGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BatchAnalysisResultGroupByOutputType[P]>
+            : GetScalarType<T[P], BatchAnalysisResultGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BatchAnalysisResultSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    originalTimestamp?: boolean
+    tenantId?: boolean
+    sessionId?: boolean
+    userInput?: boolean
+    llmResponse?: boolean
+    analysisPrompt?: boolean
+    analysisResult?: boolean
+    modelName?: boolean
+    latencyMs?: boolean
+    inputTokens?: boolean
+    outputTokens?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    job?: boolean | BatchAnalysisJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["batchAnalysisResult"]>
+
+  export type BatchAnalysisResultSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    originalTimestamp?: boolean
+    tenantId?: boolean
+    sessionId?: boolean
+    userInput?: boolean
+    llmResponse?: boolean
+    analysisPrompt?: boolean
+    analysisResult?: boolean
+    modelName?: boolean
+    latencyMs?: boolean
+    inputTokens?: boolean
+    outputTokens?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    job?: boolean | BatchAnalysisJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["batchAnalysisResult"]>
+
+  export type BatchAnalysisResultSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    originalTimestamp?: boolean
+    tenantId?: boolean
+    sessionId?: boolean
+    userInput?: boolean
+    llmResponse?: boolean
+    analysisPrompt?: boolean
+    analysisResult?: boolean
+    modelName?: boolean
+    latencyMs?: boolean
+    inputTokens?: boolean
+    outputTokens?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    job?: boolean | BatchAnalysisJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["batchAnalysisResult"]>
+
+  export type BatchAnalysisResultSelectScalar = {
+    id?: boolean
+    jobId?: boolean
+    originalTimestamp?: boolean
+    tenantId?: boolean
+    sessionId?: boolean
+    userInput?: boolean
+    llmResponse?: boolean
+    analysisPrompt?: boolean
+    analysisResult?: boolean
+    modelName?: boolean
+    latencyMs?: boolean
+    inputTokens?: boolean
+    outputTokens?: boolean
+    status?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }
+
+  export type BatchAnalysisResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "originalTimestamp" | "tenantId" | "sessionId" | "userInput" | "llmResponse" | "analysisPrompt" | "analysisResult" | "modelName" | "latencyMs" | "inputTokens" | "outputTokens" | "status" | "errorMessage" | "createdAt", ExtArgs["result"]["batchAnalysisResult"]>
+  export type BatchAnalysisResultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | BatchAnalysisJobDefaultArgs<ExtArgs>
+  }
+  export type BatchAnalysisResultIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | BatchAnalysisJobDefaultArgs<ExtArgs>
+  }
+  export type BatchAnalysisResultIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | BatchAnalysisJobDefaultArgs<ExtArgs>
+  }
+
+  export type $BatchAnalysisResultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BatchAnalysisResult"
+    objects: {
+      job: Prisma.$BatchAnalysisJobPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      jobId: string
+      originalTimestamp: Date
+      tenantId: string
+      sessionId: string | null
+      userInput: string
+      llmResponse: string
+      analysisPrompt: string
+      analysisResult: string
+      modelName: string
+      latencyMs: number
+      inputTokens: number
+      outputTokens: number
+      status: string
+      errorMessage: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["batchAnalysisResult"]>
+    composites: {}
+  }
+
+  type BatchAnalysisResultGetPayload<S extends boolean | null | undefined | BatchAnalysisResultDefaultArgs> = $Result.GetResult<Prisma.$BatchAnalysisResultPayload, S>
+
+  type BatchAnalysisResultCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BatchAnalysisResultFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BatchAnalysisResultCountAggregateInputType | true
+    }
+
+  export interface BatchAnalysisResultDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BatchAnalysisResult'], meta: { name: 'BatchAnalysisResult' } }
+    /**
+     * Find zero or one BatchAnalysisResult that matches the filter.
+     * @param {BatchAnalysisResultFindUniqueArgs} args - Arguments to find a BatchAnalysisResult
+     * @example
+     * // Get one BatchAnalysisResult
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BatchAnalysisResultFindUniqueArgs>(args: SelectSubset<T, BatchAnalysisResultFindUniqueArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BatchAnalysisResult that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BatchAnalysisResultFindUniqueOrThrowArgs} args - Arguments to find a BatchAnalysisResult
+     * @example
+     * // Get one BatchAnalysisResult
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BatchAnalysisResultFindUniqueOrThrowArgs>(args: SelectSubset<T, BatchAnalysisResultFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BatchAnalysisResult that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisResultFindFirstArgs} args - Arguments to find a BatchAnalysisResult
+     * @example
+     * // Get one BatchAnalysisResult
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BatchAnalysisResultFindFirstArgs>(args?: SelectSubset<T, BatchAnalysisResultFindFirstArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BatchAnalysisResult that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisResultFindFirstOrThrowArgs} args - Arguments to find a BatchAnalysisResult
+     * @example
+     * // Get one BatchAnalysisResult
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BatchAnalysisResultFindFirstOrThrowArgs>(args?: SelectSubset<T, BatchAnalysisResultFindFirstOrThrowArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BatchAnalysisResults that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisResultFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BatchAnalysisResults
+     * const batchAnalysisResults = await prisma.batchAnalysisResult.findMany()
+     * 
+     * // Get first 10 BatchAnalysisResults
+     * const batchAnalysisResults = await prisma.batchAnalysisResult.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const batchAnalysisResultWithIdOnly = await prisma.batchAnalysisResult.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BatchAnalysisResultFindManyArgs>(args?: SelectSubset<T, BatchAnalysisResultFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BatchAnalysisResult.
+     * @param {BatchAnalysisResultCreateArgs} args - Arguments to create a BatchAnalysisResult.
+     * @example
+     * // Create one BatchAnalysisResult
+     * const BatchAnalysisResult = await prisma.batchAnalysisResult.create({
+     *   data: {
+     *     // ... data to create a BatchAnalysisResult
+     *   }
+     * })
+     * 
+     */
+    create<T extends BatchAnalysisResultCreateArgs>(args: SelectSubset<T, BatchAnalysisResultCreateArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BatchAnalysisResults.
+     * @param {BatchAnalysisResultCreateManyArgs} args - Arguments to create many BatchAnalysisResults.
+     * @example
+     * // Create many BatchAnalysisResults
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BatchAnalysisResultCreateManyArgs>(args?: SelectSubset<T, BatchAnalysisResultCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BatchAnalysisResults and returns the data saved in the database.
+     * @param {BatchAnalysisResultCreateManyAndReturnArgs} args - Arguments to create many BatchAnalysisResults.
+     * @example
+     * // Create many BatchAnalysisResults
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BatchAnalysisResults and only return the `id`
+     * const batchAnalysisResultWithIdOnly = await prisma.batchAnalysisResult.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BatchAnalysisResultCreateManyAndReturnArgs>(args?: SelectSubset<T, BatchAnalysisResultCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BatchAnalysisResult.
+     * @param {BatchAnalysisResultDeleteArgs} args - Arguments to delete one BatchAnalysisResult.
+     * @example
+     * // Delete one BatchAnalysisResult
+     * const BatchAnalysisResult = await prisma.batchAnalysisResult.delete({
+     *   where: {
+     *     // ... filter to delete one BatchAnalysisResult
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BatchAnalysisResultDeleteArgs>(args: SelectSubset<T, BatchAnalysisResultDeleteArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BatchAnalysisResult.
+     * @param {BatchAnalysisResultUpdateArgs} args - Arguments to update one BatchAnalysisResult.
+     * @example
+     * // Update one BatchAnalysisResult
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BatchAnalysisResultUpdateArgs>(args: SelectSubset<T, BatchAnalysisResultUpdateArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BatchAnalysisResults.
+     * @param {BatchAnalysisResultDeleteManyArgs} args - Arguments to filter BatchAnalysisResults to delete.
+     * @example
+     * // Delete a few BatchAnalysisResults
+     * const { count } = await prisma.batchAnalysisResult.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BatchAnalysisResultDeleteManyArgs>(args?: SelectSubset<T, BatchAnalysisResultDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BatchAnalysisResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisResultUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BatchAnalysisResults
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BatchAnalysisResultUpdateManyArgs>(args: SelectSubset<T, BatchAnalysisResultUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BatchAnalysisResults and returns the data updated in the database.
+     * @param {BatchAnalysisResultUpdateManyAndReturnArgs} args - Arguments to update many BatchAnalysisResults.
+     * @example
+     * // Update many BatchAnalysisResults
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BatchAnalysisResults and only return the `id`
+     * const batchAnalysisResultWithIdOnly = await prisma.batchAnalysisResult.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BatchAnalysisResultUpdateManyAndReturnArgs>(args: SelectSubset<T, BatchAnalysisResultUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BatchAnalysisResult.
+     * @param {BatchAnalysisResultUpsertArgs} args - Arguments to update or create a BatchAnalysisResult.
+     * @example
+     * // Update or create a BatchAnalysisResult
+     * const batchAnalysisResult = await prisma.batchAnalysisResult.upsert({
+     *   create: {
+     *     // ... data to create a BatchAnalysisResult
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BatchAnalysisResult we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BatchAnalysisResultUpsertArgs>(args: SelectSubset<T, BatchAnalysisResultUpsertArgs<ExtArgs>>): Prisma__BatchAnalysisResultClient<$Result.GetResult<Prisma.$BatchAnalysisResultPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BatchAnalysisResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisResultCountArgs} args - Arguments to filter BatchAnalysisResults to count.
+     * @example
+     * // Count the number of BatchAnalysisResults
+     * const count = await prisma.batchAnalysisResult.count({
+     *   where: {
+     *     // ... the filter for the BatchAnalysisResults we want to count
+     *   }
+     * })
+    **/
+    count<T extends BatchAnalysisResultCountArgs>(
+      args?: Subset<T, BatchAnalysisResultCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BatchAnalysisResultCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BatchAnalysisResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisResultAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BatchAnalysisResultAggregateArgs>(args: Subset<T, BatchAnalysisResultAggregateArgs>): Prisma.PrismaPromise<GetBatchAnalysisResultAggregateType<T>>
+
+    /**
+     * Group by BatchAnalysisResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchAnalysisResultGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BatchAnalysisResultGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BatchAnalysisResultGroupByArgs['orderBy'] }
+        : { orderBy?: BatchAnalysisResultGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BatchAnalysisResultGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBatchAnalysisResultGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BatchAnalysisResult model
+   */
+  readonly fields: BatchAnalysisResultFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BatchAnalysisResult.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BatchAnalysisResultClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends BatchAnalysisJobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BatchAnalysisJobDefaultArgs<ExtArgs>>): Prisma__BatchAnalysisJobClient<$Result.GetResult<Prisma.$BatchAnalysisJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BatchAnalysisResult model
+   */
+  interface BatchAnalysisResultFieldRefs {
+    readonly id: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly jobId: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly originalTimestamp: FieldRef<"BatchAnalysisResult", 'DateTime'>
+    readonly tenantId: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly sessionId: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly userInput: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly llmResponse: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly analysisPrompt: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly analysisResult: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly modelName: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly latencyMs: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly inputTokens: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly outputTokens: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly status: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly errorMessage: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly createdAt: FieldRef<"BatchAnalysisResult", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BatchAnalysisResult findUnique
+   */
+  export type BatchAnalysisResultFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisResult to fetch.
+     */
+    where: BatchAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisResult findUniqueOrThrow
+   */
+  export type BatchAnalysisResultFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisResult to fetch.
+     */
+    where: BatchAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisResult findFirst
+   */
+  export type BatchAnalysisResultFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisResult to fetch.
+     */
+    where?: BatchAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisResults to fetch.
+     */
+    orderBy?: BatchAnalysisResultOrderByWithRelationInput | BatchAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BatchAnalysisResults.
+     */
+    cursor?: BatchAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BatchAnalysisResults.
+     */
+    distinct?: BatchAnalysisResultScalarFieldEnum | BatchAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * BatchAnalysisResult findFirstOrThrow
+   */
+  export type BatchAnalysisResultFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisResult to fetch.
+     */
+    where?: BatchAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisResults to fetch.
+     */
+    orderBy?: BatchAnalysisResultOrderByWithRelationInput | BatchAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BatchAnalysisResults.
+     */
+    cursor?: BatchAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BatchAnalysisResults.
+     */
+    distinct?: BatchAnalysisResultScalarFieldEnum | BatchAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * BatchAnalysisResult findMany
+   */
+  export type BatchAnalysisResultFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BatchAnalysisResults to fetch.
+     */
+    where?: BatchAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchAnalysisResults to fetch.
+     */
+    orderBy?: BatchAnalysisResultOrderByWithRelationInput | BatchAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BatchAnalysisResults.
+     */
+    cursor?: BatchAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchAnalysisResults.
+     */
+    skip?: number
+    distinct?: BatchAnalysisResultScalarFieldEnum | BatchAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * BatchAnalysisResult create
+   */
+  export type BatchAnalysisResultCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BatchAnalysisResult.
+     */
+    data: XOR<BatchAnalysisResultCreateInput, BatchAnalysisResultUncheckedCreateInput>
+  }
+
+  /**
+   * BatchAnalysisResult createMany
+   */
+  export type BatchAnalysisResultCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BatchAnalysisResults.
+     */
+    data: BatchAnalysisResultCreateManyInput | BatchAnalysisResultCreateManyInput[]
+  }
+
+  /**
+   * BatchAnalysisResult createManyAndReturn
+   */
+  export type BatchAnalysisResultCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * The data used to create many BatchAnalysisResults.
+     */
+    data: BatchAnalysisResultCreateManyInput | BatchAnalysisResultCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BatchAnalysisResult update
+   */
+  export type BatchAnalysisResultUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BatchAnalysisResult.
+     */
+    data: XOR<BatchAnalysisResultUpdateInput, BatchAnalysisResultUncheckedUpdateInput>
+    /**
+     * Choose, which BatchAnalysisResult to update.
+     */
+    where: BatchAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisResult updateMany
+   */
+  export type BatchAnalysisResultUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BatchAnalysisResults.
+     */
+    data: XOR<BatchAnalysisResultUpdateManyMutationInput, BatchAnalysisResultUncheckedUpdateManyInput>
+    /**
+     * Filter which BatchAnalysisResults to update
+     */
+    where?: BatchAnalysisResultWhereInput
+    /**
+     * Limit how many BatchAnalysisResults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchAnalysisResult updateManyAndReturn
+   */
+  export type BatchAnalysisResultUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * The data used to update BatchAnalysisResults.
+     */
+    data: XOR<BatchAnalysisResultUpdateManyMutationInput, BatchAnalysisResultUncheckedUpdateManyInput>
+    /**
+     * Filter which BatchAnalysisResults to update
+     */
+    where?: BatchAnalysisResultWhereInput
+    /**
+     * Limit how many BatchAnalysisResults to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BatchAnalysisResult upsert
+   */
+  export type BatchAnalysisResultUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BatchAnalysisResult to update in case it exists.
+     */
+    where: BatchAnalysisResultWhereUniqueInput
+    /**
+     * In case the BatchAnalysisResult found by the `where` argument doesn't exist, create a new BatchAnalysisResult with this data.
+     */
+    create: XOR<BatchAnalysisResultCreateInput, BatchAnalysisResultUncheckedCreateInput>
+    /**
+     * In case the BatchAnalysisResult was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BatchAnalysisResultUpdateInput, BatchAnalysisResultUncheckedUpdateInput>
+  }
+
+  /**
+   * BatchAnalysisResult delete
+   */
+  export type BatchAnalysisResultDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter which BatchAnalysisResult to delete.
+     */
+    where: BatchAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * BatchAnalysisResult deleteMany
+   */
+  export type BatchAnalysisResultDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BatchAnalysisResults to delete
+     */
+    where?: BatchAnalysisResultWhereInput
+    /**
+     * Limit how many BatchAnalysisResults to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchAnalysisResult without action
+   */
+  export type BatchAnalysisResultDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchAnalysisResult
+     */
+    select?: BatchAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchAnalysisResult
+     */
+    omit?: BatchAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BatchAnalysisResultInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AnalysisPromptTemplate
+   */
+
+  export type AggregateAnalysisPromptTemplate = {
+    _count: AnalysisPromptTemplateCountAggregateOutputType | null
+    _min: AnalysisPromptTemplateMinAggregateOutputType | null
+    _max: AnalysisPromptTemplateMaxAggregateOutputType | null
+  }
+
+  export type AnalysisPromptTemplateMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    prompt: string | null
+    isDefault: boolean | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AnalysisPromptTemplateMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    prompt: string | null
+    isDefault: boolean | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AnalysisPromptTemplateCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    prompt: number
+    isDefault: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AnalysisPromptTemplateMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    prompt?: true
+    isDefault?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AnalysisPromptTemplateMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    prompt?: true
+    isDefault?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AnalysisPromptTemplateCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    prompt?: true
+    isDefault?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AnalysisPromptTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnalysisPromptTemplate to aggregate.
+     */
+    where?: AnalysisPromptTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisPromptTemplates to fetch.
+     */
+    orderBy?: AnalysisPromptTemplateOrderByWithRelationInput | AnalysisPromptTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AnalysisPromptTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisPromptTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisPromptTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AnalysisPromptTemplates
+    **/
+    _count?: true | AnalysisPromptTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AnalysisPromptTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AnalysisPromptTemplateMaxAggregateInputType
+  }
+
+  export type GetAnalysisPromptTemplateAggregateType<T extends AnalysisPromptTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateAnalysisPromptTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAnalysisPromptTemplate[P]>
+      : GetScalarType<T[P], AggregateAnalysisPromptTemplate[P]>
+  }
+
+
+
+
+  export type AnalysisPromptTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisPromptTemplateWhereInput
+    orderBy?: AnalysisPromptTemplateOrderByWithAggregationInput | AnalysisPromptTemplateOrderByWithAggregationInput[]
+    by: AnalysisPromptTemplateScalarFieldEnum[] | AnalysisPromptTemplateScalarFieldEnum
+    having?: AnalysisPromptTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AnalysisPromptTemplateCountAggregateInputType | true
+    _min?: AnalysisPromptTemplateMinAggregateInputType
+    _max?: AnalysisPromptTemplateMaxAggregateInputType
+  }
+
+  export type AnalysisPromptTemplateGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    prompt: string
+    isDefault: boolean
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: AnalysisPromptTemplateCountAggregateOutputType | null
+    _min: AnalysisPromptTemplateMinAggregateOutputType | null
+    _max: AnalysisPromptTemplateMaxAggregateOutputType | null
+  }
+
+  type GetAnalysisPromptTemplateGroupByPayload<T extends AnalysisPromptTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AnalysisPromptTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AnalysisPromptTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AnalysisPromptTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], AnalysisPromptTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AnalysisPromptTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    prompt?: boolean
+    isDefault?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["analysisPromptTemplate"]>
+
+  export type AnalysisPromptTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    prompt?: boolean
+    isDefault?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["analysisPromptTemplate"]>
+
+  export type AnalysisPromptTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    prompt?: boolean
+    isDefault?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["analysisPromptTemplate"]>
+
+  export type AnalysisPromptTemplateSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    prompt?: boolean
+    isDefault?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AnalysisPromptTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "prompt" | "isDefault" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["analysisPromptTemplate"]>
+
+  export type $AnalysisPromptTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AnalysisPromptTemplate"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      prompt: string
+      isDefault: boolean
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["analysisPromptTemplate"]>
+    composites: {}
+  }
+
+  type AnalysisPromptTemplateGetPayload<S extends boolean | null | undefined | AnalysisPromptTemplateDefaultArgs> = $Result.GetResult<Prisma.$AnalysisPromptTemplatePayload, S>
+
+  type AnalysisPromptTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AnalysisPromptTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AnalysisPromptTemplateCountAggregateInputType | true
+    }
+
+  export interface AnalysisPromptTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AnalysisPromptTemplate'], meta: { name: 'AnalysisPromptTemplate' } }
+    /**
+     * Find zero or one AnalysisPromptTemplate that matches the filter.
+     * @param {AnalysisPromptTemplateFindUniqueArgs} args - Arguments to find a AnalysisPromptTemplate
+     * @example
+     * // Get one AnalysisPromptTemplate
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AnalysisPromptTemplateFindUniqueArgs>(args: SelectSubset<T, AnalysisPromptTemplateFindUniqueArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AnalysisPromptTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AnalysisPromptTemplateFindUniqueOrThrowArgs} args - Arguments to find a AnalysisPromptTemplate
+     * @example
+     * // Get one AnalysisPromptTemplate
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AnalysisPromptTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, AnalysisPromptTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnalysisPromptTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisPromptTemplateFindFirstArgs} args - Arguments to find a AnalysisPromptTemplate
+     * @example
+     * // Get one AnalysisPromptTemplate
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AnalysisPromptTemplateFindFirstArgs>(args?: SelectSubset<T, AnalysisPromptTemplateFindFirstArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnalysisPromptTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisPromptTemplateFindFirstOrThrowArgs} args - Arguments to find a AnalysisPromptTemplate
+     * @example
+     * // Get one AnalysisPromptTemplate
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AnalysisPromptTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, AnalysisPromptTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AnalysisPromptTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisPromptTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AnalysisPromptTemplates
+     * const analysisPromptTemplates = await prisma.analysisPromptTemplate.findMany()
+     * 
+     * // Get first 10 AnalysisPromptTemplates
+     * const analysisPromptTemplates = await prisma.analysisPromptTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const analysisPromptTemplateWithIdOnly = await prisma.analysisPromptTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AnalysisPromptTemplateFindManyArgs>(args?: SelectSubset<T, AnalysisPromptTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AnalysisPromptTemplate.
+     * @param {AnalysisPromptTemplateCreateArgs} args - Arguments to create a AnalysisPromptTemplate.
+     * @example
+     * // Create one AnalysisPromptTemplate
+     * const AnalysisPromptTemplate = await prisma.analysisPromptTemplate.create({
+     *   data: {
+     *     // ... data to create a AnalysisPromptTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends AnalysisPromptTemplateCreateArgs>(args: SelectSubset<T, AnalysisPromptTemplateCreateArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AnalysisPromptTemplates.
+     * @param {AnalysisPromptTemplateCreateManyArgs} args - Arguments to create many AnalysisPromptTemplates.
+     * @example
+     * // Create many AnalysisPromptTemplates
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AnalysisPromptTemplateCreateManyArgs>(args?: SelectSubset<T, AnalysisPromptTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AnalysisPromptTemplates and returns the data saved in the database.
+     * @param {AnalysisPromptTemplateCreateManyAndReturnArgs} args - Arguments to create many AnalysisPromptTemplates.
+     * @example
+     * // Create many AnalysisPromptTemplates
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AnalysisPromptTemplates and only return the `id`
+     * const analysisPromptTemplateWithIdOnly = await prisma.analysisPromptTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AnalysisPromptTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, AnalysisPromptTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AnalysisPromptTemplate.
+     * @param {AnalysisPromptTemplateDeleteArgs} args - Arguments to delete one AnalysisPromptTemplate.
+     * @example
+     * // Delete one AnalysisPromptTemplate
+     * const AnalysisPromptTemplate = await prisma.analysisPromptTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one AnalysisPromptTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AnalysisPromptTemplateDeleteArgs>(args: SelectSubset<T, AnalysisPromptTemplateDeleteArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AnalysisPromptTemplate.
+     * @param {AnalysisPromptTemplateUpdateArgs} args - Arguments to update one AnalysisPromptTemplate.
+     * @example
+     * // Update one AnalysisPromptTemplate
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AnalysisPromptTemplateUpdateArgs>(args: SelectSubset<T, AnalysisPromptTemplateUpdateArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AnalysisPromptTemplates.
+     * @param {AnalysisPromptTemplateDeleteManyArgs} args - Arguments to filter AnalysisPromptTemplates to delete.
+     * @example
+     * // Delete a few AnalysisPromptTemplates
+     * const { count } = await prisma.analysisPromptTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AnalysisPromptTemplateDeleteManyArgs>(args?: SelectSubset<T, AnalysisPromptTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnalysisPromptTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisPromptTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AnalysisPromptTemplates
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AnalysisPromptTemplateUpdateManyArgs>(args: SelectSubset<T, AnalysisPromptTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnalysisPromptTemplates and returns the data updated in the database.
+     * @param {AnalysisPromptTemplateUpdateManyAndReturnArgs} args - Arguments to update many AnalysisPromptTemplates.
+     * @example
+     * // Update many AnalysisPromptTemplates
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AnalysisPromptTemplates and only return the `id`
+     * const analysisPromptTemplateWithIdOnly = await prisma.analysisPromptTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AnalysisPromptTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, AnalysisPromptTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AnalysisPromptTemplate.
+     * @param {AnalysisPromptTemplateUpsertArgs} args - Arguments to update or create a AnalysisPromptTemplate.
+     * @example
+     * // Update or create a AnalysisPromptTemplate
+     * const analysisPromptTemplate = await prisma.analysisPromptTemplate.upsert({
+     *   create: {
+     *     // ... data to create a AnalysisPromptTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AnalysisPromptTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AnalysisPromptTemplateUpsertArgs>(args: SelectSubset<T, AnalysisPromptTemplateUpsertArgs<ExtArgs>>): Prisma__AnalysisPromptTemplateClient<$Result.GetResult<Prisma.$AnalysisPromptTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AnalysisPromptTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisPromptTemplateCountArgs} args - Arguments to filter AnalysisPromptTemplates to count.
+     * @example
+     * // Count the number of AnalysisPromptTemplates
+     * const count = await prisma.analysisPromptTemplate.count({
+     *   where: {
+     *     // ... the filter for the AnalysisPromptTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends AnalysisPromptTemplateCountArgs>(
+      args?: Subset<T, AnalysisPromptTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AnalysisPromptTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AnalysisPromptTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisPromptTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AnalysisPromptTemplateAggregateArgs>(args: Subset<T, AnalysisPromptTemplateAggregateArgs>): Prisma.PrismaPromise<GetAnalysisPromptTemplateAggregateType<T>>
+
+    /**
+     * Group by AnalysisPromptTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisPromptTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AnalysisPromptTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AnalysisPromptTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: AnalysisPromptTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AnalysisPromptTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnalysisPromptTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AnalysisPromptTemplate model
+   */
+  readonly fields: AnalysisPromptTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AnalysisPromptTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AnalysisPromptTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AnalysisPromptTemplate model
+   */
+  interface AnalysisPromptTemplateFieldRefs {
+    readonly id: FieldRef<"AnalysisPromptTemplate", 'String'>
+    readonly name: FieldRef<"AnalysisPromptTemplate", 'String'>
+    readonly description: FieldRef<"AnalysisPromptTemplate", 'String'>
+    readonly prompt: FieldRef<"AnalysisPromptTemplate", 'String'>
+    readonly isDefault: FieldRef<"AnalysisPromptTemplate", 'Boolean'>
+    readonly isActive: FieldRef<"AnalysisPromptTemplate", 'Boolean'>
+    readonly createdAt: FieldRef<"AnalysisPromptTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"AnalysisPromptTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AnalysisPromptTemplate findUnique
+   */
+  export type AnalysisPromptTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisPromptTemplate to fetch.
+     */
+    where: AnalysisPromptTemplateWhereUniqueInput
+  }
+
+  /**
+   * AnalysisPromptTemplate findUniqueOrThrow
+   */
+  export type AnalysisPromptTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisPromptTemplate to fetch.
+     */
+    where: AnalysisPromptTemplateWhereUniqueInput
+  }
+
+  /**
+   * AnalysisPromptTemplate findFirst
+   */
+  export type AnalysisPromptTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisPromptTemplate to fetch.
+     */
+    where?: AnalysisPromptTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisPromptTemplates to fetch.
+     */
+    orderBy?: AnalysisPromptTemplateOrderByWithRelationInput | AnalysisPromptTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnalysisPromptTemplates.
+     */
+    cursor?: AnalysisPromptTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisPromptTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisPromptTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisPromptTemplates.
+     */
+    distinct?: AnalysisPromptTemplateScalarFieldEnum | AnalysisPromptTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisPromptTemplate findFirstOrThrow
+   */
+  export type AnalysisPromptTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisPromptTemplate to fetch.
+     */
+    where?: AnalysisPromptTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisPromptTemplates to fetch.
+     */
+    orderBy?: AnalysisPromptTemplateOrderByWithRelationInput | AnalysisPromptTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnalysisPromptTemplates.
+     */
+    cursor?: AnalysisPromptTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisPromptTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisPromptTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisPromptTemplates.
+     */
+    distinct?: AnalysisPromptTemplateScalarFieldEnum | AnalysisPromptTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisPromptTemplate findMany
+   */
+  export type AnalysisPromptTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisPromptTemplates to fetch.
+     */
+    where?: AnalysisPromptTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisPromptTemplates to fetch.
+     */
+    orderBy?: AnalysisPromptTemplateOrderByWithRelationInput | AnalysisPromptTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AnalysisPromptTemplates.
+     */
+    cursor?: AnalysisPromptTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisPromptTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisPromptTemplates.
+     */
+    skip?: number
+    distinct?: AnalysisPromptTemplateScalarFieldEnum | AnalysisPromptTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisPromptTemplate create
+   */
+  export type AnalysisPromptTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AnalysisPromptTemplate.
+     */
+    data: XOR<AnalysisPromptTemplateCreateInput, AnalysisPromptTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * AnalysisPromptTemplate createMany
+   */
+  export type AnalysisPromptTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AnalysisPromptTemplates.
+     */
+    data: AnalysisPromptTemplateCreateManyInput | AnalysisPromptTemplateCreateManyInput[]
+  }
+
+  /**
+   * AnalysisPromptTemplate createManyAndReturn
+   */
+  export type AnalysisPromptTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many AnalysisPromptTemplates.
+     */
+    data: AnalysisPromptTemplateCreateManyInput | AnalysisPromptTemplateCreateManyInput[]
+  }
+
+  /**
+   * AnalysisPromptTemplate update
+   */
+  export type AnalysisPromptTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AnalysisPromptTemplate.
+     */
+    data: XOR<AnalysisPromptTemplateUpdateInput, AnalysisPromptTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which AnalysisPromptTemplate to update.
+     */
+    where: AnalysisPromptTemplateWhereUniqueInput
+  }
+
+  /**
+   * AnalysisPromptTemplate updateMany
+   */
+  export type AnalysisPromptTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AnalysisPromptTemplates.
+     */
+    data: XOR<AnalysisPromptTemplateUpdateManyMutationInput, AnalysisPromptTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which AnalysisPromptTemplates to update
+     */
+    where?: AnalysisPromptTemplateWhereInput
+    /**
+     * Limit how many AnalysisPromptTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisPromptTemplate updateManyAndReturn
+   */
+  export type AnalysisPromptTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update AnalysisPromptTemplates.
+     */
+    data: XOR<AnalysisPromptTemplateUpdateManyMutationInput, AnalysisPromptTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which AnalysisPromptTemplates to update
+     */
+    where?: AnalysisPromptTemplateWhereInput
+    /**
+     * Limit how many AnalysisPromptTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisPromptTemplate upsert
+   */
+  export type AnalysisPromptTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AnalysisPromptTemplate to update in case it exists.
+     */
+    where: AnalysisPromptTemplateWhereUniqueInput
+    /**
+     * In case the AnalysisPromptTemplate found by the `where` argument doesn't exist, create a new AnalysisPromptTemplate with this data.
+     */
+    create: XOR<AnalysisPromptTemplateCreateInput, AnalysisPromptTemplateUncheckedCreateInput>
+    /**
+     * In case the AnalysisPromptTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AnalysisPromptTemplateUpdateInput, AnalysisPromptTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * AnalysisPromptTemplate delete
+   */
+  export type AnalysisPromptTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+    /**
+     * Filter which AnalysisPromptTemplate to delete.
+     */
+    where: AnalysisPromptTemplateWhereUniqueInput
+  }
+
+  /**
+   * AnalysisPromptTemplate deleteMany
+   */
+  export type AnalysisPromptTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnalysisPromptTemplates to delete
+     */
+    where?: AnalysisPromptTemplateWhereInput
+    /**
+     * Limit how many AnalysisPromptTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisPromptTemplate without action
+   */
+  export type AnalysisPromptTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisPromptTemplate
+     */
+    select?: AnalysisPromptTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisPromptTemplate
+     */
+    omit?: AnalysisPromptTemplateOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -14222,6 +18004,60 @@ export namespace Prisma {
   };
 
   export type ApiKeyScalarFieldEnum = (typeof ApiKeyScalarFieldEnum)[keyof typeof ApiKeyScalarFieldEnum]
+
+
+  export const BatchAnalysisJobScalarFieldEnum: {
+    id: 'id',
+    status: 'status',
+    targetDate: 'targetDate',
+    tenantId: 'tenantId',
+    sampleSize: 'sampleSize',
+    promptTemplate: 'promptTemplate',
+    totalItems: 'totalItems',
+    processedItems: 'processedItems',
+    failedItems: 'failedItems',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type BatchAnalysisJobScalarFieldEnum = (typeof BatchAnalysisJobScalarFieldEnum)[keyof typeof BatchAnalysisJobScalarFieldEnum]
+
+
+  export const BatchAnalysisResultScalarFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    originalTimestamp: 'originalTimestamp',
+    tenantId: 'tenantId',
+    sessionId: 'sessionId',
+    userInput: 'userInput',
+    llmResponse: 'llmResponse',
+    analysisPrompt: 'analysisPrompt',
+    analysisResult: 'analysisResult',
+    modelName: 'modelName',
+    latencyMs: 'latencyMs',
+    inputTokens: 'inputTokens',
+    outputTokens: 'outputTokens',
+    status: 'status',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt'
+  };
+
+  export type BatchAnalysisResultScalarFieldEnum = (typeof BatchAnalysisResultScalarFieldEnum)[keyof typeof BatchAnalysisResultScalarFieldEnum]
+
+
+  export const AnalysisPromptTemplateScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    prompt: 'prompt',
+    isDefault: 'isDefault',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AnalysisPromptTemplateScalarFieldEnum = (typeof AnalysisPromptTemplateScalarFieldEnum)[keyof typeof AnalysisPromptTemplateScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -14999,6 +18835,277 @@ export namespace Prisma {
     revokedAt?: DateTimeNullableWithAggregatesFilter<"ApiKey"> | Date | string | null
   }
 
+  export type BatchAnalysisJobWhereInput = {
+    AND?: BatchAnalysisJobWhereInput | BatchAnalysisJobWhereInput[]
+    OR?: BatchAnalysisJobWhereInput[]
+    NOT?: BatchAnalysisJobWhereInput | BatchAnalysisJobWhereInput[]
+    id?: StringFilter<"BatchAnalysisJob"> | string
+    status?: StringFilter<"BatchAnalysisJob"> | string
+    targetDate?: DateTimeFilter<"BatchAnalysisJob"> | Date | string
+    tenantId?: StringNullableFilter<"BatchAnalysisJob"> | string | null
+    sampleSize?: IntFilter<"BatchAnalysisJob"> | number
+    promptTemplate?: StringFilter<"BatchAnalysisJob"> | string
+    totalItems?: IntFilter<"BatchAnalysisJob"> | number
+    processedItems?: IntFilter<"BatchAnalysisJob"> | number
+    failedItems?: IntFilter<"BatchAnalysisJob"> | number
+    startedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
+    createdAt?: DateTimeFilter<"BatchAnalysisJob"> | Date | string
+    results?: BatchAnalysisResultListRelationFilter
+  }
+
+  export type BatchAnalysisJobOrderByWithRelationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    sampleSize?: SortOrder
+    promptTemplate?: SortOrder
+    totalItems?: SortOrder
+    processedItems?: SortOrder
+    failedItems?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    results?: BatchAnalysisResultOrderByRelationAggregateInput
+  }
+
+  export type BatchAnalysisJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BatchAnalysisJobWhereInput | BatchAnalysisJobWhereInput[]
+    OR?: BatchAnalysisJobWhereInput[]
+    NOT?: BatchAnalysisJobWhereInput | BatchAnalysisJobWhereInput[]
+    status?: StringFilter<"BatchAnalysisJob"> | string
+    targetDate?: DateTimeFilter<"BatchAnalysisJob"> | Date | string
+    tenantId?: StringNullableFilter<"BatchAnalysisJob"> | string | null
+    sampleSize?: IntFilter<"BatchAnalysisJob"> | number
+    promptTemplate?: StringFilter<"BatchAnalysisJob"> | string
+    totalItems?: IntFilter<"BatchAnalysisJob"> | number
+    processedItems?: IntFilter<"BatchAnalysisJob"> | number
+    failedItems?: IntFilter<"BatchAnalysisJob"> | number
+    startedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
+    createdAt?: DateTimeFilter<"BatchAnalysisJob"> | Date | string
+    results?: BatchAnalysisResultListRelationFilter
+  }, "id">
+
+  export type BatchAnalysisJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    sampleSize?: SortOrder
+    promptTemplate?: SortOrder
+    totalItems?: SortOrder
+    processedItems?: SortOrder
+    failedItems?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: BatchAnalysisJobCountOrderByAggregateInput
+    _avg?: BatchAnalysisJobAvgOrderByAggregateInput
+    _max?: BatchAnalysisJobMaxOrderByAggregateInput
+    _min?: BatchAnalysisJobMinOrderByAggregateInput
+    _sum?: BatchAnalysisJobSumOrderByAggregateInput
+  }
+
+  export type BatchAnalysisJobScalarWhereWithAggregatesInput = {
+    AND?: BatchAnalysisJobScalarWhereWithAggregatesInput | BatchAnalysisJobScalarWhereWithAggregatesInput[]
+    OR?: BatchAnalysisJobScalarWhereWithAggregatesInput[]
+    NOT?: BatchAnalysisJobScalarWhereWithAggregatesInput | BatchAnalysisJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BatchAnalysisJob"> | string
+    status?: StringWithAggregatesFilter<"BatchAnalysisJob"> | string
+    targetDate?: DateTimeWithAggregatesFilter<"BatchAnalysisJob"> | Date | string
+    tenantId?: StringNullableWithAggregatesFilter<"BatchAnalysisJob"> | string | null
+    sampleSize?: IntWithAggregatesFilter<"BatchAnalysisJob"> | number
+    promptTemplate?: StringWithAggregatesFilter<"BatchAnalysisJob"> | string
+    totalItems?: IntWithAggregatesFilter<"BatchAnalysisJob"> | number
+    processedItems?: IntWithAggregatesFilter<"BatchAnalysisJob"> | number
+    failedItems?: IntWithAggregatesFilter<"BatchAnalysisJob"> | number
+    startedAt?: DateTimeNullableWithAggregatesFilter<"BatchAnalysisJob"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"BatchAnalysisJob"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BatchAnalysisJob"> | Date | string
+  }
+
+  export type BatchAnalysisResultWhereInput = {
+    AND?: BatchAnalysisResultWhereInput | BatchAnalysisResultWhereInput[]
+    OR?: BatchAnalysisResultWhereInput[]
+    NOT?: BatchAnalysisResultWhereInput | BatchAnalysisResultWhereInput[]
+    id?: StringFilter<"BatchAnalysisResult"> | string
+    jobId?: StringFilter<"BatchAnalysisResult"> | string
+    originalTimestamp?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
+    tenantId?: StringFilter<"BatchAnalysisResult"> | string
+    sessionId?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    userInput?: StringFilter<"BatchAnalysisResult"> | string
+    llmResponse?: StringFilter<"BatchAnalysisResult"> | string
+    analysisPrompt?: StringFilter<"BatchAnalysisResult"> | string
+    analysisResult?: StringFilter<"BatchAnalysisResult"> | string
+    modelName?: StringFilter<"BatchAnalysisResult"> | string
+    latencyMs?: IntFilter<"BatchAnalysisResult"> | number
+    inputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    outputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    status?: StringFilter<"BatchAnalysisResult"> | string
+    errorMessage?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    createdAt?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
+    job?: XOR<BatchAnalysisJobScalarRelationFilter, BatchAnalysisJobWhereInput>
+  }
+
+  export type BatchAnalysisResultOrderByWithRelationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    originalTimestamp?: SortOrder
+    tenantId?: SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    userInput?: SortOrder
+    llmResponse?: SortOrder
+    analysisPrompt?: SortOrder
+    analysisResult?: SortOrder
+    modelName?: SortOrder
+    latencyMs?: SortOrder
+    inputTokens?: SortOrder
+    outputTokens?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    job?: BatchAnalysisJobOrderByWithRelationInput
+  }
+
+  export type BatchAnalysisResultWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BatchAnalysisResultWhereInput | BatchAnalysisResultWhereInput[]
+    OR?: BatchAnalysisResultWhereInput[]
+    NOT?: BatchAnalysisResultWhereInput | BatchAnalysisResultWhereInput[]
+    jobId?: StringFilter<"BatchAnalysisResult"> | string
+    originalTimestamp?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
+    tenantId?: StringFilter<"BatchAnalysisResult"> | string
+    sessionId?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    userInput?: StringFilter<"BatchAnalysisResult"> | string
+    llmResponse?: StringFilter<"BatchAnalysisResult"> | string
+    analysisPrompt?: StringFilter<"BatchAnalysisResult"> | string
+    analysisResult?: StringFilter<"BatchAnalysisResult"> | string
+    modelName?: StringFilter<"BatchAnalysisResult"> | string
+    latencyMs?: IntFilter<"BatchAnalysisResult"> | number
+    inputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    outputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    status?: StringFilter<"BatchAnalysisResult"> | string
+    errorMessage?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    createdAt?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
+    job?: XOR<BatchAnalysisJobScalarRelationFilter, BatchAnalysisJobWhereInput>
+  }, "id">
+
+  export type BatchAnalysisResultOrderByWithAggregationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    originalTimestamp?: SortOrder
+    tenantId?: SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    userInput?: SortOrder
+    llmResponse?: SortOrder
+    analysisPrompt?: SortOrder
+    analysisResult?: SortOrder
+    modelName?: SortOrder
+    latencyMs?: SortOrder
+    inputTokens?: SortOrder
+    outputTokens?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: BatchAnalysisResultCountOrderByAggregateInput
+    _avg?: BatchAnalysisResultAvgOrderByAggregateInput
+    _max?: BatchAnalysisResultMaxOrderByAggregateInput
+    _min?: BatchAnalysisResultMinOrderByAggregateInput
+    _sum?: BatchAnalysisResultSumOrderByAggregateInput
+  }
+
+  export type BatchAnalysisResultScalarWhereWithAggregatesInput = {
+    AND?: BatchAnalysisResultScalarWhereWithAggregatesInput | BatchAnalysisResultScalarWhereWithAggregatesInput[]
+    OR?: BatchAnalysisResultScalarWhereWithAggregatesInput[]
+    NOT?: BatchAnalysisResultScalarWhereWithAggregatesInput | BatchAnalysisResultScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    jobId?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    originalTimestamp?: DateTimeWithAggregatesFilter<"BatchAnalysisResult"> | Date | string
+    tenantId?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    sessionId?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
+    userInput?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    llmResponse?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    analysisPrompt?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    analysisResult?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    modelName?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    latencyMs?: IntWithAggregatesFilter<"BatchAnalysisResult"> | number
+    inputTokens?: IntWithAggregatesFilter<"BatchAnalysisResult"> | number
+    outputTokens?: IntWithAggregatesFilter<"BatchAnalysisResult"> | number
+    status?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
+    errorMessage?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BatchAnalysisResult"> | Date | string
+  }
+
+  export type AnalysisPromptTemplateWhereInput = {
+    AND?: AnalysisPromptTemplateWhereInput | AnalysisPromptTemplateWhereInput[]
+    OR?: AnalysisPromptTemplateWhereInput[]
+    NOT?: AnalysisPromptTemplateWhereInput | AnalysisPromptTemplateWhereInput[]
+    id?: StringFilter<"AnalysisPromptTemplate"> | string
+    name?: StringFilter<"AnalysisPromptTemplate"> | string
+    description?: StringNullableFilter<"AnalysisPromptTemplate"> | string | null
+    prompt?: StringFilter<"AnalysisPromptTemplate"> | string
+    isDefault?: BoolFilter<"AnalysisPromptTemplate"> | boolean
+    isActive?: BoolFilter<"AnalysisPromptTemplate"> | boolean
+    createdAt?: DateTimeFilter<"AnalysisPromptTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"AnalysisPromptTemplate"> | Date | string
+  }
+
+  export type AnalysisPromptTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    prompt?: SortOrder
+    isDefault?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnalysisPromptTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: AnalysisPromptTemplateWhereInput | AnalysisPromptTemplateWhereInput[]
+    OR?: AnalysisPromptTemplateWhereInput[]
+    NOT?: AnalysisPromptTemplateWhereInput | AnalysisPromptTemplateWhereInput[]
+    description?: StringNullableFilter<"AnalysisPromptTemplate"> | string | null
+    prompt?: StringFilter<"AnalysisPromptTemplate"> | string
+    isDefault?: BoolFilter<"AnalysisPromptTemplate"> | boolean
+    isActive?: BoolFilter<"AnalysisPromptTemplate"> | boolean
+    createdAt?: DateTimeFilter<"AnalysisPromptTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"AnalysisPromptTemplate"> | Date | string
+  }, "id" | "name">
+
+  export type AnalysisPromptTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    prompt?: SortOrder
+    isDefault?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AnalysisPromptTemplateCountOrderByAggregateInput
+    _max?: AnalysisPromptTemplateMaxOrderByAggregateInput
+    _min?: AnalysisPromptTemplateMinOrderByAggregateInput
+  }
+
+  export type AnalysisPromptTemplateScalarWhereWithAggregatesInput = {
+    AND?: AnalysisPromptTemplateScalarWhereWithAggregatesInput | AnalysisPromptTemplateScalarWhereWithAggregatesInput[]
+    OR?: AnalysisPromptTemplateScalarWhereWithAggregatesInput[]
+    NOT?: AnalysisPromptTemplateScalarWhereWithAggregatesInput | AnalysisPromptTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AnalysisPromptTemplate"> | string
+    name?: StringWithAggregatesFilter<"AnalysisPromptTemplate"> | string
+    description?: StringNullableWithAggregatesFilter<"AnalysisPromptTemplate"> | string | null
+    prompt?: StringWithAggregatesFilter<"AnalysisPromptTemplate"> | string
+    isDefault?: BoolWithAggregatesFilter<"AnalysisPromptTemplate"> | boolean
+    isActive?: BoolWithAggregatesFilter<"AnalysisPromptTemplate"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"AnalysisPromptTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AnalysisPromptTemplate"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -15757,6 +19864,324 @@ export namespace Prisma {
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type BatchAnalysisJobCreateInput = {
+    id?: string
+    status: string
+    targetDate: Date | string
+    tenantId?: string | null
+    sampleSize?: number
+    promptTemplate: string
+    totalItems?: number
+    processedItems?: number
+    failedItems?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    results?: BatchAnalysisResultCreateNestedManyWithoutJobInput
+  }
+
+  export type BatchAnalysisJobUncheckedCreateInput = {
+    id?: string
+    status: string
+    targetDate: Date | string
+    tenantId?: string | null
+    sampleSize?: number
+    promptTemplate: string
+    totalItems?: number
+    processedItems?: number
+    failedItems?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    results?: BatchAnalysisResultUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type BatchAnalysisJobUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplate?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedItems?: IntFieldUpdateOperationsInput | number
+    failedItems?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BatchAnalysisResultUpdateManyWithoutJobNestedInput
+  }
+
+  export type BatchAnalysisJobUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplate?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedItems?: IntFieldUpdateOperationsInput | number
+    failedItems?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BatchAnalysisResultUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type BatchAnalysisJobCreateManyInput = {
+    id?: string
+    status: string
+    targetDate: Date | string
+    tenantId?: string | null
+    sampleSize?: number
+    promptTemplate: string
+    totalItems?: number
+    processedItems?: number
+    failedItems?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisJobUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplate?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedItems?: IntFieldUpdateOperationsInput | number
+    failedItems?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisJobUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplate?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedItems?: IntFieldUpdateOperationsInput | number
+    failedItems?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisResultCreateInput = {
+    id?: string
+    originalTimestamp: Date | string
+    tenantId: string
+    sessionId?: string | null
+    userInput: string
+    llmResponse: string
+    analysisPrompt: string
+    analysisResult: string
+    modelName: string
+    latencyMs: number
+    inputTokens?: number
+    outputTokens?: number
+    status: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+    job: BatchAnalysisJobCreateNestedOneWithoutResultsInput
+  }
+
+  export type BatchAnalysisResultUncheckedCreateInput = {
+    id?: string
+    jobId: string
+    originalTimestamp: Date | string
+    tenantId: string
+    sessionId?: string | null
+    userInput: string
+    llmResponse: string
+    analysisPrompt: string
+    analysisResult: string
+    modelName: string
+    latencyMs: number
+    inputTokens?: number
+    outputTokens?: number
+    status: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisResultUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userInput?: StringFieldUpdateOperationsInput | string
+    llmResponse?: StringFieldUpdateOperationsInput | string
+    analysisPrompt?: StringFieldUpdateOperationsInput | string
+    analysisResult?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    latencyMs?: IntFieldUpdateOperationsInput | number
+    inputTokens?: IntFieldUpdateOperationsInput | number
+    outputTokens?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: BatchAnalysisJobUpdateOneRequiredWithoutResultsNestedInput
+  }
+
+  export type BatchAnalysisResultUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    originalTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userInput?: StringFieldUpdateOperationsInput | string
+    llmResponse?: StringFieldUpdateOperationsInput | string
+    analysisPrompt?: StringFieldUpdateOperationsInput | string
+    analysisResult?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    latencyMs?: IntFieldUpdateOperationsInput | number
+    inputTokens?: IntFieldUpdateOperationsInput | number
+    outputTokens?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisResultCreateManyInput = {
+    id?: string
+    jobId: string
+    originalTimestamp: Date | string
+    tenantId: string
+    sessionId?: string | null
+    userInput: string
+    llmResponse: string
+    analysisPrompt: string
+    analysisResult: string
+    modelName: string
+    latencyMs: number
+    inputTokens?: number
+    outputTokens?: number
+    status: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisResultUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userInput?: StringFieldUpdateOperationsInput | string
+    llmResponse?: StringFieldUpdateOperationsInput | string
+    analysisPrompt?: StringFieldUpdateOperationsInput | string
+    analysisResult?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    latencyMs?: IntFieldUpdateOperationsInput | number
+    inputTokens?: IntFieldUpdateOperationsInput | number
+    outputTokens?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisResultUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    originalTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userInput?: StringFieldUpdateOperationsInput | string
+    llmResponse?: StringFieldUpdateOperationsInput | string
+    analysisPrompt?: StringFieldUpdateOperationsInput | string
+    analysisResult?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    latencyMs?: IntFieldUpdateOperationsInput | number
+    inputTokens?: IntFieldUpdateOperationsInput | number
+    outputTokens?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisPromptTemplateCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    prompt: string
+    isDefault?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisPromptTemplateUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    prompt: string
+    isDefault?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisPromptTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisPromptTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisPromptTemplateCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    prompt: string
+    isDefault?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnalysisPromptTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisPromptTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    prompt?: StringFieldUpdateOperationsInput | string
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -16349,6 +20774,182 @@ export namespace Prisma {
     revokedAt?: SortOrder
   }
 
+  export type BatchAnalysisResultListRelationFilter = {
+    every?: BatchAnalysisResultWhereInput
+    some?: BatchAnalysisResultWhereInput
+    none?: BatchAnalysisResultWhereInput
+  }
+
+  export type BatchAnalysisResultOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BatchAnalysisJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrder
+    sampleSize?: SortOrder
+    promptTemplate?: SortOrder
+    totalItems?: SortOrder
+    processedItems?: SortOrder
+    failedItems?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BatchAnalysisJobAvgOrderByAggregateInput = {
+    sampleSize?: SortOrder
+    totalItems?: SortOrder
+    processedItems?: SortOrder
+    failedItems?: SortOrder
+  }
+
+  export type BatchAnalysisJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrder
+    sampleSize?: SortOrder
+    promptTemplate?: SortOrder
+    totalItems?: SortOrder
+    processedItems?: SortOrder
+    failedItems?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BatchAnalysisJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrder
+    sampleSize?: SortOrder
+    promptTemplate?: SortOrder
+    totalItems?: SortOrder
+    processedItems?: SortOrder
+    failedItems?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BatchAnalysisJobSumOrderByAggregateInput = {
+    sampleSize?: SortOrder
+    totalItems?: SortOrder
+    processedItems?: SortOrder
+    failedItems?: SortOrder
+  }
+
+  export type BatchAnalysisJobScalarRelationFilter = {
+    is?: BatchAnalysisJobWhereInput
+    isNot?: BatchAnalysisJobWhereInput
+  }
+
+  export type BatchAnalysisResultCountOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    originalTimestamp?: SortOrder
+    tenantId?: SortOrder
+    sessionId?: SortOrder
+    userInput?: SortOrder
+    llmResponse?: SortOrder
+    analysisPrompt?: SortOrder
+    analysisResult?: SortOrder
+    modelName?: SortOrder
+    latencyMs?: SortOrder
+    inputTokens?: SortOrder
+    outputTokens?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BatchAnalysisResultAvgOrderByAggregateInput = {
+    latencyMs?: SortOrder
+    inputTokens?: SortOrder
+    outputTokens?: SortOrder
+  }
+
+  export type BatchAnalysisResultMaxOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    originalTimestamp?: SortOrder
+    tenantId?: SortOrder
+    sessionId?: SortOrder
+    userInput?: SortOrder
+    llmResponse?: SortOrder
+    analysisPrompt?: SortOrder
+    analysisResult?: SortOrder
+    modelName?: SortOrder
+    latencyMs?: SortOrder
+    inputTokens?: SortOrder
+    outputTokens?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BatchAnalysisResultMinOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    originalTimestamp?: SortOrder
+    tenantId?: SortOrder
+    sessionId?: SortOrder
+    userInput?: SortOrder
+    llmResponse?: SortOrder
+    analysisPrompt?: SortOrder
+    analysisResult?: SortOrder
+    modelName?: SortOrder
+    latencyMs?: SortOrder
+    inputTokens?: SortOrder
+    outputTokens?: SortOrder
+    status?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BatchAnalysisResultSumOrderByAggregateInput = {
+    latencyMs?: SortOrder
+    inputTokens?: SortOrder
+    outputTokens?: SortOrder
+  }
+
+  export type AnalysisPromptTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    prompt?: SortOrder
+    isDefault?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnalysisPromptTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    prompt?: SortOrder
+    isDefault?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnalysisPromptTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    prompt?: SortOrder
+    isDefault?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type UserRoleCreateNestedManyWithoutUserInput = {
     create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
@@ -16937,6 +21538,62 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutApiKeysInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApiKeysInput, UserUpdateWithoutApiKeysInput>, UserUncheckedUpdateWithoutApiKeysInput>
+  }
+
+  export type BatchAnalysisResultCreateNestedManyWithoutJobInput = {
+    create?: XOR<BatchAnalysisResultCreateWithoutJobInput, BatchAnalysisResultUncheckedCreateWithoutJobInput> | BatchAnalysisResultCreateWithoutJobInput[] | BatchAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: BatchAnalysisResultCreateOrConnectWithoutJobInput | BatchAnalysisResultCreateOrConnectWithoutJobInput[]
+    createMany?: BatchAnalysisResultCreateManyJobInputEnvelope
+    connect?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+  }
+
+  export type BatchAnalysisResultUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<BatchAnalysisResultCreateWithoutJobInput, BatchAnalysisResultUncheckedCreateWithoutJobInput> | BatchAnalysisResultCreateWithoutJobInput[] | BatchAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: BatchAnalysisResultCreateOrConnectWithoutJobInput | BatchAnalysisResultCreateOrConnectWithoutJobInput[]
+    createMany?: BatchAnalysisResultCreateManyJobInputEnvelope
+    connect?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+  }
+
+  export type BatchAnalysisResultUpdateManyWithoutJobNestedInput = {
+    create?: XOR<BatchAnalysisResultCreateWithoutJobInput, BatchAnalysisResultUncheckedCreateWithoutJobInput> | BatchAnalysisResultCreateWithoutJobInput[] | BatchAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: BatchAnalysisResultCreateOrConnectWithoutJobInput | BatchAnalysisResultCreateOrConnectWithoutJobInput[]
+    upsert?: BatchAnalysisResultUpsertWithWhereUniqueWithoutJobInput | BatchAnalysisResultUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: BatchAnalysisResultCreateManyJobInputEnvelope
+    set?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    disconnect?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    delete?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    connect?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    update?: BatchAnalysisResultUpdateWithWhereUniqueWithoutJobInput | BatchAnalysisResultUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: BatchAnalysisResultUpdateManyWithWhereWithoutJobInput | BatchAnalysisResultUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: BatchAnalysisResultScalarWhereInput | BatchAnalysisResultScalarWhereInput[]
+  }
+
+  export type BatchAnalysisResultUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<BatchAnalysisResultCreateWithoutJobInput, BatchAnalysisResultUncheckedCreateWithoutJobInput> | BatchAnalysisResultCreateWithoutJobInput[] | BatchAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: BatchAnalysisResultCreateOrConnectWithoutJobInput | BatchAnalysisResultCreateOrConnectWithoutJobInput[]
+    upsert?: BatchAnalysisResultUpsertWithWhereUniqueWithoutJobInput | BatchAnalysisResultUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: BatchAnalysisResultCreateManyJobInputEnvelope
+    set?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    disconnect?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    delete?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    connect?: BatchAnalysisResultWhereUniqueInput | BatchAnalysisResultWhereUniqueInput[]
+    update?: BatchAnalysisResultUpdateWithWhereUniqueWithoutJobInput | BatchAnalysisResultUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: BatchAnalysisResultUpdateManyWithWhereWithoutJobInput | BatchAnalysisResultUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: BatchAnalysisResultScalarWhereInput | BatchAnalysisResultScalarWhereInput[]
+  }
+
+  export type BatchAnalysisJobCreateNestedOneWithoutResultsInput = {
+    create?: XOR<BatchAnalysisJobCreateWithoutResultsInput, BatchAnalysisJobUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: BatchAnalysisJobCreateOrConnectWithoutResultsInput
+    connect?: BatchAnalysisJobWhereUniqueInput
+  }
+
+  export type BatchAnalysisJobUpdateOneRequiredWithoutResultsNestedInput = {
+    create?: XOR<BatchAnalysisJobCreateWithoutResultsInput, BatchAnalysisJobUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: BatchAnalysisJobCreateOrConnectWithoutResultsInput
+    upsert?: BatchAnalysisJobUpsertWithoutResultsInput
+    connect?: BatchAnalysisJobWhereUniqueInput
+    update?: XOR<XOR<BatchAnalysisJobUpdateToOneWithWhereWithoutResultsInput, BatchAnalysisJobUpdateWithoutResultsInput>, BatchAnalysisJobUncheckedUpdateWithoutResultsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -18353,6 +23010,165 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type BatchAnalysisResultCreateWithoutJobInput = {
+    id?: string
+    originalTimestamp: Date | string
+    tenantId: string
+    sessionId?: string | null
+    userInput: string
+    llmResponse: string
+    analysisPrompt: string
+    analysisResult: string
+    modelName: string
+    latencyMs: number
+    inputTokens?: number
+    outputTokens?: number
+    status: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisResultUncheckedCreateWithoutJobInput = {
+    id?: string
+    originalTimestamp: Date | string
+    tenantId: string
+    sessionId?: string | null
+    userInput: string
+    llmResponse: string
+    analysisPrompt: string
+    analysisResult: string
+    modelName: string
+    latencyMs: number
+    inputTokens?: number
+    outputTokens?: number
+    status: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisResultCreateOrConnectWithoutJobInput = {
+    where: BatchAnalysisResultWhereUniqueInput
+    create: XOR<BatchAnalysisResultCreateWithoutJobInput, BatchAnalysisResultUncheckedCreateWithoutJobInput>
+  }
+
+  export type BatchAnalysisResultCreateManyJobInputEnvelope = {
+    data: BatchAnalysisResultCreateManyJobInput | BatchAnalysisResultCreateManyJobInput[]
+  }
+
+  export type BatchAnalysisResultUpsertWithWhereUniqueWithoutJobInput = {
+    where: BatchAnalysisResultWhereUniqueInput
+    update: XOR<BatchAnalysisResultUpdateWithoutJobInput, BatchAnalysisResultUncheckedUpdateWithoutJobInput>
+    create: XOR<BatchAnalysisResultCreateWithoutJobInput, BatchAnalysisResultUncheckedCreateWithoutJobInput>
+  }
+
+  export type BatchAnalysisResultUpdateWithWhereUniqueWithoutJobInput = {
+    where: BatchAnalysisResultWhereUniqueInput
+    data: XOR<BatchAnalysisResultUpdateWithoutJobInput, BatchAnalysisResultUncheckedUpdateWithoutJobInput>
+  }
+
+  export type BatchAnalysisResultUpdateManyWithWhereWithoutJobInput = {
+    where: BatchAnalysisResultScalarWhereInput
+    data: XOR<BatchAnalysisResultUpdateManyMutationInput, BatchAnalysisResultUncheckedUpdateManyWithoutJobInput>
+  }
+
+  export type BatchAnalysisResultScalarWhereInput = {
+    AND?: BatchAnalysisResultScalarWhereInput | BatchAnalysisResultScalarWhereInput[]
+    OR?: BatchAnalysisResultScalarWhereInput[]
+    NOT?: BatchAnalysisResultScalarWhereInput | BatchAnalysisResultScalarWhereInput[]
+    id?: StringFilter<"BatchAnalysisResult"> | string
+    jobId?: StringFilter<"BatchAnalysisResult"> | string
+    originalTimestamp?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
+    tenantId?: StringFilter<"BatchAnalysisResult"> | string
+    sessionId?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    userInput?: StringFilter<"BatchAnalysisResult"> | string
+    llmResponse?: StringFilter<"BatchAnalysisResult"> | string
+    analysisPrompt?: StringFilter<"BatchAnalysisResult"> | string
+    analysisResult?: StringFilter<"BatchAnalysisResult"> | string
+    modelName?: StringFilter<"BatchAnalysisResult"> | string
+    latencyMs?: IntFilter<"BatchAnalysisResult"> | number
+    inputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    outputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    status?: StringFilter<"BatchAnalysisResult"> | string
+    errorMessage?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    createdAt?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
+  }
+
+  export type BatchAnalysisJobCreateWithoutResultsInput = {
+    id?: string
+    status: string
+    targetDate: Date | string
+    tenantId?: string | null
+    sampleSize?: number
+    promptTemplate: string
+    totalItems?: number
+    processedItems?: number
+    failedItems?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisJobUncheckedCreateWithoutResultsInput = {
+    id?: string
+    status: string
+    targetDate: Date | string
+    tenantId?: string | null
+    sampleSize?: number
+    promptTemplate: string
+    totalItems?: number
+    processedItems?: number
+    failedItems?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisJobCreateOrConnectWithoutResultsInput = {
+    where: BatchAnalysisJobWhereUniqueInput
+    create: XOR<BatchAnalysisJobCreateWithoutResultsInput, BatchAnalysisJobUncheckedCreateWithoutResultsInput>
+  }
+
+  export type BatchAnalysisJobUpsertWithoutResultsInput = {
+    update: XOR<BatchAnalysisJobUpdateWithoutResultsInput, BatchAnalysisJobUncheckedUpdateWithoutResultsInput>
+    create: XOR<BatchAnalysisJobCreateWithoutResultsInput, BatchAnalysisJobUncheckedCreateWithoutResultsInput>
+    where?: BatchAnalysisJobWhereInput
+  }
+
+  export type BatchAnalysisJobUpdateToOneWithWhereWithoutResultsInput = {
+    where?: BatchAnalysisJobWhereInput
+    data: XOR<BatchAnalysisJobUpdateWithoutResultsInput, BatchAnalysisJobUncheckedUpdateWithoutResultsInput>
+  }
+
+  export type BatchAnalysisJobUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplate?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedItems?: IntFieldUpdateOperationsInput | number
+    failedItems?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisJobUncheckedUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplate?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedItems?: IntFieldUpdateOperationsInput | number
+    failedItems?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserRoleCreateManyUserInput = {
     id?: string
     roleId: string
@@ -18672,6 +23488,78 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisResultCreateManyJobInput = {
+    id?: string
+    originalTimestamp: Date | string
+    tenantId: string
+    sessionId?: string | null
+    userInput: string
+    llmResponse: string
+    analysisPrompt: string
+    analysisResult: string
+    modelName: string
+    latencyMs: number
+    inputTokens?: number
+    outputTokens?: number
+    status: string
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BatchAnalysisResultUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userInput?: StringFieldUpdateOperationsInput | string
+    llmResponse?: StringFieldUpdateOperationsInput | string
+    analysisPrompt?: StringFieldUpdateOperationsInput | string
+    analysisResult?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    latencyMs?: IntFieldUpdateOperationsInput | number
+    inputTokens?: IntFieldUpdateOperationsInput | number
+    outputTokens?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisResultUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userInput?: StringFieldUpdateOperationsInput | string
+    llmResponse?: StringFieldUpdateOperationsInput | string
+    analysisPrompt?: StringFieldUpdateOperationsInput | string
+    analysisResult?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    latencyMs?: IntFieldUpdateOperationsInput | number
+    inputTokens?: IntFieldUpdateOperationsInput | number
+    outputTokens?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchAnalysisResultUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userInput?: StringFieldUpdateOperationsInput | string
+    llmResponse?: StringFieldUpdateOperationsInput | string
+    analysisPrompt?: StringFieldUpdateOperationsInput | string
+    analysisResult?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    latencyMs?: IntFieldUpdateOperationsInput | number
+    inputTokens?: IntFieldUpdateOperationsInput | number
+    outputTokens?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

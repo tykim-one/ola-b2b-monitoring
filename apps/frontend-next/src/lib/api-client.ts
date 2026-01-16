@@ -16,6 +16,9 @@ import {
   CreateSessionRequest,
   SendMessageRequest,
   SendMessageResponse,
+  ChatbotRequest,
+  ChatbotResponse,
+  ChatbotSession,
 } from '@ola/shared-types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -32,12 +35,19 @@ const apiClient: AxiosInstance = axios.create({
 // Store access token in memory
 let accessToken: string | null = null;
 
+// Auth error callback for notifying AuthContext on 401
+let onAuthError: (() => void) | null = null;
+
 export function setAccessToken(token: string | null) {
   accessToken = token;
 }
 
 export function getAccessToken(): string | null {
   return accessToken;
+}
+
+export function setOnAuthError(callback: (() => void) | null) {
+  onAuthError = callback;
 }
 
 // Request interceptor to attach access token
@@ -76,8 +86,11 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // If error is 401 and we haven't tried to refresh yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Don't retry refresh for the refresh endpoint itself to prevent infinite loop
+    const isRefreshRequest = originalRequest?.url?.includes('/auth/refresh');
+
+    // If error is 401 and we haven't tried to refresh yet (and not the refresh endpoint)
+    if (error.response?.status === 401 && !originalRequest._retry && !isRefreshRequest) {
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
@@ -115,9 +128,19 @@ apiClient.interceptors.response.use(
         processQueue(refreshError);
         setAccessToken(null);
 
-        // Redirect to login if in browser
+        // Notify AuthContext to clear user state
+        if (onAuthError) {
+          onAuthError();
+        }
+
+        // Redirect to login if in browser, but NOT if already on login page
         if (typeof window !== 'undefined') {
-          window.location.href = '/login';
+          const currentPath = window.location.pathname;
+          // Don't redirect if already on login page to prevent infinite loop
+          if (!currentPath.startsWith('/login')) {
+            const fullPath = currentPath + window.location.search;
+            window.location.href = `/login?redirect=${encodeURIComponent(fullPath)}`;
+          }
         }
 
         return Promise.reject(refreshError);
@@ -158,8 +181,8 @@ export const authApi = {
 // Users API
 export const usersApi = {
   async getAll(): Promise<User[]> {
-    const response = await apiClient.get<User[]>('/api/admin/users');
-    return response.data;
+    const response = await apiClient.get<{ data: User[]; pagination: any }>('/api/admin/users');
+    return response.data.data;
   },
 
   async getById(id: string): Promise<User> {
@@ -265,10 +288,10 @@ export const analysisApi = {
   },
 
   async getSessions(): Promise<AnalysisSession[]> {
-    const response = await apiClient.get<AnalysisSession[]>(
+    const response = await apiClient.get<{ data: AnalysisSession[]; pagination: any }>(
       '/api/admin/analysis/sessions'
     );
-    return response.data;
+    return response.data.data;
   },
 
   async getSession(sessionId: string): Promise<AnalysisSession> {
@@ -283,7 +306,7 @@ export const analysisApi = {
     data: SendMessageRequest
   ): Promise<SendMessageResponse> {
     const response = await apiClient.post<SendMessageResponse>(
-      `/api/admin/analysis/sessions/${sessionId}/messages`,
+      `/api/admin/analysis/sessions/${sessionId}/chat`,
       data
     );
     return response.data;
@@ -291,6 +314,39 @@ export const analysisApi = {
 
   async deleteSession(sessionId: string): Promise<void> {
     await apiClient.delete(`/api/admin/analysis/sessions/${sessionId}`);
+  },
+};
+
+// Chatbot API (Global floating chatbot)
+export const chatbotApi = {
+  async chat(request: ChatbotRequest): Promise<ChatbotResponse> {
+    const response = await apiClient.post<ChatbotResponse>(
+      '/api/chatbot/chat',
+      request
+    );
+    return response.data;
+  },
+
+  async getSession(sessionId: string): Promise<ChatbotSession | null> {
+    try {
+      const response = await apiClient.get<{ success: boolean; data: ChatbotSession }>(
+        `/api/chatbot/sessions/${sessionId}`
+      );
+      return response.data.success ? response.data.data : null;
+    } catch {
+      return null;
+    }
+  },
+
+  async clearSession(sessionId: string): Promise<boolean> {
+    try {
+      const response = await apiClient.delete<{ success: boolean }>(
+        `/api/chatbot/sessions/${sessionId}`
+      );
+      return response.data.success;
+    } catch {
+      return false;
+    }
   },
 };
 

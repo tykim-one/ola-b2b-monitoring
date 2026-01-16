@@ -16,6 +16,7 @@
 - `compound/` - Compound 컴포넌트 (Dashboard, DataTable, Chart)
 - `ui/` - 기본 UI 컴포넌트 (Modal, ConfirmDialog, SearchInput)
 - `analysis/` - 분석 관련 컴포넌트
+- `chatbot/` - 글로벌 플로팅 AI 챗봇 컴포넌트 (FloatingChatbot, ChatWindow, ChatMessage, ChatInput)
 
 ## For AI Agents
 - 모든 컴포넌트는 'use client' 선언 (클라이언트 컴포넌트)

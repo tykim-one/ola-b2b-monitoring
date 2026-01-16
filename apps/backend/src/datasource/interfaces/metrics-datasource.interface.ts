@@ -18,6 +18,12 @@ import {
   UserQuestionPattern,
   UserListItem,
   UserActivityDetail,
+  EmergingQueryPattern,
+  SentimentAnalysisResult,
+  RephrasedQueryPattern,
+  SessionAnalytics,
+  TenantQualitySummary,
+  ResponseQualityMetrics,
 } from '@ola/shared-types';
 
 /**
@@ -182,6 +188,54 @@ export interface MetricsDataSource {
     limit?: number,
     offset?: number,
   ): Promise<UserActivityDetail[]>;
+
+  // ==================== Chatbot Quality Analysis Methods ====================
+
+  /**
+   * Get emerging/new query patterns.
+   * Detects queries that are new or have significantly increased in frequency.
+   * @param recentDays Number of recent days to analyze (default: 7)
+   * @param historicalDays Number of historical days to compare against (default: 90)
+   */
+  getEmergingQueryPatterns(
+    recentDays?: number,
+    historicalDays?: number,
+  ): Promise<EmergingQueryPattern[]>;
+
+  /**
+   * Get sentiment analysis results.
+   * Detects frustrated, emotional, or urgent queries based on keywords and patterns.
+   * @param days Number of days to look back (default: 7)
+   */
+  getSentimentAnalysis(days?: number): Promise<SentimentAnalysisResult[]>;
+
+  /**
+   * Get rephrased query patterns.
+   * Detects sessions where users asked similar questions multiple times (dissatisfaction signal).
+   * @param days Number of days to look back (default: 7)
+   */
+  getRephrasedQueryPatterns(days?: number): Promise<RephrasedQueryPattern[]>;
+
+  /**
+   * Get session-level analytics.
+   * Returns conversation flow analysis per session.
+   * @param days Number of days to look back (default: 7)
+   */
+  getSessionAnalytics(days?: number): Promise<SessionAnalytics[]>;
+
+  /**
+   * Get tenant quality summary.
+   * Aggregated quality metrics per tenant including frustration rate.
+   * @param days Number of days to look back (default: 7)
+   */
+  getTenantQualitySummary(days?: number): Promise<TenantQualitySummary[]>;
+
+  /**
+   * Get response quality metrics.
+   * Analyzes response length distribution and quality indicators.
+   * @param days Number of days to look back (default: 30)
+   */
+  getResponseQualityMetrics(days?: number): Promise<ResponseQualityMetrics[]>;
 }
 
 /**

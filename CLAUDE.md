@@ -71,7 +71,40 @@ src/
 │   └── implementations/ # BigQueryMetricsDataSource 구현체
 ├── cache/              # node-cache 기반 캐싱 서비스
 ├── ml/anomaly/         # Z-Score 기반 이상 탐지 서비스
-└── common/strategies/  # 프로젝트별 필터링 전략
+├── common/strategies/  # 프로젝트별 필터링 전략
+├── admin/              # 어드민 모듈 (인증, 사용자/역할 관리, LLM 분석)
+├── batch-analysis/     # 배치 분석 파이프라인 (일일 자동 채팅 품질 분석)
+├── chatbot/            # 글로벌 플로팅 AI 챗봇 (페이지 컨텍스트 기반 LLM 응답)
+├── quality/            # 챗봇 품질 분석 (감정 분석 서비스)
+└── notifications/      # 알림 서비스 (Slack 웹훅)
+```
+
+### Admin Module (JWT + RBAC)
+
+SQLite + Prisma 기반 어드민 서비스:
+```
+admin/
+├── auth/               # JWT 인증, 가드, 데코레이터
+├── database/           # PrismaService (SQLite + libSQL adapter)
+├── users/              # 사용자 CRUD
+├── roles/              # 역할/권한 CRUD
+├── filters/            # 저장된 필터 관리
+└── analysis/           # LLM 분석 세션 (Gemini 연동)
+```
+
+**인증 흐름:**
+- Access Token: 15분, Authorization 헤더
+- Refresh Token: 7일, httpOnly 쿠키
+- 전역 가드 순서: JwtAuthGuard → PermissionsGuard → ThrottlerGuard
+- `@Public()` 데코레이터로 인증 우회
+- `@Permissions('resource:action')` 형식으로 권한 지정
+
+**Prisma 명령어:**
+```bash
+cd apps/backend
+pnpm prisma generate      # 클라이언트 생성
+pnpm prisma db push       # 스키마 적용
+pnpm prisma db seed       # 시드 데이터 (admin@ola.com / admin123)
 ```
 
 ### Frontend Structure
@@ -79,12 +112,27 @@ src/
 ```
 src/
 ├── app/               # Next.js App Router 페이지
-│   └── dashboard/     # 대시보드 페이지들 (business, operations, ai-performance)
+│   ├── (auth)/        # 인증 레이아웃 그룹 (login)
+│   └── dashboard/     # 대시보드 페이지들
+│       ├── admin/     # 관리자 기능 (users, roles, filters, analysis)
+│       ├── business/  # 비즈니스 메트릭
+│       ├── operations/# 운영 메트릭
+│       ├── quality/   # 품질 분석
+│       ├── chatbot-quality/  # 챗봇 품질 분석
+│       └── admin/batch-analysis/  # 배치 분석 관리
 ├── components/
-│   ├── charts/        # Recharts 기반 차트 (AreaChart, PieChart, ScatterChart, Heatmap 등)
-│   └── kpi/           # KPICard 컴포넌트 (재사용 가능)
-└── services/          # API 클라이언트
+│   ├── charts/        # Recharts 기반 차트
+│   ├── compound/      # 복합 컴포넌트 (Dashboard, DataTable, Chart)
+│   ├── kpi/           # KPICard 컴포넌트
+│   └── ui/            # 기본 UI 컴포넌트
+├── contexts/          # React Context (AuthContext, ChatbotContext)
+├── lib/               # 유틸리티, API 클라이언트 (api-client.ts)
+└── services/          # 도메인별 서비스 클라이언트
 ```
+
+**인증 상태 관리:** `AuthContext`에서 JWT 토큰 관리, `api-client.ts`에서 자동 토큰 갱신
+
+**글로벌 챗봇:** `ChatbotContext`에서 플로팅 AI 챗봇 상태 관리 (메시지, 세션, 열림/닫힘). Ctrl+K 단축키로 토글.
 
 **차트 테마:** 다크 모드 (`bg-slate-800`), Recharts 색상 팔레트 (#3b82f6, #8b5cf6, #10b981)
 
@@ -99,6 +147,21 @@ src/
 - `GET /api/analytics/cost-trend` - 비용 트렌드
 - `GET /api/ai/anomaly-stats` - 이상 탐지 통계
 - `GET /api/quality/*` - 품질 분석 (효율성 트렌드, 상관관계, 반복 패턴)
+
+**Admin API** (`/api/admin/*`):
+- `POST /api/admin/auth/login` - 로그인 (JWT 발급)
+- `POST /api/admin/auth/refresh` - 토큰 갱신
+- `GET/POST/PUT/DELETE /api/admin/users` - 사용자 관리
+- `GET/POST/PUT/DELETE /api/admin/roles` - 역할 관리
+- `POST /api/admin/analysis/sessions` - LLM 분석 세션
+- `POST /api/admin/analysis/sessions/:id/chat` - LLM 대화
+
+**Batch Analysis API** (`/api/admin/batch-analysis/*`):
+- `GET/POST /api/admin/batch-analysis/jobs` - 작업 목록/생성
+- `POST /api/admin/batch-analysis/jobs/:id/run` - 작업 실행
+- `GET /api/admin/batch-analysis/results` - 분석 결과 조회
+- `GET/POST/PUT/DELETE /api/admin/batch-analysis/prompts` - 프롬프트 템플릿 관리
+- `GET /api/admin/batch-analysis/stats` - 통계 조회
 
 ### Caching Strategy
 
@@ -168,13 +231,14 @@ case 'mysql':
 - user_input: STRING
 - llm_response: STRING
 - severity: STRING (INFO/WARN/ERROR)
-- request_metadata: STRUCT (service, endpoint, session_id 등 포함)
+- request_metadata: STRUCT (service, endpoint, session_id, x_enc_data 등 포함)
 ```
 
 쿼리 작성 시 주의:
 - `success` 비교: `success = TRUE` (STRING 'true' 아님)
 - 토큰 값 캐스팅: `CAST(total_tokens AS FLOAT64)`
 - **DATE 타입 정규화**: BigQuery는 `DATE(timestamp)`를 `{ value: '2025-01-15' }` 객체로 반환함. `bigquery-metrics.datasource.ts`의 `normalizeDate()` 헬퍼로 문자열 변환 필수.
+- **request_metadata 접근**: STRUCT 타입이므로 `JSON_VALUE()` 사용 금지. 대신 `request_metadata.session_id`, `request_metadata.x_enc_data` 형태로 직접 접근.
 
 ## Environment Variables
 
@@ -187,6 +251,17 @@ BIGQUERY_DATASET=your_dataset
 BIGQUERY_TABLE=logs
 GCP_BQ_LOCATION=asia-northeast3
 CORS_ORIGIN=http://localhost:3001
+
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-change-in-production-32chars
+
+# LLM (Gemini)
+LLM_PROVIDER=gemini
+GEMINI_MODEL=gemini-2.0-flash
+GOOGLE_GEMINI_API_KEY=your-gemini-api-key
+
+# Slack 알림 (선택)
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
 ```
 
 Frontend (`apps/frontend-next/.env.local`):

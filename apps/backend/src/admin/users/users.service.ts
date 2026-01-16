@@ -47,6 +47,8 @@ export class UsersService {
       id: user.id,
       email: user.email,
       name: user.name,
+      isActive: user.isActive,
+      lastLoginAt: user.lastLoginAt,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       roles: user.userRoles.map((ur: any) => ({
@@ -101,6 +103,8 @@ export class UsersService {
       id: user.id,
       email: user.email,
       name: user.name,
+      isActive: user.isActive,
+      lastLoginAt: user.lastLoginAt,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       roles: user.userRoles.map((ur: any) => ({
@@ -179,6 +183,8 @@ export class UsersService {
       id: user.id,
       email: user.email,
       name: user.name,
+      isActive: user.isActive,
+      lastLoginAt: user.lastLoginAt,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       roles: user.userRoles.map((ur: any) => ({
@@ -263,6 +269,8 @@ export class UsersService {
       id: updatedUser.id,
       email: updatedUser.email,
       name: updatedUser.name,
+      isActive: updatedUser.isActive,
+      lastLoginAt: updatedUser.lastLoginAt,
       createdAt: updatedUser.createdAt,
       updatedAt: updatedUser.updatedAt,
       roles: updatedUser.userRoles.map((ur: any) => ({

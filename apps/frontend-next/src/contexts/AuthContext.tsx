@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { UserInfo } from '@ola/shared-types';
-import { authApi, setAccessToken as setApiAccessToken } from '@/lib/api-client';
+import { authApi, setAccessToken as setApiAccessToken, setOnAuthError } from '@/lib/api-client';
 
 interface AuthContextType {
   user: UserInfo | null;
@@ -30,6 +30,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Try to refresh tokens on mount to restore session
   useEffect(() => {
+    // Register callback for 401 errors from api-client
+    // This ensures AuthContext user state is cleared when token refresh fails
+    setOnAuthError(() => {
+      setUser(null);
+      clearAccessToken();
+    });
+
     const initAuth = async () => {
       try {
         // Attempt to refresh tokens (refresh token is in httpOnly cookie)
@@ -46,6 +53,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     initAuth();
+
+    // Cleanup on unmount
+    return () => {
+      setOnAuthError(null);
+    };
   }, [storeAccessToken, clearAccessToken]);
 
   const login = useCallback(async (email: string, password: string) => {

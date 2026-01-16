@@ -495,3 +495,132 @@ export interface HealthCheckResponse {
   };
   timestamp: string;
 }
+
+// ==================== 챗봇 품질 분석 타입 ====================
+
+/** 신규/급증 질문 패턴 */
+export interface EmergingQueryPattern {
+  normalizedQuery: string;
+  recentCount: number;
+  historicalCount: number;
+  patternType: 'NEW' | 'EMERGING';
+  growthRate: number | null;
+  firstSeen: string;
+  lastSeen: string;
+}
+
+/** 감정 분석 결과 (BigQuery 쿼리 결과) */
+export interface SentimentAnalysisResult {
+  timestamp: string;
+  tenantId: string;
+  userId: string | null;
+  userInput: string;
+  sentimentFlag: 'FRUSTRATED' | 'EMOTIONAL' | 'URGENT' | 'NEUTRAL';
+  frustrationKeywords: string[];
+  success: boolean;
+  sessionId: string | null;
+}
+
+/** 재질문 패턴 (동일 세션 내 유사 질문) */
+export interface RephrasedQueryPattern {
+  sessionId: string;
+  tenantId: string;
+  userId: string | null;
+  queryCount: number;
+  uniqueQueries: number;
+  similarityScore: number;
+  queries: string[];
+  timestamps: string[];
+  hasResolution: boolean;
+}
+
+/** 세션 분석 통계 */
+export interface SessionAnalytics {
+  sessionId: string;
+  tenantId: string;
+  userId: string | null;
+  turnCount: number;
+  successCount: number;
+  failCount: number;
+  sessionSuccessRate: number;
+  sessionStart: string;
+  sessionEnd: string;
+  durationMinutes: number;
+  hasFrustration: boolean;
+}
+
+/** 테넌트별 품질 요약 */
+export interface TenantQualitySummary {
+  tenantId: string;
+  totalSessions: number;
+  avgTurnsPerSession: number;
+  sessionSuccessRate: number;
+  singleTurnRate: number;
+  frustratedSessionCount: number;
+  frustrationRate: number;
+  avgSessionDurationMinutes: number;
+}
+
+/** 불만 알림 데이터 */
+export interface FrustrationAlert {
+  id: string;
+  userId: string | null;
+  tenantId: string;
+  frustrationLevel: number;
+  triggerReason: string;
+  recentQueries: string[];
+  timestamp: string;
+  status: 'pending' | 'acknowledged' | 'resolved';
+}
+
+/** 응답 품질 지표 */
+export interface ResponseQualityMetrics {
+  date: string;
+  tenantId: string;
+  avgResponseLength: number;
+  tooShortCount: number;
+  tooLongCount: number;
+  failedQueryAvgLength: number;
+  totalRequests: number;
+}
+
+// ==================== 글로벌 챗봇 타입 ====================
+
+/** 챗봇 요청 */
+export interface ChatbotRequest {
+  message: string;
+  pageContext: string;
+  sessionId?: string;
+}
+
+/** 챗봇 메시지 */
+export interface ChatbotMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+  metadata?: ChatbotMessageMetadata;
+}
+
+/** 챗봇 메시지 메타데이터 */
+export interface ChatbotMessageMetadata {
+  pageContext?: string;
+  model?: string;
+  tokens?: number;
+  latencyMs?: number;
+}
+
+/** 챗봇 응답 */
+export interface ChatbotResponse {
+  sessionId: string;
+  userMessage: ChatbotMessage;
+  assistantMessage: ChatbotMessage;
+}
+
+/** 챗봇 세션 */
+export interface ChatbotSession {
+  id: string;
+  messages: ChatbotMessage[];
+  createdAt: string;
+  lastActivity: string;
+}

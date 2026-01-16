@@ -436,4 +436,332 @@ export const MetricsQueries = {
     ORDER BY timestamp DESC
     LIMIT ${limit} OFFSET ${offset}
   `,
+
+  // ==================== 챗봇 품질 분석 쿼리 ====================
+
+  /**
+   * 신규/급증 질문 패턴 탐지
+   * - 최근 7일 대비 이전 90일 패턴과 비교
+   * - NEW: 이전에 없던 패턴
+   * - EMERGING: 3배 이상 급증한 패턴
+   */
+  emergingQueryPatterns: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    recentDays: number = 7,
+    historicalDays: number = 90,
+  ) => `
+    WITH recent_patterns AS (
+      SELECT
+        LOWER(REGEXP_REPLACE(TRIM(SUBSTR(user_input, 1, 100)), r'[0-9]+', 'N')) AS normalized_query,
+        COUNT(*) as recent_count,
+        MIN(timestamp) as first_seen_recent,
+        MAX(timestamp) as last_seen
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${recentDays} DAY)
+        AND user_input IS NOT NULL
+        AND LENGTH(user_input) > 10
+      GROUP BY normalized_query
+      HAVING COUNT(*) >= 2
+    ),
+    historical_patterns AS (
+      SELECT
+        LOWER(REGEXP_REPLACE(TRIM(SUBSTR(user_input, 1, 100)), r'[0-9]+', 'N')) AS normalized_query,
+        COUNT(*) as historical_count,
+        MIN(timestamp) as first_seen_historical
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${historicalDays} DAY)
+        AND timestamp < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${recentDays} DAY)
+        AND user_input IS NOT NULL
+        AND LENGTH(user_input) > 10
+      GROUP BY normalized_query
+    )
+    SELECT
+      r.normalized_query AS normalizedQuery,
+      r.recent_count AS recentCount,
+      COALESCE(h.historical_count, 0) AS historicalCount,
+      CASE
+        WHEN h.historical_count IS NULL THEN 'NEW'
+        ELSE 'EMERGING'
+      END AS patternType,
+      CASE
+        WHEN h.historical_count IS NULL THEN NULL
+        ELSE ROUND(r.recent_count * 1.0 / h.historical_count, 2)
+      END AS growthRate,
+      COALESCE(FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', h.first_seen_historical),
+               FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', r.first_seen_recent)) AS firstSeen,
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', r.last_seen) AS lastSeen
+    FROM recent_patterns r
+    LEFT JOIN historical_patterns h ON r.normalized_query = h.normalized_query
+    WHERE h.historical_count IS NULL
+       OR r.recent_count > h.historical_count * 3
+    ORDER BY r.recent_count DESC
+    LIMIT 100
+  `,
+
+  /**
+   * 감정/불만 키워드 기반 분석
+   * - 불만 키워드 (한국어/영어)
+   * - 감정 표현 패턴 (이모티콘, 특수문자)
+   * - 긴급 키워드
+   */
+  sentimentAnalysis: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+  ) => `
+    WITH sentiment_data AS (
+      SELECT
+        timestamp,
+        tenant_id,
+        request_metadata.x_enc_data AS user_id,
+        user_input,
+        success,
+        request_metadata.session_id AS session_id,
+        -- 불만 키워드 탐지 (한국어)
+        REGEXP_CONTAINS(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고)') AS has_kr_frustration,
+        -- 불만 키워드 탐지 (영어)
+        REGEXP_CONTAINS(LOWER(user_input), r'(stupid|useless|terrible|worst|angry|frustrated|refund|sue|report|ridiculous|awful|horrible)') AS has_en_frustration,
+        -- 감정 표현 패턴
+        REGEXP_CONTAINS(user_input, r'(ㅠㅠ|ㅜㅜ|ㅡㅡ|;;|!{3,}|\\?{3,})') AS has_emotional_pattern,
+        -- 긴급 키워드
+        REGEXP_CONTAINS(LOWER(user_input), r'(급해|빨리|긴급|urgent|asap|immediately|hurry|지금당장)') AS has_urgency,
+        -- 키워드 추출
+        REGEXP_EXTRACT_ALL(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated|refund)') AS frustration_keywords
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND user_input IS NOT NULL
+        AND LENGTH(user_input) > 5
+    )
+    SELECT
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', timestamp) AS timestamp,
+      tenant_id AS tenantId,
+      user_id AS userId,
+      user_input AS userInput,
+      CASE
+        WHEN has_kr_frustration OR has_en_frustration THEN 'FRUSTRATED'
+        WHEN has_urgency THEN 'URGENT'
+        WHEN has_emotional_pattern THEN 'EMOTIONAL'
+        ELSE 'NEUTRAL'
+      END AS sentimentFlag,
+      frustration_keywords AS frustrationKeywords,
+      success,
+      session_id AS sessionId
+    FROM sentiment_data
+    WHERE has_kr_frustration OR has_en_frustration OR has_emotional_pattern OR has_urgency
+    ORDER BY timestamp DESC
+    LIMIT 500
+  `,
+
+  /**
+   * 재질문 패턴 탐지 (세션 내 유사 질문 반복)
+   * - 동일 세션에서 여러 번 유사한 질문
+   * - 응답에 불만족하여 재질문하는 패턴 탐지
+   */
+  rephrasedQueryPatterns: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+  ) => `
+    WITH session_queries AS (
+      SELECT
+        request_metadata.session_id AS session_id,
+        tenant_id,
+        request_metadata.x_enc_data AS user_id,
+        ARRAY_AGG(STRUCT(
+          user_input AS query,
+          FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', timestamp) AS ts,
+          success
+        ) ORDER BY timestamp) AS queries_arr,
+        COUNT(*) AS query_count,
+        COUNTIF(success = TRUE) AS success_count
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND user_input IS NOT NULL
+        AND LENGTH(user_input) > 10
+        AND request_metadata.session_id IS NOT NULL
+      GROUP BY session_id, tenant_id, user_id
+      HAVING COUNT(*) >= 3
+    )
+    SELECT
+      session_id AS sessionId,
+      tenant_id AS tenantId,
+      user_id AS userId,
+      query_count AS queryCount,
+      (SELECT COUNT(DISTINCT LOWER(SUBSTR(q.query, 1, 50))) FROM UNNEST(queries_arr) q) AS uniqueQueries,
+      ROUND(1.0 - (SELECT COUNT(DISTINCT LOWER(SUBSTR(q.query, 1, 50))) FROM UNNEST(queries_arr) q) * 1.0 / query_count, 2) AS similarityScore,
+      (SELECT ARRAY_AGG(q.query LIMIT 10) FROM UNNEST(queries_arr) q) AS queries,
+      (SELECT ARRAY_AGG(q.ts LIMIT 10) FROM UNNEST(queries_arr) q) AS timestamps,
+      success_count > 0 AS hasResolution
+    FROM session_queries
+    WHERE query_count > (SELECT COUNT(DISTINCT LOWER(SUBSTR(q.query, 1, 50))) FROM UNNEST(queries_arr) q) * 1.5
+    ORDER BY similarityScore DESC, query_count DESC
+    LIMIT 100
+  `,
+
+  /**
+   * 세션별 대화 분석
+   */
+  sessionAnalytics: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+  ) => `
+    WITH session_data AS (
+      SELECT
+        request_metadata.session_id AS session_id,
+        tenant_id,
+        request_metadata.x_enc_data AS user_id,
+        COUNT(*) AS turn_count,
+        COUNTIF(success = TRUE) AS success_count,
+        COUNTIF(success = FALSE) AS fail_count,
+        MIN(timestamp) AS session_start,
+        MAX(timestamp) AS session_end,
+        -- 불만 표현 포함 여부
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated)')
+        ) AS has_frustration
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND request_metadata.session_id IS NOT NULL
+      GROUP BY session_id, tenant_id, user_id
+    )
+    SELECT
+      session_id AS sessionId,
+      tenant_id AS tenantId,
+      user_id AS userId,
+      turn_count AS turnCount,
+      success_count AS successCount,
+      fail_count AS failCount,
+      ROUND(success_count * 100.0 / NULLIF(turn_count, 0), 2) AS sessionSuccessRate,
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', session_start) AS sessionStart,
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', session_end) AS sessionEnd,
+      ROUND(TIMESTAMP_DIFF(session_end, session_start, SECOND) / 60.0, 2) AS durationMinutes,
+      has_frustration AS hasFrustration
+    FROM session_data
+    WHERE turn_count >= 2
+    ORDER BY session_start DESC
+    LIMIT 500
+  `,
+
+  /**
+   * 테넌트별 품질 요약
+   */
+  tenantQualitySummary: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+  ) => `
+    WITH session_stats AS (
+      SELECT
+        tenant_id,
+        request_metadata.session_id AS session_id,
+        COUNT(*) AS turn_count,
+        COUNTIF(success = TRUE) AS success_count,
+        MIN(timestamp) AS session_start,
+        MAX(timestamp) AS session_end,
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated)')
+        ) AS has_frustration
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND request_metadata.session_id IS NOT NULL
+      GROUP BY tenant_id, session_id
+    )
+    SELECT
+      tenant_id AS tenantId,
+      COUNT(*) AS totalSessions,
+      ROUND(AVG(turn_count), 2) AS avgTurnsPerSession,
+      ROUND(AVG(success_count * 100.0 / NULLIF(turn_count, 0)), 2) AS sessionSuccessRate,
+      ROUND(COUNTIF(turn_count = 1) * 100.0 / COUNT(*), 2) AS singleTurnRate,
+      COUNTIF(has_frustration) AS frustratedSessionCount,
+      ROUND(COUNTIF(has_frustration) * 100.0 / COUNT(*), 2) AS frustrationRate,
+      ROUND(AVG(TIMESTAMP_DIFF(session_end, session_start, SECOND) / 60.0), 2) AS avgSessionDurationMinutes
+    FROM session_stats
+    GROUP BY tenant_id
+    ORDER BY totalSessions DESC
+  `,
+
+  /**
+   * 응답 품질 지표 (응답 길이 분포)
+   */
+  responseQualityMetrics: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 30,
+  ) => `
+    SELECT
+      DATE(timestamp) AS date,
+      tenant_id AS tenantId,
+      ROUND(AVG(LENGTH(llm_response)), 0) AS avgResponseLength,
+      COUNTIF(LENGTH(llm_response) < 50) AS tooShortCount,
+      COUNTIF(LENGTH(llm_response) > 2000) AS tooLongCount,
+      ROUND(AVG(CASE WHEN success = FALSE THEN LENGTH(user_input) END), 0) AS failedQueryAvgLength,
+      COUNT(*) AS totalRequests
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+      AND llm_response IS NOT NULL
+    GROUP BY date, tenant_id
+    ORDER BY date DESC, tenantId
+  `,
+
+  // ==================== 배치 분석용 쿼리 ====================
+
+  /**
+   * 특정 날짜의 채팅 데이터 랜덤 샘플링
+   * 배치 분석용 - 테넌트별 샘플 추출
+   */
+  chatSamplesForAnalysis: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    tenantId: string | null,
+    targetDate: string, // 'YYYY-MM-DD'
+    sampleSize: number,
+  ) => `
+    SELECT
+      timestamp,
+      tenant_id,
+      request_metadata.session_id AS session_id,
+      user_input,
+      llm_response,
+      success
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE DATE(timestamp) = '${targetDate}'
+      ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
+      AND user_input IS NOT NULL
+      AND llm_response IS NOT NULL
+      AND LENGTH(user_input) > 10
+      AND LENGTH(llm_response) > 10
+    ORDER BY RAND()
+    LIMIT ${sampleSize}
+  `,
+
+  /**
+   * 특정 날짜의 테넌트 목록 조회
+   * 배치 분석 스케줄러에서 사용
+   */
+  tenantsForDate: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    targetDate: string, // 'YYYY-MM-DD'
+  ) => `
+    SELECT DISTINCT
+      tenant_id,
+      COUNT(*) AS chat_count
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE DATE(timestamp) = '${targetDate}'
+      AND user_input IS NOT NULL
+      AND llm_response IS NOT NULL
+    GROUP BY tenant_id
+    HAVING COUNT(*) >= 10
+    ORDER BY chat_count DESC
+  `,
 };

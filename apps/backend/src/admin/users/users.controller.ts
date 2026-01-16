@@ -9,6 +9,7 @@ import {
   Query,
   ParseIntPipe,
   ParseUUIDPipe,
+  DefaultValuePipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -43,9 +44,8 @@ export class UsersController {
     description: 'Forbidden - Insufficient permissions',
   })
   async findAll(
-    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
-    @Query('pageSize', new ParseIntPipe({ optional: true }))
-    pageSize: number = 20,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('pageSize', new DefaultValuePipe(20), ParseIntPipe) pageSize: number,
   ) {
     return this.usersService.findAll(page, pageSize);
   }

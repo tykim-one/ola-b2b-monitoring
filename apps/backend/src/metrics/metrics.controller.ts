@@ -345,6 +345,178 @@ export class MetricsController {
     };
   }
 
+  // ==================== 챗봇 품질 분석 API ====================
+
+  /**
+   * GET /projects/:projectId/api/quality/emerging-patterns
+   * 신규/급증 질문 패턴
+   */
+  @ApiOperation({ summary: 'Get emerging/new query patterns' })
+  @ApiQuery({
+    name: 'recentDays',
+    required: false,
+    description: 'Recent days to analyze (default: 7)',
+  })
+  @ApiQuery({
+    name: 'historicalDays',
+    required: false,
+    description: 'Historical days to compare (default: 90)',
+  })
+  @ApiResponse({ status: 200, description: 'Emerging patterns returned' })
+  @Get('quality/emerging-patterns')
+  async getEmergingQueryPatterns(
+    @Query('recentDays') recentDays?: string,
+    @Query('historicalDays') historicalDays?: string,
+  ) {
+    const recent = recentDays ? parseInt(recentDays, 10) : 7;
+    const historical = historicalDays ? parseInt(historicalDays, 10) : 90;
+    const data = await this.metricsService.getEmergingQueryPatterns(
+      recent,
+      historical,
+    );
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/quality/sentiment
+   * 감정/불만 분석
+   */
+  @ApiOperation({
+    summary: 'Get sentiment analysis (frustrated/emotional queries)',
+  })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiResponse({ status: 200, description: 'Sentiment analysis data returned' })
+  @Get('quality/sentiment')
+  async getSentimentAnalysis(@Query('days') days?: string) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const data = await this.metricsService.getSentimentAnalysis(daysNum);
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '5 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/quality/rephrased-queries
+   * 재질문 패턴 (세션 내 유사 질문 반복)
+   */
+  @ApiOperation({
+    summary: 'Get rephrased query patterns (dissatisfaction signal)',
+  })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Rephrased query patterns returned',
+  })
+  @Get('quality/rephrased-queries')
+  async getRephrasedQueryPatterns(@Query('days') days?: string) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const data = await this.metricsService.getRephrasedQueryPatterns(daysNum);
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/quality/sessions
+   * 세션별 대화 분석
+   */
+  @ApiOperation({ summary: 'Get session-level analytics' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiResponse({ status: 200, description: 'Session analytics returned' })
+  @Get('quality/sessions')
+  async getSessionAnalytics(@Query('days') days?: string) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const data = await this.metricsService.getSessionAnalytics(daysNum);
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/quality/tenant-summary
+   * 테넌트별 품질 요약
+   */
+  @ApiOperation({
+    summary: 'Get tenant quality summary (including frustration rate)',
+  })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiResponse({ status: 200, description: 'Tenant quality summary returned' })
+  @Get('quality/tenant-summary')
+  async getTenantQualitySummary(@Query('days') days?: string) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const data = await this.metricsService.getTenantQualitySummary(daysNum);
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/quality/response-metrics
+   * 응답 품질 지표
+   */
+  @ApiOperation({
+    summary: 'Get response quality metrics (length distribution)',
+  })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Response quality metrics returned',
+  })
+  @Get('quality/response-metrics')
+  async getResponseQualityMetrics(@Query('days') days?: string) {
+    const daysNum = days ? parseInt(days, 10) : 30;
+    const data = await this.metricsService.getResponseQualityMetrics(daysNum);
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
   // ==================== 유저 분석 API ====================
 
   /**

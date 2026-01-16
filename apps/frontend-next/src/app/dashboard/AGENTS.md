@@ -14,6 +14,7 @@
 - `operations/` - 운영 메트릭 대시보드
 - `quality/` - 품질 모니터링 대시보드 (토큰 효율성, 질문-응답 상관관계, FAQ 후보)
 - `user-analytics/` - 유저 분석 대시보드 (x_enc_data 기준 유저별 요청, 토큰, 질문 패턴)
+- `chatbot-quality/` - 챗봇 품질 분석 대시보드 (신규 질문 탐지, 감정 분석, 재질문 패턴)
 
 ## For AI Agents
 - 각 서브 대시보드는 독립적인 page.tsx를 가짐

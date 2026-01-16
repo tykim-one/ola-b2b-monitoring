@@ -17,6 +17,10 @@ NestJS 백엔드 애플리케이션의 소스 코드입니다. 모듈화된 구�
 - `ml/` - 머신러닝/이상 탐지 모듈
 - `common/` - 공통 유틸리티, 전략 패턴
 - `admin/` - 어드민 서비스 레이어 (인증, 사용자 관리, LLM 분석)
+- `batch-analysis/` - 배치 분석 파이프라인 모듈 (일별 채팅 품질 분석, 스케줄링)
+- `quality/` - 챗봇 품질 분석 모듈 (감정 분석 서비스)
+- `notifications/` - 알림 서비스 모듈 (Slack 알림)
+- `chatbot/` - 글로벌 플로팅 AI 챗봇 모듈 (페이지 컨텍스트 기반 대화)
 
 ## For AI Agents
 - NestJS 모듈 구조를 따름 (module, controller, service 패턴)

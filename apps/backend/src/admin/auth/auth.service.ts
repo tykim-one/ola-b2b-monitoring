@@ -24,6 +24,13 @@ export interface LoginResponse {
 export interface RefreshResponse {
   accessToken: string;
   refreshToken: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    roles: string[];
+    permissions: string[];
+  };
 }
 
 @Injectable()
@@ -162,6 +169,35 @@ export class AuthService {
       data: { revokedAt: new Date() },
     });
 
+    // Fetch user roles and permissions
+    const userWithRoles = await this.prisma.user.findUnique({
+      where: { id: storedToken.user.id },
+      include: {
+        userRoles: {
+          include: {
+            role: {
+              include: {
+                rolePermissions: {
+                  include: {
+                    permission: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const roles = userWithRoles?.userRoles.map((ur) => ur.role.name) || [];
+    const permissions = [
+      ...new Set(
+        userWithRoles?.userRoles.flatMap((ur) =>
+          ur.role.rolePermissions.map((rp) => rp.permission.name),
+        ) || [],
+      ),
+    ];
+
     // Generate new tokens
     const newAccessToken = this.generateAccessToken(
       storedToken.user.id,
@@ -174,6 +210,13 @@ export class AuthService {
     return {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
+      user: {
+        id: storedToken.user.id,
+        email: storedToken.user.email,
+        name: storedToken.user.name,
+        roles,
+        permissions,
+      },
     };
   }
 

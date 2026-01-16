@@ -7,6 +7,7 @@ import {
   Res,
   Req,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -65,11 +66,13 @@ export class AuthController {
     );
 
     // Set refresh token as httpOnly cookie
+    // Use 'lax' for sameSite to allow cross-origin requests in development (different ports)
     response.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/',
     });
 
     return {
@@ -144,22 +147,41 @@ export class AuthController {
   ) {
     const refreshToken = request.cookies?.refreshToken;
 
+    // Helper to clear cookie on failure
+    const clearRefreshCookie = () => {
+      response.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        path: '/',
+      });
+    };
+
     if (!refreshToken) {
-      throw new Error('Refresh token not found');
+      clearRefreshCookie();
+      throw new UnauthorizedException('Refresh token not found');
     }
 
-    const result = await this.authService.refreshTokens(refreshToken);
+    try {
+      const result = await this.authService.refreshTokens(refreshToken);
 
-    // Update refresh token cookie
-    response.cookie('refreshToken', result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+      // Update refresh token cookie
+      response.cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: '/',
+      });
 
-    return {
-      accessToken: result.accessToken,
-    };
+      return {
+        accessToken: result.accessToken,
+        user: result.user,
+      };
+    } catch (error) {
+      // Clear cookie on any refresh failure (expired, revoked, invalid)
+      clearRefreshCookie();
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
   }
 }

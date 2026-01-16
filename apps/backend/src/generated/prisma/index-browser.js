@@ -221,6 +221,51 @@ exports.Prisma.ApiKeyScalarFieldEnum = {
   revokedAt: 'revokedAt'
 };
 
+exports.Prisma.BatchAnalysisJobScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  targetDate: 'targetDate',
+  tenantId: 'tenantId',
+  sampleSize: 'sampleSize',
+  promptTemplate: 'promptTemplate',
+  totalItems: 'totalItems',
+  processedItems: 'processedItems',
+  failedItems: 'failedItems',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BatchAnalysisResultScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  originalTimestamp: 'originalTimestamp',
+  tenantId: 'tenantId',
+  sessionId: 'sessionId',
+  userInput: 'userInput',
+  llmResponse: 'llmResponse',
+  analysisPrompt: 'analysisPrompt',
+  analysisResult: 'analysisResult',
+  modelName: 'modelName',
+  latencyMs: 'latencyMs',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AnalysisPromptTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  prompt: 'prompt',
+  isDefault: 'isDefault',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -243,7 +288,10 @@ exports.Prisma.ModelName = {
   AnalysisSession: 'AnalysisSession',
   AnalysisMessage: 'AnalysisMessage',
   AuditLog: 'AuditLog',
-  ApiKey: 'ApiKey'
+  ApiKey: 'ApiKey',
+  BatchAnalysisJob: 'BatchAnalysisJob',
+  BatchAnalysisResult: 'BatchAnalysisResult',
+  AnalysisPromptTemplate: 'AnalysisPromptTemplate'
 };
 
 /**

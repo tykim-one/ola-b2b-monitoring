@@ -20,6 +20,12 @@ import {
   UserQuestionPattern,
   UserListItem,
   UserActivityDetail,
+  EmergingQueryPattern,
+  SentimentAnalysisResult,
+  RephrasedQueryPattern,
+  SessionAnalytics,
+  TenantQualitySummary,
+  ResponseQualityMetrics,
 } from '@ola/shared-types';
 import { MetricsDataSource } from '../interfaces';
 import { MetricsQueries } from '../../metrics/queries/metrics.queries';
@@ -401,6 +407,90 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     return rows.map((row) => ({
       ...row,
       timestamp: this.normalizeDate(row.timestamp),
+    }));
+  }
+
+  // ==================== Chatbot Quality Analysis Methods ====================
+
+  async getEmergingQueryPatterns(
+    recentDays: number = 7,
+    historicalDays: number = 90,
+  ): Promise<EmergingQueryPattern[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.emergingQueryPatterns(
+      projectId,
+      datasetId,
+      tableName,
+      recentDays,
+      historicalDays,
+    );
+    return this.executeQuery<EmergingQueryPattern>(query, 100);
+  }
+
+  async getSentimentAnalysis(
+    days: number = 7,
+  ): Promise<SentimentAnalysisResult[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.sentimentAnalysis(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+    );
+    return this.executeQuery<SentimentAnalysisResult>(query, 500);
+  }
+
+  async getRephrasedQueryPatterns(
+    days: number = 7,
+  ): Promise<RephrasedQueryPattern[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.rephrasedQueryPatterns(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+    );
+    return this.executeQuery<RephrasedQueryPattern>(query, 100);
+  }
+
+  async getSessionAnalytics(days: number = 7): Promise<SessionAnalytics[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.sessionAnalytics(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+    );
+    return this.executeQuery<SessionAnalytics>(query, 500);
+  }
+
+  async getTenantQualitySummary(
+    days: number = 7,
+  ): Promise<TenantQualitySummary[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.tenantQualitySummary(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+    );
+    return this.executeQuery<TenantQualitySummary>(query, 100);
+  }
+
+  async getResponseQualityMetrics(
+    days: number = 30,
+  ): Promise<ResponseQualityMetrics[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.responseQualityMetrics(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+    );
+    const rows = await this.executeQuery<ResponseQualityMetrics>(query, 1000);
+    return rows.map((row) => ({
+      ...row,
+      date: this.normalizeDate(row.date),
     }));
   }
 

@@ -111,48 +111,102 @@ export class LLMService {
   private formatMetricsContext(metrics: Record<string, any>): string {
     const sections: string[] = [];
 
-    // Realtime KPIs
+    // Realtime KPIs (snake_case fields from API)
     if (metrics.realtimeKPIs) {
-      sections.push('## Current Metrics (Last Hour)');
+      sections.push('## Current Metrics (Last 24 Hours)');
       const kpis = metrics.realtimeKPIs;
+      const totalRequests = kpis.total_requests || 0;
+      const successCount = kpis.success_count || 0;
+      const successRate = totalRequests > 0 ? (successCount / totalRequests) * 100 : 0;
+      const avgTokens = kpis.avg_tokens || 0;
+      const totalTokens = kpis.total_tokens || 0;
+      // Estimate cost: input $3/M tokens, output $15/M tokens (approximate)
+      const inputTokens = kpis.total_input_tokens || 0;
+      const outputTokens = kpis.total_output_tokens || 0;
+      const estimatedCost = (inputTokens * 3 / 1000000) + (outputTokens * 15 / 1000000);
+
       sections.push(
-        `- Total Requests: ${kpis.totalRequests?.toLocaleString() || 'N/A'}`,
+        `- Total Requests: ${totalRequests.toLocaleString()}`,
       );
       sections.push(
-        `- Success Rate: ${kpis.successRate ? (kpis.successRate * 100).toFixed(2) + '%' : 'N/A'}`,
+        `- Success Rate: ${successRate.toFixed(2)}%`,
       );
       sections.push(
-        `- Avg Tokens/Request: ${kpis.avgTokensPerRequest?.toFixed(2) || 'N/A'}`,
+        `- Avg Tokens/Request: ${avgTokens.toFixed(2)}`,
       );
-      sections.push(`- Total Cost: $${kpis.totalCost?.toFixed(2) || '0.00'}`);
+      sections.push(
+        `- Total Tokens: ${totalTokens.toLocaleString()}`,
+      );
+      sections.push(`- Estimated Cost: $${estimatedCost.toFixed(2)}`);
+      sections.push(`- Active Tenants: ${kpis.active_tenants || 0}`);
     }
 
-    // Tenant usage
+    // Tenant usage (snake_case fields from API)
     if (metrics.tenantUsage && metrics.tenantUsage.length > 0) {
       sections.push('\n## Top Tenants by Usage');
       metrics.tenantUsage.slice(0, 5).forEach((tenant: any, idx: number) => {
         sections.push(
-          `${idx + 1}. ${tenant.tenantId}: ${tenant.totalRequests.toLocaleString()} requests, ${tenant.totalTokens.toLocaleString()} tokens`,
+          `${idx + 1}. ${tenant.tenant_id}: ${(tenant.request_count || 0).toLocaleString()} requests, ${(tenant.total_tokens || 0).toLocaleString()} tokens`,
         );
       });
     }
 
-    // Anomalies
-    if (metrics.anomalies && metrics.anomalies.length > 0) {
-      sections.push('\n## Recent Anomalies');
-      metrics.anomalies.slice(0, 5).forEach((anomaly: any) => {
+    // Anomaly stats
+    if (metrics.anomalyStats && metrics.anomalyStats.length > 0) {
+      sections.push('\n## Anomaly Statistics');
+      metrics.anomalyStats.slice(0, 5).forEach((stat: any) => {
         sections.push(
-          `- ${anomaly.type}: ${anomaly.description} (severity: ${anomaly.severity})`,
+          `- ${stat.tenant_id}: avg=${stat.avg_tokens?.toFixed(0) || 0}, stddev=${stat.stddev_tokens?.toFixed(0) || 0}, p99=${stat.p99_tokens || 0}`,
         );
       });
     }
 
-    // Cost trends
+    // Cost trends (snake_case fields from API)
     if (metrics.costTrend && metrics.costTrend.length > 0) {
       sections.push('\n## Recent Cost Trend');
       const recent = metrics.costTrend.slice(-3);
       recent.forEach((point: any) => {
-        sections.push(`- ${point.date}: $${point.totalCost.toFixed(2)}`);
+        sections.push(`- ${point.date}: $${(point.total_cost || 0).toFixed(2)}`);
+      });
+    }
+
+    // Chatbot Quality - Emerging Patterns
+    if (metrics.emergingPatterns && metrics.emergingPatterns.length > 0) {
+      sections.push('\n## Emerging Query Patterns');
+      metrics.emergingPatterns.slice(0, 5).forEach((pattern: any) => {
+        sections.push(
+          `- [${pattern.patternType}] "${pattern.normalizedQuery?.substring(0, 50)}..." (recent: ${pattern.recentCount}, growth: ${pattern.growthRate || 'NEW'})`,
+        );
+      });
+    }
+
+    // Chatbot Quality - Sentiment Analysis
+    if (metrics.sentimentAnalysis && metrics.sentimentAnalysis.length > 0) {
+      const frustrated = metrics.sentimentAnalysis.filter((s: any) => s.sentimentFlag === 'FRUSTRATED').length;
+      const urgent = metrics.sentimentAnalysis.filter((s: any) => s.sentimentFlag === 'URGENT').length;
+      sections.push('\n## Sentiment Analysis');
+      sections.push(`- Frustrated queries: ${frustrated}`);
+      sections.push(`- Urgent queries: ${urgent}`);
+      sections.push(`- Total flagged: ${metrics.sentimentAnalysis.length}`);
+    }
+
+    // Chatbot Quality - Session Analytics
+    if (metrics.sessionAnalytics && metrics.sessionAnalytics.length > 0) {
+      const avgTurns = metrics.sessionAnalytics.reduce((sum: number, s: any) => sum + (s.turnCount || 0), 0) / metrics.sessionAnalytics.length;
+      const frustratedSessions = metrics.sessionAnalytics.filter((s: any) => s.hasFrustration).length;
+      sections.push('\n## Session Analytics');
+      sections.push(`- Total sessions analyzed: ${metrics.sessionAnalytics.length}`);
+      sections.push(`- Avg turns per session: ${avgTurns.toFixed(1)}`);
+      sections.push(`- Sessions with frustration: ${frustratedSessions}`);
+    }
+
+    // Chatbot Quality - Tenant Summary
+    if (metrics.tenantQuality && metrics.tenantQuality.length > 0) {
+      sections.push('\n## Tenant Quality Summary');
+      metrics.tenantQuality.slice(0, 5).forEach((t: any) => {
+        sections.push(
+          `- ${t.tenantId}: ${t.totalSessions} sessions, ${t.sessionSuccessRate?.toFixed(1)}% success, ${t.frustrationRate?.toFixed(2)}% frustration`,
+        );
       });
     }
 
