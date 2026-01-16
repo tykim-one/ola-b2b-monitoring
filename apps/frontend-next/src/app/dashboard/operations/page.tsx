@@ -6,7 +6,7 @@ import KPICard from '@/components/kpi/KPICard';
 import RealtimeTrafficChart from '@/components/charts/RealtimeTrafficChart';
 import ErrorGauge from '@/components/charts/ErrorGauge';
 
-const API_BASE = 'http://localhost:3000/projects/ibks/bigquery';
+const API_BASE = 'http://localhost:3000/projects/ibks/api';
 
 interface KPIData {
   total_requests: number;

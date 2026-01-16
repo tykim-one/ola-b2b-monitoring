@@ -11,6 +11,7 @@
 - `ai-performance/` - AI/LLM 성능 메트릭 대시보드
 - `business/` - 비즈니스 메트릭 대시보드
 - `operations/` - 운영 메트릭 대시보드
+- `quality/` - 품질 모니터링 대시보드 (토큰 효율성, 질문-응답 상관관계, FAQ 후보)
 
 ## For AI Agents
 - 각 서브 대시보드는 독립적인 page.tsx를 가짐

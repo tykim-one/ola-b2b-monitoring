@@ -5,25 +5,25 @@ import { ProjectStrategy } from './project.strategy.interface';
 @Injectable()
 export class DefaultProjectStrategy implements ProjectStrategy {
   parseLog(raw: any): B2BLog {
-    // Cloud Logging Sink 스키마에 맞춤 (jsonPayload는 STRUCT 타입)
-    const payload = raw.jsonPayload || {};
+    // 플랫 스키마: 모든 필드가 루트 레벨에 존재
+    // request_metadata는 중첩 객체로 service, endpoint 등 포함
+    const metadata = raw.request_metadata || {};
 
     return {
         id: raw.insertId || crypto.randomUUID(),
-        timestamp: raw.timestamp, // BigQuery timestamp
+        timestamp: raw.timestamp,
         level: this.mapLevel(raw.severity || 'INFO'),
-        message: payload.llm_response || raw.textPayload || '',
-        user_input: payload.user_input || '',
-        llm_response: payload.llm_response || '',
-        tenant_id: payload.tenant_id || '',
-        service: raw.resource?.labels?.service_name || 'unknown',
-        latencyMs: payload.latency ? parseFloat(payload.latency) : 0,
+        message: raw.llm_response || '',
+        user_input: raw.user_input || '',
+        llm_response: raw.llm_response || '',
+        tenant_id: raw.tenant_id || '',
+        service: metadata.service || 'unknown',
     };
   }
 
   getFilterQuery(projectId: string): string {
-    // Cloud Logging Sink 스키마: jsonPayload.tenant_id 사용
-    return `jsonPayload.tenant_id IS NOT NULL`;
+    // 플랫 스키마: tenant_id가 루트 레벨에 존재
+    return `tenant_id IS NOT NULL`;
   }
 
   private mapLevel(level: string): LogLevel {

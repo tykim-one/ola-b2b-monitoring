@@ -1,24 +1,24 @@
 import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
-import { BigQueryService } from './bigquery.service';
+import { MetricsService } from './metrics.service';
 import { QueryDto } from './dto/query.dto';
 
-@ApiTags('bigquery')
-@Controller('projects/:projectId/bigquery')
-export class BigQueryController {
-  constructor(private readonly bigQueryService: BigQueryService) {}
+@ApiTags('metrics')
+@Controller('projects/:projectId/api')
+export class MetricsController {
+  constructor(private readonly metricsService: MetricsService) {}
 
-  // ==================== 기존 API ====================
+  // ==================== BigQuery-specific admin functions ====================
 
   /**
-   * POST /projects/:projectId/bigquery/query
+   * POST /projects/:projectId/api/query
    * Execute a custom BigQuery SQL query
    */
   @ApiOperation({ summary: 'Execute custom SQL query' })
   @ApiResponse({ status: 200, description: 'Query executed successfully' })
   @Post('query')
   async executeQuery(@Param('projectId') projectId: string, @Body() queryDto: QueryDto) {
-    const results = await this.bigQueryService.executeQuery(queryDto);
+    const results = await this.metricsService.executeQuery(queryDto);
     return {
       success: true,
       rowCount: results.length,
@@ -27,14 +27,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/datasets
+   * GET /projects/:projectId/api/datasets
    * Get list of available datasets
    */
   @ApiOperation({ summary: 'List all datasets' })
   @ApiResponse({ status: 200, description: 'List of datasets returned' })
   @Get('datasets')
   async getDatasets() {
-    const datasets = await this.bigQueryService.getDatasets();
+    const datasets = await this.metricsService.getDatasets();
     return {
       success: true,
       datasets,
@@ -42,14 +42,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/tables/:datasetId
+   * GET /projects/:projectId/api/tables/:datasetId
    * Get tables in a specific dataset
    */
   @ApiOperation({ summary: 'List tables in a dataset' })
   @ApiResponse({ status: 200, description: 'List of tables returned' })
   @Get('tables/:datasetId')
   async getTables(@Param('datasetId') datasetId: string) {
-    const tables = await this.bigQueryService.getTables(datasetId);
+    const tables = await this.metricsService.getTables(datasetId);
     return {
       success: true,
       datasetId,
@@ -58,7 +58,7 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/logs
+   * GET /projects/:projectId/api/logs
    * Get sample logs from the configured dataset
    */
   @ApiOperation({ summary: 'Get sample logs' })
@@ -67,7 +67,7 @@ export class BigQueryController {
   @Get('logs')
   async getSampleLogs(@Param('projectId') projectId: string, @Query('limit') limit?: string) {
     const limitNum = limit ? parseInt(limit, 10) : 100;
-    const logs = await this.bigQueryService.getSampleLogs(projectId, limitNum);
+    const logs = await this.metricsService.getSampleLogs(projectId, limitNum);
     return {
       success: true,
       count: logs.length,
@@ -78,14 +78,14 @@ export class BigQueryController {
   // ==================== 메트릭 API (캐싱 적용) ====================
 
   /**
-   * GET /projects/:projectId/bigquery/metrics/realtime
+   * GET /projects/:projectId/api/metrics/realtime
    * 실시간 KPI 메트릭 (최근 24시간)
    */
   @ApiOperation({ summary: 'Get realtime KPI metrics (last 24h)' })
   @ApiResponse({ status: 200, description: 'Realtime KPI data returned' })
   @Get('metrics/realtime')
   async getRealtimeKPI() {
-    const data = await this.bigQueryService.getRealtimeKPI();
+    const data = await this.metricsService.getRealtimeKPI();
     return {
       success: true,
       data,
@@ -95,14 +95,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/metrics/hourly
+   * GET /projects/:projectId/api/metrics/hourly
    * 시간별 트래픽 (최근 24시간)
    */
   @ApiOperation({ summary: 'Get hourly traffic data (last 24h)' })
   @ApiResponse({ status: 200, description: 'Hourly traffic data returned' })
   @Get('metrics/hourly')
   async getHourlyTraffic() {
-    const data = await this.bigQueryService.getHourlyTraffic();
+    const data = await this.metricsService.getHourlyTraffic();
     return {
       success: true,
       count: data.length,
@@ -113,14 +113,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/metrics/daily
+   * GET /projects/:projectId/api/metrics/daily
    * 일별 트래픽 (최근 30일)
    */
   @ApiOperation({ summary: 'Get daily traffic data (last 30 days)' })
   @ApiResponse({ status: 200, description: 'Daily traffic data returned' })
   @Get('metrics/daily')
   async getDailyTraffic() {
-    const data = await this.bigQueryService.getDailyTraffic();
+    const data = await this.metricsService.getDailyTraffic();
     return {
       success: true,
       count: data.length,
@@ -133,7 +133,7 @@ export class BigQueryController {
   // ==================== 분석 API ====================
 
   /**
-   * GET /projects/:projectId/bigquery/analytics/tenant-usage
+   * GET /projects/:projectId/api/analytics/tenant-usage
    * 테넌트별 사용량
    */
   @ApiOperation({ summary: 'Get tenant usage analytics' })
@@ -142,7 +142,7 @@ export class BigQueryController {
   @Get('analytics/tenant-usage')
   async getTenantUsage(@Query('days') days?: string) {
     const daysNum = days ? parseInt(days, 10) : 7;
-    const data = await this.bigQueryService.getTenantUsage(daysNum);
+    const data = await this.metricsService.getTenantUsage(daysNum);
     return {
       success: true,
       count: data.length,
@@ -153,14 +153,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/analytics/heatmap
+   * GET /projects/:projectId/api/analytics/heatmap
    * 사용량 히트맵 (요일 x 시간)
    */
   @ApiOperation({ summary: 'Get usage heatmap (day of week x hour)' })
   @ApiResponse({ status: 200, description: 'Heatmap data returned' })
   @Get('analytics/heatmap')
   async getUsageHeatmap() {
-    const data = await this.bigQueryService.getUsageHeatmap();
+    const data = await this.metricsService.getUsageHeatmap();
     return {
       success: true,
       count: data.length,
@@ -171,14 +171,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/analytics/cost-trend
+   * GET /projects/:projectId/api/analytics/cost-trend
    * 비용 트렌드 (일별)
    */
   @ApiOperation({ summary: 'Get daily cost trend' })
   @ApiResponse({ status: 200, description: 'Cost trend data returned' })
   @Get('analytics/cost-trend')
   async getCostTrend() {
-    const data = await this.bigQueryService.getCostTrend();
+    const data = await this.metricsService.getCostTrend();
     return {
       success: true,
       count: data.length,
@@ -189,14 +189,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/analytics/errors
+   * GET /projects/:projectId/api/analytics/errors
    * 에러 분석
    */
   @ApiOperation({ summary: 'Get error analysis' })
   @ApiResponse({ status: 200, description: 'Error analysis data returned' })
   @Get('analytics/errors')
   async getErrorAnalysis() {
-    const data = await this.bigQueryService.getErrorAnalysis();
+    const data = await this.metricsService.getErrorAnalysis();
     return {
       success: true,
       count: data.length,
@@ -209,14 +209,14 @@ export class BigQueryController {
   // ==================== AI 분석 API ====================
 
   /**
-   * GET /projects/:projectId/bigquery/ai/token-efficiency
+   * GET /projects/:projectId/api/ai/token-efficiency
    * 토큰 효율성 분석
    */
   @ApiOperation({ summary: 'Get token efficiency analysis' })
   @ApiResponse({ status: 200, description: 'Token efficiency data returned' })
   @Get('ai/token-efficiency')
   async getTokenEfficiency() {
-    const data = await this.bigQueryService.getTokenEfficiency();
+    const data = await this.metricsService.getTokenEfficiency();
     return {
       success: true,
       count: data.length,
@@ -227,14 +227,14 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/ai/anomaly-stats
+   * GET /projects/:projectId/api/ai/anomaly-stats
    * 이상 탐지용 통계
    */
   @ApiOperation({ summary: 'Get anomaly detection statistics' })
   @ApiResponse({ status: 200, description: 'Anomaly stats returned' })
   @Get('ai/anomaly-stats')
   async getAnomalyStats() {
-    const data = await this.bigQueryService.getAnomalyStats();
+    const data = await this.metricsService.getAnomalyStats();
     return {
       success: true,
       count: data.length,
@@ -245,14 +245,70 @@ export class BigQueryController {
   }
 
   /**
-   * GET /projects/:projectId/bigquery/ai/query-patterns
+   * GET /projects/:projectId/api/ai/query-patterns
    * 사용자 질의 패턴
    */
   @ApiOperation({ summary: 'Get user query patterns' })
   @ApiResponse({ status: 200, description: 'Query pattern data returned' })
   @Get('ai/query-patterns')
   async getQueryPatterns() {
-    const data = await this.bigQueryService.getQueryPatterns();
+    const data = await this.metricsService.getQueryPatterns();
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  // ==================== 품질 분석 API ====================
+
+  /**
+   * GET /projects/:projectId/api/quality/efficiency-trend
+   * 일별 토큰 효율성 트렌드 (최근 30일)
+   */
+  @ApiOperation({ summary: 'Get daily token efficiency trend' })
+  @ApiResponse({ status: 200, description: 'Token efficiency trend data returned' })
+  @Get('quality/efficiency-trend')
+  async getTokenEfficiencyTrend() {
+    const data = await this.metricsService.getTokenEfficiencyTrend();
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/quality/query-response-correlation
+   * 질문-응답 길이 상관관계
+   */
+  @ApiOperation({ summary: 'Get query-response length correlation' })
+  @ApiResponse({ status: 200, description: 'Correlation data returned' })
+  @Get('quality/query-response-correlation')
+  async getQueryResponseCorrelation() {
+    const data = await this.metricsService.getQueryResponseCorrelation();
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/quality/repeated-patterns
+   * 반복 질문 패턴 (FAQ 후보)
+   */
+  @ApiOperation({ summary: 'Get repeated query patterns (FAQ candidates)' })
+  @ApiResponse({ status: 200, description: 'Repeated pattern data returned' })
+  @Get('quality/repeated-patterns')
+  async getRepeatedQueryPatterns() {
+    const data = await this.metricsService.getRepeatedQueryPatterns();
     return {
       success: true,
       count: data.length,
@@ -265,14 +321,14 @@ export class BigQueryController {
   // ==================== 캐시 관리 API ====================
 
   /**
-   * GET /projects/:projectId/bigquery/cache/stats
+   * GET /projects/:projectId/api/cache/stats
    * 캐시 통계 조회
    */
   @ApiOperation({ summary: 'Get cache statistics' })
   @ApiResponse({ status: 200, description: 'Cache stats returned' })
   @Get('cache/stats')
   getCacheStats() {
-    const stats = this.bigQueryService.getCacheStats();
+    const stats = this.metricsService.getCacheStats();
     return {
       success: true,
       ...stats,
@@ -280,13 +336,13 @@ export class BigQueryController {
   }
 
   /**
-   * DELETE /projects/:projectId/bigquery/cache
+   * DELETE /projects/:projectId/api/cache
    * 캐시 초기화
    */
   @ApiOperation({ summary: 'Flush all cache' })
   @ApiResponse({ status: 200, description: 'Cache flushed' })
   @Delete('cache')
   flushCache() {
-    return this.bigQueryService.flushCache();
+    return this.metricsService.flushCache();
   }
 }

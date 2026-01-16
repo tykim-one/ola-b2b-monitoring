@@ -12,4 +12,4 @@
 
 ## For AI Agents
 - 새로운 ML 기능 추가 시 별도 서브모듈로 생성
-- ML 모듈은 BigQueryService에 의존하여 데이터 조회
+- ML 모듈은 MetricsService에 의존하여 데이터 조회

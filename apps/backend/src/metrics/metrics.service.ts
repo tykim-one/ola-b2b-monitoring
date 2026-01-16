@@ -1,14 +1,32 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BigQuery } from '@google-cloud/bigquery';
 import { QueryDto } from './dto/query.dto';
 import { DefaultProjectStrategy } from '../common/strategies/default.project.strategy';
 import { CacheService, CacheTTL } from '../cache/cache.service';
 import { MetricsQueries } from './queries/metrics.queries';
+import { METRICS_DATASOURCE } from '../datasource';
+import type { MetricsDataSource } from '../datasource';
+import {
+  RealtimeKPI,
+  HourlyTraffic,
+  DailyTraffic,
+  TenantUsage,
+  UsageHeatmapCell,
+  ErrorAnalysis,
+  TokenEfficiency,
+  AnomalyStats,
+  CostTrend,
+  QueryPattern,
+  B2BLog,
+  TokenEfficiencyTrend,
+  QueryResponseCorrelation,
+  RepeatedQueryPattern,
+} from '@ola/shared-types';
 
 @Injectable()
-export class BigQueryService implements OnModuleInit {
-  private readonly logger = new Logger(BigQueryService.name);
+export class MetricsService implements OnModuleInit {
+  private readonly logger = new Logger(MetricsService.name);
   private bigQueryClient: BigQuery;
   private projectId: string;
   private datasetId: string;
@@ -19,6 +37,7 @@ export class BigQueryService implements OnModuleInit {
     private configService: ConfigService,
     private projectStrategy: DefaultProjectStrategy,
     private cacheService: CacheService,
+    @Inject(METRICS_DATASOURCE) private metricsDataSource: MetricsDataSource,
   ) {}
 
   onModuleInit() {
@@ -34,8 +53,10 @@ export class BigQueryService implements OnModuleInit {
       keyFilename: credentials,
     });
 
-    this.logger.log(`BigQuery client initialized for project: ${this.projectId}, dataset: ${this.datasetId}, table: ${this.tableName}`);
+    this.logger.log(`Metrics service initialized for project: ${this.projectId}, dataset: ${this.datasetId}, table: ${this.tableName}`);
   }
+
+  // ==================== BigQuery-specific admin functions ====================
 
   /**
    * Execute a custom SQL query
@@ -95,7 +116,7 @@ export class BigQueryService implements OnModuleInit {
   /**
    * Get sample logs from the configured dataset
    */
-  async getSampleLogs(projectId: string, limit: number = 100): Promise<any[]> {
+  async getSampleLogs(projectId: string, limit: number = 100): Promise<B2BLog[]> {
     const filterClause = this.projectStrategy.getFilterQuery(projectId);
 
     const query = `
@@ -110,21 +131,17 @@ export class BigQueryService implements OnModuleInit {
     return rows.map(row => this.projectStrategy.parseLog(row));
   }
 
-  // ==================== 메트릭 API (캐싱 적용) ====================
+  // ==================== 메트릭 API (캐싱 적용, MetricsDataSource 사용) ====================
 
   /**
    * 실시간 KPI 메트릭 (캐시 TTL: 5분)
    */
-  async getRealtimeKPI(): Promise<any> {
+  async getRealtimeKPI(): Promise<RealtimeKPI> {
     const cacheKey = CacheService.generateKey('metrics', 'realtime', 'kpi');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.realtimeKPI(this.projectId, this.datasetId, this.tableName);
-        const rows = await this.executeQuery({ query, maxResults: 1 });
-        return rows[0] || null;
-      },
+      async () => this.metricsDataSource.getRealtimeKPI(),
       CacheTTL.SHORT,
     );
   }
@@ -132,15 +149,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 시간별 트래픽 (캐시 TTL: 15분)
    */
-  async getHourlyTraffic(): Promise<any[]> {
+  async getHourlyTraffic(): Promise<HourlyTraffic[]> {
     const cacheKey = CacheService.generateKey('metrics', 'hourly', 'traffic');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.hourlyTraffic(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 100 });
-      },
+      async () => this.metricsDataSource.getHourlyTraffic(),
       CacheTTL.MEDIUM,
     );
   }
@@ -148,15 +162,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 일별 트래픽 (캐시 TTL: 15분)
    */
-  async getDailyTraffic(): Promise<any[]> {
+  async getDailyTraffic(): Promise<DailyTraffic[]> {
     const cacheKey = CacheService.generateKey('metrics', 'daily', 'traffic');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.dailyTraffic(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 100 });
-      },
+      async () => this.metricsDataSource.getDailyTraffic(),
       CacheTTL.MEDIUM,
     );
   }
@@ -164,15 +175,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 테넌트별 사용량 (캐시 TTL: 15분)
    */
-  async getTenantUsage(days: number = 7): Promise<any[]> {
+  async getTenantUsage(days: number = 7): Promise<TenantUsage[]> {
     const cacheKey = CacheService.generateKey('metrics', 'tenant', 'usage', days);
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.tenantUsage(this.projectId, this.datasetId, this.tableName, days);
-        return this.executeQuery({ query, maxResults: 100 });
-      },
+      async () => this.metricsDataSource.getTenantUsage(days),
       CacheTTL.MEDIUM,
     );
   }
@@ -180,15 +188,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 사용량 히트맵 (캐시 TTL: 15분)
    */
-  async getUsageHeatmap(): Promise<any[]> {
+  async getUsageHeatmap(): Promise<UsageHeatmapCell[]> {
     const cacheKey = CacheService.generateKey('metrics', 'usage', 'heatmap');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.usageHeatmap(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 200 });
-      },
+      async () => this.metricsDataSource.getUsageHeatmap(),
       CacheTTL.MEDIUM,
     );
   }
@@ -196,15 +201,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 에러 분석 (캐시 TTL: 5분)
    */
-  async getErrorAnalysis(): Promise<any[]> {
+  async getErrorAnalysis(): Promise<ErrorAnalysis[]> {
     const cacheKey = CacheService.generateKey('metrics', 'error', 'analysis');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.errorAnalysis(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 100 });
-      },
+      async () => this.metricsDataSource.getErrorAnalysis(),
       CacheTTL.SHORT,
     );
   }
@@ -212,15 +214,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 토큰 효율성 분석 (캐시 TTL: 15분)
    */
-  async getTokenEfficiency(): Promise<any[]> {
+  async getTokenEfficiency(): Promise<TokenEfficiency[]> {
     const cacheKey = CacheService.generateKey('metrics', 'token', 'efficiency');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.tokenEfficiency(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 1000 });
-      },
+      async () => this.metricsDataSource.getTokenEfficiency(),
       CacheTTL.MEDIUM,
     );
   }
@@ -228,15 +227,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 이상 탐지용 통계 (캐시 TTL: 5분)
    */
-  async getAnomalyStats(): Promise<any[]> {
+  async getAnomalyStats(): Promise<AnomalyStats[]> {
     const cacheKey = CacheService.generateKey('metrics', 'anomaly', 'stats');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.anomalyStats(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 100 });
-      },
+      async () => this.metricsDataSource.getAnomalyStats(),
       CacheTTL.SHORT,
     );
   }
@@ -244,15 +240,12 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 비용 트렌드 (캐시 TTL: 15분)
    */
-  async getCostTrend(): Promise<any[]> {
+  async getCostTrend(): Promise<CostTrend[]> {
     const cacheKey = CacheService.generateKey('metrics', 'cost', 'trend');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.costTrend(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 100 });
-      },
+      async () => this.metricsDataSource.getCostTrend(),
       CacheTTL.MEDIUM,
     );
   }
@@ -260,15 +253,53 @@ export class BigQueryService implements OnModuleInit {
   /**
    * 사용자 질의 패턴 (캐시 TTL: 15분)
    */
-  async getQueryPatterns(): Promise<any[]> {
+  async getQueryPatterns(): Promise<QueryPattern[]> {
     const cacheKey = CacheService.generateKey('metrics', 'query', 'patterns');
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => {
-        const query = MetricsQueries.queryPatterns(this.projectId, this.datasetId, this.tableName);
-        return this.executeQuery({ query, maxResults: 500 });
-      },
+      async () => this.metricsDataSource.getQueryPatterns(),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  // ==================== 품질 분석 API ====================
+
+  /**
+   * 일별 토큰 효율성 트렌드 (캐시 TTL: 15분)
+   */
+  async getTokenEfficiencyTrend(): Promise<TokenEfficiencyTrend[]> {
+    const cacheKey = CacheService.generateKey('quality', 'efficiency', 'trend');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getTokenEfficiencyTrend(),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 질문-응답 길이 상관관계 (캐시 TTL: 15분)
+   */
+  async getQueryResponseCorrelation(): Promise<QueryResponseCorrelation[]> {
+    const cacheKey = CacheService.generateKey('quality', 'query', 'correlation');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getQueryResponseCorrelation(),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 반복 질문 패턴 (캐시 TTL: 15분)
+   */
+  async getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]> {
+    const cacheKey = CacheService.generateKey('quality', 'repeated', 'patterns');
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getRepeatedQueryPatterns(),
       CacheTTL.MEDIUM,
     );
   }

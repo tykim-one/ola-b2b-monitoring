@@ -18,7 +18,7 @@ interface TokenData {
   output_tokens: number;
   total_tokens: number;
   efficiency_ratio: number;
-  success: string;
+  success: boolean;
 }
 
 interface TokenScatterPlotProps {
@@ -106,7 +106,9 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
                 backgroundColor: '#0f172a',
                 borderColor: '#334155',
                 borderRadius: '8px',
+                color: '#fff',
               }}
+              itemStyle={{ color: '#fff' }}
               formatter={(value, name) => {
                 const numValue = typeof value === 'number' ? value : 0;
                 return [numValue.toLocaleString(), String(name)];

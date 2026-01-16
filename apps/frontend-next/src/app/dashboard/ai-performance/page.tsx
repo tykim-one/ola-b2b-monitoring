@@ -5,7 +5,7 @@ import { Brain, Zap, TrendingUp, AlertCircle } from 'lucide-react';
 import KPICard from '@/components/kpi/KPICard';
 import TokenScatterPlot from '@/components/charts/TokenScatterPlot';
 
-const API_BASE = 'http://localhost:3000/projects/ibks/bigquery';
+const API_BASE = 'http://localhost:3000/projects/ibks/api';
 
 interface TokenEfficiencyData {
   tenant_id: string;
@@ -13,7 +13,7 @@ interface TokenEfficiencyData {
   output_tokens: number;
   total_tokens: number;
   efficiency_ratio: number;
-  success: string;
+  success: boolean;
   timestamp: string;
 }
 
@@ -74,7 +74,7 @@ export default function AIPerformancePage() {
       ? tokenEfficiency.reduce((sum, t) => sum + t.total_tokens, 0) / tokenEfficiency.length
       : 0;
 
-  const successCount = tokenEfficiency.filter((t) => t.success === 'true').length;
+  const successCount = tokenEfficiency.filter((t) => t.success === true).length;
   const successRate = tokenEfficiency.length > 0 ? (successCount / tokenEfficiency.length) * 100 : 0;
 
   const totalP99 = anomalyStats.reduce((max, s) => Math.max(max, s.p99_tokens || 0), 0);

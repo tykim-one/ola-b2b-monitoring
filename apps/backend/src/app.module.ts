@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BigQueryModule } from './bigquery/bigquery.module';
+import { MetricsModule } from './metrics/metrics.module';
 import { CacheModule } from './cache/cache.module';
 import { MlModule } from './ml/ml.module';
 
@@ -13,7 +13,7 @@ import { MlModule } from './ml/ml.module';
       envFilePath: '.env',
     }),
     CacheModule,
-    BigQueryModule,
+    MetricsModule,
     MlModule,
   ],
   controllers: [AppController],

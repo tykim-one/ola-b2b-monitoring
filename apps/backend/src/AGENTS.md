@@ -11,8 +11,9 @@ NestJS 백엔드 애플리케이션의 소스 코드입니다. 모듈화된 구�
 - `app.service.ts` - 기본 서비스
 
 ## Subdirectories
-- `bigquery/` - BigQuery 연동 모듈 (핵심 비즈니스 로직)
+- `metrics/` - 메트릭 API 모듈 (핵심 비즈니스 로직, 데이터소스 중립적)
 - `cache/` - node-cache 기반 인메모리 캐싱 서비스
+- `datasource/` - 데이터 소스 추상화 레이어 (BigQuery/PostgreSQL/MySQL 지원)
 - `ml/` - 머신러닝/이상 탐지 모듈
 - `common/` - 공통 유틸리티, 전략 패턴
 

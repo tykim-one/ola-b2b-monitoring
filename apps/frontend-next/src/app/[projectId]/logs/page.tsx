@@ -10,7 +10,7 @@ interface PageProps {
 async function getLogs(projectId: string): Promise<B2BLog[]> {
   const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   try {
-    const res = await fetch(`${backendUrl}/projects/${projectId}/bigquery/logs?limit=50`, {
+    const res = await fetch(`${backendUrl}/projects/${projectId}/api/logs?limit=50`, {
       cache: 'no-store',
     });
     

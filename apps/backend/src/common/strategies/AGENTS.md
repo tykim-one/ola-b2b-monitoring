@@ -12,3 +12,8 @@
 - 새 프로젝트 유형 추가 시 ProjectStrategy 인터페이스 구현
 - `getFilterQuery()` - WHERE 절 필터 생성
 - `parseLog()` - 로그 데이터 파싱/변환
+
+## Schema 참고
+현재 **플랫 스키마** 사용 (jsonPayload 중첩 아님):
+- `tenant_id`, `user_input`, `llm_response` 등 모두 루트 레벨
+- `request_metadata.service`로 서비스명 접근

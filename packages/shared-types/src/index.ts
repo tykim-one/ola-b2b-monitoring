@@ -94,7 +94,7 @@ export interface TokenEfficiency {
   output_tokens: number;
   total_tokens: number;
   efficiency_ratio: number;
-  success: string;
+  success: boolean;
   timestamp: string;
 }
 
@@ -113,6 +113,41 @@ export interface QueryPattern {
   query_length: number;
   total_tokens: number;
   timestamp: string;
+}
+
+// ==================== 품질 분석 메트릭 ====================
+
+/** 일별 토큰 효율성 트렌드 */
+export interface TokenEfficiencyTrend {
+  date: string;
+  avg_efficiency_ratio: number;
+  min_efficiency_ratio: number;
+  max_efficiency_ratio: number;
+  total_requests: number;
+  avg_input_tokens: number;
+  avg_output_tokens: number;
+}
+
+/** 질문-응답 길이 상관관계 */
+export interface QueryResponseCorrelation {
+  tenant_id: string;
+  query_length: number;
+  response_length: number;
+  input_tokens: number;
+  output_tokens: number;
+  efficiency_ratio: number;
+  timestamp: string;
+}
+
+/** 반복 질문 패턴 */
+export interface RepeatedQueryPattern {
+  query_pattern: string;
+  occurrence_count: number;
+  unique_tenants: number;
+  avg_response_length: number;
+  avg_output_tokens: number;
+  first_seen: string;
+  last_seen: string;
 }
 
 // ==================== 파생 지표 ====================

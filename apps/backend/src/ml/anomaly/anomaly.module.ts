@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AnomalyService } from './anomaly.service';
 import { AnomalyController } from './anomaly.controller';
-import { BigQueryModule } from '../../bigquery/bigquery.module';
+import { MetricsModule } from '../../metrics/metrics.module';
 
 @Module({
-  imports: [BigQueryModule],
+  imports: [MetricsModule],
   providers: [AnomalyService],
   controllers: [AnomalyController],
   exports: [AnomalyService],

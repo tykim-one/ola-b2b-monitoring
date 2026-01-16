@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BigQueryService } from '../../bigquery/bigquery.service';
+import { MetricsService } from '../../metrics/metrics.service';
 
 export interface AnomalyResult {
   tenant_id: string;
@@ -27,7 +27,7 @@ export interface AnomalyStats {
 export class AnomalyService {
   private readonly logger = new Logger(AnomalyService.name);
 
-  constructor(private readonly bigQueryService: BigQueryService) {}
+  constructor(private readonly metricsService: MetricsService) {}
 
   /**
    * Z-Score 기반 이상 탐지
@@ -58,10 +58,10 @@ export class AnomalyService {
 
     try {
       // 1. 통계 데이터 조회
-      const stats: AnomalyStats[] = await this.bigQueryService.getAnomalyStats();
+      const stats: AnomalyStats[] = await this.metricsService.getAnomalyStats();
 
       // 2. 최근 데이터 조회
-      const recentData = await this.bigQueryService.getTokenEfficiency();
+      const recentData = await this.metricsService.getTokenEfficiency();
 
       // 3. 각 테넌트별 이상 탐지
       for (const stat of stats) {
@@ -119,7 +119,7 @@ export class AnomalyService {
     const anomalies: AnomalyResult[] = [];
 
     try {
-      const kpi = await this.bigQueryService.getRealtimeKPI();
+      const kpi = await this.metricsService.getRealtimeKPI();
 
       if (kpi && kpi.error_rate > threshold) {
         const severity =
@@ -156,7 +156,7 @@ export class AnomalyService {
     const anomalies: AnomalyResult[] = [];
 
     try {
-      const hourlyTraffic = await this.bigQueryService.getHourlyTraffic();
+      const hourlyTraffic = await this.metricsService.getHourlyTraffic();
 
       if (hourlyTraffic.length < 3) {
         return anomalies;

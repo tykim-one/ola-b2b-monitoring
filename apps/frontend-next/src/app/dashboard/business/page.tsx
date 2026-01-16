@@ -7,7 +7,7 @@ import TenantPieChart from '@/components/charts/TenantPieChart';
 import CostTrendChart from '@/components/charts/CostTrendChart';
 import UsageHeatmap from '@/components/charts/UsageHeatmap';
 
-const API_BASE = 'http://localhost:3000/projects/ibks/bigquery';
+const API_BASE = 'http://localhost:3000/projects/ibks/api';
 
 interface TenantData {
   tenant_id: string;
