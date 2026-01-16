@@ -10,21 +10,29 @@
   },
   "dependencies": {
     "@google/genai": "^1.35.0",
+    "@hookform/resolvers": "^5.2.2",
     "@ola/shared-types": "workspace:*",
+    "@tanstack/react-query": "^5.90.17",
+    "@tanstack/react-query-devtools": "^5.91.2",
+    "autoprefixer": "^10.4.23",
+    "axios": "^1.13.2",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
+    "postcss": "^8",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "recharts": "^3.6.0"
+    "react-hook-form": "^7.71.1",
+    "recharts": "^3.6.0",
+    "tailwindcss": "^3",
+    "zod": "^4.3.5",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
-    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }

@@ -43,12 +43,17 @@ export class AnomalyController {
    * 에러율 이상 탐지
    */
   @ApiOperation({ summary: 'Detect error rate anomalies' })
-  @ApiQuery({ name: 'threshold', required: false, description: 'Error rate threshold (default: 5)' })
+  @ApiQuery({
+    name: 'threshold',
+    required: false,
+    description: 'Error rate threshold (default: 5)',
+  })
   @ApiResponse({ status: 200, description: 'Error rate anomalies returned' })
   @Get('errors')
   async detectErrorRateAnomalies(@Query('threshold') threshold?: string) {
     const thresholdNum = threshold ? parseFloat(threshold) : 5;
-    const anomalies = await this.anomalyService.detectErrorRateAnomalies(thresholdNum);
+    const anomalies =
+      await this.anomalyService.detectErrorRateAnomalies(thresholdNum);
     return {
       success: true,
       count: anomalies.length,

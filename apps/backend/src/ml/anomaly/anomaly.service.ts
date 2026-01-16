@@ -66,7 +66,7 @@ export class AnomalyService {
       // 3. 각 테넌트별 이상 탐지
       for (const stat of stats) {
         const tenantData = recentData.filter(
-          (d) => d.tenant_id === stat.tenant_id
+          (d) => d.tenant_id === stat.tenant_id,
         );
 
         for (const data of tenantData) {
@@ -74,7 +74,7 @@ export class AnomalyService {
           const zScore = this.calculateZScore(
             data.total_tokens,
             stat.avg_tokens,
-            stat.stddev_tokens
+            stat.stddev_tokens,
           );
 
           if (Math.abs(zScore) >= 2) {
@@ -95,7 +95,7 @@ export class AnomalyService {
                 'total_tokens',
                 data.total_tokens,
                 threshold,
-                severity
+                severity,
               ),
             });
           }
@@ -114,7 +114,7 @@ export class AnomalyService {
    * 에러율 이상 탐지
    */
   async detectErrorRateAnomalies(
-    threshold: number = 5
+    threshold: number = 5,
   ): Promise<AnomalyResult[]> {
     const anomalies: AnomalyResult[] = [];
 
@@ -144,7 +144,9 @@ export class AnomalyService {
 
       return anomalies;
     } catch (error) {
-      this.logger.error(`Error rate anomaly detection failed: ${error.message}`);
+      this.logger.error(
+        `Error rate anomaly detection failed: ${error.message}`,
+      );
       throw error;
     }
   }
@@ -191,7 +193,7 @@ export class AnomalyService {
             'traffic',
             latest.request_count,
             threshold,
-            severity
+            severity,
           ),
         });
       }
@@ -254,7 +256,7 @@ export class AnomalyService {
     metric: string,
     value: number,
     threshold: number,
-    severity: string
+    severity: string,
   ): string {
     const metricNames: Record<string, string> = {
       total_tokens: '토큰 사용량',

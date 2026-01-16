@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ==================== 인증/권한 테이블 ====================
+
+/// 사용자 계정
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String    // bcrypt hashed
+  name            String
+  isActive        Boolean   @default(true)
+  failedAttempts  Int       @default(0)
+  lockedUntil     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastLoginAt     DateTime?
+
+  // Relations
+  userRoles        UserRole[]
+  refreshTokens    RefreshToken[]
+  savedFilters     SavedFilter[]
+  analysisSessions AnalysisSession[]
+  auditLogs        AuditLog[]
+  apiKeys          ApiKey[]
+}
+
+/// 역할 (admin, analyst, viewer)
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+}
+
+/// 권한 (resource:action 형태)
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique // e.g., "metrics:read", "admin:write"
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  rolePermissions RolePermission[]
+}
+
+/// 사용자-역할 매핑 (Many-to-Many)
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+/// 역할-권한 매핑 (Many-to-Many)
+model RolePermission {
+  id           String   @id @default(uuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  // Relations
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+/// JWT 리프레시 토큰
+model RefreshToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ==================== 기능 테이블 ====================
+
+/// 저장된 데이터 필터
+model SavedFilter {
+  id          String   @id @default(uuid())
+  userId      String
+  name        String
+  description String?
+  criteria    String   // JSON string of FilterCriteria
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// LLM 분석 세션
+model AnalysisSession {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  context   String?  // JSON string of session context (metrics snapshot)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AnalysisMessage[]
+
+  @@index([userId])
+}
+
+/// LLM 분석 대화 기록
+model AnalysisMessage {
+  id        String   @id @default(uuid())
+  sessionId String
+  role      String   // "user" | "assistant"
+  content   String
+  metadata  String?  // JSON string (token count, model used, etc.)
+  createdAt DateTime @default(now())
+
+  // Relations
+  session AnalysisSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+/// 감사 로그 (90일 보관)
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String   // e.g., "user.login", "role.assign", "analysis.create"
+  resource   String?  // affected resource type
+  resourceId String?  // affected resource id
+  details    String?  // JSON string of additional details
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+/// 외부 통합용 API 키 (마이그레이션 Phase 2용)
+model ApiKey {
+  id          String    @id @default(uuid())
+  userId      String
+  name        String
+  key         String    @unique
+  permissions String    // JSON array of permission names
+  expiresAt   DateTime?
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  revokedAt   DateTime?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([key])
+  @@index([userId])
+}

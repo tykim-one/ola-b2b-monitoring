@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { MetricsModule } from './metrics/metrics.module';
 import { CacheModule } from './cache/cache.module';
 import { MlModule } from './ml/ml.module';
+import { AdminModule } from './admin';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MlModule } from './ml/ml.module';
     CacheModule,
     MetricsModule,
     MlModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

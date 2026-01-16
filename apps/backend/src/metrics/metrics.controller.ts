@@ -1,10 +1,20 @@
-import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Body,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { MetricsService } from './metrics.service';
 import { QueryDto } from './dto/query.dto';
+import { Public } from '../admin/auth/decorators/public.decorator';
 
 @ApiTags('metrics')
 @Controller('projects/:projectId/api')
+@Public() // Phase 1: Keep metrics API public for backward compatibility
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
@@ -17,7 +27,10 @@ export class MetricsController {
   @ApiOperation({ summary: 'Execute custom SQL query' })
   @ApiResponse({ status: 200, description: 'Query executed successfully' })
   @Post('query')
-  async executeQuery(@Param('projectId') projectId: string, @Body() queryDto: QueryDto) {
+  async executeQuery(
+    @Param('projectId') projectId: string,
+    @Body() queryDto: QueryDto,
+  ) {
     const results = await this.metricsService.executeQuery(queryDto);
     return {
       success: true,
@@ -62,10 +75,17 @@ export class MetricsController {
    * Get sample logs from the configured dataset
    */
   @ApiOperation({ summary: 'Get sample logs' })
-  @ApiQuery({ name: 'limit', required: false, description: 'Limit number of logs (default: 100)' })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Limit number of logs (default: 100)',
+  })
   @ApiResponse({ status: 200, description: 'Sample logs returned' })
   @Get('logs')
-  async getSampleLogs(@Param('projectId') projectId: string, @Query('limit') limit?: string) {
+  async getSampleLogs(
+    @Param('projectId') projectId: string,
+    @Query('limit') limit?: string,
+  ) {
     const limitNum = limit ? parseInt(limit, 10) : 100;
     const logs = await this.metricsService.getSampleLogs(projectId, limitNum);
     return {
@@ -137,7 +157,11 @@ export class MetricsController {
    * 테넌트별 사용량
    */
   @ApiOperation({ summary: 'Get tenant usage analytics' })
-  @ApiQuery({ name: 'days', required: false, description: 'Number of days (default: 7)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
   @ApiResponse({ status: 200, description: 'Tenant usage data returned' })
   @Get('analytics/tenant-usage')
   async getTenantUsage(@Query('days') days?: string) {
@@ -269,7 +293,10 @@ export class MetricsController {
    * 일별 토큰 효율성 트렌드 (최근 30일)
    */
   @ApiOperation({ summary: 'Get daily token efficiency trend' })
-  @ApiResponse({ status: 200, description: 'Token efficiency trend data returned' })
+  @ApiResponse({
+    status: 200,
+    description: 'Token efficiency trend data returned',
+  })
   @Get('quality/efficiency-trend')
   async getTokenEfficiencyTrend() {
     const data = await this.metricsService.getTokenEfficiencyTrend();
@@ -315,6 +342,194 @@ export class MetricsController {
       data,
       cached: true,
       cacheTTL: '15 minutes',
+    };
+  }
+
+  // ==================== 유저 분석 API ====================
+
+  /**
+   * GET /projects/:projectId/api/analytics/user-requests
+   * 유저별 요청 수
+   */
+  @ApiOperation({ summary: 'Get user request counts (by x_enc_data)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Max users to return (default: 50)',
+  })
+  @ApiResponse({ status: 200, description: 'User request count data returned' })
+  @Get('analytics/user-requests')
+  async getUserRequestCounts(
+    @Query('days') days?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const data = await this.metricsService.getUserRequestCounts(
+      daysNum,
+      limitNum,
+    );
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/analytics/user-tokens
+   * 유저별 토큰 사용량
+   */
+  @ApiOperation({ summary: 'Get user token usage (by x_enc_data)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Max users to return (default: 50)',
+  })
+  @ApiResponse({ status: 200, description: 'User token usage data returned' })
+  @Get('analytics/user-tokens')
+  async getUserTokenUsage(
+    @Query('days') days?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const data = await this.metricsService.getUserTokenUsage(daysNum, limitNum);
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/analytics/user-patterns
+   * 유저별 자주 묻는 질문 패턴
+   */
+  @ApiOperation({ summary: 'Get user question patterns (by x_enc_data)' })
+  @ApiQuery({
+    name: 'userId',
+    required: false,
+    description: 'Filter by user ID (x_enc_data)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Max patterns to return (default: 100)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User question pattern data returned',
+  })
+  @Get('analytics/user-patterns')
+  async getUserQuestionPatterns(
+    @Query('userId') userId?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const limitNum = limit ? parseInt(limit, 10) : 100;
+    const data = await this.metricsService.getUserQuestionPatterns(
+      userId,
+      limitNum,
+    );
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/analytics/user-list
+   * 유저 목록 (통합 통계)
+   */
+  @ApiOperation({ summary: 'Get user list with aggregated statistics' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Max users to return (default: 1000)',
+  })
+  @ApiResponse({ status: 200, description: 'User list data returned' })
+  @Get('analytics/user-list')
+  async getUserList(
+    @Query('days') days?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const limitNum = limit ? parseInt(limit, 10) : 1000;
+    const data = await this.metricsService.getUserList(daysNum, limitNum);
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '15 minutes',
+    };
+  }
+
+  /**
+   * GET /projects/:projectId/api/analytics/user-activity/:userId
+   * 유저 활동 상세
+   */
+  @ApiOperation({ summary: 'Get user activity details (conversation history)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Max records to return (default: 20)',
+  })
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    description: 'Offset for pagination (default: 0)',
+  })
+  @ApiResponse({ status: 200, description: 'User activity data returned' })
+  @Get('analytics/user-activity/:userId')
+  async getUserActivityDetail(
+    @Param('userId') userId: string,
+    @Query('days') days?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const limitNum = limit ? parseInt(limit, 10) : 20;
+    const offsetNum = offset ? parseInt(offset, 10) : 0;
+    const data = await this.metricsService.getUserActivityDetail(
+      userId,
+      daysNum,
+      limitNum,
+      offsetNum,
+    );
+    return {
+      success: true,
+      count: data.length,
+      data,
+      cached: true,
+      cacheTTL: '5 minutes',
     };
   }
 

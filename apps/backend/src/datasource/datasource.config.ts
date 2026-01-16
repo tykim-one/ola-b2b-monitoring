@@ -87,7 +87,9 @@ export class DataSourceConfigService implements OnModuleInit {
       this.logger.debug(`Using project-specific config for: ${projectId}`);
     } else {
       rawConfig = this.config?.default ?? this.getDefaultConfig().default;
-      this.logger.debug(`Using default config for project: ${projectId ?? 'none'}`);
+      this.logger.debug(
+        `Using default config for project: ${projectId ?? 'none'}`,
+      );
     }
 
     return this.resolveConfig(rawConfig);
@@ -101,7 +103,11 @@ export class DataSourceConfigService implements OnModuleInit {
     const resolvedConfig: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(config.config)) {
-      if (typeof value === 'string' && value.startsWith('${') && value.endsWith('}')) {
+      if (
+        typeof value === 'string' &&
+        value.startsWith('${') &&
+        value.endsWith('}')
+      ) {
         const envVar = value.slice(2, -1);
         const envValue = this.configService.get<string>(envVar);
         resolvedConfig[key] = envValue ?? '';
@@ -130,7 +136,9 @@ export class DataSourceConfigService implements OnModuleInit {
     if (this.config?.default.type === type) {
       return true;
     }
-    return Object.values(this.config?.projects ?? {}).some((p) => p.type === type);
+    return Object.values(this.config?.projects ?? {}).some(
+      (p) => p.type === type,
+    );
   }
 
   /**

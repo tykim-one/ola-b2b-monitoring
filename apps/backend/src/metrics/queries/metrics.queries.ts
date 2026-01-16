@@ -63,7 +63,12 @@ export const MetricsQueries = {
   /**
    * 테넌트별 사용량
    */
-  tenantUsage: (projectId: string, datasetId: string, tableName: string, days: number = 7) => `
+  tenantUsage: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+  ) => `
     SELECT
       tenant_id,
       COUNT(*) as request_count,
@@ -113,7 +118,11 @@ export const MetricsQueries = {
   /**
    * 토큰 효율성 분석
    */
-  tokenEfficiency: (projectId: string, datasetId: string, tableName: string) => `
+  tokenEfficiency: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+  ) => `
     SELECT
       tenant_id,
       CAST(COALESCE(SAFE_CAST(input_tokens AS FLOAT64), 0) AS INT64) as input_tokens,
@@ -152,7 +161,13 @@ export const MetricsQueries = {
   /**
    * 비용 트렌드 (일별)
    */
-  costTrend: (projectId: string, datasetId: string, tableName: string, inputPricePerMillion: number = 3, outputPricePerMillion: number = 15) => `
+  costTrend: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    inputPricePerMillion: number = 3,
+    outputPricePerMillion: number = 15,
+  ) => `
     SELECT
       DATE(timestamp) as date,
       CAST(COALESCE(SUM(CAST(input_tokens AS FLOAT64)), 0) AS INT64) as input_tokens,
@@ -191,7 +206,11 @@ export const MetricsQueries = {
   /**
    * 일별 토큰 효율성 트렌드 (최근 30일)
    */
-  tokenEfficiencyTrend: (projectId: string, datasetId: string, tableName: string) => `
+  tokenEfficiencyTrend: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+  ) => `
     SELECT
       DATE(timestamp) as date,
       ROUND(AVG(
@@ -217,7 +236,11 @@ export const MetricsQueries = {
   /**
    * 질문-응답 길이 상관관계 분석
    */
-  queryResponseCorrelation: (projectId: string, datasetId: string, tableName: string) => `
+  queryResponseCorrelation: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+  ) => `
     SELECT
       tenant_id,
       LENGTH(user_input) as query_length,
@@ -244,7 +267,11 @@ export const MetricsQueries = {
    * - 질문 앞 100자로 패턴 추출
    * - 2회 이상 반복된 패턴만 추출
    */
-  repeatedQueryPatterns: (projectId: string, datasetId: string, tableName: string) => `
+  repeatedQueryPatterns: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+  ) => `
     WITH normalized_queries AS (
       SELECT
         REGEXP_REPLACE(
@@ -274,5 +301,139 @@ export const MetricsQueries = {
     HAVING COUNT(*) >= 2
     ORDER BY occurrence_count DESC
     LIMIT 100
+  `,
+
+  // ==================== 유저 분석 쿼리 ====================
+
+  /**
+   * 유저별 요청 수 (x_enc_data 기준)
+   */
+  userRequestCounts: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+    limit: number = 1000,
+  ) => `
+    SELECT
+      request_metadata.x_enc_data AS userId,
+      COUNT(*) AS requestCount,
+      COUNTIF(success = TRUE) AS successCount,
+      COUNTIF(success = FALSE) AS errorCount,
+      ROUND(COUNTIF(success = TRUE) * 100.0 / NULLIF(COUNT(*), 0), 2) AS successRate
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+      AND request_metadata.x_enc_data IS NOT NULL
+    GROUP BY userId
+    ORDER BY requestCount DESC
+    LIMIT ${limit}
+  `,
+
+  /**
+   * 유저별 토큰 사용량 (x_enc_data 기준)
+   */
+  userTokenUsage: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+    limit: number = 1000,
+  ) => `
+    SELECT
+      request_metadata.x_enc_data AS userId,
+      CAST(COALESCE(SUM(CAST(input_tokens AS FLOAT64)), 0) AS INT64) AS inputTokens,
+      CAST(COALESCE(SUM(CAST(output_tokens AS FLOAT64)), 0) AS INT64) AS outputTokens,
+      CAST(COALESCE(SUM(CAST(total_tokens AS FLOAT64)), 0) AS INT64) AS totalTokens,
+      ROUND(AVG(CAST(input_tokens AS FLOAT64)), 2) AS avgInputTokens,
+      ROUND(AVG(CAST(output_tokens AS FLOAT64)), 2) AS avgOutputTokens,
+      COUNT(*) AS requestCount
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+      AND request_metadata.x_enc_data IS NOT NULL
+    GROUP BY userId
+    ORDER BY totalTokens DESC
+    LIMIT ${limit}
+  `,
+
+  /**
+   * 유저별 자주 묻는 질문 패턴
+   */
+  userQuestionPatterns: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    userId: string | null = null,
+    limit: number = 1000,
+  ) => `
+    SELECT
+      request_metadata.x_enc_data AS userId,
+      LEFT(user_input, 100) AS question,
+      COUNT(*) AS frequency,
+      MAX(timestamp) AS lastAsked
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+      AND request_metadata.x_enc_data IS NOT NULL
+      AND user_input IS NOT NULL
+      AND LENGTH(user_input) > 5
+      ${userId ? `AND request_metadata.x_enc_data = '${userId}'` : ''}
+    GROUP BY userId, question
+    HAVING COUNT(*) >= 2
+    ORDER BY frequency DESC
+    LIMIT ${limit}
+  `,
+
+  /**
+   * 유저 목록 (통합 통계)
+   */
+  userList: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+    limit: number = 1000,
+  ) => `
+    SELECT
+      request_metadata.x_enc_data AS userId,
+      COUNT(*) AS questionCount,
+      COUNTIF(success = TRUE) AS successCount,
+      COUNTIF(success = FALSE) AS errorCount,
+      ROUND(COUNTIF(success = TRUE) * 100.0 / NULLIF(COUNT(*), 0), 2) AS successRate,
+      CAST(COALESCE(SUM(CAST(total_tokens AS FLOAT64)), 0) AS INT64) AS totalTokens,
+      ROUND(AVG(CAST(total_tokens AS FLOAT64)), 2) AS avgTokens,
+      MIN(timestamp) AS firstActivity,
+      MAX(timestamp) AS lastActivity
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+      AND request_metadata.x_enc_data IS NOT NULL
+    GROUP BY userId
+    ORDER BY questionCount DESC
+    LIMIT ${limit}
+  `,
+
+  /**
+   * 유저 활동 상세
+   */
+  userActivityDetail: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    userId: string,
+    days: number = 7,
+    limit: number = 20,
+    offset: number = 0,
+  ) => `
+    SELECT
+      timestamp,
+      user_input AS userInput,
+      llm_response AS llmResponse,
+      CAST(COALESCE(CAST(input_tokens AS FLOAT64), 0) AS INT64) AS inputTokens,
+      CAST(COALESCE(CAST(output_tokens AS FLOAT64), 0) AS INT64) AS outputTokens,
+      CAST(COALESCE(CAST(total_tokens AS FLOAT64), 0) AS INT64) AS totalTokens,
+      success
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE request_metadata.x_enc_data = '${userId}'
+      AND timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+    ORDER BY timestamp DESC
+    LIMIT ${limit} OFFSET ${offset}
   `,
 };

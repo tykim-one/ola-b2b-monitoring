@@ -2,10 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import NodeCache from 'node-cache';
 
 export enum CacheTTL {
-  SHORT = 300,      // 5분 - KPI, 실시간 메트릭
-  MEDIUM = 900,     // 15분 - 집계 데이터, 차트
-  LONG = 3600,      // 1시간 - 잘 변하지 않는 데이터
-  HEALTH = 60,      // 1분 - 헬스 체크
+  SHORT = 300, // 5분 - KPI, 실시간 메트릭
+  MEDIUM = 900, // 15분 - 집계 데이터, 차트
+  LONG = 3600, // 1시간 - 잘 변하지 않는 데이터
+  HEALTH = 60, // 1분 - 헬스 체크
 }
 
 export interface CacheStats {

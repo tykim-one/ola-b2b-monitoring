@@ -16,6 +16,7 @@ NestJS 백엔드 애플리케이션의 소스 코드입니다. 모듈화된 구�
 - `datasource/` - 데이터 소스 추상화 레이어 (BigQuery/PostgreSQL/MySQL 지원)
 - `ml/` - 머신러닝/이상 탐지 모듈
 - `common/` - 공통 유틸리티, 전략 패턴
+- `admin/` - 어드민 서비스 레이어 (인증, 사용자 관리, LLM 분석)
 
 ## For AI Agents
 - NestJS 모듈 구조를 따름 (module, controller, service 패턴)

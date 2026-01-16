@@ -15,6 +15,11 @@ import {
   TokenEfficiencyTrend,
   QueryResponseCorrelation,
   RepeatedQueryPattern,
+  UserRequestCount,
+  UserTokenUsage,
+  UserQuestionPattern,
+  UserListItem,
+  UserActivityDetail,
 } from '@ola/shared-types';
 import { MetricsDataSource } from '../interfaces';
 import { MetricsQueries } from '../../metrics/queries/metrics.queries';
@@ -62,7 +67,9 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
           `dataset: ${this.config.datasetId}, table: ${this.config.tableName}`,
       );
     } catch (error) {
-      this.logger.error(`Failed to initialize BigQuery client: ${error.message}`);
+      this.logger.error(
+        `Failed to initialize BigQuery client: ${error.message}`,
+      );
       throw error;
     }
   }
@@ -96,9 +103,14 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
   /**
    * Execute a SQL query and return results.
    */
-  private async executeQuery<T>(query: string, maxResults: number = 1000): Promise<T[]> {
+  private async executeQuery<T>(
+    query: string,
+    maxResults: number = 1000,
+  ): Promise<T[]> {
     if (!this.bigQueryClient) {
-      throw new Error('BigQuery client not initialized. Call initialize() first.');
+      throw new Error(
+        'BigQuery client not initialized. Call initialize() first.',
+      );
     }
 
     try {
@@ -118,7 +130,10 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
       return rows as T[];
     } catch (error) {
-      this.logger.error(`Query execution failed: ${error.message}`, error.stack);
+      this.logger.error(
+        `Query execution failed: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`BigQuery query failed: ${error.message}`);
     }
   }
@@ -186,7 +201,12 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   async getTenantUsage(days: number = 7): Promise<TenantUsage[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.tenantUsage(projectId, datasetId, tableName, days);
+    const query = MetricsQueries.tenantUsage(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+    );
     return this.executeQuery<TenantUsage>(query, 100);
   }
 
@@ -204,7 +224,11 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   async getTokenEfficiency(): Promise<TokenEfficiency[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.tokenEfficiency(projectId, datasetId, tableName);
+    const query = MetricsQueries.tokenEfficiency(
+      projectId,
+      datasetId,
+      tableName,
+    );
     return this.executeQuery<TokenEfficiency>(query, 1000);
   }
 
@@ -230,7 +254,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     return this.executeQuery<QueryPattern>(query, 500);
   }
 
-  async getSampleLogs(limit: number = 100): Promise<B2BLog[]> {
+  async getSampleLogs(limit: number = 1000): Promise<B2BLog[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
     const query = `
       SELECT *
@@ -245,7 +269,11 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   async getTokenEfficiencyTrend(): Promise<TokenEfficiencyTrend[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.tokenEfficiencyTrend(projectId, datasetId, tableName);
+    const query = MetricsQueries.tokenEfficiencyTrend(
+      projectId,
+      datasetId,
+      tableName,
+    );
     const rows = await this.executeQuery<TokenEfficiencyTrend>(query, 100);
     return rows.map((row) => ({
       ...row,
@@ -255,7 +283,11 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   async getQueryResponseCorrelation(): Promise<QueryResponseCorrelation[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.queryResponseCorrelation(projectId, datasetId, tableName);
+    const query = MetricsQueries.queryResponseCorrelation(
+      projectId,
+      datasetId,
+      tableName,
+    );
     const rows = await this.executeQuery<QueryResponseCorrelation>(query, 1000);
     return rows.map((row) => ({
       ...row,
@@ -265,12 +297,110 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   async getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.repeatedQueryPatterns(projectId, datasetId, tableName);
+    const query = MetricsQueries.repeatedQueryPatterns(
+      projectId,
+      datasetId,
+      tableName,
+    );
     const rows = await this.executeQuery<RepeatedQueryPattern>(query, 100);
     return rows.map((row) => ({
       ...row,
       first_seen: this.normalizeDate(row.first_seen),
       last_seen: this.normalizeDate(row.last_seen),
+    }));
+  }
+
+  // ==================== User Analytics Methods ====================
+
+  async getUserRequestCounts(
+    days: number = 7,
+    limit: number = 1000,
+  ): Promise<UserRequestCount[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.userRequestCounts(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+      limit,
+    );
+    return this.executeQuery<UserRequestCount>(query, limit);
+  }
+
+  async getUserTokenUsage(
+    days: number = 7,
+    limit: number = 1000,
+  ): Promise<UserTokenUsage[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.userTokenUsage(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+      limit,
+    );
+    return this.executeQuery<UserTokenUsage>(query, limit);
+  }
+
+  async getUserQuestionPatterns(
+    userId?: string,
+    limit: number = 1000,
+  ): Promise<UserQuestionPattern[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.userQuestionPatterns(
+      projectId,
+      datasetId,
+      tableName,
+      userId ?? null,
+      limit,
+    );
+    const rows = await this.executeQuery<UserQuestionPattern>(query, limit);
+    return rows.map((row) => ({
+      ...row,
+      lastAsked: this.normalizeDate(row.lastAsked),
+    }));
+  }
+
+  async getUserList(
+    days: number = 7,
+    limit: number = 1000,
+  ): Promise<UserListItem[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.userList(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+      limit,
+    );
+    const rows = await this.executeQuery<UserListItem>(query, limit);
+    return rows.map((row) => ({
+      ...row,
+      firstActivity: this.normalizeDate(row.firstActivity),
+      lastActivity: this.normalizeDate(row.lastActivity),
+    }));
+  }
+
+  async getUserActivityDetail(
+    userId: string,
+    days: number = 7,
+    limit: number = 20,
+    offset: number = 0,
+  ): Promise<UserActivityDetail[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const query = MetricsQueries.userActivityDetail(
+      projectId,
+      datasetId,
+      tableName,
+      userId,
+      days,
+      limit,
+      offset,
+    );
+    const rows = await this.executeQuery<UserActivityDetail>(query, limit);
+    return rows.map((row) => ({
+      ...row,
+      timestamp: this.normalizeDate(row.timestamp),
     }));
   }
 

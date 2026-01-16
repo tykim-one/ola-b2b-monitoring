@@ -10,14 +10,14 @@ export class DefaultProjectStrategy implements ProjectStrategy {
     const metadata = raw.request_metadata || {};
 
     return {
-        id: raw.insertId || crypto.randomUUID(),
-        timestamp: raw.timestamp,
-        level: this.mapLevel(raw.severity || 'INFO'),
-        message: raw.llm_response || '',
-        user_input: raw.user_input || '',
-        llm_response: raw.llm_response || '',
-        tenant_id: raw.tenant_id || '',
-        service: metadata.service || 'unknown',
+      id: raw.insertId || crypto.randomUUID(),
+      timestamp: raw.timestamp,
+      level: this.mapLevel(raw.severity || 'INFO'),
+      message: raw.llm_response || '',
+      user_input: raw.user_input || '',
+      llm_response: raw.llm_response || '',
+      tenant_id: raw.tenant_id || '',
+      service: metadata.service || 'unknown',
     };
   }
 

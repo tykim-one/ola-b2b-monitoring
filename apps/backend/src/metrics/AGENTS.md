@@ -37,6 +37,11 @@
 - `GET /logs` - 샘플 로그
 - `GET /metrics/*` - 실시간 KPI, 시간별/일별 트래픽
 - `GET /analytics/*` - 테넌트 사용량, 히트맵, 비용 트렌드
+- `GET /analytics/user-requests` - 유저별 요청 수 (x_enc_data 기준)
+- `GET /analytics/user-tokens` - 유저별 토큰 사용량 (x_enc_data 기준)
+- `GET /analytics/user-patterns` - 유저별 자주 묻는 질문 패턴
+- `GET /analytics/user-list` - 유저 목록 (통합 통계)
+- `GET /analytics/user-activity/:userId` - 유저 활동 상세 (대화 이력)
 - `GET /ai/*` - 토큰 효율성, 이상 탐지 통계
 - `GET /quality/*` - 토큰 효율성 트렌드, 질문-응답 상관관계, 반복 패턴
 - `GET /cache/stats`, `DELETE /cache` - 캐시 관리

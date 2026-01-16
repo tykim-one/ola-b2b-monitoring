@@ -13,7 +13,7 @@
 
 | File | Description |
 |------|-------------|
-| `metrics-datasource.interface.ts` | 핵심 인터페이스 - 11개 메트릭 메서드 + 3개 lifecycle 메서드 |
+| `metrics-datasource.interface.ts` | 핵심 인터페이스 - 11개 Core + 3개 Quality + 5개 User Analytics 메서드 + 3개 lifecycle |
 | `datasource-config.interface.ts` | 데이터 소스별 설정 타입 (BigQuery, PostgreSQL, MySQL) |
 | `index.ts` | 모듈 재export |
 
@@ -43,6 +43,13 @@ interface MetricsDataSource {
   getTokenEfficiencyTrend(): Promise<TokenEfficiencyTrend[]>;
   getQueryResponseCorrelation(): Promise<QueryResponseCorrelation[]>;
   getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]>;
+
+  // User Analytics (5 methods)
+  getUserRequestCounts(days?, limit?): Promise<UserRequestCount[]>;
+  getUserTokenUsage(days?, limit?): Promise<UserTokenUsage[]>;
+  getUserQuestionPatterns(userId?, limit?): Promise<UserQuestionPattern[]>;
+  getUserList(days?, limit?): Promise<UserListItem[]>;
+  getUserActivityDetail(userId, days?, limit?, offset?): Promise<UserActivityDetail[]>;
 }
 ```
 

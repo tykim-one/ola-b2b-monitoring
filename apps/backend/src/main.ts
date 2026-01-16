@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Enable CORS for frontend
   app.enableCors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
@@ -34,6 +34,8 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`🚀 NestJS Backend running on http://localhost:${port}`);
-  console.log(`📑 Swagger Documentation available at http://localhost:${port}/api`);
+  console.log(
+    `📑 Swagger Documentation available at http://localhost:${port}/api`,
+  );
 }
 bootstrap();

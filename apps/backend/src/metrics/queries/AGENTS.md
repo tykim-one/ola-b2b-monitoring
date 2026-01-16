@@ -7,9 +7,15 @@ BigQuery SQL 쿼리 빌더입니다. 메트릭별 SQL 쿼리를 생성하는 정
 ## Key Files
 - `metrics.queries.ts` - 모든 메트릭 SQL 쿼리 정의 (MetricsQueries 클래스)
 
+## Query Categories
+
+- **Core Metrics**: realtimeKPI, hourlyTraffic, dailyTraffic, tenantUsage, usageHeatmap, errorAnalysis, tokenEfficiency, anomalyStats, costTrend, queryPatterns
+- **Quality Analysis**: tokenEfficiencyTrend, queryResponseCorrelation, repeatedQueryPatterns
+- **User Analytics**: userRequestCounts, userTokenUsage, userQuestionPatterns, userList, userActivityDetail
+
 ## For AI Agents
 - SQL 쿼리는 정적 메서드로 구성
-- 쿼리 파라미터: projectId, datasetId, tableName
+- 쿼리 파라미터: projectId, datasetId, tableName, days, limit 등
 - 새 쿼리 추가 시 MetricsQueries 클래스에 정적 메서드 추가
 - BigQuery SQL 문법 사용 (TIMESTAMP_SUB, EXTRACT 등)
 

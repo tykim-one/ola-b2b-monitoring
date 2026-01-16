@@ -22,6 +22,10 @@ RealtimeKPI, HourlyTraffic, DailyTraffic
 // 분석 타입
 TenantUsage, CostTrend, ErrorAnalysis, UsageHeatmapCell
 
+// 유저 분석 타입 (x_enc_data 기준)
+UserRequestCount, UserTokenUsage, UserQuestionPattern, UserAnalyticsSummary,
+UserListItem, UserActivityDetail
+
 // AI/ML 타입
 TokenEfficiency, AnomalyStats, QueryPattern
 

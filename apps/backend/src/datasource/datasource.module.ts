@@ -9,7 +9,9 @@ import { METRICS_DATASOURCE, MetricsDataSource } from './interfaces';
  */
 const metricsDataSourceProvider = {
   provide: METRICS_DATASOURCE,
-  useFactory: async (factory: DataSourceFactory): Promise<MetricsDataSource> => {
+  useFactory: async (
+    factory: DataSourceFactory,
+  ): Promise<MetricsDataSource> => {
     return factory.getDefaultDataSource();
   },
   inject: [DataSourceFactory],
@@ -40,11 +42,7 @@ const metricsDataSourceProvider = {
     DataSourceFactory,
     metricsDataSourceProvider,
   ],
-  exports: [
-    DataSourceConfigService,
-    DataSourceFactory,
-    METRICS_DATASOURCE,
-  ],
+  exports: [DataSourceConfigService, DataSourceFactory, METRICS_DATASOURCE],
 })
 export class DataSourceModule implements OnModuleDestroy {
   private readonly logger = new Logger(DataSourceModule.name);

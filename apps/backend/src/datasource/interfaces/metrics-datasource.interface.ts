@@ -13,6 +13,11 @@ import {
   TokenEfficiencyTrend,
   QueryResponseCorrelation,
   RepeatedQueryPattern,
+  UserRequestCount,
+  UserTokenUsage,
+  UserQuestionPattern,
+  UserListItem,
+  UserActivityDetail,
 } from '@ola/shared-types';
 
 /**
@@ -127,6 +132,56 @@ export interface MetricsDataSource {
    * Returns frequently asked questions with occurrence counts.
    */
   getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]>;
+
+  // ==================== User Analytics Methods ====================
+
+  /**
+   * Get request counts per user (by x_enc_data).
+   * @param days Number of days to look back (default: 7)
+   * @param limit Maximum number of users to return (default: 50)
+   */
+  getUserRequestCounts(
+    days?: number,
+    limit?: number,
+  ): Promise<UserRequestCount[]>;
+
+  /**
+   * Get token usage per user (by x_enc_data).
+   * @param days Number of days to look back (default: 7)
+   * @param limit Maximum number of users to return (default: 50)
+   */
+  getUserTokenUsage(days?: number, limit?: number): Promise<UserTokenUsage[]>;
+
+  /**
+   * Get frequently asked question patterns per user.
+   * @param userId Optional user ID (x_enc_data) to filter
+   * @param limit Maximum number of patterns to return (default: 100)
+   */
+  getUserQuestionPatterns(
+    userId?: string,
+    limit?: number,
+  ): Promise<UserQuestionPattern[]>;
+
+  /**
+   * Get user list with aggregated statistics.
+   * @param days Number of days to look back (default: 7)
+   * @param limit Maximum number of users to return (default: 1000)
+   */
+  getUserList(days?: number, limit?: number): Promise<UserListItem[]>;
+
+  /**
+   * Get user activity details (conversation history).
+   * @param userId User ID (x_enc_data) to filter
+   * @param days Number of days to look back (default: 7)
+   * @param limit Maximum number of records to return (default: 20)
+   * @param offset Offset for pagination (default: 0)
+   */
+  getUserActivityDetail(
+    userId: string,
+    days?: number,
+    limit?: number,
+    offset?: number,
+  ): Promise<UserActivityDetail[]>;
 }
 
 /**

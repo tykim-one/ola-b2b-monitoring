@@ -4,7 +4,6 @@ import { BigQuery } from '@google-cloud/bigquery';
 import { QueryDto } from './dto/query.dto';
 import { DefaultProjectStrategy } from '../common/strategies/default.project.strategy';
 import { CacheService, CacheTTL } from '../cache/cache.service';
-import { MetricsQueries } from './queries/metrics.queries';
 import { METRICS_DATASOURCE } from '../datasource';
 import type { MetricsDataSource } from '../datasource';
 import {
@@ -22,6 +21,11 @@ import {
   TokenEfficiencyTrend,
   QueryResponseCorrelation,
   RepeatedQueryPattern,
+  UserRequestCount,
+  UserTokenUsage,
+  UserQuestionPattern,
+  UserListItem,
+  UserActivityDetail,
 } from '@ola/shared-types';
 
 @Injectable()
@@ -44,16 +48,21 @@ export class MetricsService implements OnModuleInit {
     this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
     this.datasetId = this.configService.get<string>('BIGQUERY_DATASET') || '';
     this.tableName = this.configService.get<string>('BIGQUERY_TABLE') || 'logs';
-    this.location = this.configService.get<string>('GCP_BQ_LOCATION') || 'asia-northeast3';
+    this.location =
+      this.configService.get<string>('GCP_BQ_LOCATION') || 'asia-northeast3';
 
-    const credentials = this.configService.get<string>('GOOGLE_APPLICATION_CREDENTIALS');
+    const credentials = this.configService.get<string>(
+      'GOOGLE_APPLICATION_CREDENTIALS',
+    );
 
     this.bigQueryClient = new BigQuery({
       projectId: this.projectId,
       keyFilename: credentials,
     });
 
-    this.logger.log(`Metrics service initialized for project: ${this.projectId}, dataset: ${this.datasetId}, table: ${this.tableName}`);
+    this.logger.log(
+      `Metrics service initialized for project: ${this.projectId}, dataset: ${this.datasetId}, table: ${this.tableName}`,
+    );
   }
 
   // ==================== BigQuery-specific admin functions ====================
@@ -81,7 +90,10 @@ export class MetricsService implements OnModuleInit {
 
       return rows;
     } catch (error) {
-      this.logger.error(`Query execution failed: ${error.message}`, error.stack);
+      this.logger.error(
+        `Query execution failed: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`BigQuery query failed: ${error.message}`);
     }
   }
@@ -92,9 +104,12 @@ export class MetricsService implements OnModuleInit {
   async getDatasets(): Promise<string[]> {
     try {
       const [datasets] = await this.bigQueryClient.getDatasets();
-      return datasets.map(dataset => dataset.id || '').filter(id => id);
+      return datasets.map((dataset) => dataset.id || '').filter((id) => id);
     } catch (error) {
-      this.logger.error(`Failed to get datasets: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to get datasets: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to get datasets: ${error.message}`);
     }
   }
@@ -106,7 +121,7 @@ export class MetricsService implements OnModuleInit {
     try {
       const dataset = this.bigQueryClient.dataset(datasetId);
       const [tables] = await dataset.getTables();
-      return tables.map(table => table.id || '').filter(id => id);
+      return tables.map((table) => table.id || '').filter((id) => id);
     } catch (error) {
       this.logger.error(`Failed to get tables: ${error.message}`, error.stack);
       throw new Error(`Failed to get tables: ${error.message}`);
@@ -116,7 +131,10 @@ export class MetricsService implements OnModuleInit {
   /**
    * Get sample logs from the configured dataset
    */
-  async getSampleLogs(projectId: string, limit: number = 100): Promise<B2BLog[]> {
+  async getSampleLogs(
+    projectId: string,
+    limit: number = 1000,
+  ): Promise<B2BLog[]> {
     const filterClause = this.projectStrategy.getFilterQuery(projectId);
 
     const query = `
@@ -128,7 +146,7 @@ export class MetricsService implements OnModuleInit {
     `;
 
     const rows = await this.executeQuery({ query, maxResults: limit });
-    return rows.map(row => this.projectStrategy.parseLog(row));
+    return rows.map((row) => this.projectStrategy.parseLog(row));
   }
 
   // ==================== 메트릭 API (캐싱 적용, MetricsDataSource 사용) ====================
@@ -176,7 +194,12 @@ export class MetricsService implements OnModuleInit {
    * 테넌트별 사용량 (캐시 TTL: 15분)
    */
   async getTenantUsage(days: number = 7): Promise<TenantUsage[]> {
-    const cacheKey = CacheService.generateKey('metrics', 'tenant', 'usage', days);
+    const cacheKey = CacheService.generateKey(
+      'metrics',
+      'tenant',
+      'usage',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -282,7 +305,11 @@ export class MetricsService implements OnModuleInit {
    * 질문-응답 길이 상관관계 (캐시 TTL: 15분)
    */
   async getQueryResponseCorrelation(): Promise<QueryResponseCorrelation[]> {
-    const cacheKey = CacheService.generateKey('quality', 'query', 'correlation');
+    const cacheKey = CacheService.generateKey(
+      'quality',
+      'query',
+      'correlation',
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -295,12 +322,131 @@ export class MetricsService implements OnModuleInit {
    * 반복 질문 패턴 (캐시 TTL: 15분)
    */
   async getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]> {
-    const cacheKey = CacheService.generateKey('quality', 'repeated', 'patterns');
+    const cacheKey = CacheService.generateKey(
+      'quality',
+      'repeated',
+      'patterns',
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
       async () => this.metricsDataSource.getRepeatedQueryPatterns(),
       CacheTTL.MEDIUM,
+    );
+  }
+
+  // ==================== 유저 분석 API ====================
+
+  /**
+   * 유저별 요청 수 (캐시 TTL: 15분)
+   */
+  async getUserRequestCounts(
+    days: number = 7,
+    limit: number = 1000,
+  ): Promise<UserRequestCount[]> {
+    const cacheKey = CacheService.generateKey(
+      'user',
+      'request',
+      'counts',
+      days,
+      limit,
+    );
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getUserRequestCounts(days, limit),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 유저별 토큰 사용량 (캐시 TTL: 15분)
+   */
+  async getUserTokenUsage(
+    days: number = 7,
+    limit: number = 1000,
+  ): Promise<UserTokenUsage[]> {
+    const cacheKey = CacheService.generateKey(
+      'user',
+      'token',
+      'usage',
+      days,
+      limit,
+    );
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getUserTokenUsage(days, limit),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 유저별 질문 패턴 (캐시 TTL: 15분)
+   */
+  async getUserQuestionPatterns(
+    userId?: string,
+    limit: number = 1000,
+  ): Promise<UserQuestionPattern[]> {
+    const cacheKey = CacheService.generateKey(
+      'user',
+      'question',
+      'patterns',
+      userId ?? 'all',
+      limit,
+    );
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getUserQuestionPatterns(userId, limit),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 유저 목록 (통합 통계) (캐시 TTL: 15분)
+   */
+  async getUserList(
+    days: number = 7,
+    limit: number = 1000,
+  ): Promise<UserListItem[]> {
+    const cacheKey = CacheService.generateKey('user', 'list', days, limit);
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () => this.metricsDataSource.getUserList(days, limit),
+      CacheTTL.MEDIUM,
+    );
+  }
+
+  /**
+   * 유저 활동 상세 (캐시 TTL: 5분)
+   */
+  async getUserActivityDetail(
+    userId: string,
+    days: number = 7,
+    limit: number = 20,
+    offset: number = 0,
+  ): Promise<UserActivityDetail[]> {
+    const cacheKey = CacheService.generateKey(
+      'user',
+      'activity',
+      userId,
+      days,
+      limit,
+      offset,
+    );
+
+    return this.cacheService.getOrSet(
+      cacheKey,
+      async () =>
+        this.metricsDataSource.getUserActivityDetail(
+          userId,
+          days,
+          limit,
+          offset,
+        ),
+      CacheTTL.SHORT,
     );
   }
 
