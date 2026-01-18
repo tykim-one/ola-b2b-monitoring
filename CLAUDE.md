@@ -30,6 +30,8 @@ cd apps/backend
 pnpm test               # 전체 테스트
 pnpm test:watch         # 워치 모드
 pnpm test -- --testPathPattern="bigquery"  # 특정 테스트
+pnpm test:e2e           # E2E 테스트
+pnpm test:cov           # 커버리지 리포트
 
 # 린트
 cd apps/backend && pnpm lint
@@ -102,9 +104,11 @@ admin/
 **Prisma 명령어:**
 ```bash
 cd apps/backend
-pnpm prisma generate      # 클라이언트 생성
+pnpm prisma:generate      # 클라이언트 생성
 pnpm prisma db push       # 스키마 적용
-pnpm prisma db seed       # 시드 데이터 (admin@ola.com / admin123)
+pnpm prisma:seed          # 시드 데이터 (admin@ola.com / admin123)
+pnpm prisma:studio        # Prisma Studio GUI
+pnpm prisma:migrate       # 마이그레이션 실행
 ```
 
 ### Frontend Structure
@@ -114,16 +118,16 @@ src/
 ├── app/               # Next.js App Router 페이지
 │   ├── (auth)/        # 인증 레이아웃 그룹 (login)
 │   └── dashboard/     # 대시보드 페이지들
-│       ├── admin/     # 관리자 기능 (users, roles, filters, analysis)
+│       ├── admin/     # 관리자 기능 (users, roles, filters, analysis, batch-analysis)
 │       ├── business/  # 비즈니스 메트릭
 │       ├── operations/# 운영 메트릭
 │       ├── quality/   # 품질 분석
-│       ├── chatbot-quality/  # 챗봇 품질 분석
-│       └── admin/batch-analysis/  # 배치 분석 관리
+│       └── chatbot-quality/  # 챗봇 품질 분석
 ├── components/
 │   ├── charts/        # Recharts 기반 차트
 │   ├── compound/      # 복합 컴포넌트 (Dashboard, DataTable, Chart)
 │   ├── kpi/           # KPICard 컴포넌트
+│   ├── markdown/      # Markdown 렌더링 (LLM 응답용)
 │   └── ui/            # 기본 UI 컴포넌트
 ├── contexts/          # React Context (AuthContext, ChatbotContext)
 ├── lib/               # 유틸리티, API 클라이언트 (api-client.ts)
