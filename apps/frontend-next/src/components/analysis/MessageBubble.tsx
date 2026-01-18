@@ -2,6 +2,7 @@
 
 import { AnalysisMessage } from '@ola/shared-types';
 import { useState } from 'react';
+import { MarkdownViewer } from '@/components/markdown';
 
 interface MessageBubbleProps {
   message: AnalysisMessage;
@@ -25,65 +26,6 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
     });
   };
 
-  const renderContent = () => {
-    if (isUser) {
-      return <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>;
-    }
-
-    // Simple markdown rendering for AI responses
-    const lines = message.content.split('\n');
-    return (
-      <div className="text-sm leading-relaxed space-y-2">
-        {lines.map((line, i) => {
-          // Headers
-          if (line.startsWith('# ')) {
-            return <h1 key={i} className="text-xl font-bold mt-4 mb-2">{line.slice(2)}</h1>;
-          }
-          if (line.startsWith('## ')) {
-            return <h2 key={i} className="text-lg font-bold mt-3 mb-1">{line.slice(3)}</h2>;
-          }
-          if (line.startsWith('### ')) {
-            return <h3 key={i} className="text-base font-semibold mt-2 mb-1">{line.slice(4)}</h3>;
-          }
-
-          // Lists
-          if (line.startsWith('- ') || line.startsWith('* ')) {
-            return (
-              <li key={i} className="ml-4 list-disc">
-                {line.slice(2)}
-              </li>
-            );
-          }
-
-          // Code blocks (simplified)
-          if (line.startsWith('```')) {
-            return <div key={i} className="bg-slate-900 px-3 py-2 rounded text-xs font-mono">{line}</div>;
-          }
-
-          // Bold
-          const boldRegex = /\*\*(.+?)\*\*/g;
-          if (boldRegex.test(line)) {
-            const parts = line.split(boldRegex);
-            return (
-              <p key={i}>
-                {parts.map((part, j) =>
-                  j % 2 === 1 ? <strong key={j} className="font-semibold">{part}</strong> : part
-                )}
-              </p>
-            );
-          }
-
-          // Empty line
-          if (line.trim() === '') {
-            return <div key={i} className="h-2" />;
-          }
-
-          return <p key={i}>{line}</p>;
-        })}
-      </div>
-    );
-  };
-
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 group animate-fade-in`}>
       <div className={`max-w-[75%] ${isUser ? 'items-end' : 'items-start'} flex flex-col`}>
@@ -97,7 +39,11 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             }
           `}
         >
-          {renderContent()}
+          {isUser ? (
+            <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+          ) : (
+            <MarkdownViewer content={message.content} size="sm" className="text-sm" />
+          )}
         </div>
 
         {/* Footer: Timestamp and Metadata */}

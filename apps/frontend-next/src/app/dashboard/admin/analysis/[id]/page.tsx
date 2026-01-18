@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Send, Loader2, ChartBar, Bot, User, Clock, Coins } from 'lucide-react';
 import { AnalysisSession, AnalysisMessage, SendMessageRequest, AnalysisMessageMetadata } from '@ola/shared-types';
 import { analysisApi } from '@/lib/api-client';
+import { MarkdownViewer } from '@/components/markdown';
 
 export default function ChatPage() {
   const params = useParams();
@@ -251,9 +252,13 @@ export default function ChatPage() {
                   </div>
 
                   {/* Message Content */}
-                  <div className="text-slate-200 text-sm whitespace-pre-wrap leading-relaxed">
-                    {msg.content}
-                  </div>
+                  {isUser ? (
+                    <div className="text-slate-200 text-sm whitespace-pre-wrap leading-relaxed">
+                      {msg.content}
+                    </div>
+                  ) : (
+                    <MarkdownViewer content={msg.content} size="sm" className="text-slate-200" />
+                  )}
 
                   {/* Metadata (for AI responses) */}
                   {!isUser && metadata && (

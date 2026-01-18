@@ -19,6 +19,7 @@ import {
   BatchAnalysisJob,
   BatchAnalysisResult,
 } from '@/services/batchAnalysisService';
+import { MarkdownViewer } from '@/components/markdown';
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -354,9 +355,7 @@ export default function JobDetailPage() {
                           LLM Response
                         </p>
                         <div className="p-3 bg-slate-800 border border-slate-700 max-h-48 overflow-y-auto">
-                          <p className="text-slate-200 font-mono text-sm whitespace-pre-wrap">
-                            {result.llmResponse}
-                          </p>
+                          <MarkdownViewer content={result.llmResponse} size="sm" />
                         </div>
                       </div>
 
@@ -375,9 +374,7 @@ export default function JobDetailPage() {
                               {JSON.stringify(analysis, null, 2)}
                             </pre>
                           ) : (
-                            <p className="text-slate-200 font-mono text-sm whitespace-pre-wrap">
-                              {result.analysisResult}
-                            </p>
+                            <MarkdownViewer content={result.analysisResult} size="sm" />
                           )}
                         </div>
                       </div>

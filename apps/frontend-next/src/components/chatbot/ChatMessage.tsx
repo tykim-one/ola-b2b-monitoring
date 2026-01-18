@@ -1,92 +1,15 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import type { ChatbotMessage } from '@ola/shared-types';
+import { MarkdownViewer } from '@/components/markdown';
 
 interface ChatMessageProps {
   message: ChatbotMessage;
 }
 
-/**
- * Simple markdown-like formatting for chat messages
- */
-function formatContent(content: string): React.ReactNode {
-  // Split by code blocks first
-  const parts = content.split(/(```[\s\S]*?```)/g);
-
-  return parts.map((part, index) => {
-    // Handle code blocks
-    if (part.startsWith('```') && part.endsWith('```')) {
-      const codeContent = part.slice(3, -3);
-      const lines = codeContent.split('\n');
-      const language = lines[0].trim();
-      const code = language ? lines.slice(1).join('\n') : codeContent;
-
-      return (
-        <pre
-          key={index}
-          className="bg-slate-900/50 rounded-md p-3 my-2 overflow-x-auto text-sm"
-        >
-          <code className="text-slate-300">{code}</code>
-        </pre>
-      );
-    }
-
-    // Handle inline formatting
-    return (
-      <span key={index}>
-        {part.split('\n').map((line, lineIndex) => {
-          // Bold
-          let formattedLine: React.ReactNode = line.replace(
-            /\*\*(.*?)\*\*/g,
-            '<strong>$1</strong>'
-          );
-
-          // Inline code
-          formattedLine = line
-            .split(/(`[^`]+`)/)
-            .map((segment, segIndex) => {
-              if (segment.startsWith('`') && segment.endsWith('`')) {
-                return (
-                  <code
-                    key={segIndex}
-                    className="bg-slate-700/50 px-1.5 py-0.5 rounded text-sm text-blue-300"
-                  >
-                    {segment.slice(1, -1)}
-                  </code>
-                );
-              }
-              // Handle bold within non-code segments
-              return segment.split(/(\*\*[^*]+\*\*)/).map((part2, part2Index) => {
-                if (part2.startsWith('**') && part2.endsWith('**')) {
-                  return (
-                    <strong key={part2Index} className="font-semibold">
-                      {part2.slice(2, -2)}
-                    </strong>
-                  );
-                }
-                return part2;
-              });
-            });
-
-          return (
-            <React.Fragment key={lineIndex}>
-              {formattedLine}
-              {lineIndex < part.split('\n').length - 1 && <br />}
-            </React.Fragment>
-          );
-        })}
-      </span>
-    );
-  });
-}
-
 export default function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
-  const formattedContent = useMemo(
-    () => formatContent(message.content),
-    [message.content]
-  );
 
   return (
     <div
@@ -99,9 +22,13 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-slate-700/50 text-slate-100 rounded-bl-md'
         }`}
       >
-        <div className="text-sm leading-relaxed whitespace-pre-wrap">
-          {formattedContent}
-        </div>
+        {isUser ? (
+          <div className="text-sm leading-relaxed whitespace-pre-wrap">
+            {message.content}
+          </div>
+        ) : (
+          <MarkdownViewer content={message.content} size="sm" className="text-sm" />
+        )}
         {message.metadata && !isUser && (
           <div className="mt-2 pt-2 border-t border-slate-600/30 flex items-center gap-3 text-xs text-slate-400">
             {message.metadata.model && (

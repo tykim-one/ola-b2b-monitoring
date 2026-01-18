@@ -41,6 +41,12 @@
 - `batchAnalysisApi.listResults()`: 결과 목록
 - `batchAnalysisApi.listPromptTemplates()`: 템플릿 목록
 
+## Subdirectories
+
+- [`components/`](./components/AGENTS.md) - 배치 분석 관련 컴포넌트
+- [`prompts/`](./prompts/AGENTS.md) - 프롬프트 템플릿 관리 페이지
+- [`[id]/`](./%5Bid%5D/AGENTS.md) - 작업 상세 페이지
+
 ## For AI Agents
 
 - 모든 API 호출은 JWT 인증 필요 (`analysis:read`, `analysis:write` 권한)
