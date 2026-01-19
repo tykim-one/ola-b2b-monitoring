@@ -15,8 +15,10 @@
 | Route | File | Description |
 |-------|------|-------------|
 | `/dashboard/admin/batch-analysis` | `page.tsx` | 작업 목록 및 통계 대시보드 |
-| `/dashboard/admin/batch-analysis/[id]` | `[id]/page.tsx` | 작업 상세 및 결과 목록 |
+| `/dashboard/admin/batch-analysis/[id]` | `[id]/page.tsx` | 작업 상세 및 결과 목록 (필터링 UI 포함) |
 | `/dashboard/admin/batch-analysis/prompts` | `prompts/page.tsx` | 프롬프트 템플릿 관리 |
+| `/dashboard/admin/batch-analysis/schedules` | `schedules/page.tsx` | 스케줄 관리 (다중 스케줄, 시간/요일 설정) |
+| `/dashboard/admin/batch-analysis/issue-frequency` | `issue-frequency/page.tsx` | 이슈 빈도 분석 대시보드 |
 
 ## Components
 
@@ -30,7 +32,14 @@
 - **작업 생성**: 날짜, 테넌트, 샘플 크기, 프롬프트 선택
 - **작업 실행**: PENDING 상태 작업 수동 실행
 - **결과 조회**: 개별 분석 결과 확장/축소 UI
+  - 구조화된 점수 그리드 (Quality, Relevance, Completeness, Clarity)
+  - Sentiment 배지 (positive/neutral/negative)
+  - Issues/Improvements 리스트
+  - Missing Data JSON 표시
+  - **필터링 UI**: 점수 범위, 감정, 이슈 유무로 필터링
+- **이슈 빈도 대시보드**: 가장 빈번한 이슈 패턴 시각화
 - **프롬프트 관리**: 템플릿 CRUD, 기본 템플릿 설정
+- **스케줄 관리**: 다중 스케줄 생성, 시간/요일 설정, 활성/비활성 토글
 
 ## Service
 
@@ -38,14 +47,19 @@
 - `batchAnalysisApi.listJobs()`: 작업 목록
 - `batchAnalysisApi.createJob()`: 작업 생성
 - `batchAnalysisApi.runJob()`: 작업 실행
-- `batchAnalysisApi.listResults()`: 결과 목록
+- `batchAnalysisApi.listResults()`: 결과 목록 (필터 파라미터: minAvgScore, maxAvgScore, sentiment, hasIssues)
 - `batchAnalysisApi.listPromptTemplates()`: 템플릿 목록
+- `batchAnalysisApi.listSchedules()`: 스케줄 목록
+- `batchAnalysisApi.toggleSchedule()`: 스케줄 토글
+- `batchAnalysisApi.getIssueFrequency()`: 이슈 빈도 분석
 
 ## Subdirectories
 
 - [`components/`](./components/AGENTS.md) - 배치 분석 관련 컴포넌트
 - [`prompts/`](./prompts/AGENTS.md) - 프롬프트 템플릿 관리 페이지
-- [`[id]/`](./%5Bid%5D/AGENTS.md) - 작업 상세 페이지
+- [`schedules/`](./schedules/AGENTS.md) - 스케줄 관리 페이지 (다중 스케줄, 시간/요일 설정)
+- [`[id]/`](./%5Bid%5D/AGENTS.md) - 작업 상세 페이지 (결과 필터링 UI 포함)
+- [`issue-frequency/`](./issue-frequency/AGENTS.md) - 이슈 빈도 분석 대시보드
 
 ## For AI Agents
 

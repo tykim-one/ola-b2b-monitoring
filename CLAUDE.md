@@ -163,9 +163,12 @@ src/
 **Batch Analysis API** (`/api/admin/batch-analysis/*`):
 - `GET/POST /api/admin/batch-analysis/jobs` - 작업 목록/생성
 - `POST /api/admin/batch-analysis/jobs/:id/run` - 작업 실행
-- `GET /api/admin/batch-analysis/results` - 분석 결과 조회
+- `GET /api/admin/batch-analysis/results` - 분석 결과 조회 (필터: minAvgScore, maxAvgScore, sentiment, hasIssues)
+- `GET /api/admin/batch-analysis/issue-frequency` - 이슈 빈도 분석
 - `GET/POST/PUT/DELETE /api/admin/batch-analysis/prompts` - 프롬프트 템플릿 관리
+- `GET/POST/PUT/DELETE /api/admin/batch-analysis/schedules` - 스케줄 관리 (다중 스케줄 지원)
 - `GET /api/admin/batch-analysis/stats` - 통계 조회
+- `GET /api/admin/batch-analysis/tenants` - 사용 가능한 테넌트 목록
 
 ### Caching Strategy
 

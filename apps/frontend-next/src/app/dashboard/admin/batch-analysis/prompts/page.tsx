@@ -11,6 +11,8 @@ import {
   Check,
   X,
   Loader2,
+  AlertTriangle,
+  Copy,
 } from 'lucide-react';
 import {
   batchAnalysisApi,
@@ -231,6 +233,48 @@ export default function PromptsPage() {
               </div>
             </div>
 
+            {/* Required Output Format Guide */}
+            <div className="p-4 bg-amber-950/20 border-2 border-amber-500/30">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h4 className="text-amber-400 font-mono font-bold text-sm uppercase tracking-wider mb-2">
+                    필수 출력 형식
+                  </h4>
+                  <p className="text-slate-400 font-mono text-xs mb-3">
+                    모든 프롬프트는 아래 JSON 필드를 포함하는 응답을 반환해야 합니다. 이 형식을 따라야 점수 집계 및 분석이 가능합니다.
+                  </p>
+                  <pre className="text-slate-300 font-mono text-xs bg-slate-900/50 p-3 border border-slate-700 overflow-x-auto">
+{`{
+  "quality_score": (1-10),
+  "relevance": (1-10),
+  "completeness": (1-10),
+  "clarity": (1-10),
+  "issues": ["..."],
+  "improvements": ["..."],
+  "sentiment": "positive|neutral|negative",
+  "summary": "..."
+}`}
+                  </pre>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormPrompt((prev) => prev + '\n\n' + REQUIRED_OUTPUT_FORMAT);
+                    }}
+                    className="
+                      mt-3 flex items-center gap-2 px-3 py-1.5
+                      bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/50
+                      text-amber-300 font-mono text-xs uppercase tracking-wider
+                      transition-colors
+                    "
+                  >
+                    <Copy className="w-3 h-3" />
+                    프롬프트에 삽입
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
                 Prompt Template *
@@ -394,6 +438,21 @@ export default function PromptsPage() {
     </div>
   );
 }
+
+// 필수 출력 포맷 (모든 프롬프트가 반환해야 하는 JSON 구조)
+const REQUIRED_OUTPUT_FORMAT = `## 필수 출력 형식
+
+다음 JSON 형식으로 응답해주세요:
+{
+  "quality_score": (1-10 점수),
+  "relevance": (질문에 대한 응답 관련성 1-10),
+  "completeness": (응답의 완성도 1-10),
+  "clarity": (응답의 명확성 1-10),
+  "issues": ["발견된 문제점 목록"],
+  "improvements": ["개선 제안 목록"],
+  "sentiment": "positive" | "neutral" | "negative",
+  "summary": "한 줄 요약"
+}`;
 
 const DEFAULT_PROMPT = `당신은 대화 품질 분석 전문가입니다. 다음 고객-AI 대화를 분석하고 JSON 형식으로 응답해주세요.
 

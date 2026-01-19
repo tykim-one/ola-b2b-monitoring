@@ -15,6 +15,7 @@ import {
   AlertCircle,
   FileText,
   BarChart3,
+  CalendarClock,
 } from 'lucide-react';
 import {
   batchAnalysisApi,
@@ -172,6 +173,18 @@ export default function BatchAnalysisPage() {
               Prompts
             </button>
             <button
+              onClick={() => router.push('/dashboard/admin/batch-analysis/schedules')}
+              className="
+                flex items-center gap-2 px-4 py-3
+                bg-slate-800 hover:bg-slate-700 border border-violet-500/50
+                text-violet-300 font-mono font-bold uppercase tracking-wider text-sm
+                transition-all
+              "
+            >
+              <CalendarClock className="w-4 h-4" />
+              Schedules
+            </button>
+            <button
               onClick={() => setIsCreateModalOpen(true)}
               className="
                 flex items-center gap-2 px-6 py-3
@@ -257,6 +270,9 @@ export default function BatchAnalysisPage() {
                   Progress
                 </th>
                 <th className="text-left px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                  Avg Score
+                </th>
+                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
                   Created
                 </th>
                 <th className="text-right px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
@@ -267,7 +283,7 @@ export default function BatchAnalysisPage() {
             <tbody>
               {jobs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
+                  <td colSpan={7} className="px-6 py-12 text-center">
                     <p className="text-slate-500 font-mono text-sm">NO JOBS FOUND</p>
                     <p className="text-slate-600 font-mono text-xs mt-2">
                       Create a new job to start analyzing chat data
@@ -336,6 +352,26 @@ export default function BatchAnalysisPage() {
                           )}
                         </span>
                       </div>
+                    </td>
+
+                    {/* Avg Score */}
+                    <td className="px-6 py-4">
+                      {job.scoreStats?.avgScore != null ? (
+                        <div className="flex items-center gap-2">
+                          <span className={`font-mono font-bold text-lg ${
+                            job.scoreStats.avgScore >= 8 ? 'text-green-400' :
+                            job.scoreStats.avgScore >= 6 ? 'text-yellow-400' :
+                            'text-red-400'
+                          }`}>
+                            {job.scoreStats.avgScore.toFixed(1)}
+                          </span>
+                          <span className="text-slate-500 font-mono text-xs">
+                            ({job.scoreStats.scoredCount})
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-slate-600 font-mono text-xs">-</span>
+                      )}
                     </td>
 
                     {/* Created */}

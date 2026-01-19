@@ -26,12 +26,25 @@
   - `batchAnalysisApi.createJob()` - 작업 생성
   - `batchAnalysisApi.runJob()` - 작업 실행
   - `batchAnalysisApi.deleteJob()` - 작업 삭제
-  - `batchAnalysisApi.listResults()` - 결과 목록 조회
+  - `batchAnalysisApi.listResults()` - 결과 목록 조회 (필터: minAvgScore, maxAvgScore, sentiment, hasIssues)
+  - `batchAnalysisApi.getIssueFrequency()` - 이슈 빈도 분석 (가장 빈번한 이슈 집계)
   - `batchAnalysisApi.listPromptTemplates()` - 템플릿 목록
   - `batchAnalysisApi.createPromptTemplate()` - 템플릿 생성
   - `batchAnalysisApi.updatePromptTemplate()` - 템플릿 수정
   - `batchAnalysisApi.deletePromptTemplate()` - 템플릿 삭제
   - `batchAnalysisApi.getStatistics()` - 통계 조회
+  - `batchAnalysisApi.listSchedules()` - 스케줄 목록 조회
+  - `batchAnalysisApi.createSchedule()` - 스케줄 생성
+  - `batchAnalysisApi.updateSchedule()` - 스케줄 수정
+  - `batchAnalysisApi.deleteSchedule()` - 스케줄 삭제
+  - `batchAnalysisApi.toggleSchedule()` - 스케줄 활성/비활성
+  - `batchAnalysisApi.getAvailableTenants()` - 사용 가능한 테넌트 조회
+  - **BatchAnalysisResult 타입**: 파싱된 분석 필드 포함
+    - `qualityScore`, `relevance`, `completeness`, `clarity` (1-10 점수)
+    - `sentiment` (positive/neutral/negative)
+    - `summaryText` (한 줄 요약)
+    - `issues`, `improvements`, `missingData` (JSON 배열)
+    - `issueCount`, `avgScore`
 
 ## For AI Agents
 - API 클라이언트는 이 디렉토리에 추가

@@ -20,7 +20,7 @@ interface ChatbotContextType {
   sessionId: string | null;
   isLoading: boolean;
   error: string | null;
-  currentPage: string;
+  currentPage: string | null;
   toggleChatbot: () => void;
   openChatbot: () => void;
   closeChatbot: () => void;

@@ -85,6 +85,36 @@ export class ResultFilterDto {
   status?: string;
 
   @ApiPropertyOptional({
+    description: '최소 평균 점수 필터',
+  })
+  @IsOptional()
+  @Type(() => Number)
+  minAvgScore?: number;
+
+  @ApiPropertyOptional({
+    description: '최대 평균 점수 필터',
+  })
+  @IsOptional()
+  @Type(() => Number)
+  maxAvgScore?: number;
+
+  @ApiPropertyOptional({
+    description: '감정 필터',
+    enum: ['positive', 'neutral', 'negative'],
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn(['positive', 'neutral', 'negative'])
+  sentiment?: string;
+
+  @ApiPropertyOptional({
+    description: '이슈 보유 여부 필터 (true: 이슈 있음)',
+  })
+  @IsOptional()
+  @Type(() => Boolean)
+  hasIssues?: boolean;
+
+  @ApiPropertyOptional({
     description: '조회 개수',
     default: 20,
   })

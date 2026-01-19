@@ -231,11 +231,24 @@ model BatchAnalysisResult {
 
   // LLM 분석 결과
   analysisPrompt String // 실제 사용된 프롬프트
-  analysisResult String // LLM 분석 응답
+  analysisResult String // LLM 분석 응답 (원본 JSON)
   modelName      String // 사용된 모델 (gemini-2.0-flash 등)
   latencyMs      Int // LLM 호출 응답시간
   inputTokens    Int    @default(0)
   outputTokens   Int    @default(0)
+
+  // 파싱된 분석 결과 (집계/필터링용)
+  qualityScore Int? // 1-10 품질 점수
+  relevance    Int? // 1-10 관련성 점수
+  completeness Int? // 1-10 완성도 점수
+  clarity      Int? // 1-10 명확성 점수
+  sentiment    String? // "positive" | "neutral" | "negative"
+  summaryText  String? // 한 줄 요약
+  issues       String? // JSON array of strings
+  improvements String? // JSON array of strings
+  missingData  String? // JSON array of objects (optional)
+  issueCount   Int? // issues 배열 길이
+  avgScore     Float? // (quality + relevance + completeness + clarity) / 4
 
   status       String // SUCCESS, FAILED
   errorMessage String?
@@ -259,4 +272,27 @@ model AnalysisPromptTemplate {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+/// 배치 분석 스케줄러 설정
+model BatchSchedulerConfig {
+  id        String  @id @default(uuid())
+  name      String // 스케줄 이름 (예: "오전 분석", "야간 분석")
+  isEnabled Boolean @default(true)
+
+  // 시간 설정
+  hour       Int    @default(8) // 0-23
+  minute     Int    @default(10) // 0-59
+  daysOfWeek String @default("1,2,3,4,5,6,0") // 0=일, 1=월, ..., 6=토 (콤마 구분)
+  timeZone   String @default("Asia/Seoul")
+
+  // 분석 대상 설정
+  targetTenantId   String? // null = 전체 테넌트
+  sampleSize       Int     @default(100)
+  promptTemplateId String? // null이면 기본 템플릿 사용
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isEnabled])
 }

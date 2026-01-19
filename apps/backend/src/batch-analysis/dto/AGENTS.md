@@ -24,8 +24,22 @@
 ### `job-filter.dto.ts`
 배치 분석 작업 및 결과 조회를 위한 필터 DTO입니다.
 - `JobFilterDto`: 작업 목록 조회 시 상태(PENDING/RUNNING/COMPLETED/FAILED), 테넌트 ID, 날짜 범위, 페이징(limit/offset)으로 필터링
-- `ResultFilterDto`: 분석 결과 조회 시 작업 ID, 테넌트 ID, 상태(SUCCESS/FAILED), 페이징으로 필터링
+- `ResultFilterDto`: 분석 결과 조회 시 필터링 파라미터 지원
+  - 기본 필터: 작업 ID, 테넌트 ID, 상태(SUCCESS/FAILED), 페이징
+  - 점수 필터: `minAvgScore`, `maxAvgScore` - 평균 점수 범위로 필터링
+  - 감정 필터: `sentiment` - 'positive' | 'neutral' | 'negative'
+  - 이슈 필터: `hasIssues` - 이슈 유무로 필터링 (Boolean)
 - `@Type(() => Number)` 데코레이터로 쿼리 파라미터 타입 변환 처리
+
+### `issue-frequency.dto.ts`
+이슈 빈도 분석을 위한 DTO입니다.
+- `IssueFrequencyQueryDto`: 이슈 빈도 조회 필터 (jobId, tenantId, limit, startDate, endDate)
+- `IssueFrequencyResponseDto`: 이슈별 count, percentage, 샘플 결과 목록 반환
+
+### `schedule.dto.ts`
+스케줄 생성 및 수정을 위한 DTO입니다.
+- `CreateScheduleDto`: 스케줄 이름, 실행 시간(hour/minute), 요일(daysOfWeek), 타임존 등
+- `UpdateScheduleDto`: 스케줄 수정을 위한 부분 업데이트 DTO
 
 ### `index.ts`
 모든 DTO를 re-export하는 배럴 파일입니다.

@@ -7,7 +7,7 @@ import TokenEfficiencyTrendChart from '@/components/charts/TokenEfficiencyTrendC
 import QueryResponseScatterPlot from '@/components/charts/QueryResponseScatterPlot';
 import RepeatedQueriesTable from '@/components/charts/RepeatedQueriesTable';
 
-const API_BASE = 'http://localhost:3000/projects/ibks/api';
+const API_BASE = 'http://192.168.1.42:3000/projects/ibks/api';
 
 interface EfficiencyTrendData {
   date: string;

@@ -5,9 +5,10 @@ import { BatchAnalysisController } from './batch-analysis.controller';
 import { BatchAnalysisScheduler } from './batch-analysis.scheduler';
 import { DatabaseModule } from '../admin/database/database.module';
 import { LLMModule } from '../admin/analysis/llm/llm.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, LLMModule],
+  imports: [ConfigModule, DatabaseModule, LLMModule, NotificationsModule],
   controllers: [BatchAnalysisController],
   providers: [BatchAnalysisService, BatchAnalysisScheduler],
   exports: [BatchAnalysisService],

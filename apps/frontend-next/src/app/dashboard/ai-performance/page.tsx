@@ -5,7 +5,7 @@ import { Brain, Zap, TrendingUp, AlertCircle } from 'lucide-react';
 import KPICard from '@/components/kpi/KPICard';
 import TokenScatterPlot from '@/components/charts/TokenScatterPlot';
 
-const API_BASE = 'http://localhost:3000/projects/ibks/api';
+const API_BASE = 'http://192.168.1.42:3000/projects/ibks/api';
 
 interface TokenEfficiencyData {
   tenant_id: string;

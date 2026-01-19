@@ -4,6 +4,7 @@ import { BigQuery } from '@google-cloud/bigquery';
 import { PrismaService } from '../admin/database/prisma.service';
 import { LLMService } from '../admin/analysis/llm/llm.service';
 import { MetricsQueries } from '../metrics/queries/metrics.queries';
+import { SlackNotificationService } from '../notifications/slack-notification.service';
 import {
   ChatSample,
   TenantForDate,
@@ -16,6 +17,27 @@ import {
   UpdatePromptTemplateDto,
 } from './dto/create-prompt-template.dto';
 import { JobFilterDto, ResultFilterDto } from './dto/job-filter.dto';
+import { CreateScheduleDto, UpdateScheduleDto } from './dto/schedule.dto';
+import {
+  IssueFrequencyQueryDto,
+  IssueFrequencyResponse,
+  IssueFrequencyResult,
+} from './dto/issue-frequency.dto';
+
+// 파싱된 분석 결과 인터페이스
+interface ParsedAnalysisResult {
+  qualityScore: number | null;
+  relevance: number | null;
+  completeness: number | null;
+  clarity: number | null;
+  sentiment: string | null;
+  summaryText: string | null;
+  issues: string | null;
+  improvements: string | null;
+  missingData: string | null;
+  issueCount: number | null;
+  avgScore: number | null;
+}
 
 const DEFAULT_PROMPT_TEMPLATE = `당신은 대화 품질 분석 전문가입니다. 다음 고객-AI 대화를 분석하고 JSON 형식으로 응답해주세요.
 
@@ -54,6 +76,7 @@ export class BatchAnalysisService {
     private readonly prisma: PrismaService,
     private readonly llmService: LLMService,
     private readonly configService: ConfigService,
+    private readonly slackNotificationService: SlackNotificationService,
   ) {
     this.projectId = this.configService.get<string>('GCP_PROJECT_ID', '');
     this.datasetId = this.configService.get<string>('BIGQUERY_DATASET', '');
@@ -81,6 +104,158 @@ export class BatchAnalysisService {
     } catch (error) {
       this.logger.error(`Failed to initialize BigQuery: ${error.message}`);
     }
+  }
+
+  /**
+   * Parse LLM analysis result JSON and extract structured fields
+   */
+  private parseAnalysisResult(content: string): ParsedAnalysisResult {
+    try {
+      // 마크다운 코드 블록 제거 (LLM이 ```json ... ``` 형태로 응답하는 경우)
+      let cleanContent = content.trim();
+      if (cleanContent.startsWith('```json')) {
+        cleanContent = cleanContent.slice(7);
+      } else if (cleanContent.startsWith('```')) {
+        cleanContent = cleanContent.slice(3);
+      }
+      if (cleanContent.endsWith('```')) {
+        cleanContent = cleanContent.slice(0, -3);
+      }
+      cleanContent = cleanContent.trim();
+
+      const json = JSON.parse(cleanContent);
+
+      const qualityScore =
+        typeof json.quality_score === 'number' ? json.quality_score : null;
+      const relevance =
+        typeof json.relevance === 'number' ? json.relevance : null;
+      const completeness =
+        typeof json.completeness === 'number' ? json.completeness : null;
+      const clarity = typeof json.clarity === 'number' ? json.clarity : null;
+
+      // Calculate average score from available scores
+      const scores = [qualityScore, relevance, completeness, clarity].filter(
+        (s): s is number => s !== null,
+      );
+      const avgScore =
+        scores.length > 0
+          ? scores.reduce((a, b) => a + b, 0) / scores.length
+          : null;
+
+      // Extract arrays
+      const issues = Array.isArray(json.issues) ? json.issues : [];
+      const improvements = Array.isArray(json.improvements)
+        ? json.improvements
+        : [];
+      const missingData = Array.isArray(json.missing_data)
+        ? json.missing_data
+        : null;
+
+      return {
+        qualityScore,
+        relevance,
+        completeness,
+        clarity,
+        sentiment: json.sentiment || null,
+        summaryText: json.summary || null,
+        issues: JSON.stringify(issues),
+        improvements: JSON.stringify(improvements),
+        missingData: missingData ? JSON.stringify(missingData) : null,
+        issueCount: issues.length,
+        avgScore,
+      };
+    } catch {
+      // JSON parsing failed - return all nulls
+      return {
+        qualityScore: null,
+        relevance: null,
+        completeness: null,
+        clarity: null,
+        sentiment: null,
+        summaryText: null,
+        issues: null,
+        improvements: null,
+        missingData: null,
+        issueCount: null,
+        avgScore: null,
+      };
+    }
+  }
+
+  // ==================== Slack Notifications ====================
+
+  /**
+   * Job 완료 시 요약 알림 발송
+   * avgScore < 5: critical, avgScore < 7: warning, 그 외: 알림 안 함
+   */
+  private async sendJobCompletionAlert(
+    jobId: string,
+    targetDate: Date,
+    avgScore: number,
+    lowScoreCount: number,
+    totalCount: number,
+  ): Promise<void> {
+    const severity =
+      avgScore < 5 ? 'critical' : avgScore < 7 ? 'warning' : 'info';
+
+    // 양호한 경우 알림 안 함
+    if (severity === 'info') return;
+
+    await this.slackNotificationService.sendAlert({
+      title: 'Batch Analysis Completed',
+      message: `Job completed with ${severity === 'critical' ? 'poor' : 'below average'} quality scores.`,
+      severity,
+      fields: [
+        { name: 'Job ID', value: jobId.slice(0, 8) },
+        {
+          name: 'Target Date',
+          value: targetDate.toLocaleDateString('ko-KR'),
+        },
+        { name: 'Avg Score', value: `${avgScore.toFixed(1)}/10` },
+        {
+          name: 'Low Quality',
+          value: `${lowScoreCount}/${totalCount} (${((lowScoreCount / totalCount) * 100).toFixed(1)}%)`,
+        },
+      ],
+    });
+  }
+
+  /**
+   * 개별 낮은 품질 결과 알림 발송
+   * qualityScore < 5 인 경우 critical 알림
+   */
+  private async sendLowQualityAlert(
+    tenantId: string,
+    userInput: string,
+    parsed: ParsedAnalysisResult,
+  ): Promise<void> {
+    if (!parsed.qualityScore || parsed.qualityScore >= 5) return;
+
+    let issuesPreview = 'N/A';
+    if (parsed.issues) {
+      try {
+        const issueArray = JSON.parse(parsed.issues) as string[];
+        issuesPreview = issueArray.slice(0, 2).join(', ') || 'N/A';
+      } catch {
+        issuesPreview = 'N/A';
+      }
+    }
+
+    await this.slackNotificationService.sendAlert({
+      title: 'Low Quality Response Detected',
+      message: `A chat response scored below threshold (${parsed.qualityScore}/10).`,
+      severity: 'critical',
+      fields: [
+        { name: 'Tenant', value: tenantId },
+        { name: 'Score', value: `${parsed.qualityScore}/10` },
+        {
+          name: 'User Query',
+          value:
+            userInput.length > 100 ? userInput.slice(0, 100) + '...' : userInput,
+        },
+        { name: 'Issues', value: issuesPreview },
+      ],
+    });
   }
 
   // ==================== Job Management ====================
@@ -146,7 +321,7 @@ export class BatchAnalysisService {
   }
 
   /**
-   * List jobs with filters
+   * List jobs with filters and aggregated scores
    */
   async listJobs(filter: JobFilterDto) {
     const where: any = {};
@@ -182,7 +357,42 @@ export class BatchAnalysisService {
       this.prisma.batchAnalysisJob.count({ where }),
     ]);
 
-    return { jobs, total };
+    // 각 Job의 평균 점수 계산
+    const jobsWithScores = await Promise.all(
+      jobs.map(async (job) => {
+        const aggregation = await this.prisma.batchAnalysisResult.aggregate({
+          where: {
+            jobId: job.id,
+            status: 'SUCCESS',
+            avgScore: { not: null },
+          },
+          _avg: {
+            qualityScore: true,
+            relevance: true,
+            completeness: true,
+            clarity: true,
+            avgScore: true,
+          },
+          _count: {
+            id: true,
+          },
+        });
+
+        return {
+          ...job,
+          scoreStats: {
+            avgQualityScore: aggregation._avg.qualityScore,
+            avgRelevance: aggregation._avg.relevance,
+            avgCompleteness: aggregation._avg.completeness,
+            avgClarity: aggregation._avg.clarity,
+            avgScore: aggregation._avg.avgScore,
+            scoredCount: aggregation._count.id,
+          },
+        };
+      }),
+    );
+
+    return { jobs: jobsWithScores, total };
   }
 
   /**
@@ -299,6 +509,7 @@ export class BatchAnalysisService {
       const batchSize = 10;
       let processedItems = 0;
       let failedItems = 0;
+      let lowQualityAlertCount = 0; // Rate limiting: 최대 5개 알림
 
       for (let i = 0; i < samples.length; i += batchSize) {
         const batch = samples.slice(i, i + batchSize);
@@ -307,6 +518,24 @@ export class BatchAnalysisService {
         // Save results
         for (const result of results) {
           try {
+            // Parse analysis result to extract structured fields
+            const parsed =
+              result.status === 'SUCCESS'
+                ? this.parseAnalysisResult(result.analysisResult)
+                : {
+                    qualityScore: null,
+                    relevance: null,
+                    completeness: null,
+                    clarity: null,
+                    sentiment: null,
+                    summaryText: null,
+                    issues: null,
+                    improvements: null,
+                    missingData: null,
+                    issueCount: null,
+                    avgScore: null,
+                  };
+
             await this.prisma.batchAnalysisResult.create({
               data: {
                 jobId,
@@ -323,11 +552,29 @@ export class BatchAnalysisService {
                 outputTokens: result.outputTokens,
                 status: result.status,
                 errorMessage: result.errorMessage,
+                // Parsed fields for aggregation
+                ...parsed,
               },
             });
 
             if (result.status === 'SUCCESS') {
               processedItems++;
+
+              // 낮은 품질 알림 (Job 당 최대 5개)
+              if (
+                lowQualityAlertCount < 5 &&
+                parsed.qualityScore !== null &&
+                parsed.qualityScore < 5
+              ) {
+                lowQualityAlertCount++;
+                this.sendLowQualityAlert(
+                  result.sample.tenant_id,
+                  result.sample.user_input,
+                  parsed,
+                ).catch((err) => {
+                  this.logger.warn(`Failed to send low quality alert: ${err.message}`);
+                });
+              }
             } else {
               failedItems++;
             }
@@ -358,6 +605,31 @@ export class BatchAnalysisService {
       this.logger.log(
         `Job ${jobId} completed: ${processedItems} processed, ${failedItems} failed`,
       );
+
+      // Job 완료 알림 발송
+      try {
+        const stats = await this.prisma.batchAnalysisResult.aggregate({
+          where: { jobId, status: 'SUCCESS', avgScore: { not: null } },
+          _avg: { avgScore: true },
+          _count: { id: true },
+        });
+
+        const lowScoreCount = await this.prisma.batchAnalysisResult.count({
+          where: { jobId, status: 'SUCCESS', qualityScore: { lt: 5 } },
+        });
+
+        if (stats._avg.avgScore !== null && stats._count.id > 0) {
+          await this.sendJobCompletionAlert(
+            jobId,
+            job.targetDate,
+            stats._avg.avgScore,
+            lowScoreCount,
+            stats._count.id,
+          );
+        }
+      } catch (alertError) {
+        this.logger.warn(`Failed to send job completion alert: ${alertError.message}`);
+      }
     } catch (error) {
       this.logger.error(`Job execution failed: ${error.message}`, error.stack);
 
@@ -525,6 +797,31 @@ export class BatchAnalysisService {
       where.status = filter.status;
     }
 
+    // 새로운 필터: 평균 점수 범위
+    if (filter.minAvgScore !== undefined || filter.maxAvgScore !== undefined) {
+      where.avgScore = {};
+      if (filter.minAvgScore !== undefined) {
+        where.avgScore.gte = filter.minAvgScore;
+      }
+      if (filter.maxAvgScore !== undefined) {
+        where.avgScore.lte = filter.maxAvgScore;
+      }
+    }
+
+    // 새로운 필터: 감정
+    if (filter.sentiment) {
+      where.sentiment = filter.sentiment;
+    }
+
+    // 새로운 필터: 이슈 보유 여부
+    if (filter.hasIssues !== undefined) {
+      if (filter.hasIssues) {
+        where.issueCount = { gt: 0 };
+      } else {
+        where.OR = [{ issueCount: 0 }, { issueCount: null }];
+      }
+    }
+
     const [results, total] = await Promise.all([
       this.prisma.batchAnalysisResult.findMany({
         where,
@@ -653,6 +950,125 @@ export class BatchAnalysisService {
     return { deleted: true };
   }
 
+  // ==================== Issue Frequency ====================
+
+  /**
+   * Get issue frequency report
+   * Aggregates issues from analysis results and returns top N by frequency
+   */
+  async getIssueFrequency(
+    query: IssueFrequencyQueryDto,
+  ): Promise<IssueFrequencyResponse> {
+    const where: any = {
+      status: 'SUCCESS',
+      issues: { not: null },
+    };
+
+    if (query.jobId) {
+      where.jobId = query.jobId;
+    }
+    if (query.tenantId) {
+      where.tenantId = query.tenantId;
+    }
+    if (query.startDate || query.endDate) {
+      where.createdAt = {};
+      if (query.startDate) {
+        where.createdAt.gte = new Date(query.startDate);
+      }
+      if (query.endDate) {
+        where.createdAt.lte = new Date(query.endDate + 'T23:59:59.999Z');
+      }
+    }
+
+    // Fetch all results with issues
+    const results = await this.prisma.batchAnalysisResult.findMany({
+      where,
+      select: {
+        id: true,
+        userInput: true,
+        tenantId: true,
+        avgScore: true,
+        issues: true,
+      },
+    });
+
+    // Aggregate issues
+    const issueMap = new Map<
+      string,
+      {
+        count: number;
+        samples: { id: string; userInput: string; tenantId: string; avgScore: number | null }[];
+      }
+    >();
+
+    let totalIssues = 0;
+
+    for (const result of results) {
+      if (!result.issues) continue;
+
+      try {
+        const issueArray = JSON.parse(result.issues) as string[];
+        if (!Array.isArray(issueArray)) continue;
+
+        for (const issue of issueArray) {
+          const normalizedIssue = issue.trim();
+          if (!normalizedIssue) continue;
+
+          totalIssues++;
+
+          if (!issueMap.has(normalizedIssue)) {
+            issueMap.set(normalizedIssue, { count: 0, samples: [] });
+          }
+
+          const entry = issueMap.get(normalizedIssue)!;
+          entry.count++;
+
+          // Keep up to 3 sample results per issue
+          if (entry.samples.length < 3) {
+            entry.samples.push({
+              id: result.id,
+              userInput:
+                result.userInput.length > 100
+                  ? result.userInput.substring(0, 100) + '...'
+                  : result.userInput,
+              tenantId: result.tenantId,
+              avgScore: result.avgScore,
+            });
+          }
+        }
+      } catch {
+        // Skip invalid JSON
+        continue;
+      }
+    }
+
+    // Sort by count and take top N
+    const limit = query.limit || 10;
+    const sortedIssues = Array.from(issueMap.entries())
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, limit);
+
+    const issues: IssueFrequencyResult[] = sortedIssues.map(([issue, data]) => ({
+      issue,
+      count: data.count,
+      percentage:
+        totalIssues > 0 ? Math.round((data.count / totalIssues) * 10000) / 100 : 0,
+      sampleResults: data.samples,
+    }));
+
+    return {
+      issues,
+      totalIssues,
+      totalResults: results.length,
+      filters: {
+        jobId: query.jobId,
+        tenantId: query.tenantId,
+        startDate: query.startDate,
+        endDate: query.endDate,
+      },
+    };
+  }
+
   // ==================== Statistics ====================
 
   /**
@@ -693,5 +1109,159 @@ export class BatchAnalysisService {
         failed: failedResults,
       },
     };
+  }
+
+  // ==================== Schedule Management ====================
+
+  async listSchedules() {
+    return this.prisma.batchSchedulerConfig.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async getSchedule(id: string) {
+    const schedule = await this.prisma.batchSchedulerConfig.findUnique({
+      where: { id },
+    });
+    if (!schedule) {
+      throw new NotFoundException(`Schedule not found: ${id}`);
+    }
+    return schedule;
+  }
+
+  async createSchedule(dto: CreateScheduleDto) {
+    return this.prisma.batchSchedulerConfig.create({
+      data: {
+        name: dto.name,
+        isEnabled: dto.isEnabled ?? true,
+        hour: dto.hour,
+        minute: dto.minute,
+        daysOfWeek: dto.daysOfWeek,
+        timeZone: dto.timeZone ?? 'Asia/Seoul',
+        targetTenantId: dto.targetTenantId || null,
+        sampleSize: dto.sampleSize ?? 100,
+        promptTemplateId: dto.promptTemplateId || null,
+      },
+    });
+  }
+
+  async updateSchedule(id: string, dto: UpdateScheduleDto) {
+    await this.getSchedule(id); // Verify exists
+    return this.prisma.batchSchedulerConfig.update({
+      where: { id },
+      data: {
+        ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.isEnabled !== undefined && { isEnabled: dto.isEnabled }),
+        ...(dto.hour !== undefined && { hour: dto.hour }),
+        ...(dto.minute !== undefined && { minute: dto.minute }),
+        ...(dto.daysOfWeek !== undefined && { daysOfWeek: dto.daysOfWeek }),
+        ...(dto.timeZone !== undefined && { timeZone: dto.timeZone }),
+        ...(dto.targetTenantId !== undefined && { targetTenantId: dto.targetTenantId || null }),
+        ...(dto.sampleSize !== undefined && { sampleSize: dto.sampleSize }),
+        ...(dto.promptTemplateId !== undefined && { promptTemplateId: dto.promptTemplateId || null }),
+      },
+    });
+  }
+
+  async deleteSchedule(id: string) {
+    await this.getSchedule(id); // Verify exists
+    await this.prisma.batchSchedulerConfig.delete({ where: { id } });
+    return { deleted: true };
+  }
+
+  async toggleSchedule(id: string) {
+    const schedule = await this.getSchedule(id);
+    return this.prisma.batchSchedulerConfig.update({
+      where: { id },
+      data: { isEnabled: !schedule.isEnabled },
+    });
+  }
+
+  async getAvailableTenants(days: number = 30) {
+    // Use existing BigQuery client to get tenant list
+    if (!this.bigQueryClient) {
+      return [];
+    }
+
+    const query = `
+      SELECT DISTINCT
+        tenant_id,
+        COUNT(*) AS chat_count
+      FROM \`${this.projectId}.${this.datasetId}.${this.tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND user_input IS NOT NULL
+        AND llm_response IS NOT NULL
+      GROUP BY tenant_id
+      HAVING COUNT(*) >= 10
+      ORDER BY chat_count DESC
+    `;
+
+    try {
+      const [job] = await this.bigQueryClient.createQueryJob({
+        query,
+        location: this.location,
+      });
+      const [rows] = await job.getQueryResults();
+      return rows.map((row: any) => ({
+        tenant_id: row.tenant_id,
+        chat_count: Number(row.chat_count),
+      }));
+    } catch (error) {
+      this.logger.error(`Failed to fetch tenants: ${error.message}`);
+      return [];
+    }
+  }
+
+  // ==================== Migration ====================
+
+  /**
+   * 기존 데이터의 파싱 필드 마이그레이션
+   * analysisResult는 있지만 qualityScore가 NULL인 레코드를 다시 파싱하여 업데이트
+   */
+  async migrateParseFields(): Promise<{ updated: number; failed: number }> {
+    const results = await this.prisma.batchAnalysisResult.findMany({
+      where: {
+        qualityScore: null,
+        analysisResult: { not: '' },
+      },
+    });
+
+    this.logger.log(
+      `Found ${results.length} records to migrate for parse fields`,
+    );
+
+    let updated = 0;
+    let failed = 0;
+
+    for (const result of results) {
+      const parsed = this.parseAnalysisResult(result.analysisResult);
+      if (parsed.qualityScore !== null) {
+        await this.prisma.batchAnalysisResult.update({
+          where: { id: result.id },
+          data: {
+            qualityScore: parsed.qualityScore,
+            relevance: parsed.relevance,
+            completeness: parsed.completeness,
+            clarity: parsed.clarity,
+            sentiment: parsed.sentiment,
+            summaryText: parsed.summaryText,
+            issues: parsed.issues,
+            improvements: parsed.improvements,
+            missingData: parsed.missingData,
+            issueCount: parsed.issueCount,
+            avgScore: parsed.avgScore,
+          },
+        });
+        updated++;
+      } else {
+        failed++;
+        this.logger.warn(`Failed to parse result ${result.id}`);
+      }
+    }
+
+    this.logger.log(
+      `Migration completed: ${updated} updated, ${failed} failed`,
+    );
+    return { updated, failed };
   }
 }

@@ -250,6 +250,17 @@ exports.Prisma.BatchAnalysisResultScalarFieldEnum = {
   latencyMs: 'latencyMs',
   inputTokens: 'inputTokens',
   outputTokens: 'outputTokens',
+  qualityScore: 'qualityScore',
+  relevance: 'relevance',
+  completeness: 'completeness',
+  clarity: 'clarity',
+  sentiment: 'sentiment',
+  summaryText: 'summaryText',
+  issues: 'issues',
+  improvements: 'improvements',
+  missingData: 'missingData',
+  issueCount: 'issueCount',
+  avgScore: 'avgScore',
   status: 'status',
   errorMessage: 'errorMessage',
   createdAt: 'createdAt'
@@ -262,6 +273,21 @@ exports.Prisma.AnalysisPromptTemplateScalarFieldEnum = {
   prompt: 'prompt',
   isDefault: 'isDefault',
   isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BatchSchedulerConfigScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isEnabled: 'isEnabled',
+  hour: 'hour',
+  minute: 'minute',
+  daysOfWeek: 'daysOfWeek',
+  timeZone: 'timeZone',
+  targetTenantId: 'targetTenantId',
+  sampleSize: 'sampleSize',
+  promptTemplateId: 'promptTemplateId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -291,7 +317,8 @@ exports.Prisma.ModelName = {
   ApiKey: 'ApiKey',
   BatchAnalysisJob: 'BatchAnalysisJob',
   BatchAnalysisResult: 'BatchAnalysisResult',
-  AnalysisPromptTemplate: 'AnalysisPromptTemplate'
+  AnalysisPromptTemplate: 'AnalysisPromptTemplate',
+  BatchSchedulerConfig: 'BatchSchedulerConfig'
 };
 
 /**

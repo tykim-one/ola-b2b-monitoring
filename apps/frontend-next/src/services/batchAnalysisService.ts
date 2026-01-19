@@ -1,6 +1,15 @@
 import apiClient from '../lib/api-client';
 
 // Types
+export interface JobScoreStats {
+  avgQualityScore: number | null;
+  avgRelevance: number | null;
+  avgCompleteness: number | null;
+  avgClarity: number | null;
+  avgScore: number | null;
+  scoredCount: number;
+}
+
 export interface BatchAnalysisJob {
   id: string;
   status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
@@ -15,6 +24,7 @@ export interface BatchAnalysisJob {
   completedAt: string | null;
   createdAt: string;
   _count?: { results: number };
+  scoreStats?: JobScoreStats;
 }
 
 export interface BatchAnalysisResult {
@@ -35,6 +45,19 @@ export interface BatchAnalysisResult {
   errorMessage: string | null;
   createdAt: string;
   job?: BatchAnalysisJob;
+
+  // 파싱된 분석 결과 필드들 (DB에 저장된 구조화된 데이터)
+  qualityScore: number | null;
+  relevance: number | null;
+  completeness: number | null;
+  clarity: number | null;
+  sentiment: string | null;
+  summaryText: string | null;
+  issues: string | null;        // JSON stringified array
+  improvements: string | null;  // JSON stringified array
+  missingData: string | null;   // JSON stringified array
+  issueCount: number | null;
+  avgScore: number | null;
 }
 
 export interface AnalysisPromptTemplate {
@@ -83,6 +106,10 @@ export interface ResultFilterParams {
   jobId?: string;
   tenantId?: string;
   status?: string;
+  minAvgScore?: number;
+  maxAvgScore?: number;
+  sentiment?: 'positive' | 'neutral' | 'negative';
+  hasIssues?: boolean;
   limit?: number;
   offset?: number;
 }
@@ -110,6 +137,85 @@ export interface PaginatedJobsResponse {
 export interface PaginatedResultsResponse {
   results: BatchAnalysisResult[];
   total: number;
+}
+
+export interface BatchSchedulerConfig {
+  id: string;
+  name: string;
+  isEnabled: boolean;
+  hour: number;
+  minute: number;
+  daysOfWeek: string;
+  timeZone: string;
+  targetTenantId: string | null;
+  sampleSize: number;
+  promptTemplateId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateScheduleRequest {
+  name: string;
+  isEnabled?: boolean;
+  hour?: number;
+  minute?: number;
+  daysOfWeek?: string;
+  timeZone?: string;
+  targetTenantId?: string;
+  sampleSize?: number;
+  promptTemplateId?: string;
+}
+
+export interface UpdateScheduleRequest {
+  name?: string;
+  isEnabled?: boolean;
+  hour?: number;
+  minute?: number;
+  daysOfWeek?: string;
+  timeZone?: string;
+  targetTenantId?: string | null;
+  sampleSize?: number;
+  promptTemplateId?: string | null;
+}
+
+export interface TenantInfo {
+  tenant_id: string;
+  chat_count: number;
+}
+
+// Issue Frequency Types
+export interface IssueFrequencyParams {
+  jobId?: string;
+  tenantId?: string;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface IssueSampleResult {
+  id: string;
+  userInput: string;
+  tenantId: string;
+  avgScore: number | null;
+}
+
+export interface IssueFrequencyItem {
+  issue: string;
+  count: number;
+  percentage: number;
+  sampleResults: IssueSampleResult[];
+}
+
+export interface IssueFrequencyResponse {
+  issues: IssueFrequencyItem[];
+  totalIssues: number;
+  totalResults: number;
+  filters: {
+    jobId?: string;
+    tenantId?: string;
+    startDate?: string;
+    endDate?: string;
+  };
 }
 
 // Batch Analysis API
@@ -173,6 +279,7 @@ export const batchAnalysisApi = {
     const response = await apiClient.get<AnalysisPromptTemplate[]>(
       '/api/admin/batch-analysis/prompts'
     );
+    console.log(response)
     return response.data;
   },
 
@@ -211,10 +318,73 @@ export const batchAnalysisApi = {
     return response.data;
   },
 
+  // Issue Frequency
+  async getIssueFrequency(params?: IssueFrequencyParams): Promise<IssueFrequencyResponse> {
+    const response = await apiClient.get<IssueFrequencyResponse>(
+      '/api/admin/batch-analysis/issue-frequency',
+      { params }
+    );
+    return response.data;
+  },
+
   // Statistics
   async getStatistics(): Promise<JobStatistics> {
     const response = await apiClient.get<JobStatistics>(
       '/api/admin/batch-analysis/stats'
+    );
+    return response.data;
+  },
+
+  // Schedules
+  async listSchedules(): Promise<BatchSchedulerConfig[]> {
+    const response = await apiClient.get<BatchSchedulerConfig[]>(
+      '/api/admin/batch-analysis/schedules'
+    );
+    return response.data;
+  },
+
+  async getSchedule(id: string): Promise<BatchSchedulerConfig> {
+    const response = await apiClient.get<BatchSchedulerConfig>(
+      `/api/admin/batch-analysis/schedules/${id}`
+    );
+    return response.data;
+  },
+
+  async createSchedule(data: CreateScheduleRequest): Promise<BatchSchedulerConfig> {
+    const response = await apiClient.post<BatchSchedulerConfig>(
+      '/api/admin/batch-analysis/schedules',
+      data
+    );
+    return response.data;
+  },
+
+  async updateSchedule(id: string, data: UpdateScheduleRequest): Promise<BatchSchedulerConfig> {
+    const response = await apiClient.put<BatchSchedulerConfig>(
+      `/api/admin/batch-analysis/schedules/${id}`,
+      data
+    );
+    return response.data;
+  },
+
+  async deleteSchedule(id: string): Promise<{ deleted: boolean }> {
+    const response = await apiClient.delete<{ deleted: boolean }>(
+      `/api/admin/batch-analysis/schedules/${id}`
+    );
+    return response.data;
+  },
+
+  async toggleSchedule(id: string): Promise<BatchSchedulerConfig> {
+    const response = await apiClient.post<BatchSchedulerConfig>(
+      `/api/admin/batch-analysis/schedules/${id}/toggle`
+    );
+    return response.data;
+  },
+
+  // Tenants
+  async getAvailableTenants(days?: number): Promise<{ tenants: TenantInfo[] }> {
+    const response = await apiClient.get<{ tenants: TenantInfo[] }>(
+      '/api/admin/batch-analysis/tenants',
+      { params: days ? { days } : undefined }
     );
     return response.data;
   },

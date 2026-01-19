@@ -12,7 +12,7 @@ async function bootstrap() {
 
   // Enable CORS for frontend
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
+    origin: process.env.CORS_ORIGIN || 'http://192.168.1.42:3001',
     credentials: true,
   });
 
@@ -37,9 +37,9 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`🚀 NestJS Backend running on http://localhost:${port}`);
+  console.log(`🚀 NestJS Backend running on http://192.168.1.42:${port}`);
   console.log(
-    `📑 Swagger Documentation available at http://localhost:${port}/api`,
+    `📑 Swagger Documentation available at http://192.168.1.42:${port}/api`,
   );
 }
 bootstrap();

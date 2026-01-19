@@ -8,7 +8,7 @@ interface PageProps {
 }
 
 async function getLogs(projectId: string): Promise<B2BLog[]> {
-  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.1.42:3000';
   try {
     const res = await fetch(`${backendUrl}/projects/${projectId}/api/logs?limit=50`, {
       cache: 'no-store',

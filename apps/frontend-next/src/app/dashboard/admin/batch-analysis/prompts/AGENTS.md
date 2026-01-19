@@ -29,6 +29,26 @@
 - 삭제 전 확인 대화상자 필수 (`ConfirmDialog` 컴포넌트 사용)
 - 편집 모드 진입 시 다른 템플릿 편집 비활성화 (한 번에 하나만 편집)
 
+## 필수 출력 포맷
+
+**모든 프롬프트 템플릿은 아래 JSON 필드를 반환해야 합니다** (점수 집계/분석에 필요):
+
+```json
+{
+  "quality_score": (1-10),
+  "relevance": (1-10),
+  "completeness": (1-10),
+  "clarity": (1-10),
+  "issues": ["..."],
+  "improvements": ["..."],
+  "sentiment": "positive|neutral|negative",
+  "summary": "..."
+}
+```
+
+- 폼에 `REQUIRED_OUTPUT_FORMAT` 가이드 박스 표시
+- "프롬프트에 삽입" 버튼으로 표준 포맷 추가 가능
+
 ## API Endpoints Used
 
 - `GET /api/admin/batch-analysis/prompts` - 템플릿 목록 조회

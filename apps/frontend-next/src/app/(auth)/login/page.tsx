@@ -69,7 +69,7 @@ function LoginForm() {
     try {
       await login(email, password);
       // Redirect to original destination or dashboard after successful login
-      const redirectTo = searchParams.get('redirect');
+      const redirectTo = searchParams?.get('redirect');
       const destination = redirectTo && isValidRedirectPath(redirectTo)
         ? redirectTo
         : '/dashboard';

@@ -54,8 +54,8 @@ export default function ChatWindow() {
   const dragRef = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });
   const resizeRef = useRef({ startX: 0, startY: 0, startWidth: 0, startHeight: 0 });
 
-  const pageName = getPageName(currentPage);
-  const exampleQuestions = getExampleQuestions(currentPage);
+  const pageName = getPageName(currentPage ?? '');
+  const exampleQuestions = getExampleQuestions(currentPage ?? '');
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

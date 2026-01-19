@@ -83,6 +83,11 @@ export type BatchAnalysisResult = $Result.DefaultSelection<Prisma.$BatchAnalysis
  * 분석 프롬프트 템플릿
  */
 export type AnalysisPromptTemplate = $Result.DefaultSelection<Prisma.$AnalysisPromptTemplatePayload>
+/**
+ * Model BatchSchedulerConfig
+ * 배치 분석 스케줄러 설정
+ */
+export type BatchSchedulerConfig = $Result.DefaultSelection<Prisma.$BatchSchedulerConfigPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -340,6 +345,16 @@ export class PrismaClient<
     * ```
     */
   get analysisPromptTemplate(): Prisma.AnalysisPromptTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.batchSchedulerConfig`: Exposes CRUD operations for the **BatchSchedulerConfig** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BatchSchedulerConfigs
+    * const batchSchedulerConfigs = await prisma.batchSchedulerConfig.findMany()
+    * ```
+    */
+  get batchSchedulerConfig(): Prisma.BatchSchedulerConfigDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -787,7 +802,8 @@ export namespace Prisma {
     ApiKey: 'ApiKey',
     BatchAnalysisJob: 'BatchAnalysisJob',
     BatchAnalysisResult: 'BatchAnalysisResult',
-    AnalysisPromptTemplate: 'AnalysisPromptTemplate'
+    AnalysisPromptTemplate: 'AnalysisPromptTemplate',
+    BatchSchedulerConfig: 'BatchSchedulerConfig'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -803,7 +819,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate"
+      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate" | "batchSchedulerConfig"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1843,6 +1859,80 @@ export namespace Prisma {
           }
         }
       }
+      BatchSchedulerConfig: {
+        payload: Prisma.$BatchSchedulerConfigPayload<ExtArgs>
+        fields: Prisma.BatchSchedulerConfigFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BatchSchedulerConfigFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BatchSchedulerConfigFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>
+          }
+          findFirst: {
+            args: Prisma.BatchSchedulerConfigFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BatchSchedulerConfigFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>
+          }
+          findMany: {
+            args: Prisma.BatchSchedulerConfigFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>[]
+          }
+          create: {
+            args: Prisma.BatchSchedulerConfigCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>
+          }
+          createMany: {
+            args: Prisma.BatchSchedulerConfigCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BatchSchedulerConfigCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>[]
+          }
+          delete: {
+            args: Prisma.BatchSchedulerConfigDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>
+          }
+          update: {
+            args: Prisma.BatchSchedulerConfigUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>
+          }
+          deleteMany: {
+            args: Prisma.BatchSchedulerConfigDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BatchSchedulerConfigUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BatchSchedulerConfigUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>[]
+          }
+          upsert: {
+            args: Prisma.BatchSchedulerConfigUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BatchSchedulerConfigPayload>
+          }
+          aggregate: {
+            args: Prisma.BatchSchedulerConfigAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBatchSchedulerConfig>
+          }
+          groupBy: {
+            args: Prisma.BatchSchedulerConfigGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BatchSchedulerConfigGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BatchSchedulerConfigCountArgs<ExtArgs>
+            result: $Utils.Optional<BatchSchedulerConfigCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1965,6 +2055,7 @@ export namespace Prisma {
     batchAnalysisJob?: BatchAnalysisJobOmit
     batchAnalysisResult?: BatchAnalysisResultOmit
     analysisPromptTemplate?: AnalysisPromptTemplateOmit
+    batchSchedulerConfig?: BatchSchedulerConfigOmit
   }
 
   /* Types for Logging */
@@ -15601,12 +15692,24 @@ export namespace Prisma {
     latencyMs: number | null
     inputTokens: number | null
     outputTokens: number | null
+    qualityScore: number | null
+    relevance: number | null
+    completeness: number | null
+    clarity: number | null
+    issueCount: number | null
+    avgScore: number | null
   }
 
   export type BatchAnalysisResultSumAggregateOutputType = {
     latencyMs: number | null
     inputTokens: number | null
     outputTokens: number | null
+    qualityScore: number | null
+    relevance: number | null
+    completeness: number | null
+    clarity: number | null
+    issueCount: number | null
+    avgScore: number | null
   }
 
   export type BatchAnalysisResultMinAggregateOutputType = {
@@ -15623,6 +15726,17 @@ export namespace Prisma {
     latencyMs: number | null
     inputTokens: number | null
     outputTokens: number | null
+    qualityScore: number | null
+    relevance: number | null
+    completeness: number | null
+    clarity: number | null
+    sentiment: string | null
+    summaryText: string | null
+    issues: string | null
+    improvements: string | null
+    missingData: string | null
+    issueCount: number | null
+    avgScore: number | null
     status: string | null
     errorMessage: string | null
     createdAt: Date | null
@@ -15642,6 +15756,17 @@ export namespace Prisma {
     latencyMs: number | null
     inputTokens: number | null
     outputTokens: number | null
+    qualityScore: number | null
+    relevance: number | null
+    completeness: number | null
+    clarity: number | null
+    sentiment: string | null
+    summaryText: string | null
+    issues: string | null
+    improvements: string | null
+    missingData: string | null
+    issueCount: number | null
+    avgScore: number | null
     status: string | null
     errorMessage: string | null
     createdAt: Date | null
@@ -15661,6 +15786,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens: number
     outputTokens: number
+    qualityScore: number
+    relevance: number
+    completeness: number
+    clarity: number
+    sentiment: number
+    summaryText: number
+    issues: number
+    improvements: number
+    missingData: number
+    issueCount: number
+    avgScore: number
     status: number
     errorMessage: number
     createdAt: number
@@ -15672,12 +15808,24 @@ export namespace Prisma {
     latencyMs?: true
     inputTokens?: true
     outputTokens?: true
+    qualityScore?: true
+    relevance?: true
+    completeness?: true
+    clarity?: true
+    issueCount?: true
+    avgScore?: true
   }
 
   export type BatchAnalysisResultSumAggregateInputType = {
     latencyMs?: true
     inputTokens?: true
     outputTokens?: true
+    qualityScore?: true
+    relevance?: true
+    completeness?: true
+    clarity?: true
+    issueCount?: true
+    avgScore?: true
   }
 
   export type BatchAnalysisResultMinAggregateInputType = {
@@ -15694,6 +15842,17 @@ export namespace Prisma {
     latencyMs?: true
     inputTokens?: true
     outputTokens?: true
+    qualityScore?: true
+    relevance?: true
+    completeness?: true
+    clarity?: true
+    sentiment?: true
+    summaryText?: true
+    issues?: true
+    improvements?: true
+    missingData?: true
+    issueCount?: true
+    avgScore?: true
     status?: true
     errorMessage?: true
     createdAt?: true
@@ -15713,6 +15872,17 @@ export namespace Prisma {
     latencyMs?: true
     inputTokens?: true
     outputTokens?: true
+    qualityScore?: true
+    relevance?: true
+    completeness?: true
+    clarity?: true
+    sentiment?: true
+    summaryText?: true
+    issues?: true
+    improvements?: true
+    missingData?: true
+    issueCount?: true
+    avgScore?: true
     status?: true
     errorMessage?: true
     createdAt?: true
@@ -15732,6 +15902,17 @@ export namespace Prisma {
     latencyMs?: true
     inputTokens?: true
     outputTokens?: true
+    qualityScore?: true
+    relevance?: true
+    completeness?: true
+    clarity?: true
+    sentiment?: true
+    summaryText?: true
+    issues?: true
+    improvements?: true
+    missingData?: true
+    issueCount?: true
+    avgScore?: true
     status?: true
     errorMessage?: true
     createdAt?: true
@@ -15838,6 +16019,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens: number
     outputTokens: number
+    qualityScore: number | null
+    relevance: number | null
+    completeness: number | null
+    clarity: number | null
+    sentiment: string | null
+    summaryText: string | null
+    issues: string | null
+    improvements: string | null
+    missingData: string | null
+    issueCount: number | null
+    avgScore: number | null
     status: string
     errorMessage: string | null
     createdAt: Date
@@ -15876,6 +16068,17 @@ export namespace Prisma {
     latencyMs?: boolean
     inputTokens?: boolean
     outputTokens?: boolean
+    qualityScore?: boolean
+    relevance?: boolean
+    completeness?: boolean
+    clarity?: boolean
+    sentiment?: boolean
+    summaryText?: boolean
+    issues?: boolean
+    improvements?: boolean
+    missingData?: boolean
+    issueCount?: boolean
+    avgScore?: boolean
     status?: boolean
     errorMessage?: boolean
     createdAt?: boolean
@@ -15896,6 +16099,17 @@ export namespace Prisma {
     latencyMs?: boolean
     inputTokens?: boolean
     outputTokens?: boolean
+    qualityScore?: boolean
+    relevance?: boolean
+    completeness?: boolean
+    clarity?: boolean
+    sentiment?: boolean
+    summaryText?: boolean
+    issues?: boolean
+    improvements?: boolean
+    missingData?: boolean
+    issueCount?: boolean
+    avgScore?: boolean
     status?: boolean
     errorMessage?: boolean
     createdAt?: boolean
@@ -15916,6 +16130,17 @@ export namespace Prisma {
     latencyMs?: boolean
     inputTokens?: boolean
     outputTokens?: boolean
+    qualityScore?: boolean
+    relevance?: boolean
+    completeness?: boolean
+    clarity?: boolean
+    sentiment?: boolean
+    summaryText?: boolean
+    issues?: boolean
+    improvements?: boolean
+    missingData?: boolean
+    issueCount?: boolean
+    avgScore?: boolean
     status?: boolean
     errorMessage?: boolean
     createdAt?: boolean
@@ -15936,12 +16161,23 @@ export namespace Prisma {
     latencyMs?: boolean
     inputTokens?: boolean
     outputTokens?: boolean
+    qualityScore?: boolean
+    relevance?: boolean
+    completeness?: boolean
+    clarity?: boolean
+    sentiment?: boolean
+    summaryText?: boolean
+    issues?: boolean
+    improvements?: boolean
+    missingData?: boolean
+    issueCount?: boolean
+    avgScore?: boolean
     status?: boolean
     errorMessage?: boolean
     createdAt?: boolean
   }
 
-  export type BatchAnalysisResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "originalTimestamp" | "tenantId" | "sessionId" | "userInput" | "llmResponse" | "analysisPrompt" | "analysisResult" | "modelName" | "latencyMs" | "inputTokens" | "outputTokens" | "status" | "errorMessage" | "createdAt", ExtArgs["result"]["batchAnalysisResult"]>
+  export type BatchAnalysisResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "originalTimestamp" | "tenantId" | "sessionId" | "userInput" | "llmResponse" | "analysisPrompt" | "analysisResult" | "modelName" | "latencyMs" | "inputTokens" | "outputTokens" | "qualityScore" | "relevance" | "completeness" | "clarity" | "sentiment" | "summaryText" | "issues" | "improvements" | "missingData" | "issueCount" | "avgScore" | "status" | "errorMessage" | "createdAt", ExtArgs["result"]["batchAnalysisResult"]>
   export type BatchAnalysisResultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | BatchAnalysisJobDefaultArgs<ExtArgs>
   }
@@ -15971,6 +16207,17 @@ export namespace Prisma {
       latencyMs: number
       inputTokens: number
       outputTokens: number
+      qualityScore: number | null
+      relevance: number | null
+      completeness: number | null
+      clarity: number | null
+      sentiment: string | null
+      summaryText: string | null
+      issues: string | null
+      improvements: string | null
+      missingData: string | null
+      issueCount: number | null
+      avgScore: number | null
       status: string
       errorMessage: string | null
       createdAt: Date
@@ -16411,6 +16658,17 @@ export namespace Prisma {
     readonly latencyMs: FieldRef<"BatchAnalysisResult", 'Int'>
     readonly inputTokens: FieldRef<"BatchAnalysisResult", 'Int'>
     readonly outputTokens: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly qualityScore: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly relevance: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly completeness: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly clarity: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly sentiment: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly summaryText: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly issues: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly improvements: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly missingData: FieldRef<"BatchAnalysisResult", 'String'>
+    readonly issueCount: FieldRef<"BatchAnalysisResult", 'Int'>
+    readonly avgScore: FieldRef<"BatchAnalysisResult", 'Float'>
     readonly status: FieldRef<"BatchAnalysisResult", 'String'>
     readonly errorMessage: FieldRef<"BatchAnalysisResult", 'String'>
     readonly createdAt: FieldRef<"BatchAnalysisResult", 'DateTime'>
@@ -17859,6 +18117,1132 @@ export namespace Prisma {
 
 
   /**
+   * Model BatchSchedulerConfig
+   */
+
+  export type AggregateBatchSchedulerConfig = {
+    _count: BatchSchedulerConfigCountAggregateOutputType | null
+    _avg: BatchSchedulerConfigAvgAggregateOutputType | null
+    _sum: BatchSchedulerConfigSumAggregateOutputType | null
+    _min: BatchSchedulerConfigMinAggregateOutputType | null
+    _max: BatchSchedulerConfigMaxAggregateOutputType | null
+  }
+
+  export type BatchSchedulerConfigAvgAggregateOutputType = {
+    hour: number | null
+    minute: number | null
+    sampleSize: number | null
+  }
+
+  export type BatchSchedulerConfigSumAggregateOutputType = {
+    hour: number | null
+    minute: number | null
+    sampleSize: number | null
+  }
+
+  export type BatchSchedulerConfigMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isEnabled: boolean | null
+    hour: number | null
+    minute: number | null
+    daysOfWeek: string | null
+    timeZone: string | null
+    targetTenantId: string | null
+    sampleSize: number | null
+    promptTemplateId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BatchSchedulerConfigMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isEnabled: boolean | null
+    hour: number | null
+    minute: number | null
+    daysOfWeek: string | null
+    timeZone: string | null
+    targetTenantId: string | null
+    sampleSize: number | null
+    promptTemplateId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BatchSchedulerConfigCountAggregateOutputType = {
+    id: number
+    name: number
+    isEnabled: number
+    hour: number
+    minute: number
+    daysOfWeek: number
+    timeZone: number
+    targetTenantId: number
+    sampleSize: number
+    promptTemplateId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BatchSchedulerConfigAvgAggregateInputType = {
+    hour?: true
+    minute?: true
+    sampleSize?: true
+  }
+
+  export type BatchSchedulerConfigSumAggregateInputType = {
+    hour?: true
+    minute?: true
+    sampleSize?: true
+  }
+
+  export type BatchSchedulerConfigMinAggregateInputType = {
+    id?: true
+    name?: true
+    isEnabled?: true
+    hour?: true
+    minute?: true
+    daysOfWeek?: true
+    timeZone?: true
+    targetTenantId?: true
+    sampleSize?: true
+    promptTemplateId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BatchSchedulerConfigMaxAggregateInputType = {
+    id?: true
+    name?: true
+    isEnabled?: true
+    hour?: true
+    minute?: true
+    daysOfWeek?: true
+    timeZone?: true
+    targetTenantId?: true
+    sampleSize?: true
+    promptTemplateId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BatchSchedulerConfigCountAggregateInputType = {
+    id?: true
+    name?: true
+    isEnabled?: true
+    hour?: true
+    minute?: true
+    daysOfWeek?: true
+    timeZone?: true
+    targetTenantId?: true
+    sampleSize?: true
+    promptTemplateId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BatchSchedulerConfigAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BatchSchedulerConfig to aggregate.
+     */
+    where?: BatchSchedulerConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchSchedulerConfigs to fetch.
+     */
+    orderBy?: BatchSchedulerConfigOrderByWithRelationInput | BatchSchedulerConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BatchSchedulerConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchSchedulerConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchSchedulerConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BatchSchedulerConfigs
+    **/
+    _count?: true | BatchSchedulerConfigCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BatchSchedulerConfigAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BatchSchedulerConfigSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BatchSchedulerConfigMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BatchSchedulerConfigMaxAggregateInputType
+  }
+
+  export type GetBatchSchedulerConfigAggregateType<T extends BatchSchedulerConfigAggregateArgs> = {
+        [P in keyof T & keyof AggregateBatchSchedulerConfig]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBatchSchedulerConfig[P]>
+      : GetScalarType<T[P], AggregateBatchSchedulerConfig[P]>
+  }
+
+
+
+
+  export type BatchSchedulerConfigGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BatchSchedulerConfigWhereInput
+    orderBy?: BatchSchedulerConfigOrderByWithAggregationInput | BatchSchedulerConfigOrderByWithAggregationInput[]
+    by: BatchSchedulerConfigScalarFieldEnum[] | BatchSchedulerConfigScalarFieldEnum
+    having?: BatchSchedulerConfigScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BatchSchedulerConfigCountAggregateInputType | true
+    _avg?: BatchSchedulerConfigAvgAggregateInputType
+    _sum?: BatchSchedulerConfigSumAggregateInputType
+    _min?: BatchSchedulerConfigMinAggregateInputType
+    _max?: BatchSchedulerConfigMaxAggregateInputType
+  }
+
+  export type BatchSchedulerConfigGroupByOutputType = {
+    id: string
+    name: string
+    isEnabled: boolean
+    hour: number
+    minute: number
+    daysOfWeek: string
+    timeZone: string
+    targetTenantId: string | null
+    sampleSize: number
+    promptTemplateId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BatchSchedulerConfigCountAggregateOutputType | null
+    _avg: BatchSchedulerConfigAvgAggregateOutputType | null
+    _sum: BatchSchedulerConfigSumAggregateOutputType | null
+    _min: BatchSchedulerConfigMinAggregateOutputType | null
+    _max: BatchSchedulerConfigMaxAggregateOutputType | null
+  }
+
+  type GetBatchSchedulerConfigGroupByPayload<T extends BatchSchedulerConfigGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BatchSchedulerConfigGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BatchSchedulerConfigGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BatchSchedulerConfigGroupByOutputType[P]>
+            : GetScalarType<T[P], BatchSchedulerConfigGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BatchSchedulerConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    hour?: boolean
+    minute?: boolean
+    daysOfWeek?: boolean
+    timeZone?: boolean
+    targetTenantId?: boolean
+    sampleSize?: boolean
+    promptTemplateId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["batchSchedulerConfig"]>
+
+  export type BatchSchedulerConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    hour?: boolean
+    minute?: boolean
+    daysOfWeek?: boolean
+    timeZone?: boolean
+    targetTenantId?: boolean
+    sampleSize?: boolean
+    promptTemplateId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["batchSchedulerConfig"]>
+
+  export type BatchSchedulerConfigSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    hour?: boolean
+    minute?: boolean
+    daysOfWeek?: boolean
+    timeZone?: boolean
+    targetTenantId?: boolean
+    sampleSize?: boolean
+    promptTemplateId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["batchSchedulerConfig"]>
+
+  export type BatchSchedulerConfigSelectScalar = {
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    hour?: boolean
+    minute?: boolean
+    daysOfWeek?: boolean
+    timeZone?: boolean
+    targetTenantId?: boolean
+    sampleSize?: boolean
+    promptTemplateId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BatchSchedulerConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isEnabled" | "hour" | "minute" | "daysOfWeek" | "timeZone" | "targetTenantId" | "sampleSize" | "promptTemplateId" | "createdAt" | "updatedAt", ExtArgs["result"]["batchSchedulerConfig"]>
+
+  export type $BatchSchedulerConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BatchSchedulerConfig"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      isEnabled: boolean
+      hour: number
+      minute: number
+      daysOfWeek: string
+      timeZone: string
+      targetTenantId: string | null
+      sampleSize: number
+      promptTemplateId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["batchSchedulerConfig"]>
+    composites: {}
+  }
+
+  type BatchSchedulerConfigGetPayload<S extends boolean | null | undefined | BatchSchedulerConfigDefaultArgs> = $Result.GetResult<Prisma.$BatchSchedulerConfigPayload, S>
+
+  type BatchSchedulerConfigCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BatchSchedulerConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BatchSchedulerConfigCountAggregateInputType | true
+    }
+
+  export interface BatchSchedulerConfigDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BatchSchedulerConfig'], meta: { name: 'BatchSchedulerConfig' } }
+    /**
+     * Find zero or one BatchSchedulerConfig that matches the filter.
+     * @param {BatchSchedulerConfigFindUniqueArgs} args - Arguments to find a BatchSchedulerConfig
+     * @example
+     * // Get one BatchSchedulerConfig
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BatchSchedulerConfigFindUniqueArgs>(args: SelectSubset<T, BatchSchedulerConfigFindUniqueArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BatchSchedulerConfig that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BatchSchedulerConfigFindUniqueOrThrowArgs} args - Arguments to find a BatchSchedulerConfig
+     * @example
+     * // Get one BatchSchedulerConfig
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BatchSchedulerConfigFindUniqueOrThrowArgs>(args: SelectSubset<T, BatchSchedulerConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BatchSchedulerConfig that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchSchedulerConfigFindFirstArgs} args - Arguments to find a BatchSchedulerConfig
+     * @example
+     * // Get one BatchSchedulerConfig
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BatchSchedulerConfigFindFirstArgs>(args?: SelectSubset<T, BatchSchedulerConfigFindFirstArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BatchSchedulerConfig that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchSchedulerConfigFindFirstOrThrowArgs} args - Arguments to find a BatchSchedulerConfig
+     * @example
+     * // Get one BatchSchedulerConfig
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BatchSchedulerConfigFindFirstOrThrowArgs>(args?: SelectSubset<T, BatchSchedulerConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BatchSchedulerConfigs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchSchedulerConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BatchSchedulerConfigs
+     * const batchSchedulerConfigs = await prisma.batchSchedulerConfig.findMany()
+     * 
+     * // Get first 10 BatchSchedulerConfigs
+     * const batchSchedulerConfigs = await prisma.batchSchedulerConfig.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const batchSchedulerConfigWithIdOnly = await prisma.batchSchedulerConfig.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BatchSchedulerConfigFindManyArgs>(args?: SelectSubset<T, BatchSchedulerConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BatchSchedulerConfig.
+     * @param {BatchSchedulerConfigCreateArgs} args - Arguments to create a BatchSchedulerConfig.
+     * @example
+     * // Create one BatchSchedulerConfig
+     * const BatchSchedulerConfig = await prisma.batchSchedulerConfig.create({
+     *   data: {
+     *     // ... data to create a BatchSchedulerConfig
+     *   }
+     * })
+     * 
+     */
+    create<T extends BatchSchedulerConfigCreateArgs>(args: SelectSubset<T, BatchSchedulerConfigCreateArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BatchSchedulerConfigs.
+     * @param {BatchSchedulerConfigCreateManyArgs} args - Arguments to create many BatchSchedulerConfigs.
+     * @example
+     * // Create many BatchSchedulerConfigs
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BatchSchedulerConfigCreateManyArgs>(args?: SelectSubset<T, BatchSchedulerConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BatchSchedulerConfigs and returns the data saved in the database.
+     * @param {BatchSchedulerConfigCreateManyAndReturnArgs} args - Arguments to create many BatchSchedulerConfigs.
+     * @example
+     * // Create many BatchSchedulerConfigs
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BatchSchedulerConfigs and only return the `id`
+     * const batchSchedulerConfigWithIdOnly = await prisma.batchSchedulerConfig.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BatchSchedulerConfigCreateManyAndReturnArgs>(args?: SelectSubset<T, BatchSchedulerConfigCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BatchSchedulerConfig.
+     * @param {BatchSchedulerConfigDeleteArgs} args - Arguments to delete one BatchSchedulerConfig.
+     * @example
+     * // Delete one BatchSchedulerConfig
+     * const BatchSchedulerConfig = await prisma.batchSchedulerConfig.delete({
+     *   where: {
+     *     // ... filter to delete one BatchSchedulerConfig
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BatchSchedulerConfigDeleteArgs>(args: SelectSubset<T, BatchSchedulerConfigDeleteArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BatchSchedulerConfig.
+     * @param {BatchSchedulerConfigUpdateArgs} args - Arguments to update one BatchSchedulerConfig.
+     * @example
+     * // Update one BatchSchedulerConfig
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BatchSchedulerConfigUpdateArgs>(args: SelectSubset<T, BatchSchedulerConfigUpdateArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BatchSchedulerConfigs.
+     * @param {BatchSchedulerConfigDeleteManyArgs} args - Arguments to filter BatchSchedulerConfigs to delete.
+     * @example
+     * // Delete a few BatchSchedulerConfigs
+     * const { count } = await prisma.batchSchedulerConfig.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BatchSchedulerConfigDeleteManyArgs>(args?: SelectSubset<T, BatchSchedulerConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BatchSchedulerConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchSchedulerConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BatchSchedulerConfigs
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BatchSchedulerConfigUpdateManyArgs>(args: SelectSubset<T, BatchSchedulerConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BatchSchedulerConfigs and returns the data updated in the database.
+     * @param {BatchSchedulerConfigUpdateManyAndReturnArgs} args - Arguments to update many BatchSchedulerConfigs.
+     * @example
+     * // Update many BatchSchedulerConfigs
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BatchSchedulerConfigs and only return the `id`
+     * const batchSchedulerConfigWithIdOnly = await prisma.batchSchedulerConfig.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BatchSchedulerConfigUpdateManyAndReturnArgs>(args: SelectSubset<T, BatchSchedulerConfigUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BatchSchedulerConfig.
+     * @param {BatchSchedulerConfigUpsertArgs} args - Arguments to update or create a BatchSchedulerConfig.
+     * @example
+     * // Update or create a BatchSchedulerConfig
+     * const batchSchedulerConfig = await prisma.batchSchedulerConfig.upsert({
+     *   create: {
+     *     // ... data to create a BatchSchedulerConfig
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BatchSchedulerConfig we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BatchSchedulerConfigUpsertArgs>(args: SelectSubset<T, BatchSchedulerConfigUpsertArgs<ExtArgs>>): Prisma__BatchSchedulerConfigClient<$Result.GetResult<Prisma.$BatchSchedulerConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BatchSchedulerConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchSchedulerConfigCountArgs} args - Arguments to filter BatchSchedulerConfigs to count.
+     * @example
+     * // Count the number of BatchSchedulerConfigs
+     * const count = await prisma.batchSchedulerConfig.count({
+     *   where: {
+     *     // ... the filter for the BatchSchedulerConfigs we want to count
+     *   }
+     * })
+    **/
+    count<T extends BatchSchedulerConfigCountArgs>(
+      args?: Subset<T, BatchSchedulerConfigCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BatchSchedulerConfigCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BatchSchedulerConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchSchedulerConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BatchSchedulerConfigAggregateArgs>(args: Subset<T, BatchSchedulerConfigAggregateArgs>): Prisma.PrismaPromise<GetBatchSchedulerConfigAggregateType<T>>
+
+    /**
+     * Group by BatchSchedulerConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BatchSchedulerConfigGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BatchSchedulerConfigGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BatchSchedulerConfigGroupByArgs['orderBy'] }
+        : { orderBy?: BatchSchedulerConfigGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BatchSchedulerConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBatchSchedulerConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BatchSchedulerConfig model
+   */
+  readonly fields: BatchSchedulerConfigFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BatchSchedulerConfig.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BatchSchedulerConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BatchSchedulerConfig model
+   */
+  interface BatchSchedulerConfigFieldRefs {
+    readonly id: FieldRef<"BatchSchedulerConfig", 'String'>
+    readonly name: FieldRef<"BatchSchedulerConfig", 'String'>
+    readonly isEnabled: FieldRef<"BatchSchedulerConfig", 'Boolean'>
+    readonly hour: FieldRef<"BatchSchedulerConfig", 'Int'>
+    readonly minute: FieldRef<"BatchSchedulerConfig", 'Int'>
+    readonly daysOfWeek: FieldRef<"BatchSchedulerConfig", 'String'>
+    readonly timeZone: FieldRef<"BatchSchedulerConfig", 'String'>
+    readonly targetTenantId: FieldRef<"BatchSchedulerConfig", 'String'>
+    readonly sampleSize: FieldRef<"BatchSchedulerConfig", 'Int'>
+    readonly promptTemplateId: FieldRef<"BatchSchedulerConfig", 'String'>
+    readonly createdAt: FieldRef<"BatchSchedulerConfig", 'DateTime'>
+    readonly updatedAt: FieldRef<"BatchSchedulerConfig", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BatchSchedulerConfig findUnique
+   */
+  export type BatchSchedulerConfigFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which BatchSchedulerConfig to fetch.
+     */
+    where: BatchSchedulerConfigWhereUniqueInput
+  }
+
+  /**
+   * BatchSchedulerConfig findUniqueOrThrow
+   */
+  export type BatchSchedulerConfigFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which BatchSchedulerConfig to fetch.
+     */
+    where: BatchSchedulerConfigWhereUniqueInput
+  }
+
+  /**
+   * BatchSchedulerConfig findFirst
+   */
+  export type BatchSchedulerConfigFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which BatchSchedulerConfig to fetch.
+     */
+    where?: BatchSchedulerConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchSchedulerConfigs to fetch.
+     */
+    orderBy?: BatchSchedulerConfigOrderByWithRelationInput | BatchSchedulerConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BatchSchedulerConfigs.
+     */
+    cursor?: BatchSchedulerConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchSchedulerConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchSchedulerConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BatchSchedulerConfigs.
+     */
+    distinct?: BatchSchedulerConfigScalarFieldEnum | BatchSchedulerConfigScalarFieldEnum[]
+  }
+
+  /**
+   * BatchSchedulerConfig findFirstOrThrow
+   */
+  export type BatchSchedulerConfigFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which BatchSchedulerConfig to fetch.
+     */
+    where?: BatchSchedulerConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchSchedulerConfigs to fetch.
+     */
+    orderBy?: BatchSchedulerConfigOrderByWithRelationInput | BatchSchedulerConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BatchSchedulerConfigs.
+     */
+    cursor?: BatchSchedulerConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchSchedulerConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchSchedulerConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BatchSchedulerConfigs.
+     */
+    distinct?: BatchSchedulerConfigScalarFieldEnum | BatchSchedulerConfigScalarFieldEnum[]
+  }
+
+  /**
+   * BatchSchedulerConfig findMany
+   */
+  export type BatchSchedulerConfigFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which BatchSchedulerConfigs to fetch.
+     */
+    where?: BatchSchedulerConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BatchSchedulerConfigs to fetch.
+     */
+    orderBy?: BatchSchedulerConfigOrderByWithRelationInput | BatchSchedulerConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BatchSchedulerConfigs.
+     */
+    cursor?: BatchSchedulerConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BatchSchedulerConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BatchSchedulerConfigs.
+     */
+    skip?: number
+    distinct?: BatchSchedulerConfigScalarFieldEnum | BatchSchedulerConfigScalarFieldEnum[]
+  }
+
+  /**
+   * BatchSchedulerConfig create
+   */
+  export type BatchSchedulerConfigCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * The data needed to create a BatchSchedulerConfig.
+     */
+    data: XOR<BatchSchedulerConfigCreateInput, BatchSchedulerConfigUncheckedCreateInput>
+  }
+
+  /**
+   * BatchSchedulerConfig createMany
+   */
+  export type BatchSchedulerConfigCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BatchSchedulerConfigs.
+     */
+    data: BatchSchedulerConfigCreateManyInput | BatchSchedulerConfigCreateManyInput[]
+  }
+
+  /**
+   * BatchSchedulerConfig createManyAndReturn
+   */
+  export type BatchSchedulerConfigCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * The data used to create many BatchSchedulerConfigs.
+     */
+    data: BatchSchedulerConfigCreateManyInput | BatchSchedulerConfigCreateManyInput[]
+  }
+
+  /**
+   * BatchSchedulerConfig update
+   */
+  export type BatchSchedulerConfigUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * The data needed to update a BatchSchedulerConfig.
+     */
+    data: XOR<BatchSchedulerConfigUpdateInput, BatchSchedulerConfigUncheckedUpdateInput>
+    /**
+     * Choose, which BatchSchedulerConfig to update.
+     */
+    where: BatchSchedulerConfigWhereUniqueInput
+  }
+
+  /**
+   * BatchSchedulerConfig updateMany
+   */
+  export type BatchSchedulerConfigUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BatchSchedulerConfigs.
+     */
+    data: XOR<BatchSchedulerConfigUpdateManyMutationInput, BatchSchedulerConfigUncheckedUpdateManyInput>
+    /**
+     * Filter which BatchSchedulerConfigs to update
+     */
+    where?: BatchSchedulerConfigWhereInput
+    /**
+     * Limit how many BatchSchedulerConfigs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchSchedulerConfig updateManyAndReturn
+   */
+  export type BatchSchedulerConfigUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * The data used to update BatchSchedulerConfigs.
+     */
+    data: XOR<BatchSchedulerConfigUpdateManyMutationInput, BatchSchedulerConfigUncheckedUpdateManyInput>
+    /**
+     * Filter which BatchSchedulerConfigs to update
+     */
+    where?: BatchSchedulerConfigWhereInput
+    /**
+     * Limit how many BatchSchedulerConfigs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchSchedulerConfig upsert
+   */
+  export type BatchSchedulerConfigUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * The filter to search for the BatchSchedulerConfig to update in case it exists.
+     */
+    where: BatchSchedulerConfigWhereUniqueInput
+    /**
+     * In case the BatchSchedulerConfig found by the `where` argument doesn't exist, create a new BatchSchedulerConfig with this data.
+     */
+    create: XOR<BatchSchedulerConfigCreateInput, BatchSchedulerConfigUncheckedCreateInput>
+    /**
+     * In case the BatchSchedulerConfig was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BatchSchedulerConfigUpdateInput, BatchSchedulerConfigUncheckedUpdateInput>
+  }
+
+  /**
+   * BatchSchedulerConfig delete
+   */
+  export type BatchSchedulerConfigDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+    /**
+     * Filter which BatchSchedulerConfig to delete.
+     */
+    where: BatchSchedulerConfigWhereUniqueInput
+  }
+
+  /**
+   * BatchSchedulerConfig deleteMany
+   */
+  export type BatchSchedulerConfigDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BatchSchedulerConfigs to delete
+     */
+    where?: BatchSchedulerConfigWhereInput
+    /**
+     * Limit how many BatchSchedulerConfigs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BatchSchedulerConfig without action
+   */
+  export type BatchSchedulerConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BatchSchedulerConfig
+     */
+    select?: BatchSchedulerConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BatchSchedulerConfig
+     */
+    omit?: BatchSchedulerConfigOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18038,6 +19422,17 @@ export namespace Prisma {
     latencyMs: 'latencyMs',
     inputTokens: 'inputTokens',
     outputTokens: 'outputTokens',
+    qualityScore: 'qualityScore',
+    relevance: 'relevance',
+    completeness: 'completeness',
+    clarity: 'clarity',
+    sentiment: 'sentiment',
+    summaryText: 'summaryText',
+    issues: 'issues',
+    improvements: 'improvements',
+    missingData: 'missingData',
+    issueCount: 'issueCount',
+    avgScore: 'avgScore',
     status: 'status',
     errorMessage: 'errorMessage',
     createdAt: 'createdAt'
@@ -18058,6 +19453,24 @@ export namespace Prisma {
   };
 
   export type AnalysisPromptTemplateScalarFieldEnum = (typeof AnalysisPromptTemplateScalarFieldEnum)[keyof typeof AnalysisPromptTemplateScalarFieldEnum]
+
+
+  export const BatchSchedulerConfigScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    isEnabled: 'isEnabled',
+    hour: 'hour',
+    minute: 'minute',
+    daysOfWeek: 'daysOfWeek',
+    timeZone: 'timeZone',
+    targetTenantId: 'targetTenantId',
+    sampleSize: 'sampleSize',
+    promptTemplateId: 'promptTemplateId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BatchSchedulerConfigScalarFieldEnum = (typeof BatchSchedulerConfigScalarFieldEnum)[keyof typeof BatchSchedulerConfigScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -18944,6 +20357,17 @@ export namespace Prisma {
     latencyMs?: IntFilter<"BatchAnalysisResult"> | number
     inputTokens?: IntFilter<"BatchAnalysisResult"> | number
     outputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    qualityScore?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    relevance?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    completeness?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    clarity?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    sentiment?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    summaryText?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    issues?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    improvements?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    missingData?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    issueCount?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    avgScore?: FloatNullableFilter<"BatchAnalysisResult"> | number | null
     status?: StringFilter<"BatchAnalysisResult"> | string
     errorMessage?: StringNullableFilter<"BatchAnalysisResult"> | string | null
     createdAt?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
@@ -18964,6 +20388,17 @@ export namespace Prisma {
     latencyMs?: SortOrder
     inputTokens?: SortOrder
     outputTokens?: SortOrder
+    qualityScore?: SortOrderInput | SortOrder
+    relevance?: SortOrderInput | SortOrder
+    completeness?: SortOrderInput | SortOrder
+    clarity?: SortOrderInput | SortOrder
+    sentiment?: SortOrderInput | SortOrder
+    summaryText?: SortOrderInput | SortOrder
+    issues?: SortOrderInput | SortOrder
+    improvements?: SortOrderInput | SortOrder
+    missingData?: SortOrderInput | SortOrder
+    issueCount?: SortOrderInput | SortOrder
+    avgScore?: SortOrderInput | SortOrder
     status?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -18987,6 +20422,17 @@ export namespace Prisma {
     latencyMs?: IntFilter<"BatchAnalysisResult"> | number
     inputTokens?: IntFilter<"BatchAnalysisResult"> | number
     outputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    qualityScore?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    relevance?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    completeness?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    clarity?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    sentiment?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    summaryText?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    issues?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    improvements?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    missingData?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    issueCount?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    avgScore?: FloatNullableFilter<"BatchAnalysisResult"> | number | null
     status?: StringFilter<"BatchAnalysisResult"> | string
     errorMessage?: StringNullableFilter<"BatchAnalysisResult"> | string | null
     createdAt?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
@@ -19007,6 +20453,17 @@ export namespace Prisma {
     latencyMs?: SortOrder
     inputTokens?: SortOrder
     outputTokens?: SortOrder
+    qualityScore?: SortOrderInput | SortOrder
+    relevance?: SortOrderInput | SortOrder
+    completeness?: SortOrderInput | SortOrder
+    clarity?: SortOrderInput | SortOrder
+    sentiment?: SortOrderInput | SortOrder
+    summaryText?: SortOrderInput | SortOrder
+    issues?: SortOrderInput | SortOrder
+    improvements?: SortOrderInput | SortOrder
+    missingData?: SortOrderInput | SortOrder
+    issueCount?: SortOrderInput | SortOrder
+    avgScore?: SortOrderInput | SortOrder
     status?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -19034,6 +20491,17 @@ export namespace Prisma {
     latencyMs?: IntWithAggregatesFilter<"BatchAnalysisResult"> | number
     inputTokens?: IntWithAggregatesFilter<"BatchAnalysisResult"> | number
     outputTokens?: IntWithAggregatesFilter<"BatchAnalysisResult"> | number
+    qualityScore?: IntNullableWithAggregatesFilter<"BatchAnalysisResult"> | number | null
+    relevance?: IntNullableWithAggregatesFilter<"BatchAnalysisResult"> | number | null
+    completeness?: IntNullableWithAggregatesFilter<"BatchAnalysisResult"> | number | null
+    clarity?: IntNullableWithAggregatesFilter<"BatchAnalysisResult"> | number | null
+    sentiment?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
+    summaryText?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
+    issues?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
+    improvements?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
+    missingData?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
+    issueCount?: IntNullableWithAggregatesFilter<"BatchAnalysisResult"> | number | null
+    avgScore?: FloatNullableWithAggregatesFilter<"BatchAnalysisResult"> | number | null
     status?: StringWithAggregatesFilter<"BatchAnalysisResult"> | string
     errorMessage?: StringNullableWithAggregatesFilter<"BatchAnalysisResult"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"BatchAnalysisResult"> | Date | string
@@ -19104,6 +20572,95 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"AnalysisPromptTemplate"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"AnalysisPromptTemplate"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"AnalysisPromptTemplate"> | Date | string
+  }
+
+  export type BatchSchedulerConfigWhereInput = {
+    AND?: BatchSchedulerConfigWhereInput | BatchSchedulerConfigWhereInput[]
+    OR?: BatchSchedulerConfigWhereInput[]
+    NOT?: BatchSchedulerConfigWhereInput | BatchSchedulerConfigWhereInput[]
+    id?: StringFilter<"BatchSchedulerConfig"> | string
+    name?: StringFilter<"BatchSchedulerConfig"> | string
+    isEnabled?: BoolFilter<"BatchSchedulerConfig"> | boolean
+    hour?: IntFilter<"BatchSchedulerConfig"> | number
+    minute?: IntFilter<"BatchSchedulerConfig"> | number
+    daysOfWeek?: StringFilter<"BatchSchedulerConfig"> | string
+    timeZone?: StringFilter<"BatchSchedulerConfig"> | string
+    targetTenantId?: StringNullableFilter<"BatchSchedulerConfig"> | string | null
+    sampleSize?: IntFilter<"BatchSchedulerConfig"> | number
+    promptTemplateId?: StringNullableFilter<"BatchSchedulerConfig"> | string | null
+    createdAt?: DateTimeFilter<"BatchSchedulerConfig"> | Date | string
+    updatedAt?: DateTimeFilter<"BatchSchedulerConfig"> | Date | string
+  }
+
+  export type BatchSchedulerConfigOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    hour?: SortOrder
+    minute?: SortOrder
+    daysOfWeek?: SortOrder
+    timeZone?: SortOrder
+    targetTenantId?: SortOrderInput | SortOrder
+    sampleSize?: SortOrder
+    promptTemplateId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BatchSchedulerConfigWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BatchSchedulerConfigWhereInput | BatchSchedulerConfigWhereInput[]
+    OR?: BatchSchedulerConfigWhereInput[]
+    NOT?: BatchSchedulerConfigWhereInput | BatchSchedulerConfigWhereInput[]
+    name?: StringFilter<"BatchSchedulerConfig"> | string
+    isEnabled?: BoolFilter<"BatchSchedulerConfig"> | boolean
+    hour?: IntFilter<"BatchSchedulerConfig"> | number
+    minute?: IntFilter<"BatchSchedulerConfig"> | number
+    daysOfWeek?: StringFilter<"BatchSchedulerConfig"> | string
+    timeZone?: StringFilter<"BatchSchedulerConfig"> | string
+    targetTenantId?: StringNullableFilter<"BatchSchedulerConfig"> | string | null
+    sampleSize?: IntFilter<"BatchSchedulerConfig"> | number
+    promptTemplateId?: StringNullableFilter<"BatchSchedulerConfig"> | string | null
+    createdAt?: DateTimeFilter<"BatchSchedulerConfig"> | Date | string
+    updatedAt?: DateTimeFilter<"BatchSchedulerConfig"> | Date | string
+  }, "id">
+
+  export type BatchSchedulerConfigOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    hour?: SortOrder
+    minute?: SortOrder
+    daysOfWeek?: SortOrder
+    timeZone?: SortOrder
+    targetTenantId?: SortOrderInput | SortOrder
+    sampleSize?: SortOrder
+    promptTemplateId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BatchSchedulerConfigCountOrderByAggregateInput
+    _avg?: BatchSchedulerConfigAvgOrderByAggregateInput
+    _max?: BatchSchedulerConfigMaxOrderByAggregateInput
+    _min?: BatchSchedulerConfigMinOrderByAggregateInput
+    _sum?: BatchSchedulerConfigSumOrderByAggregateInput
+  }
+
+  export type BatchSchedulerConfigScalarWhereWithAggregatesInput = {
+    AND?: BatchSchedulerConfigScalarWhereWithAggregatesInput | BatchSchedulerConfigScalarWhereWithAggregatesInput[]
+    OR?: BatchSchedulerConfigScalarWhereWithAggregatesInput[]
+    NOT?: BatchSchedulerConfigScalarWhereWithAggregatesInput | BatchSchedulerConfigScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BatchSchedulerConfig"> | string
+    name?: StringWithAggregatesFilter<"BatchSchedulerConfig"> | string
+    isEnabled?: BoolWithAggregatesFilter<"BatchSchedulerConfig"> | boolean
+    hour?: IntWithAggregatesFilter<"BatchSchedulerConfig"> | number
+    minute?: IntWithAggregatesFilter<"BatchSchedulerConfig"> | number
+    daysOfWeek?: StringWithAggregatesFilter<"BatchSchedulerConfig"> | string
+    timeZone?: StringWithAggregatesFilter<"BatchSchedulerConfig"> | string
+    targetTenantId?: StringNullableWithAggregatesFilter<"BatchSchedulerConfig"> | string | null
+    sampleSize?: IntWithAggregatesFilter<"BatchSchedulerConfig"> | number
+    promptTemplateId?: StringNullableWithAggregatesFilter<"BatchSchedulerConfig"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BatchSchedulerConfig"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BatchSchedulerConfig"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -19986,6 +21543,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens?: number
     outputTokens?: number
+    qualityScore?: number | null
+    relevance?: number | null
+    completeness?: number | null
+    clarity?: number | null
+    sentiment?: string | null
+    summaryText?: string | null
+    issues?: string | null
+    improvements?: string | null
+    missingData?: string | null
+    issueCount?: number | null
+    avgScore?: number | null
     status: string
     errorMessage?: string | null
     createdAt?: Date | string
@@ -20006,6 +21574,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens?: number
     outputTokens?: number
+    qualityScore?: number | null
+    relevance?: number | null
+    completeness?: number | null
+    clarity?: number | null
+    sentiment?: string | null
+    summaryText?: string | null
+    issues?: string | null
+    improvements?: string | null
+    missingData?: string | null
+    issueCount?: number | null
+    avgScore?: number | null
     status: string
     errorMessage?: string | null
     createdAt?: Date | string
@@ -20024,6 +21603,17 @@ export namespace Prisma {
     latencyMs?: IntFieldUpdateOperationsInput | number
     inputTokens?: IntFieldUpdateOperationsInput | number
     outputTokens?: IntFieldUpdateOperationsInput | number
+    qualityScore?: NullableIntFieldUpdateOperationsInput | number | null
+    relevance?: NullableIntFieldUpdateOperationsInput | number | null
+    completeness?: NullableIntFieldUpdateOperationsInput | number | null
+    clarity?: NullableIntFieldUpdateOperationsInput | number | null
+    sentiment?: NullableStringFieldUpdateOperationsInput | string | null
+    summaryText?: NullableStringFieldUpdateOperationsInput | string | null
+    issues?: NullableStringFieldUpdateOperationsInput | string | null
+    improvements?: NullableStringFieldUpdateOperationsInput | string | null
+    missingData?: NullableStringFieldUpdateOperationsInput | string | null
+    issueCount?: NullableIntFieldUpdateOperationsInput | number | null
+    avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20044,6 +21634,17 @@ export namespace Prisma {
     latencyMs?: IntFieldUpdateOperationsInput | number
     inputTokens?: IntFieldUpdateOperationsInput | number
     outputTokens?: IntFieldUpdateOperationsInput | number
+    qualityScore?: NullableIntFieldUpdateOperationsInput | number | null
+    relevance?: NullableIntFieldUpdateOperationsInput | number | null
+    completeness?: NullableIntFieldUpdateOperationsInput | number | null
+    clarity?: NullableIntFieldUpdateOperationsInput | number | null
+    sentiment?: NullableStringFieldUpdateOperationsInput | string | null
+    summaryText?: NullableStringFieldUpdateOperationsInput | string | null
+    issues?: NullableStringFieldUpdateOperationsInput | string | null
+    improvements?: NullableStringFieldUpdateOperationsInput | string | null
+    missingData?: NullableStringFieldUpdateOperationsInput | string | null
+    issueCount?: NullableIntFieldUpdateOperationsInput | number | null
+    avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20063,6 +21664,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens?: number
     outputTokens?: number
+    qualityScore?: number | null
+    relevance?: number | null
+    completeness?: number | null
+    clarity?: number | null
+    sentiment?: string | null
+    summaryText?: string | null
+    issues?: string | null
+    improvements?: string | null
+    missingData?: string | null
+    issueCount?: number | null
+    avgScore?: number | null
     status: string
     errorMessage?: string | null
     createdAt?: Date | string
@@ -20081,6 +21693,17 @@ export namespace Prisma {
     latencyMs?: IntFieldUpdateOperationsInput | number
     inputTokens?: IntFieldUpdateOperationsInput | number
     outputTokens?: IntFieldUpdateOperationsInput | number
+    qualityScore?: NullableIntFieldUpdateOperationsInput | number | null
+    relevance?: NullableIntFieldUpdateOperationsInput | number | null
+    completeness?: NullableIntFieldUpdateOperationsInput | number | null
+    clarity?: NullableIntFieldUpdateOperationsInput | number | null
+    sentiment?: NullableStringFieldUpdateOperationsInput | string | null
+    summaryText?: NullableStringFieldUpdateOperationsInput | string | null
+    issues?: NullableStringFieldUpdateOperationsInput | string | null
+    improvements?: NullableStringFieldUpdateOperationsInput | string | null
+    missingData?: NullableStringFieldUpdateOperationsInput | string | null
+    issueCount?: NullableIntFieldUpdateOperationsInput | number | null
+    avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20100,6 +21723,17 @@ export namespace Prisma {
     latencyMs?: IntFieldUpdateOperationsInput | number
     inputTokens?: IntFieldUpdateOperationsInput | number
     outputTokens?: IntFieldUpdateOperationsInput | number
+    qualityScore?: NullableIntFieldUpdateOperationsInput | number | null
+    relevance?: NullableIntFieldUpdateOperationsInput | number | null
+    completeness?: NullableIntFieldUpdateOperationsInput | number | null
+    clarity?: NullableIntFieldUpdateOperationsInput | number | null
+    sentiment?: NullableStringFieldUpdateOperationsInput | string | null
+    summaryText?: NullableStringFieldUpdateOperationsInput | string | null
+    issues?: NullableStringFieldUpdateOperationsInput | string | null
+    improvements?: NullableStringFieldUpdateOperationsInput | string | null
+    missingData?: NullableStringFieldUpdateOperationsInput | string | null
+    issueCount?: NullableIntFieldUpdateOperationsInput | number | null
+    avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20178,6 +21812,111 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchSchedulerConfigCreateInput = {
+    id?: string
+    name: string
+    isEnabled?: boolean
+    hour?: number
+    minute?: number
+    daysOfWeek?: string
+    timeZone?: string
+    targetTenantId?: string | null
+    sampleSize?: number
+    promptTemplateId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BatchSchedulerConfigUncheckedCreateInput = {
+    id?: string
+    name: string
+    isEnabled?: boolean
+    hour?: number
+    minute?: number
+    daysOfWeek?: string
+    timeZone?: string
+    targetTenantId?: string | null
+    sampleSize?: number
+    promptTemplateId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BatchSchedulerConfigUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hour?: IntFieldUpdateOperationsInput | number
+    minute?: IntFieldUpdateOperationsInput | number
+    daysOfWeek?: StringFieldUpdateOperationsInput | string
+    timeZone?: StringFieldUpdateOperationsInput | string
+    targetTenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchSchedulerConfigUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hour?: IntFieldUpdateOperationsInput | number
+    minute?: IntFieldUpdateOperationsInput | number
+    daysOfWeek?: StringFieldUpdateOperationsInput | string
+    timeZone?: StringFieldUpdateOperationsInput | string
+    targetTenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchSchedulerConfigCreateManyInput = {
+    id?: string
+    name: string
+    isEnabled?: boolean
+    hour?: number
+    minute?: number
+    daysOfWeek?: string
+    timeZone?: string
+    targetTenantId?: string | null
+    sampleSize?: number
+    promptTemplateId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BatchSchedulerConfigUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hour?: IntFieldUpdateOperationsInput | number
+    minute?: IntFieldUpdateOperationsInput | number
+    daysOfWeek?: StringFieldUpdateOperationsInput | string
+    timeZone?: StringFieldUpdateOperationsInput | string
+    targetTenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BatchSchedulerConfigUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hour?: IntFieldUpdateOperationsInput | number
+    minute?: IntFieldUpdateOperationsInput | number
+    daysOfWeek?: StringFieldUpdateOperationsInput | string
+    timeZone?: StringFieldUpdateOperationsInput | string
+    targetTenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    sampleSize?: IntFieldUpdateOperationsInput | number
+    promptTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20843,6 +22582,28 @@ export namespace Prisma {
     failedItems?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type BatchAnalysisJobScalarRelationFilter = {
     is?: BatchAnalysisJobWhereInput
     isNot?: BatchAnalysisJobWhereInput
@@ -20862,6 +22623,17 @@ export namespace Prisma {
     latencyMs?: SortOrder
     inputTokens?: SortOrder
     outputTokens?: SortOrder
+    qualityScore?: SortOrder
+    relevance?: SortOrder
+    completeness?: SortOrder
+    clarity?: SortOrder
+    sentiment?: SortOrder
+    summaryText?: SortOrder
+    issues?: SortOrder
+    improvements?: SortOrder
+    missingData?: SortOrder
+    issueCount?: SortOrder
+    avgScore?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
     createdAt?: SortOrder
@@ -20871,6 +22643,12 @@ export namespace Prisma {
     latencyMs?: SortOrder
     inputTokens?: SortOrder
     outputTokens?: SortOrder
+    qualityScore?: SortOrder
+    relevance?: SortOrder
+    completeness?: SortOrder
+    clarity?: SortOrder
+    issueCount?: SortOrder
+    avgScore?: SortOrder
   }
 
   export type BatchAnalysisResultMaxOrderByAggregateInput = {
@@ -20887,6 +22665,17 @@ export namespace Prisma {
     latencyMs?: SortOrder
     inputTokens?: SortOrder
     outputTokens?: SortOrder
+    qualityScore?: SortOrder
+    relevance?: SortOrder
+    completeness?: SortOrder
+    clarity?: SortOrder
+    sentiment?: SortOrder
+    summaryText?: SortOrder
+    issues?: SortOrder
+    improvements?: SortOrder
+    missingData?: SortOrder
+    issueCount?: SortOrder
+    avgScore?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
     createdAt?: SortOrder
@@ -20906,6 +22695,17 @@ export namespace Prisma {
     latencyMs?: SortOrder
     inputTokens?: SortOrder
     outputTokens?: SortOrder
+    qualityScore?: SortOrder
+    relevance?: SortOrder
+    completeness?: SortOrder
+    clarity?: SortOrder
+    sentiment?: SortOrder
+    summaryText?: SortOrder
+    issues?: SortOrder
+    improvements?: SortOrder
+    missingData?: SortOrder
+    issueCount?: SortOrder
+    avgScore?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
     createdAt?: SortOrder
@@ -20915,6 +22715,44 @@ export namespace Prisma {
     latencyMs?: SortOrder
     inputTokens?: SortOrder
     outputTokens?: SortOrder
+    qualityScore?: SortOrder
+    relevance?: SortOrder
+    completeness?: SortOrder
+    clarity?: SortOrder
+    issueCount?: SortOrder
+    avgScore?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type AnalysisPromptTemplateCountOrderByAggregateInput = {
@@ -20948,6 +22786,63 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type BatchSchedulerConfigCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    hour?: SortOrder
+    minute?: SortOrder
+    daysOfWeek?: SortOrder
+    timeZone?: SortOrder
+    targetTenantId?: SortOrder
+    sampleSize?: SortOrder
+    promptTemplateId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BatchSchedulerConfigAvgOrderByAggregateInput = {
+    hour?: SortOrder
+    minute?: SortOrder
+    sampleSize?: SortOrder
+  }
+
+  export type BatchSchedulerConfigMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    hour?: SortOrder
+    minute?: SortOrder
+    daysOfWeek?: SortOrder
+    timeZone?: SortOrder
+    targetTenantId?: SortOrder
+    sampleSize?: SortOrder
+    promptTemplateId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BatchSchedulerConfigMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    hour?: SortOrder
+    minute?: SortOrder
+    daysOfWeek?: SortOrder
+    timeZone?: SortOrder
+    targetTenantId?: SortOrder
+    sampleSize?: SortOrder
+    promptTemplateId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BatchSchedulerConfigSumOrderByAggregateInput = {
+    hour?: SortOrder
+    minute?: SortOrder
+    sampleSize?: SortOrder
   }
 
   export type UserRoleCreateNestedManyWithoutUserInput = {
@@ -21588,6 +23483,22 @@ export namespace Prisma {
     connect?: BatchAnalysisJobWhereUniqueInput
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type BatchAnalysisJobUpdateOneRequiredWithoutResultsNestedInput = {
     create?: XOR<BatchAnalysisJobCreateWithoutResultsInput, BatchAnalysisJobUncheckedCreateWithoutResultsInput>
     connectOrCreate?: BatchAnalysisJobCreateOrConnectWithoutResultsInput
@@ -21768,6 +23679,49 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type UserRoleCreateWithoutUserInput = {
@@ -23023,6 +24977,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens?: number
     outputTokens?: number
+    qualityScore?: number | null
+    relevance?: number | null
+    completeness?: number | null
+    clarity?: number | null
+    sentiment?: string | null
+    summaryText?: string | null
+    issues?: string | null
+    improvements?: string | null
+    missingData?: string | null
+    issueCount?: number | null
+    avgScore?: number | null
     status: string
     errorMessage?: string | null
     createdAt?: Date | string
@@ -23041,6 +25006,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens?: number
     outputTokens?: number
+    qualityScore?: number | null
+    relevance?: number | null
+    completeness?: number | null
+    clarity?: number | null
+    sentiment?: string | null
+    summaryText?: string | null
+    issues?: string | null
+    improvements?: string | null
+    missingData?: string | null
+    issueCount?: number | null
+    avgScore?: number | null
     status: string
     errorMessage?: string | null
     createdAt?: Date | string
@@ -23088,6 +25064,17 @@ export namespace Prisma {
     latencyMs?: IntFilter<"BatchAnalysisResult"> | number
     inputTokens?: IntFilter<"BatchAnalysisResult"> | number
     outputTokens?: IntFilter<"BatchAnalysisResult"> | number
+    qualityScore?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    relevance?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    completeness?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    clarity?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    sentiment?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    summaryText?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    issues?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    improvements?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    missingData?: StringNullableFilter<"BatchAnalysisResult"> | string | null
+    issueCount?: IntNullableFilter<"BatchAnalysisResult"> | number | null
+    avgScore?: FloatNullableFilter<"BatchAnalysisResult"> | number | null
     status?: StringFilter<"BatchAnalysisResult"> | string
     errorMessage?: StringNullableFilter<"BatchAnalysisResult"> | string | null
     createdAt?: DateTimeFilter<"BatchAnalysisResult"> | Date | string
@@ -23504,6 +25491,17 @@ export namespace Prisma {
     latencyMs: number
     inputTokens?: number
     outputTokens?: number
+    qualityScore?: number | null
+    relevance?: number | null
+    completeness?: number | null
+    clarity?: number | null
+    sentiment?: string | null
+    summaryText?: string | null
+    issues?: string | null
+    improvements?: string | null
+    missingData?: string | null
+    issueCount?: number | null
+    avgScore?: number | null
     status: string
     errorMessage?: string | null
     createdAt?: Date | string
@@ -23522,6 +25520,17 @@ export namespace Prisma {
     latencyMs?: IntFieldUpdateOperationsInput | number
     inputTokens?: IntFieldUpdateOperationsInput | number
     outputTokens?: IntFieldUpdateOperationsInput | number
+    qualityScore?: NullableIntFieldUpdateOperationsInput | number | null
+    relevance?: NullableIntFieldUpdateOperationsInput | number | null
+    completeness?: NullableIntFieldUpdateOperationsInput | number | null
+    clarity?: NullableIntFieldUpdateOperationsInput | number | null
+    sentiment?: NullableStringFieldUpdateOperationsInput | string | null
+    summaryText?: NullableStringFieldUpdateOperationsInput | string | null
+    issues?: NullableStringFieldUpdateOperationsInput | string | null
+    improvements?: NullableStringFieldUpdateOperationsInput | string | null
+    missingData?: NullableStringFieldUpdateOperationsInput | string | null
+    issueCount?: NullableIntFieldUpdateOperationsInput | number | null
+    avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23540,6 +25549,17 @@ export namespace Prisma {
     latencyMs?: IntFieldUpdateOperationsInput | number
     inputTokens?: IntFieldUpdateOperationsInput | number
     outputTokens?: IntFieldUpdateOperationsInput | number
+    qualityScore?: NullableIntFieldUpdateOperationsInput | number | null
+    relevance?: NullableIntFieldUpdateOperationsInput | number | null
+    completeness?: NullableIntFieldUpdateOperationsInput | number | null
+    clarity?: NullableIntFieldUpdateOperationsInput | number | null
+    sentiment?: NullableStringFieldUpdateOperationsInput | string | null
+    summaryText?: NullableStringFieldUpdateOperationsInput | string | null
+    issues?: NullableStringFieldUpdateOperationsInput | string | null
+    improvements?: NullableStringFieldUpdateOperationsInput | string | null
+    missingData?: NullableStringFieldUpdateOperationsInput | string | null
+    issueCount?: NullableIntFieldUpdateOperationsInput | number | null
+    avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23558,6 +25578,17 @@ export namespace Prisma {
     latencyMs?: IntFieldUpdateOperationsInput | number
     inputTokens?: IntFieldUpdateOperationsInput | number
     outputTokens?: IntFieldUpdateOperationsInput | number
+    qualityScore?: NullableIntFieldUpdateOperationsInput | number | null
+    relevance?: NullableIntFieldUpdateOperationsInput | number | null
+    completeness?: NullableIntFieldUpdateOperationsInput | number | null
+    clarity?: NullableIntFieldUpdateOperationsInput | number | null
+    sentiment?: NullableStringFieldUpdateOperationsInput | string | null
+    summaryText?: NullableStringFieldUpdateOperationsInput | string | null
+    issues?: NullableStringFieldUpdateOperationsInput | string | null
+    improvements?: NullableStringFieldUpdateOperationsInput | string | null
+    missingData?: NullableStringFieldUpdateOperationsInput | string | null
+    issueCount?: NullableIntFieldUpdateOperationsInput | number | null
+    avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

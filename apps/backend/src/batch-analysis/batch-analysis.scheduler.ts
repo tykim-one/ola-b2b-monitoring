@@ -1,128 +1,168 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { CronJob } from 'cron';
+import { PrismaService } from '../admin/database/prisma.service';
 import { BatchAnalysisService } from './batch-analysis.service';
+import { BatchSchedulerConfig } from '../generated/prisma';
 
 @Injectable()
-export class BatchAnalysisScheduler {
+export class BatchAnalysisScheduler implements OnModuleInit {
   private readonly logger = new Logger(BatchAnalysisScheduler.name);
-  private readonly enabled: boolean;
 
   constructor(
+    private readonly schedulerRegistry: SchedulerRegistry,
+    private readonly prisma: PrismaService,
     private readonly batchAnalysisService: BatchAnalysisService,
-    private readonly configService: ConfigService,
-  ) {
-    this.enabled = this.configService.get<boolean>(
-      'BATCH_ANALYSIS_SCHEDULER_ENABLED',
-      false,
-    );
+  ) {}
 
-    if (this.enabled) {
-      this.logger.log('Batch analysis scheduler is enabled');
-    } else {
+  async onModuleInit() {
+    await this.loadAllSchedules();
+  }
+
+  /**
+   * Load all enabled schedules from DB and register cron jobs
+   */
+  async loadAllSchedules() {
+    try {
+      const schedules = await this.prisma.batchSchedulerConfig.findMany({
+        where: { isEnabled: true },
+      });
+
+      for (const schedule of schedules) {
+        this.registerCronJob(schedule);
+      }
+
+      this.logger.log(`Loaded ${schedules.length} batch analysis schedules`);
+    } catch (error) {
+      this.logger.error(`Failed to load schedules: ${error.message}`);
+    }
+  }
+
+  /**
+   * Build cron expression from schedule config
+   * Format: "minute hour * * daysOfWeek"
+   */
+  private buildCronExpression(schedule: BatchSchedulerConfig): string {
+    return `${schedule.minute} ${schedule.hour} * * ${schedule.daysOfWeek}`;
+  }
+
+  /**
+   * Register a cron job for a schedule
+   */
+  registerCronJob(schedule: BatchSchedulerConfig) {
+    const jobName = `batch-analysis-${schedule.id}`;
+    const cronExpr = this.buildCronExpression(schedule);
+
+    try {
+      // Remove existing job if present
+      if (this.schedulerRegistry.doesExist('cron', jobName)) {
+        this.schedulerRegistry.deleteCronJob(jobName);
+      }
+
+      const job = new CronJob(
+        cronExpr,
+        () => this.executeSchedule(schedule.id),
+        null,
+        true,
+        schedule.timeZone,
+      );
+
+      this.schedulerRegistry.addCronJob(jobName, job);
+      job.start();
+
       this.logger.log(
-        'Batch analysis scheduler is disabled. Set BATCH_ANALYSIS_SCHEDULER_ENABLED=true to enable.',
+        `Registered schedule "${schedule.name}" [${cronExpr}] (${schedule.timeZone})`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to register schedule "${schedule.name}": ${error.message}`,
       );
     }
   }
 
   /**
-   * Run daily analysis at 2:00 AM (analyzes previous day's data)
+   * Execute a scheduled analysis job
    */
-  @Cron('0 2 * * *', {
-    name: 'daily-chat-analysis',
-    timeZone: 'Asia/Seoul',
-  })
-  async runDailyAnalysis() {
-    if (!this.enabled) {
-      this.logger.debug('Scheduler disabled, skipping daily analysis');
-      return;
-    }
-
-    this.logger.log('Starting daily chat analysis...');
-
+  async executeSchedule(scheduleId: string) {
     try {
+      // Reload schedule from DB to get latest config
+      const schedule = await this.prisma.batchSchedulerConfig.findUnique({
+        where: { id: scheduleId },
+      });
+
+      if (!schedule || !schedule.isEnabled) {
+        this.logger.debug(`Schedule ${scheduleId} is disabled or not found`);
+        return;
+      }
+
+      this.logger.log(`Executing schedule "${schedule.name}"...`);
+
       // Calculate yesterday's date
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const targetDate = yesterday.toISOString().split('T')[0];
 
-      this.logger.log(`Creating analysis job for date: ${targetDate}`);
-
-      // Create job for all tenants
+      // Create and run analysis job
       const job = await this.batchAnalysisService.createJob({
         targetDate,
-        sampleSize: 100, // 100 samples per tenant
+        tenantId: schedule.targetTenantId || undefined,
+        sampleSize: schedule.sampleSize,
+        promptTemplateId: schedule.promptTemplateId || undefined,
       });
 
-      this.logger.log(`Created job: ${job.id}`);
-
-      // Run the job
       await this.batchAnalysisService.runJob(job.id);
 
-      this.logger.log(`Daily analysis job started: ${job.id}`);
+      this.logger.log(
+        `Schedule "${schedule.name}" started job ${job.id} for ${targetDate}`,
+      );
     } catch (error) {
-      this.logger.error(`Daily analysis failed: ${error.message}`, error.stack);
+      this.logger.error(
+        `Schedule execution failed for ${scheduleId}: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
   /**
-   * Cleanup old jobs (keep last 30 days)
-   * Runs every Sunday at 3:00 AM
+   * Reload a specific schedule (called when schedule is updated via API)
    */
-  @Cron('0 3 * * 0', {
-    name: 'cleanup-old-jobs',
-    timeZone: 'Asia/Seoul',
-  })
-  async cleanupOldJobs() {
-    if (!this.enabled) {
-      return;
+  async reloadSchedule(scheduleId: string) {
+    const jobName = `batch-analysis-${scheduleId}`;
+
+    // Remove existing job
+    if (this.schedulerRegistry.doesExist('cron', jobName)) {
+      this.schedulerRegistry.deleteCronJob(jobName);
+      this.logger.debug(`Removed existing cron job: ${jobName}`);
     }
 
-    this.logger.log('Starting old jobs cleanup...');
-
-    try {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-      // Get old completed jobs
-      const { jobs } = await this.batchAnalysisService.listJobs({
-        status: 'COMPLETED',
-        endDate: thirtyDaysAgo.toISOString().split('T')[0],
-        limit: 100,
-      });
-
-      let deletedCount = 0;
-      for (const job of jobs) {
-        try {
-          await this.batchAnalysisService.deleteJob(job.id);
-          deletedCount++;
-        } catch (error) {
-          this.logger.warn(`Failed to delete job ${job.id}: ${error.message}`);
-        }
-      }
-
-      this.logger.log(`Cleanup completed: ${deletedCount} old jobs deleted`);
-    } catch (error) {
-      this.logger.error(`Cleanup failed: ${error.message}`, error.stack);
-    }
-  }
-
-  /**
-   * Manual trigger for testing (not scheduled)
-   */
-  async triggerManualAnalysis(targetDate?: string) {
-    const date = targetDate || new Date().toISOString().split('T')[0];
-
-    this.logger.log(`Manual analysis triggered for date: ${date}`);
-
-    const job = await this.batchAnalysisService.createJob({
-      targetDate: date,
-      sampleSize: 50,
+    // Load and re-register if enabled
+    const schedule = await this.prisma.batchSchedulerConfig.findUnique({
+      where: { id: scheduleId },
     });
 
-    await this.batchAnalysisService.runJob(job.id);
+    if (schedule?.isEnabled) {
+      this.registerCronJob(schedule);
+    }
+  }
 
-    return job;
+  /**
+   * Remove a schedule's cron job (called when schedule is deleted)
+   */
+  async removeSchedule(scheduleId: string) {
+    const jobName = `batch-analysis-${scheduleId}`;
+
+    if (this.schedulerRegistry.doesExist('cron', jobName)) {
+      this.schedulerRegistry.deleteCronJob(jobName);
+      this.logger.log(`Removed cron job: ${jobName}`);
+    }
+  }
+
+  /**
+   * Get all registered cron job names (for debugging)
+   */
+  getRegisteredJobs(): string[] {
+    return this.schedulerRegistry.getCronJobs()
+      ? Array.from(this.schedulerRegistry.getCronJobs().keys())
+      : [];
   }
 }

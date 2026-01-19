@@ -10,7 +10,7 @@ import { MarkdownViewer } from '@/components/markdown';
 export default function ChatPage() {
   const params = useParams();
   const router = useRouter();
-  const sessionId = params.id as string;
+  const sessionId = params?.id as string;
 
   const [session, setSession] = useState<AnalysisSession | null>(null);
   const [loading, setLoading] = useState(true);
