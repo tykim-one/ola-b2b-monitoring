@@ -12,7 +12,7 @@ export interface JobScoreStats {
 
 export interface BatchAnalysisJob {
   id: string;
-  status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
+  status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
   targetDate: string;
   tenantId: string | null;
   sampleSize: number;
@@ -22,6 +22,8 @@ export interface BatchAnalysisJob {
   failedItems: number;
   startedAt: string | null;
   completedAt: string | null;
+  errorMessage: string | null;
+  cancelRequested: boolean;
   createdAt: string;
   _count?: { results: number };
   scoreStats?: JobScoreStats;
@@ -254,6 +256,13 @@ export const batchAnalysisApi = {
   async deleteJob(id: string): Promise<{ deleted: boolean }> {
     const response = await apiClient.delete<{ deleted: boolean }>(
       `/api/admin/batch-analysis/jobs/${id}`
+    );
+    return response.data;
+  },
+
+  async cancelJob(id: string): Promise<{ jobId: string; message: string }> {
+    const response = await apiClient.post<{ jobId: string; message: string }>(
+      `/api/admin/batch-analysis/jobs/${id}/cancel`
     );
     return response.data;
   },

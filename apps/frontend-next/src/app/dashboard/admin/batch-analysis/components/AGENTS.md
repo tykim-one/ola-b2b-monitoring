@@ -14,6 +14,17 @@
   - 기본값 설정 (어제 날짜, 샘플 사이즈 100)
   - 폼 검증 및 제출 처리
   - 사이버펑크 스타일 UI (cyan 테마, 모노스페이스 폰트)
+- **ChatQualityTab.tsx** - 채팅 품질 분석 탭
+  - 점수 그리드 (Quality, Relevance, Completeness, Clarity)
+  - 감정 분석 배지 (positive/neutral/negative)
+  - 이슈/개선사항 리스트
+- **FAQAnalysisTab.tsx** - FAQ 분석 탭
+  - FAQ 클러스터링 결과 표시
+  - 빈도 분석 차트
+- **SessionAnalysisTab.tsx** - 세션 분석 탭
+  - 세션 해결률 통계
+  - 효율성 분석 (평균 턴 수)
+  - 세션 타임라인 뷰
 
 ## For AI Agents
 

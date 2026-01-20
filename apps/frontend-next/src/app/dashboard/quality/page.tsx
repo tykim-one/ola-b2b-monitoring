@@ -6,8 +6,9 @@ import KPICard from '@/components/kpi/KPICard';
 import TokenEfficiencyTrendChart from '@/components/charts/TokenEfficiencyTrendChart';
 import QueryResponseScatterPlot from '@/components/charts/QueryResponseScatterPlot';
 import RepeatedQueriesTable from '@/components/charts/RepeatedQueriesTable';
+import FAQAnalysisSection from '@/components/faq-analysis/FAQAnalysisSection';
 
-const API_BASE = 'http://192.168.1.42:3000/projects/ibks/api';
+const API_BASE = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/projects/ibks/api`;
 
 interface EfficiencyTrendData {
   date: string;
@@ -177,6 +178,11 @@ export default function QualityPage() {
           data={repeatedPatterns}
           title="반복 질문 패턴 (FAQ 후보)"
         />
+      </div>
+
+      {/* FAQ Analysis Section */}
+      <div className="mb-8">
+        <FAQAnalysisSection />
       </div>
     </div>
   );

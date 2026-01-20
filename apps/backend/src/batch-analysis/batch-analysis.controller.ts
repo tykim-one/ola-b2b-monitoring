@@ -77,6 +77,16 @@ export class BatchAnalysisController {
     return this.batchAnalysisService.runJob(id);
   }
 
+  @Post('jobs/:id/cancel')
+  @Permissions('analysis:write')
+  @ApiOperation({ summary: '배치 분석 작업 취소' })
+  @ApiResponse({ status: 200, description: '작업 취소 요청됨' })
+  @ApiResponse({ status: 404, description: '작업을 찾을 수 없음' })
+  @ApiResponse({ status: 400, description: '실행 중인 작업만 취소 가능' })
+  async cancelJob(@Param('id') id: string) {
+    return this.batchAnalysisService.cancelJob(id);
+  }
+
   @Delete('jobs/:id')
   @Permissions('analysis:write')
   @ApiOperation({ summary: '배치 분석 작업 삭제' })

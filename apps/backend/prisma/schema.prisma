@@ -196,7 +196,7 @@ model ApiKey {
 /// 배치 분석 작업
 model BatchAnalysisJob {
   id             String    @id @default(uuid())
-  status         String    // PENDING, RUNNING, COMPLETED, FAILED
+  status         String    // PENDING, RUNNING, COMPLETED, FAILED, CANCELLED
   targetDate     DateTime  // 분석 대상 날짜
   tenantId       String?   // null이면 전체 테넌트
   sampleSize     Int       @default(100)
@@ -206,9 +206,11 @@ model BatchAnalysisJob {
   processedItems Int       @default(0)
   failedItems    Int       @default(0)
 
-  startedAt      DateTime?
-  completedAt    DateTime?
-  createdAt      DateTime  @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+  errorMessage    String?   // 실패 시 에러 메시지
+  cancelRequested Boolean   @default(false)  // 취소 요청 플래그
+  createdAt       DateTime  @default(now())
 
   // Relations
   results BatchAnalysisResult[]
@@ -295,4 +297,123 @@ model BatchSchedulerConfig {
   updatedAt        DateTime @updatedAt
 
   @@index([isEnabled])
+}
+
+// ==================== FAQ 분석 테이블 ====================
+
+/// FAQ 분석 작업
+model FAQAnalysisJob {
+  id              String    @id @default(uuid())
+  status          String    @default("PENDING") // PENDING | RUNNING | COMPLETED | FAILED
+  tenantId        String?   // null = 전체 테넌트
+  periodDays      Int       @default(7) // 7 | 14 | 30
+  topN            Int       @default(10) // 10 | 20 | 50
+
+  totalQuestions  Int?      // 분석된 총 질문 수
+  clusterCount    Int?      // 생성된 클러스터 수
+  llmMergeApplied Boolean   @default(false)
+
+  startedAt       DateTime?
+  completedAt     DateTime?
+  errorMessage    String?
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  results         FAQAnalysisResult[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+/// FAQ 분석 결과 (클러스터)
+model FAQAnalysisResult {
+  id                     String   @id @default(uuid())
+  jobId                  String
+
+  rank                   Int      // 빈도 순위
+  representativeQuestion String   // 대표 질문
+  frequency              Int      // 총 빈도
+  reasonAnalysis         String   // LLM 사유 분석
+  isMerged               Boolean  @default(false) // LLM 병합 여부
+
+  questions              String   // JSON: [{text, count, tenantId}]
+
+  createdAt              DateTime @default(now())
+
+  // Relations
+  job FAQAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+}
+
+// ==================== 유저 프로필링 테이블 ====================
+
+/// 유저 프로필 요약 (배치 생성)
+model UserProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique  // x_enc_data (BigQuery의 request_metadata.x_enc_data)
+  tenantId        String
+
+  // 감정 분석 집계
+  frustrationRate Float    @default(0)  // 불만 비율 (0-1)
+  aggressiveCount Int      @default(0)  // 공격적 메시지 수
+
+  // 카테고리 분포 (JSON)
+  categoryDistribution String  @default("{}") // JSON: { "complaint": 5, "product_inquiry": 10, ... }
+
+  // LLM 생성 요약
+  behaviorSummary String?  // 유저 행동 요약 텍스트
+  mainInterests   String?  // 주요 관심사
+  painPoints      String?  // 주요 불만/문제점
+
+  // 메타데이터
+  totalMessages    Int      @default(0)
+  analyzedMessages Int      @default(0)
+  lastAnalyzedAt   DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([tenantId])
+}
+
+/// 메시지별 카테고리 분석 결과
+model MessageCategoryAnalysis {
+  id          String   @id @default(uuid())
+  userId      String   // x_enc_data
+  tenantId    String
+  messageHash String   // user_input 해시 (중복 방지)
+
+  category    String   // QuestionCategory enum value
+  confidence  Float    @default(0.8) // 분류 신뢰도 (0-1)
+  sentiment   String   @default("neutral") // positive/neutral/negative
+  isAggressive Boolean @default(false)
+
+  userInput   String   // 원본 질문 (참조용)
+  timestamp   DateTime
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, messageHash])
+  @@index([userId])
+  @@index([tenantId])
+  @@index([category])
+}
+
+/// 유저 프로필링 배치 작업
+model UserProfilingJob {
+  id             String    @id @default(uuid())
+  status         String    @default("PENDING")  // PENDING, RUNNING, COMPLETED, FAILED, CANCELLED
+  targetDate     DateTime  // 분석 대상 날짜
+  tenantId       String?   // null = 전체 테넌트
+
+  totalUsers     Int       @default(0)
+  processedUsers Int       @default(0)
+  failedUsers    Int       @default(0)
+
+  startedAt      DateTime?
+  completedAt    DateTime?
+  errorMessage   String?
+  createdAt      DateTime  @default(now())
+
+  @@index([status])
+  @@index([targetDate])
 }

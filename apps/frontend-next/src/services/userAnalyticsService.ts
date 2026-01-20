@@ -6,7 +6,7 @@ import {
   UserActivityDetail,
 } from '@ola/shared-types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.1.42:3000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 interface ApiResponse<T> {
   success: boolean;

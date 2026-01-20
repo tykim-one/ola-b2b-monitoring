@@ -764,4 +764,238 @@ export const MetricsQueries = {
     HAVING COUNT(*) >= 10
     ORDER BY chat_count DESC
   `,
+
+  // ==================== 세션 분석용 쿼리 ====================
+
+  /**
+   * 세션별 전체 대화 내역 조회
+   * 특정 세션의 타임라인을 가져옴
+   */
+  sessionConversationHistory: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    sessionId: string,
+  ) => `
+    SELECT
+      timestamp,
+      user_input AS userInput,
+      llm_response AS llmResponse,
+      success,
+      CAST(COALESCE(SAFE_CAST(input_tokens AS FLOAT64), 0) AS INT64) AS inputTokens,
+      CAST(COALESCE(SAFE_CAST(output_tokens AS FLOAT64), 0) AS INT64) AS outputTokens
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE request_metadata.session_id = '${sessionId}'
+    ORDER BY timestamp ASC
+  `,
+
+  /**
+   * 세션 해결 통계 (기간별)
+   * 해결률, 평균 턴 수, 이탈률 등 집계
+   */
+  sessionResolutionStats: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+    tenantId?: string,
+  ) => `
+    WITH session_data AS (
+      SELECT
+        request_metadata.session_id AS session_id,
+        tenant_id,
+        request_metadata.x_enc_data AS user_id,
+        COUNT(*) AS turn_count,
+        COUNTIF(success = TRUE) AS success_count,
+        MIN(timestamp) AS session_start,
+        MAX(timestamp) AS session_end,
+        -- 불만 표현 포함 여부
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated)')
+        ) AS has_frustration,
+        -- 감사 표현으로 종료 여부 (휴리스틱 해결 판단)
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(감사|고마워|thanks|thank you|got it|알겠|해결|완료|좋아|perfect|great)')
+        ) AS has_thanks
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND request_metadata.session_id IS NOT NULL
+        ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
+      GROUP BY session_id, tenant_id, user_id
+      HAVING turn_count >= 2
+    ),
+    resolution_calc AS (
+      SELECT
+        *,
+        -- 휴리스틱 해결 판단: 감사 표현 있거나, 불만 없이 성공률 100%
+        CASE
+          WHEN has_thanks THEN TRUE
+          WHEN NOT has_frustration AND success_count = turn_count THEN TRUE
+          ELSE FALSE
+        END AS is_resolved_heuristic
+      FROM session_data
+    )
+    SELECT
+      COUNT(*) AS totalSessions,
+      COUNTIF(is_resolved_heuristic) AS resolvedSessions,
+      ROUND(COUNTIF(is_resolved_heuristic) * 100.0 / NULLIF(COUNT(*), 0), 2) AS resolutionRate,
+      ROUND(AVG(CASE WHEN is_resolved_heuristic THEN turn_count END), 2) AS avgTurnsToResolution,
+      ROUND(COUNTIF(NOT is_resolved_heuristic) * 100.0 / NULLIF(COUNT(*), 0), 2) AS abandonmentRate,
+      ROUND(AVG(TIMESTAMP_DIFF(session_end, session_start, SECOND) / 60.0), 2) AS avgSessionDuration,
+      COUNTIF(has_frustration) AS frustratedSessions,
+      ROUND(COUNTIF(has_frustration) * 100.0 / NULLIF(COUNT(*), 0), 2) AS frustrationRate
+    FROM resolution_calc
+  `,
+
+  /**
+   * 세션 목록 조회 (페이지네이션)
+   * 필터링 및 정렬 지원
+   */
+  sessionList: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+    tenantId?: string,
+    isResolved?: boolean,
+    hasFrustration?: boolean,
+    limit: number = 20,
+    offset: number = 0,
+  ) => `
+    WITH session_data AS (
+      SELECT
+        request_metadata.session_id AS session_id,
+        tenant_id,
+        request_metadata.x_enc_data AS user_id,
+        COUNT(*) AS turn_count,
+        COUNTIF(success = TRUE) AS success_count,
+        MIN(timestamp) AS session_start,
+        MAX(timestamp) AS session_end,
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated)')
+        ) AS has_frustration,
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(감사|고마워|thanks|thank you|got it|알겠|해결|완료|좋아|perfect|great)')
+        ) AS has_thanks
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND request_metadata.session_id IS NOT NULL
+        ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
+      GROUP BY session_id, tenant_id, user_id
+      HAVING turn_count >= 2
+    ),
+    resolution_calc AS (
+      SELECT
+        *,
+        CASE
+          WHEN has_thanks THEN TRUE
+          WHEN NOT has_frustration AND success_count = turn_count THEN TRUE
+          ELSE FALSE
+        END AS is_resolved
+      FROM session_data
+    )
+    SELECT
+      session_id AS sessionId,
+      tenant_id AS tenantId,
+      user_id AS userId,
+      turn_count AS turnCount,
+      is_resolved AS isResolved,
+      'HEURISTIC' AS resolutionMethod,
+      has_frustration AS hasFrustration,
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', session_start) AS sessionStart,
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', session_end) AS sessionEnd,
+      ROUND(TIMESTAMP_DIFF(session_end, session_start, SECOND) / 60.0, 2) AS durationMinutes
+    FROM resolution_calc
+    WHERE 1=1
+      ${isResolved !== undefined ? `AND is_resolved = ${isResolved}` : ''}
+      ${hasFrustration !== undefined ? `AND has_frustration = ${hasFrustration}` : ''}
+    ORDER BY session_start DESC
+    LIMIT ${limit}
+    OFFSET ${offset}
+  `,
+
+  /**
+   * 세션 총 개수 조회 (페이지네이션용)
+   */
+  sessionCount: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 7,
+    tenantId?: string,
+    isResolved?: boolean,
+    hasFrustration?: boolean,
+  ) => `
+    WITH session_data AS (
+      SELECT
+        request_metadata.session_id AS session_id,
+        COUNT(*) AS turn_count,
+        COUNTIF(success = TRUE) AS success_count,
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated)')
+        ) AS has_frustration,
+        LOGICAL_OR(
+          REGEXP_CONTAINS(LOWER(user_input), r'(감사|고마워|thanks|thank you|got it|알겠|해결|완료|좋아|perfect|great)')
+        ) AS has_thanks
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
+        AND request_metadata.session_id IS NOT NULL
+        ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
+      GROUP BY session_id
+      HAVING turn_count >= 2
+    ),
+    resolution_calc AS (
+      SELECT
+        *,
+        CASE
+          WHEN has_thanks THEN TRUE
+          WHEN NOT has_frustration AND success_count = turn_count THEN TRUE
+          ELSE FALSE
+        END AS is_resolved
+      FROM session_data
+    )
+    SELECT COUNT(*) AS total
+    FROM resolution_calc
+    WHERE 1=1
+      ${isResolved !== undefined ? `AND is_resolved = ${isResolved}` : ''}
+      ${hasFrustration !== undefined ? `AND has_frustration = ${hasFrustration}` : ''}
+  `,
+
+  /**
+   * 특정 날짜의 세션 목록 조회 (배치 분석용)
+   */
+  sessionsForDate: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    targetDate: string,
+    tenantId?: string,
+    maxSessions: number = 100,
+  ) => `
+    WITH session_data AS (
+      SELECT
+        request_metadata.session_id AS session_id,
+        tenant_id,
+        request_metadata.x_enc_data AS user_id,
+        COUNT(*) AS turn_count,
+        MIN(timestamp) AS session_start,
+        MAX(timestamp) AS session_end
+      FROM \`${projectId}.${datasetId}.${tableName}\`
+      WHERE DATE(timestamp) = '${targetDate}'
+        AND request_metadata.session_id IS NOT NULL
+        ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
+      GROUP BY session_id, tenant_id, user_id
+      HAVING turn_count >= 2
+    )
+    SELECT
+      session_id AS sessionId,
+      tenant_id AS tenantId,
+      user_id AS userId,
+      turn_count AS turnCount,
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', session_start) AS sessionStart,
+      FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', session_end) AS sessionEnd
+    FROM session_data
+    ORDER BY session_start DESC
+    LIMIT ${maxSessions}
+  `,
 };

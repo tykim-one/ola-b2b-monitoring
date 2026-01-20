@@ -186,7 +186,8 @@ export class BatchAnalysisService {
 
   /**
    * Job 완료 시 요약 알림 발송
-   * avgScore < 5: critical, avgScore < 7: warning, 그 외: 알림 안 함
+   * avgScore < 5: critical, avgScore < 7: warning, 그 외: info
+   * 모든 결과에 대해 알림 발송 (테스트용)
    */
   private async sendJobCompletionAlert(
     jobId: string,
@@ -198,12 +199,20 @@ export class BatchAnalysisService {
     const severity =
       avgScore < 5 ? 'critical' : avgScore < 7 ? 'warning' : 'info';
 
-    // 양호한 경우 알림 안 함
-    if (severity === 'info') return;
+    const severityLabel =
+      severity === 'critical'
+        ? 'poor'
+        : severity === 'warning'
+          ? 'below average'
+          : 'good';
+
+    this.logger.log(
+      `[Slack] Sending job completion alert: jobId=${jobId}, avgScore=${avgScore}, severity=${severity}`,
+    );
 
     await this.slackNotificationService.sendAlert({
       title: 'Batch Analysis Completed',
-      message: `Job completed with ${severity === 'critical' ? 'poor' : 'below average'} quality scores.`,
+      message: `Job completed with ${severityLabel} quality scores.`,
       severity,
       fields: [
         { name: 'Job ID', value: jobId.slice(0, 8) },
@@ -221,15 +230,35 @@ export class BatchAnalysisService {
   }
 
   /**
-   * 개별 낮은 품질 결과 알림 발송
-   * qualityScore < 5 인 경우 critical 알림
+   * 개별 분석 결과 알림 발송
+   * qualityScore < 5: critical, < 7: warning, 그 외: info
+   * 모든 결과에 대해 알림 발송 (테스트용)
    */
-  private async sendLowQualityAlert(
+  private async sendAnalysisResultAlert(
     tenantId: string,
     userInput: string,
     parsed: ParsedAnalysisResult,
   ): Promise<void> {
-    if (!parsed.qualityScore || parsed.qualityScore >= 5) return;
+    if (!parsed.qualityScore) {
+      this.logger.warn(
+        `[Slack] Skipping alert: no qualityScore for tenant=${tenantId}`,
+      );
+      return;
+    }
+
+    const severity =
+      parsed.qualityScore < 5
+        ? 'critical'
+        : parsed.qualityScore < 7
+          ? 'warning'
+          : 'info';
+
+    const severityLabel =
+      severity === 'critical'
+        ? 'Low Quality'
+        : severity === 'warning'
+          ? 'Below Average'
+          : 'Good Quality';
 
     let issuesPreview = 'N/A';
     if (parsed.issues) {
@@ -241,10 +270,14 @@ export class BatchAnalysisService {
       }
     }
 
+    this.logger.log(
+      `[Slack] Sending analysis result alert: tenant=${tenantId}, score=${parsed.qualityScore}, severity=${severity}`,
+    );
+
     await this.slackNotificationService.sendAlert({
-      title: 'Low Quality Response Detected',
-      message: `A chat response scored below threshold (${parsed.qualityScore}/10).`,
-      severity: 'critical',
+      title: `${severityLabel} Response Detected`,
+      message: `A chat response scored ${parsed.qualityScore}/10.`,
+      severity,
       fields: [
         { name: 'Tenant', value: tenantId },
         { name: 'Score', value: `${parsed.qualityScore}/10` },
@@ -429,16 +462,31 @@ export class BatchAnalysisService {
       throw new NotFoundException(`Job not found: ${jobId}`);
     }
 
-    if (job.status === 'RUNNING') {
-      throw new Error('Job is already running');
+    // PENDING, FAILED, CANCELLED 상태에서만 실행 가능
+    if (!['PENDING', 'FAILED', 'CANCELLED'].includes(job.status)) {
+      throw new Error('Job is already running or completed');
     }
 
-    // Update job status to RUNNING
+    // FAILED/CANCELLED 재시도 시: 기존 결과 삭제
+    if (job.status === 'FAILED' || job.status === 'CANCELLED') {
+      await this.prisma.batchAnalysisResult.deleteMany({
+        where: { jobId },
+      });
+      this.logger.log(`Deleted existing results for retry: ${jobId}`);
+    }
+
+    // Update job status to RUNNING (상태 초기화)
     await this.prisma.batchAnalysisJob.update({
       where: { id: jobId },
       data: {
         status: 'RUNNING',
+        errorMessage: null,
+        cancelRequested: false,
+        processedItems: 0,
+        failedItems: 0,
+        totalItems: 0,
         startedAt: new Date(),
+        completedAt: null,
       },
     });
 
@@ -448,6 +496,32 @@ export class BatchAnalysisService {
     });
 
     return { jobId, status: 'RUNNING' };
+  }
+
+  /**
+   * Cancel a running job
+   */
+  async cancelJob(jobId: string) {
+    const job = await this.prisma.batchAnalysisJob.findUnique({
+      where: { id: jobId },
+    });
+
+    if (!job) {
+      throw new NotFoundException(`Job not found: ${jobId}`);
+    }
+
+    if (job.status !== 'RUNNING') {
+      throw new Error('Only running jobs can be cancelled');
+    }
+
+    // 취소 요청 플래그 설정
+    await this.prisma.batchAnalysisJob.update({
+      where: { id: jobId },
+      data: { cancelRequested: true },
+    });
+
+    this.logger.log(`Cancellation requested for job: ${jobId}`);
+    return { jobId, message: 'Cancellation requested' };
   }
 
   /**
@@ -512,6 +586,25 @@ export class BatchAnalysisService {
       let lowQualityAlertCount = 0; // Rate limiting: 최대 5개 알림
 
       for (let i = 0; i < samples.length; i += batchSize) {
+        // 취소 요청 체크 (매 배치 시작 전)
+        const currentJob = await this.prisma.batchAnalysisJob.findUnique({
+          where: { id: jobId },
+          select: { cancelRequested: true },
+        });
+
+        if (currentJob?.cancelRequested) {
+          this.logger.log(`Job ${jobId} cancelled by user`);
+          await this.prisma.batchAnalysisJob.update({
+            where: { id: jobId },
+            data: {
+              status: 'CANCELLED',
+              cancelRequested: false,
+              completedAt: new Date(),
+            },
+          });
+          return; // 루프 종료
+        }
+
         const batch = samples.slice(i, i + batchSize);
         const results = await this.analyzeBatch(batch, job.promptTemplate);
 
@@ -560,19 +653,15 @@ export class BatchAnalysisService {
             if (result.status === 'SUCCESS') {
               processedItems++;
 
-              // 낮은 품질 알림 (Job 당 최대 5개)
-              if (
-                lowQualityAlertCount < 5 &&
-                parsed.qualityScore !== null &&
-                parsed.qualityScore < 5
-              ) {
+              // 모든 분석 결과에 대해 알림 발송 (테스트용)
+              if (parsed.qualityScore !== null) {
                 lowQualityAlertCount++;
-                this.sendLowQualityAlert(
+                this.sendAnalysisResultAlert(
                   result.sample.tenant_id,
                   result.sample.user_input,
                   parsed,
-                ).catch((err) => {
-                  this.logger.warn(`Failed to send low quality alert: ${err.message}`);
+                ).catch((err: Error) => {
+                  this.logger.warn(`Failed to send analysis result alert: ${err.message}`);
                 });
               }
             } else {
@@ -637,6 +726,7 @@ export class BatchAnalysisService {
         where: { id: jobId },
         data: {
           status: 'FAILED',
+          errorMessage: error.message || 'Unknown error occurred',
           completedAt: new Date(),
         },
       });

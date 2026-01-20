@@ -83,8 +83,14 @@ export class SlackNotificationService {
    * Send a generic alert to Slack
    */
   async sendAlert(alert: SlackAlert): Promise<void> {
+    this.logger.log(
+      `[Slack] sendAlert called: title="${alert.title}", severity=${alert.severity}, enabled=${this.isEnabled}`,
+    );
+
     if (!this.isEnabled) {
-      this.logger.debug('Slack notifications disabled, skipping alert');
+      this.logger.warn(
+        '[Slack] Notifications disabled - check SLACK_WEBHOOK_URL or SLACK_BOT_TOKEN env vars',
+      );
       return;
     }
 
@@ -92,6 +98,10 @@ export class SlackNotificationService {
       const channel = alert.channel || this.defaultChannel;
       const color = this.getSeverityColor(alert.severity);
       const emoji = this.getSeverityEmoji(alert.severity);
+
+      this.logger.debug(
+        `[Slack] Preparing alert: channel=${channel}, webhookUrl=${this.webhookUrl ? 'set' : 'not set'}, botToken=${this.slackClient ? 'set' : 'not set'}`,
+      );
 
       const blocks: any[] = [
         {
@@ -137,6 +147,7 @@ export class SlackNotificationService {
 
       // Send via bot token if available, otherwise use webhook
       if (this.slackClient) {
+        this.logger.log('[Slack] Sending via bot token...');
         await this.slackClient.chat.postMessage({
           channel,
           blocks,
@@ -147,7 +158,9 @@ export class SlackNotificationService {
             },
           ],
         });
+        this.logger.log('[Slack] Bot token message sent successfully');
       } else if (this.webhookUrl) {
+        this.logger.log(`[Slack] Sending via webhook to channel=${channel}...`);
         const response = await fetch(this.webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -163,14 +176,24 @@ export class SlackNotificationService {
           }),
         });
 
+        const responseText = await response.text();
+        this.logger.log(
+          `[Slack] Webhook response: status=${response.status}, body=${responseText}`,
+        );
+
         if (!response.ok) {
           throw new Error(
-            `Webhook request failed: ${response.status} ${response.statusText}`,
+            `Webhook request failed: ${response.status} ${response.statusText} - ${responseText}`,
           );
         }
+      } else {
+        this.logger.warn('[Slack] No webhook URL or bot token configured');
+        return;
       }
 
-      this.logger.log(`Slack alert sent: ${alert.title} (${alert.severity})`);
+      this.logger.log(
+        `[Slack] Alert sent successfully: ${alert.title} (${alert.severity})`,
+      );
     } catch (error) {
       this.logger.error(
         `Failed to send Slack alert: ${error.message}`,

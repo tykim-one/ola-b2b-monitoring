@@ -10,7 +10,7 @@ import {
   PaginatedResponse,
 } from '@ola/shared-types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.1.42:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 // Session Management
 export async function fetchSessions(): Promise<AnalysisSession[]> {

@@ -9,15 +9,28 @@ GCP BigQuery 기반 B2B LLM 로그 모니터링 대시보드 시스템입니다.
 - `CLAUDE.md` - Claude Code용 프로젝트 가이드
 
 ## Subdirectories
-- `apps/` - 애플리케이션 패키지들 (backend, frontend-next)
-- `packages/` - 공유 라이브러리 (@ola/shared-types)
-- `docs/` - 프로젝트 문서
+- `apps/` - 애플리케이션 패키지들 (see apps/AGENTS.md)
+  - `apps/backend/` - NestJS API 서버 (see apps/backend/AGENTS.md)
+  - `apps/frontend-next/` - Next.js 16 대시보드 (see apps/frontend-next/AGENTS.md)
+- `packages/` - 공유 라이브러리 (see packages/AGENTS.md)
+  - `packages/shared-types/` - 프론트/백엔드 공유 TypeScript 타입
+- `docs/` - 프로젝트 문서 (see docs/AGENTS.md)
+  - 프로젝트 개요, 기능 가이드, API 명세, 아키텍처, DB 스키마 등
 
 ## For AI Agents
 - **개발 서버**: `pnpm dev:all`로 프론트엔드(3001)와 백엔드(3000) 동시 실행
 - **타입 공유**: 프론트/백엔드 간 타입은 `@ola/shared-types`에서 import
 - **API 패턴**: 모든 메트릭 API는 `/projects/:projectId/api/*` 경로를 따름 (데이터소스 중립)
 - **환경변수**: 백엔드는 `apps/backend/.env`, 프론트엔드는 `apps/frontend-next/.env.local`
+- **인증**: JWT + RBAC 기반 (`@Public()` 데코레이터로 공개 API 지정)
+- **AGENTS.md 갱신**: 디렉토리 구조 변경 시 `/deepinit --update` 실행 필수
+
+## Key Features
+- **대시보드**: 실시간 KPI, 비즈니스/운영/품질 분석, 사용자 분석
+- **관리자 기능**: 사용자/역할 관리, 저장된 필터, AI 분석 세션
+- **배치 분석**: 일일 자동 품질 분석 파이프라인 (LLM 기반)
+- **AI 챗봇**: 플로팅 챗봇 (Ctrl+K), 페이지 컨텍스트 인식
+- **이상 탐지**: Z-Score 기반 토큰/에러/트래픽 이상 감지 → Slack 알림
 
 ## Architecture Overview
 ```

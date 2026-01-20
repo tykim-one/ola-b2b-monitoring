@@ -5,8 +5,10 @@ node_modules/
 # Environment
 .env
 .env.local
+.env.notion
 **/.env
 **/.env.local
+**/.env.notion
 
 # Build outputs
 dist/

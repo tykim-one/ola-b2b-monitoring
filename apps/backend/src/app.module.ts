@@ -11,6 +11,9 @@ import { QualityModule } from './quality/quality.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { BatchAnalysisModule } from './batch-analysis/batch-analysis.module';
+import { FAQAnalysisModule } from './faq-analysis/faq-analysis.module';
+import { SessionAnalysisModule } from './session-analysis/session-analysis.module';
+import { UserProfilingModule } from './user-profiling/user-profiling.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { BatchAnalysisModule } from './batch-analysis/batch-analysis.module';
     NotificationsModule,
     ChatbotModule,
     BatchAnalysisModule,
+    FAQAnalysisModule,
+    SessionAnalysisModule,
+    UserProfilingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

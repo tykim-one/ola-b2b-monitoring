@@ -233,6 +233,8 @@ exports.Prisma.BatchAnalysisJobScalarFieldEnum = {
   failedItems: 'failedItems',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
+  errorMessage: 'errorMessage',
+  cancelRequested: 'cancelRequested',
   createdAt: 'createdAt'
 };
 
@@ -292,6 +294,78 @@ exports.Prisma.BatchSchedulerConfigScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FAQAnalysisJobScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  tenantId: 'tenantId',
+  periodDays: 'periodDays',
+  topN: 'topN',
+  totalQuestions: 'totalQuestions',
+  clusterCount: 'clusterCount',
+  llmMergeApplied: 'llmMergeApplied',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.FAQAnalysisResultScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  rank: 'rank',
+  representativeQuestion: 'representativeQuestion',
+  frequency: 'frequency',
+  reasonAnalysis: 'reasonAnalysis',
+  isMerged: 'isMerged',
+  questions: 'questions',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tenantId: 'tenantId',
+  frustrationRate: 'frustrationRate',
+  aggressiveCount: 'aggressiveCount',
+  categoryDistribution: 'categoryDistribution',
+  behaviorSummary: 'behaviorSummary',
+  mainInterests: 'mainInterests',
+  painPoints: 'painPoints',
+  totalMessages: 'totalMessages',
+  analyzedMessages: 'analyzedMessages',
+  lastAnalyzedAt: 'lastAnalyzedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MessageCategoryAnalysisScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tenantId: 'tenantId',
+  messageHash: 'messageHash',
+  category: 'category',
+  confidence: 'confidence',
+  sentiment: 'sentiment',
+  isAggressive: 'isAggressive',
+  userInput: 'userInput',
+  timestamp: 'timestamp',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserProfilingJobScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  targetDate: 'targetDate',
+  tenantId: 'tenantId',
+  totalUsers: 'totalUsers',
+  processedUsers: 'processedUsers',
+  failedUsers: 'failedUsers',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -318,7 +392,12 @@ exports.Prisma.ModelName = {
   BatchAnalysisJob: 'BatchAnalysisJob',
   BatchAnalysisResult: 'BatchAnalysisResult',
   AnalysisPromptTemplate: 'AnalysisPromptTemplate',
-  BatchSchedulerConfig: 'BatchSchedulerConfig'
+  BatchSchedulerConfig: 'BatchSchedulerConfig',
+  FAQAnalysisJob: 'FAQAnalysisJob',
+  FAQAnalysisResult: 'FAQAnalysisResult',
+  UserProfile: 'UserProfile',
+  MessageCategoryAnalysis: 'MessageCategoryAnalysis',
+  UserProfilingJob: 'UserProfilingJob'
 };
 
 /**

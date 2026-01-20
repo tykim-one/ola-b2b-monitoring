@@ -78,6 +78,9 @@ src/
 ├── batch-analysis/     # 배치 분석 파이프라인 (일일 자동 채팅 품질 분석)
 ├── chatbot/            # 글로벌 플로팅 AI 챗봇 (페이지 컨텍스트 기반 LLM 응답)
 ├── quality/            # 챗봇 품질 분석 (감정 분석 서비스)
+├── faq-analysis/       # FAQ 클러스터링 및 LLM 사유 분석
+├── session-analysis/   # 세션 해결률, 효율성, 이탈률 분석 (휴리스틱+LLM)
+├── user-profiling/     # 사용자 행동 프로파일링 (카테고리 분류, 감정 분석)
 └── notifications/      # 알림 서비스 (Slack 웹훅)
 ```
 
@@ -122,7 +125,8 @@ src/
 │       ├── business/  # 비즈니스 메트릭
 │       ├── operations/# 운영 메트릭
 │       ├── quality/   # 품질 분석
-│       └── chatbot-quality/  # 챗봇 품질 분석
+│       ├── chatbot-quality/  # 챗봇 품질 분석
+│       └── user-analytics/   # 유저별 활동 분석 (x_enc_data 기준)
 ├── components/
 │   ├── charts/        # Recharts 기반 차트
 │   ├── compound/      # 복합 컴포넌트 (Dashboard, DataTable, Chart)
@@ -169,6 +173,21 @@ src/
 - `GET/POST/PUT/DELETE /api/admin/batch-analysis/schedules` - 스케줄 관리 (다중 스케줄 지원)
 - `GET /api/admin/batch-analysis/stats` - 통계 조회
 - `GET /api/admin/batch-analysis/tenants` - 사용 가능한 테넌트 목록
+
+**Session Analysis API** (`/api/admin/session-analysis/*`):
+- `GET /api/admin/session-analysis/stats` - 세션 통계 (해결률, 평균 턴 수)
+- `GET /api/admin/session-analysis/sessions` - 세션 목록 (필터, 페이지네이션)
+- `GET /api/admin/session-analysis/sessions/:id/timeline` - 세션 타임라인
+- `POST /api/admin/session-analysis/sessions/:id/analyze` - LLM 심층 분석
+
+**FAQ Analysis API** (`/api/quality/faq-analysis/*`):
+- `POST /api/quality/faq-analysis` - FAQ 클러스터링 분석 실행
+- `GET /api/quality/faq-analysis/tenants` - 테넌트 목록
+
+**User Profiling API** (`/api/admin/user-profiling/*`):
+- `GET /api/admin/user-profiling/:userId` - 사용자 프로필 조회
+- `GET /api/admin/user-profiling/:userId/categories` - 카테고리 분포
+- `GET /api/admin/user-profiling/:userId/sentiment` - 감정 분석 결과
 
 ### Caching Strategy
 

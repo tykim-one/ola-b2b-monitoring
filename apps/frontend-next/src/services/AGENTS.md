@@ -46,6 +46,19 @@
     - `issues`, `improvements`, `missingData` (JSON 배열)
     - `issueCount`, `avgScore`
 
+- `faqAnalysisService.ts` - FAQ 분석 API
+  - `analyzeFAQs()` - FAQ 클러스터링 분석 실행
+  - `getAvailableTenants()` - 테넌트 목록 조회
+- `sessionAnalysisService.ts` - 세션 분석 API
+  - `getSessionStats()` - 세션 통계 조회 (해결률, 평균 턴 수)
+  - `getSessionList()` - 세션 목록 조회 (필터, 페이지네이션)
+  - `getSessionTimeline()` - 세션 타임라인 조회
+  - `analyzeSessionWithLLM()` - LLM 심층 분석
+- `userProfilingService.ts` - 사용자 프로파일링 API
+  - `getUserProfile()` - 사용자 프로필 조회
+  - `getCategoryDistribution()` - 카테고리 분포 조회
+  - `getSentimentAnalysis()` - 감정 분석 결과 조회
+
 ## For AI Agents
 - API 클라이언트는 이 디렉토리에 추가
 - 백엔드 API 호출 시 fetch 또는 axios 사용

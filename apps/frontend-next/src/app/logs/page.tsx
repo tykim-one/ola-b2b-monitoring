@@ -2,8 +2,9 @@ import LogExplorer from '@/components/LogExplorer';
 import { B2BLog } from '@/types';
 
 async function getLogs(): Promise<B2BLog[]> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   try {
-    const res = await fetch('http://192.168.1.42:3000/projects/ibks/api/logs?limit=5', {
+    const res = await fetch(`${API_BASE}/projects/ibks/api/logs?limit=5`, {
       cache: 'no-store',
     });
     

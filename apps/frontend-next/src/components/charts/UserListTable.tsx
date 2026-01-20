@@ -13,7 +13,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
+  ExternalLink,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { UserListItem } from '@ola/shared-types';
 
 interface UserListTableProps {
@@ -53,6 +55,7 @@ const UserListTable: React.FC<UserListTableProps> = ({
   title = '유저 목록',
   onUserClick,
 }) => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortField, setSortField] = useState<SortField>('questionCount');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -239,12 +242,15 @@ const UserListTable: React.FC<UserListTableProps> = ({
                   <SortIndicator field="lastActivity" />
                 </div>
               </th>
+              <th className="text-center py-3 px-2 text-slate-400 font-medium w-20">
+                프로필
+              </th>
             </tr>
           </thead>
           <tbody>
             {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={8} className="py-8 text-center text-slate-500">
+                <td colSpan={9} className="py-8 text-center text-slate-500">
                   {searchTerm ? '검색 결과가 없습니다' : '데이터가 없습니다'}
                 </td>
               </tr>
@@ -303,6 +309,18 @@ const UserListTable: React.FC<UserListTableProps> = ({
                   </td>
                   <td className="text-center py-3 px-2 text-slate-400 text-xs">
                     {formatDate(item.lastActivity)}
+                  </td>
+                  <td className="text-center py-3 px-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/dashboard/user-analytics/${encodeURIComponent(item.userId)}`);
+                      }}
+                      className="p-1.5 rounded-lg bg-blue-500/20 hover:bg-blue-500/40 text-blue-400 transition-colors"
+                      title="프로필 보기"
+                    >
+                      <ExternalLink size={14} />
+                    </button>
                   </td>
                 </tr>
               ))

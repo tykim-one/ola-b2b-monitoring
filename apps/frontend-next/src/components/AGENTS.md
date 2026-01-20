@@ -18,6 +18,9 @@
 - `kpi/` - KPI 카드 컴포넌트
 - `markdown/` - Markdown 렌더링 컴포넌트 (LLM 응답용)
 - `ui/` - 기본 UI 컴포넌트 (Modal, ConfirmDialog, SearchInput)
+- `faq-analysis/` - FAQ 분석 컴포넌트 (FAQAnalysisSection, FAQClusterCard)
+- `session-analysis/` - 세션 분석 컴포넌트 (SessionTimelineModal)
+- `user-profiling/` - 사용자 프로파일링 컴포넌트 (UserProfileSummary, SentimentIndicator, CategoryDistribution)
 
 ## For AI Agents
 - 모든 컴포넌트는 'use client' 선언 (클라이언트 컴포넌트)

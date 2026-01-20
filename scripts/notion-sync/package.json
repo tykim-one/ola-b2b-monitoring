@@ -1,0 +1,22 @@
+{
+  "name": "notion-sync",
+  "version": "1.0.0",
+  "description": "Sync codebase documentation to Notion",
+  "type": "module",
+  "scripts": {
+    "sync:structure": "npx tsx sync-structure.ts",
+    "sync:structure:dry": "npx tsx sync-structure.ts --dry-run",
+    "parse": "npx tsx parse-agents.ts",
+    "transform": "npx tsx transform-friendly.ts"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.3.0",
+    "dotenv": "^17.2.3",
+    "glob": "^10.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.30",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

@@ -88,6 +88,31 @@ export type AnalysisPromptTemplate = $Result.DefaultSelection<Prisma.$AnalysisPr
  * 배치 분석 스케줄러 설정
  */
 export type BatchSchedulerConfig = $Result.DefaultSelection<Prisma.$BatchSchedulerConfigPayload>
+/**
+ * Model FAQAnalysisJob
+ * FAQ 분석 작업
+ */
+export type FAQAnalysisJob = $Result.DefaultSelection<Prisma.$FAQAnalysisJobPayload>
+/**
+ * Model FAQAnalysisResult
+ * FAQ 분석 결과 (클러스터)
+ */
+export type FAQAnalysisResult = $Result.DefaultSelection<Prisma.$FAQAnalysisResultPayload>
+/**
+ * Model UserProfile
+ * 유저 프로필 요약 (배치 생성)
+ */
+export type UserProfile = $Result.DefaultSelection<Prisma.$UserProfilePayload>
+/**
+ * Model MessageCategoryAnalysis
+ * 메시지별 카테고리 분석 결과
+ */
+export type MessageCategoryAnalysis = $Result.DefaultSelection<Prisma.$MessageCategoryAnalysisPayload>
+/**
+ * Model UserProfilingJob
+ * 유저 프로필링 배치 작업
+ */
+export type UserProfilingJob = $Result.DefaultSelection<Prisma.$UserProfilingJobPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -355,6 +380,56 @@ export class PrismaClient<
     * ```
     */
   get batchSchedulerConfig(): Prisma.BatchSchedulerConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.fAQAnalysisJob`: Exposes CRUD operations for the **FAQAnalysisJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FAQAnalysisJobs
+    * const fAQAnalysisJobs = await prisma.fAQAnalysisJob.findMany()
+    * ```
+    */
+  get fAQAnalysisJob(): Prisma.FAQAnalysisJobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.fAQAnalysisResult`: Exposes CRUD operations for the **FAQAnalysisResult** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FAQAnalysisResults
+    * const fAQAnalysisResults = await prisma.fAQAnalysisResult.findMany()
+    * ```
+    */
+  get fAQAnalysisResult(): Prisma.FAQAnalysisResultDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userProfile`: Exposes CRUD operations for the **UserProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserProfiles
+    * const userProfiles = await prisma.userProfile.findMany()
+    * ```
+    */
+  get userProfile(): Prisma.UserProfileDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.messageCategoryAnalysis`: Exposes CRUD operations for the **MessageCategoryAnalysis** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MessageCategoryAnalyses
+    * const messageCategoryAnalyses = await prisma.messageCategoryAnalysis.findMany()
+    * ```
+    */
+  get messageCategoryAnalysis(): Prisma.MessageCategoryAnalysisDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userProfilingJob`: Exposes CRUD operations for the **UserProfilingJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserProfilingJobs
+    * const userProfilingJobs = await prisma.userProfilingJob.findMany()
+    * ```
+    */
+  get userProfilingJob(): Prisma.UserProfilingJobDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -803,7 +878,12 @@ export namespace Prisma {
     BatchAnalysisJob: 'BatchAnalysisJob',
     BatchAnalysisResult: 'BatchAnalysisResult',
     AnalysisPromptTemplate: 'AnalysisPromptTemplate',
-    BatchSchedulerConfig: 'BatchSchedulerConfig'
+    BatchSchedulerConfig: 'BatchSchedulerConfig',
+    FAQAnalysisJob: 'FAQAnalysisJob',
+    FAQAnalysisResult: 'FAQAnalysisResult',
+    UserProfile: 'UserProfile',
+    MessageCategoryAnalysis: 'MessageCategoryAnalysis',
+    UserProfilingJob: 'UserProfilingJob'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -819,7 +899,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate" | "batchSchedulerConfig"
+      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate" | "batchSchedulerConfig" | "fAQAnalysisJob" | "fAQAnalysisResult" | "userProfile" | "messageCategoryAnalysis" | "userProfilingJob"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1933,6 +2013,376 @@ export namespace Prisma {
           }
         }
       }
+      FAQAnalysisJob: {
+        payload: Prisma.$FAQAnalysisJobPayload<ExtArgs>
+        fields: Prisma.FAQAnalysisJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FAQAnalysisJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FAQAnalysisJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>
+          }
+          findFirst: {
+            args: Prisma.FAQAnalysisJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FAQAnalysisJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>
+          }
+          findMany: {
+            args: Prisma.FAQAnalysisJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>[]
+          }
+          create: {
+            args: Prisma.FAQAnalysisJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>
+          }
+          createMany: {
+            args: Prisma.FAQAnalysisJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FAQAnalysisJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>[]
+          }
+          delete: {
+            args: Prisma.FAQAnalysisJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>
+          }
+          update: {
+            args: Prisma.FAQAnalysisJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.FAQAnalysisJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FAQAnalysisJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FAQAnalysisJobUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>[]
+          }
+          upsert: {
+            args: Prisma.FAQAnalysisJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisJobPayload>
+          }
+          aggregate: {
+            args: Prisma.FAQAnalysisJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFAQAnalysisJob>
+          }
+          groupBy: {
+            args: Prisma.FAQAnalysisJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FAQAnalysisJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FAQAnalysisJobCountArgs<ExtArgs>
+            result: $Utils.Optional<FAQAnalysisJobCountAggregateOutputType> | number
+          }
+        }
+      }
+      FAQAnalysisResult: {
+        payload: Prisma.$FAQAnalysisResultPayload<ExtArgs>
+        fields: Prisma.FAQAnalysisResultFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FAQAnalysisResultFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FAQAnalysisResultFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>
+          }
+          findFirst: {
+            args: Prisma.FAQAnalysisResultFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FAQAnalysisResultFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>
+          }
+          findMany: {
+            args: Prisma.FAQAnalysisResultFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>[]
+          }
+          create: {
+            args: Prisma.FAQAnalysisResultCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>
+          }
+          createMany: {
+            args: Prisma.FAQAnalysisResultCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FAQAnalysisResultCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>[]
+          }
+          delete: {
+            args: Prisma.FAQAnalysisResultDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>
+          }
+          update: {
+            args: Prisma.FAQAnalysisResultUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>
+          }
+          deleteMany: {
+            args: Prisma.FAQAnalysisResultDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FAQAnalysisResultUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FAQAnalysisResultUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>[]
+          }
+          upsert: {
+            args: Prisma.FAQAnalysisResultUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FAQAnalysisResultPayload>
+          }
+          aggregate: {
+            args: Prisma.FAQAnalysisResultAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFAQAnalysisResult>
+          }
+          groupBy: {
+            args: Prisma.FAQAnalysisResultGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FAQAnalysisResultGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FAQAnalysisResultCountArgs<ExtArgs>
+            result: $Utils.Optional<FAQAnalysisResultCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserProfile: {
+        payload: Prisma.$UserProfilePayload<ExtArgs>
+        fields: Prisma.UserProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.UserProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          findMany: {
+            args: Prisma.UserProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>[]
+          }
+          create: {
+            args: Prisma.UserProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          createMany: {
+            args: Prisma.UserProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.UserProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          update: {
+            args: Prisma.UserProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.UserProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>[]
+          }
+          upsert: {
+            args: Prisma.UserProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.UserProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserProfile>
+          }
+          groupBy: {
+            args: Prisma.UserProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<UserProfileCountAggregateOutputType> | number
+          }
+        }
+      }
+      MessageCategoryAnalysis: {
+        payload: Prisma.$MessageCategoryAnalysisPayload<ExtArgs>
+        fields: Prisma.MessageCategoryAnalysisFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageCategoryAnalysisFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageCategoryAnalysisFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>
+          }
+          findFirst: {
+            args: Prisma.MessageCategoryAnalysisFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageCategoryAnalysisFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>
+          }
+          findMany: {
+            args: Prisma.MessageCategoryAnalysisFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>[]
+          }
+          create: {
+            args: Prisma.MessageCategoryAnalysisCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>
+          }
+          createMany: {
+            args: Prisma.MessageCategoryAnalysisCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageCategoryAnalysisCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>[]
+          }
+          delete: {
+            args: Prisma.MessageCategoryAnalysisDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>
+          }
+          update: {
+            args: Prisma.MessageCategoryAnalysisUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageCategoryAnalysisDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageCategoryAnalysisUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageCategoryAnalysisUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageCategoryAnalysisUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageCategoryAnalysisPayload>
+          }
+          aggregate: {
+            args: Prisma.MessageCategoryAnalysisAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessageCategoryAnalysis>
+          }
+          groupBy: {
+            args: Prisma.MessageCategoryAnalysisGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageCategoryAnalysisGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageCategoryAnalysisCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageCategoryAnalysisCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserProfilingJob: {
+        payload: Prisma.$UserProfilingJobPayload<ExtArgs>
+        fields: Prisma.UserProfilingJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserProfilingJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserProfilingJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>
+          }
+          findFirst: {
+            args: Prisma.UserProfilingJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserProfilingJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>
+          }
+          findMany: {
+            args: Prisma.UserProfilingJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>[]
+          }
+          create: {
+            args: Prisma.UserProfilingJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>
+          }
+          createMany: {
+            args: Prisma.UserProfilingJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserProfilingJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>[]
+          }
+          delete: {
+            args: Prisma.UserProfilingJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>
+          }
+          update: {
+            args: Prisma.UserProfilingJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserProfilingJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserProfilingJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserProfilingJobUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserProfilingJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserProfilingJobPayload>
+          }
+          aggregate: {
+            args: Prisma.UserProfilingJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserProfilingJob>
+          }
+          groupBy: {
+            args: Prisma.UserProfilingJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserProfilingJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserProfilingJobCountArgs<ExtArgs>
+            result: $Utils.Optional<UserProfilingJobCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2056,6 +2506,11 @@ export namespace Prisma {
     batchAnalysisResult?: BatchAnalysisResultOmit
     analysisPromptTemplate?: AnalysisPromptTemplateOmit
     batchSchedulerConfig?: BatchSchedulerConfigOmit
+    fAQAnalysisJob?: FAQAnalysisJobOmit
+    fAQAnalysisResult?: FAQAnalysisResultOmit
+    userProfile?: UserProfileOmit
+    messageCategoryAnalysis?: MessageCategoryAnalysisOmit
+    userProfilingJob?: UserProfilingJobOmit
   }
 
   /* Types for Logging */
@@ -2337,6 +2792,37 @@ export namespace Prisma {
    */
   export type BatchAnalysisJobCountOutputTypeCountResultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BatchAnalysisResultWhereInput
+  }
+
+
+  /**
+   * Count Type FAQAnalysisJobCountOutputType
+   */
+
+  export type FAQAnalysisJobCountOutputType = {
+    results: number
+  }
+
+  export type FAQAnalysisJobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    results?: boolean | FAQAnalysisJobCountOutputTypeCountResultsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FAQAnalysisJobCountOutputType without action
+   */
+  export type FAQAnalysisJobCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJobCountOutputType
+     */
+    select?: FAQAnalysisJobCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FAQAnalysisJobCountOutputType without action
+   */
+  export type FAQAnalysisJobCountOutputTypeCountResultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FAQAnalysisResultWhereInput
   }
 
 
@@ -14509,6 +14995,8 @@ export namespace Prisma {
     failedItems: number | null
     startedAt: Date | null
     completedAt: Date | null
+    errorMessage: string | null
+    cancelRequested: boolean | null
     createdAt: Date | null
   }
 
@@ -14524,6 +15012,8 @@ export namespace Prisma {
     failedItems: number | null
     startedAt: Date | null
     completedAt: Date | null
+    errorMessage: string | null
+    cancelRequested: boolean | null
     createdAt: Date | null
   }
 
@@ -14539,6 +15029,8 @@ export namespace Prisma {
     failedItems: number
     startedAt: number
     completedAt: number
+    errorMessage: number
+    cancelRequested: number
     createdAt: number
     _all: number
   }
@@ -14570,6 +15062,8 @@ export namespace Prisma {
     failedItems?: true
     startedAt?: true
     completedAt?: true
+    errorMessage?: true
+    cancelRequested?: true
     createdAt?: true
   }
 
@@ -14585,6 +15079,8 @@ export namespace Prisma {
     failedItems?: true
     startedAt?: true
     completedAt?: true
+    errorMessage?: true
+    cancelRequested?: true
     createdAt?: true
   }
 
@@ -14600,6 +15096,8 @@ export namespace Prisma {
     failedItems?: true
     startedAt?: true
     completedAt?: true
+    errorMessage?: true
+    cancelRequested?: true
     createdAt?: true
     _all?: true
   }
@@ -14702,6 +15200,8 @@ export namespace Prisma {
     failedItems: number
     startedAt: Date | null
     completedAt: Date | null
+    errorMessage: string | null
+    cancelRequested: boolean
     createdAt: Date
     _count: BatchAnalysisJobCountAggregateOutputType | null
     _avg: BatchAnalysisJobAvgAggregateOutputType | null
@@ -14736,6 +15236,8 @@ export namespace Prisma {
     failedItems?: boolean
     startedAt?: boolean
     completedAt?: boolean
+    errorMessage?: boolean
+    cancelRequested?: boolean
     createdAt?: boolean
     results?: boolean | BatchAnalysisJob$resultsArgs<ExtArgs>
     _count?: boolean | BatchAnalysisJobCountOutputTypeDefaultArgs<ExtArgs>
@@ -14753,6 +15255,8 @@ export namespace Prisma {
     failedItems?: boolean
     startedAt?: boolean
     completedAt?: boolean
+    errorMessage?: boolean
+    cancelRequested?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["batchAnalysisJob"]>
 
@@ -14768,6 +15272,8 @@ export namespace Prisma {
     failedItems?: boolean
     startedAt?: boolean
     completedAt?: boolean
+    errorMessage?: boolean
+    cancelRequested?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["batchAnalysisJob"]>
 
@@ -14783,10 +15289,12 @@ export namespace Prisma {
     failedItems?: boolean
     startedAt?: boolean
     completedAt?: boolean
+    errorMessage?: boolean
+    cancelRequested?: boolean
     createdAt?: boolean
   }
 
-  export type BatchAnalysisJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "targetDate" | "tenantId" | "sampleSize" | "promptTemplate" | "totalItems" | "processedItems" | "failedItems" | "startedAt" | "completedAt" | "createdAt", ExtArgs["result"]["batchAnalysisJob"]>
+  export type BatchAnalysisJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "targetDate" | "tenantId" | "sampleSize" | "promptTemplate" | "totalItems" | "processedItems" | "failedItems" | "startedAt" | "completedAt" | "errorMessage" | "cancelRequested" | "createdAt", ExtArgs["result"]["batchAnalysisJob"]>
   export type BatchAnalysisJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     results?: boolean | BatchAnalysisJob$resultsArgs<ExtArgs>
     _count?: boolean | BatchAnalysisJobCountOutputTypeDefaultArgs<ExtArgs>
@@ -14811,6 +15319,8 @@ export namespace Prisma {
       failedItems: number
       startedAt: Date | null
       completedAt: Date | null
+      errorMessage: string | null
+      cancelRequested: boolean
       createdAt: Date
     }, ExtArgs["result"]["batchAnalysisJob"]>
     composites: {}
@@ -15247,6 +15757,8 @@ export namespace Prisma {
     readonly failedItems: FieldRef<"BatchAnalysisJob", 'Int'>
     readonly startedAt: FieldRef<"BatchAnalysisJob", 'DateTime'>
     readonly completedAt: FieldRef<"BatchAnalysisJob", 'DateTime'>
+    readonly errorMessage: FieldRef<"BatchAnalysisJob", 'String'>
+    readonly cancelRequested: FieldRef<"BatchAnalysisJob", 'Boolean'>
     readonly createdAt: FieldRef<"BatchAnalysisJob", 'DateTime'>
   }
     
@@ -19243,6 +19755,5731 @@ export namespace Prisma {
 
 
   /**
+   * Model FAQAnalysisJob
+   */
+
+  export type AggregateFAQAnalysisJob = {
+    _count: FAQAnalysisJobCountAggregateOutputType | null
+    _avg: FAQAnalysisJobAvgAggregateOutputType | null
+    _sum: FAQAnalysisJobSumAggregateOutputType | null
+    _min: FAQAnalysisJobMinAggregateOutputType | null
+    _max: FAQAnalysisJobMaxAggregateOutputType | null
+  }
+
+  export type FAQAnalysisJobAvgAggregateOutputType = {
+    periodDays: number | null
+    topN: number | null
+    totalQuestions: number | null
+    clusterCount: number | null
+  }
+
+  export type FAQAnalysisJobSumAggregateOutputType = {
+    periodDays: number | null
+    topN: number | null
+    totalQuestions: number | null
+    clusterCount: number | null
+  }
+
+  export type FAQAnalysisJobMinAggregateOutputType = {
+    id: string | null
+    status: string | null
+    tenantId: string | null
+    periodDays: number | null
+    topN: number | null
+    totalQuestions: number | null
+    clusterCount: number | null
+    llmMergeApplied: boolean | null
+    startedAt: Date | null
+    completedAt: Date | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type FAQAnalysisJobMaxAggregateOutputType = {
+    id: string | null
+    status: string | null
+    tenantId: string | null
+    periodDays: number | null
+    topN: number | null
+    totalQuestions: number | null
+    clusterCount: number | null
+    llmMergeApplied: boolean | null
+    startedAt: Date | null
+    completedAt: Date | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type FAQAnalysisJobCountAggregateOutputType = {
+    id: number
+    status: number
+    tenantId: number
+    periodDays: number
+    topN: number
+    totalQuestions: number
+    clusterCount: number
+    llmMergeApplied: number
+    startedAt: number
+    completedAt: number
+    errorMessage: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FAQAnalysisJobAvgAggregateInputType = {
+    periodDays?: true
+    topN?: true
+    totalQuestions?: true
+    clusterCount?: true
+  }
+
+  export type FAQAnalysisJobSumAggregateInputType = {
+    periodDays?: true
+    topN?: true
+    totalQuestions?: true
+    clusterCount?: true
+  }
+
+  export type FAQAnalysisJobMinAggregateInputType = {
+    id?: true
+    status?: true
+    tenantId?: true
+    periodDays?: true
+    topN?: true
+    totalQuestions?: true
+    clusterCount?: true
+    llmMergeApplied?: true
+    startedAt?: true
+    completedAt?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type FAQAnalysisJobMaxAggregateInputType = {
+    id?: true
+    status?: true
+    tenantId?: true
+    periodDays?: true
+    topN?: true
+    totalQuestions?: true
+    clusterCount?: true
+    llmMergeApplied?: true
+    startedAt?: true
+    completedAt?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type FAQAnalysisJobCountAggregateInputType = {
+    id?: true
+    status?: true
+    tenantId?: true
+    periodDays?: true
+    topN?: true
+    totalQuestions?: true
+    clusterCount?: true
+    llmMergeApplied?: true
+    startedAt?: true
+    completedAt?: true
+    errorMessage?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FAQAnalysisJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FAQAnalysisJob to aggregate.
+     */
+    where?: FAQAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisJobs to fetch.
+     */
+    orderBy?: FAQAnalysisJobOrderByWithRelationInput | FAQAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FAQAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FAQAnalysisJobs
+    **/
+    _count?: true | FAQAnalysisJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FAQAnalysisJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FAQAnalysisJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FAQAnalysisJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FAQAnalysisJobMaxAggregateInputType
+  }
+
+  export type GetFAQAnalysisJobAggregateType<T extends FAQAnalysisJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateFAQAnalysisJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFAQAnalysisJob[P]>
+      : GetScalarType<T[P], AggregateFAQAnalysisJob[P]>
+  }
+
+
+
+
+  export type FAQAnalysisJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FAQAnalysisJobWhereInput
+    orderBy?: FAQAnalysisJobOrderByWithAggregationInput | FAQAnalysisJobOrderByWithAggregationInput[]
+    by: FAQAnalysisJobScalarFieldEnum[] | FAQAnalysisJobScalarFieldEnum
+    having?: FAQAnalysisJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FAQAnalysisJobCountAggregateInputType | true
+    _avg?: FAQAnalysisJobAvgAggregateInputType
+    _sum?: FAQAnalysisJobSumAggregateInputType
+    _min?: FAQAnalysisJobMinAggregateInputType
+    _max?: FAQAnalysisJobMaxAggregateInputType
+  }
+
+  export type FAQAnalysisJobGroupByOutputType = {
+    id: string
+    status: string
+    tenantId: string | null
+    periodDays: number
+    topN: number
+    totalQuestions: number | null
+    clusterCount: number | null
+    llmMergeApplied: boolean
+    startedAt: Date | null
+    completedAt: Date | null
+    errorMessage: string | null
+    createdAt: Date
+    _count: FAQAnalysisJobCountAggregateOutputType | null
+    _avg: FAQAnalysisJobAvgAggregateOutputType | null
+    _sum: FAQAnalysisJobSumAggregateOutputType | null
+    _min: FAQAnalysisJobMinAggregateOutputType | null
+    _max: FAQAnalysisJobMaxAggregateOutputType | null
+  }
+
+  type GetFAQAnalysisJobGroupByPayload<T extends FAQAnalysisJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FAQAnalysisJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FAQAnalysisJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FAQAnalysisJobGroupByOutputType[P]>
+            : GetScalarType<T[P], FAQAnalysisJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FAQAnalysisJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    tenantId?: boolean
+    periodDays?: boolean
+    topN?: boolean
+    totalQuestions?: boolean
+    clusterCount?: boolean
+    llmMergeApplied?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    results?: boolean | FAQAnalysisJob$resultsArgs<ExtArgs>
+    _count?: boolean | FAQAnalysisJobCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fAQAnalysisJob"]>
+
+  export type FAQAnalysisJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    tenantId?: boolean
+    periodDays?: boolean
+    topN?: boolean
+    totalQuestions?: boolean
+    clusterCount?: boolean
+    llmMergeApplied?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["fAQAnalysisJob"]>
+
+  export type FAQAnalysisJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    tenantId?: boolean
+    periodDays?: boolean
+    topN?: boolean
+    totalQuestions?: boolean
+    clusterCount?: boolean
+    llmMergeApplied?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["fAQAnalysisJob"]>
+
+  export type FAQAnalysisJobSelectScalar = {
+    id?: boolean
+    status?: boolean
+    tenantId?: boolean
+    periodDays?: boolean
+    topN?: boolean
+    totalQuestions?: boolean
+    clusterCount?: boolean
+    llmMergeApplied?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }
+
+  export type FAQAnalysisJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "tenantId" | "periodDays" | "topN" | "totalQuestions" | "clusterCount" | "llmMergeApplied" | "startedAt" | "completedAt" | "errorMessage" | "createdAt", ExtArgs["result"]["fAQAnalysisJob"]>
+  export type FAQAnalysisJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    results?: boolean | FAQAnalysisJob$resultsArgs<ExtArgs>
+    _count?: boolean | FAQAnalysisJobCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FAQAnalysisJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type FAQAnalysisJobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $FAQAnalysisJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FAQAnalysisJob"
+    objects: {
+      results: Prisma.$FAQAnalysisResultPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      status: string
+      tenantId: string | null
+      periodDays: number
+      topN: number
+      totalQuestions: number | null
+      clusterCount: number | null
+      llmMergeApplied: boolean
+      startedAt: Date | null
+      completedAt: Date | null
+      errorMessage: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["fAQAnalysisJob"]>
+    composites: {}
+  }
+
+  type FAQAnalysisJobGetPayload<S extends boolean | null | undefined | FAQAnalysisJobDefaultArgs> = $Result.GetResult<Prisma.$FAQAnalysisJobPayload, S>
+
+  type FAQAnalysisJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FAQAnalysisJobFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FAQAnalysisJobCountAggregateInputType | true
+    }
+
+  export interface FAQAnalysisJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FAQAnalysisJob'], meta: { name: 'FAQAnalysisJob' } }
+    /**
+     * Find zero or one FAQAnalysisJob that matches the filter.
+     * @param {FAQAnalysisJobFindUniqueArgs} args - Arguments to find a FAQAnalysisJob
+     * @example
+     * // Get one FAQAnalysisJob
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FAQAnalysisJobFindUniqueArgs>(args: SelectSubset<T, FAQAnalysisJobFindUniqueArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FAQAnalysisJob that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FAQAnalysisJobFindUniqueOrThrowArgs} args - Arguments to find a FAQAnalysisJob
+     * @example
+     * // Get one FAQAnalysisJob
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FAQAnalysisJobFindUniqueOrThrowArgs>(args: SelectSubset<T, FAQAnalysisJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FAQAnalysisJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisJobFindFirstArgs} args - Arguments to find a FAQAnalysisJob
+     * @example
+     * // Get one FAQAnalysisJob
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FAQAnalysisJobFindFirstArgs>(args?: SelectSubset<T, FAQAnalysisJobFindFirstArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FAQAnalysisJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisJobFindFirstOrThrowArgs} args - Arguments to find a FAQAnalysisJob
+     * @example
+     * // Get one FAQAnalysisJob
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FAQAnalysisJobFindFirstOrThrowArgs>(args?: SelectSubset<T, FAQAnalysisJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FAQAnalysisJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FAQAnalysisJobs
+     * const fAQAnalysisJobs = await prisma.fAQAnalysisJob.findMany()
+     * 
+     * // Get first 10 FAQAnalysisJobs
+     * const fAQAnalysisJobs = await prisma.fAQAnalysisJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fAQAnalysisJobWithIdOnly = await prisma.fAQAnalysisJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FAQAnalysisJobFindManyArgs>(args?: SelectSubset<T, FAQAnalysisJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FAQAnalysisJob.
+     * @param {FAQAnalysisJobCreateArgs} args - Arguments to create a FAQAnalysisJob.
+     * @example
+     * // Create one FAQAnalysisJob
+     * const FAQAnalysisJob = await prisma.fAQAnalysisJob.create({
+     *   data: {
+     *     // ... data to create a FAQAnalysisJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends FAQAnalysisJobCreateArgs>(args: SelectSubset<T, FAQAnalysisJobCreateArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FAQAnalysisJobs.
+     * @param {FAQAnalysisJobCreateManyArgs} args - Arguments to create many FAQAnalysisJobs.
+     * @example
+     * // Create many FAQAnalysisJobs
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FAQAnalysisJobCreateManyArgs>(args?: SelectSubset<T, FAQAnalysisJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FAQAnalysisJobs and returns the data saved in the database.
+     * @param {FAQAnalysisJobCreateManyAndReturnArgs} args - Arguments to create many FAQAnalysisJobs.
+     * @example
+     * // Create many FAQAnalysisJobs
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FAQAnalysisJobs and only return the `id`
+     * const fAQAnalysisJobWithIdOnly = await prisma.fAQAnalysisJob.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FAQAnalysisJobCreateManyAndReturnArgs>(args?: SelectSubset<T, FAQAnalysisJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FAQAnalysisJob.
+     * @param {FAQAnalysisJobDeleteArgs} args - Arguments to delete one FAQAnalysisJob.
+     * @example
+     * // Delete one FAQAnalysisJob
+     * const FAQAnalysisJob = await prisma.fAQAnalysisJob.delete({
+     *   where: {
+     *     // ... filter to delete one FAQAnalysisJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FAQAnalysisJobDeleteArgs>(args: SelectSubset<T, FAQAnalysisJobDeleteArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FAQAnalysisJob.
+     * @param {FAQAnalysisJobUpdateArgs} args - Arguments to update one FAQAnalysisJob.
+     * @example
+     * // Update one FAQAnalysisJob
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FAQAnalysisJobUpdateArgs>(args: SelectSubset<T, FAQAnalysisJobUpdateArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FAQAnalysisJobs.
+     * @param {FAQAnalysisJobDeleteManyArgs} args - Arguments to filter FAQAnalysisJobs to delete.
+     * @example
+     * // Delete a few FAQAnalysisJobs
+     * const { count } = await prisma.fAQAnalysisJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FAQAnalysisJobDeleteManyArgs>(args?: SelectSubset<T, FAQAnalysisJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FAQAnalysisJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FAQAnalysisJobs
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FAQAnalysisJobUpdateManyArgs>(args: SelectSubset<T, FAQAnalysisJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FAQAnalysisJobs and returns the data updated in the database.
+     * @param {FAQAnalysisJobUpdateManyAndReturnArgs} args - Arguments to update many FAQAnalysisJobs.
+     * @example
+     * // Update many FAQAnalysisJobs
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FAQAnalysisJobs and only return the `id`
+     * const fAQAnalysisJobWithIdOnly = await prisma.fAQAnalysisJob.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FAQAnalysisJobUpdateManyAndReturnArgs>(args: SelectSubset<T, FAQAnalysisJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FAQAnalysisJob.
+     * @param {FAQAnalysisJobUpsertArgs} args - Arguments to update or create a FAQAnalysisJob.
+     * @example
+     * // Update or create a FAQAnalysisJob
+     * const fAQAnalysisJob = await prisma.fAQAnalysisJob.upsert({
+     *   create: {
+     *     // ... data to create a FAQAnalysisJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FAQAnalysisJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FAQAnalysisJobUpsertArgs>(args: SelectSubset<T, FAQAnalysisJobUpsertArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FAQAnalysisJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisJobCountArgs} args - Arguments to filter FAQAnalysisJobs to count.
+     * @example
+     * // Count the number of FAQAnalysisJobs
+     * const count = await prisma.fAQAnalysisJob.count({
+     *   where: {
+     *     // ... the filter for the FAQAnalysisJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends FAQAnalysisJobCountArgs>(
+      args?: Subset<T, FAQAnalysisJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FAQAnalysisJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FAQAnalysisJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FAQAnalysisJobAggregateArgs>(args: Subset<T, FAQAnalysisJobAggregateArgs>): Prisma.PrismaPromise<GetFAQAnalysisJobAggregateType<T>>
+
+    /**
+     * Group by FAQAnalysisJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FAQAnalysisJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FAQAnalysisJobGroupByArgs['orderBy'] }
+        : { orderBy?: FAQAnalysisJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FAQAnalysisJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFAQAnalysisJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FAQAnalysisJob model
+   */
+  readonly fields: FAQAnalysisJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FAQAnalysisJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FAQAnalysisJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    results<T extends FAQAnalysisJob$resultsArgs<ExtArgs> = {}>(args?: Subset<T, FAQAnalysisJob$resultsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FAQAnalysisJob model
+   */
+  interface FAQAnalysisJobFieldRefs {
+    readonly id: FieldRef<"FAQAnalysisJob", 'String'>
+    readonly status: FieldRef<"FAQAnalysisJob", 'String'>
+    readonly tenantId: FieldRef<"FAQAnalysisJob", 'String'>
+    readonly periodDays: FieldRef<"FAQAnalysisJob", 'Int'>
+    readonly topN: FieldRef<"FAQAnalysisJob", 'Int'>
+    readonly totalQuestions: FieldRef<"FAQAnalysisJob", 'Int'>
+    readonly clusterCount: FieldRef<"FAQAnalysisJob", 'Int'>
+    readonly llmMergeApplied: FieldRef<"FAQAnalysisJob", 'Boolean'>
+    readonly startedAt: FieldRef<"FAQAnalysisJob", 'DateTime'>
+    readonly completedAt: FieldRef<"FAQAnalysisJob", 'DateTime'>
+    readonly errorMessage: FieldRef<"FAQAnalysisJob", 'String'>
+    readonly createdAt: FieldRef<"FAQAnalysisJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FAQAnalysisJob findUnique
+   */
+  export type FAQAnalysisJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisJob to fetch.
+     */
+    where: FAQAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisJob findUniqueOrThrow
+   */
+  export type FAQAnalysisJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisJob to fetch.
+     */
+    where: FAQAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisJob findFirst
+   */
+  export type FAQAnalysisJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisJob to fetch.
+     */
+    where?: FAQAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisJobs to fetch.
+     */
+    orderBy?: FAQAnalysisJobOrderByWithRelationInput | FAQAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FAQAnalysisJobs.
+     */
+    cursor?: FAQAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FAQAnalysisJobs.
+     */
+    distinct?: FAQAnalysisJobScalarFieldEnum | FAQAnalysisJobScalarFieldEnum[]
+  }
+
+  /**
+   * FAQAnalysisJob findFirstOrThrow
+   */
+  export type FAQAnalysisJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisJob to fetch.
+     */
+    where?: FAQAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisJobs to fetch.
+     */
+    orderBy?: FAQAnalysisJobOrderByWithRelationInput | FAQAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FAQAnalysisJobs.
+     */
+    cursor?: FAQAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FAQAnalysisJobs.
+     */
+    distinct?: FAQAnalysisJobScalarFieldEnum | FAQAnalysisJobScalarFieldEnum[]
+  }
+
+  /**
+   * FAQAnalysisJob findMany
+   */
+  export type FAQAnalysisJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisJobs to fetch.
+     */
+    where?: FAQAnalysisJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisJobs to fetch.
+     */
+    orderBy?: FAQAnalysisJobOrderByWithRelationInput | FAQAnalysisJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FAQAnalysisJobs.
+     */
+    cursor?: FAQAnalysisJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisJobs.
+     */
+    skip?: number
+    distinct?: FAQAnalysisJobScalarFieldEnum | FAQAnalysisJobScalarFieldEnum[]
+  }
+
+  /**
+   * FAQAnalysisJob create
+   */
+  export type FAQAnalysisJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FAQAnalysisJob.
+     */
+    data?: XOR<FAQAnalysisJobCreateInput, FAQAnalysisJobUncheckedCreateInput>
+  }
+
+  /**
+   * FAQAnalysisJob createMany
+   */
+  export type FAQAnalysisJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FAQAnalysisJobs.
+     */
+    data: FAQAnalysisJobCreateManyInput | FAQAnalysisJobCreateManyInput[]
+  }
+
+  /**
+   * FAQAnalysisJob createManyAndReturn
+   */
+  export type FAQAnalysisJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * The data used to create many FAQAnalysisJobs.
+     */
+    data: FAQAnalysisJobCreateManyInput | FAQAnalysisJobCreateManyInput[]
+  }
+
+  /**
+   * FAQAnalysisJob update
+   */
+  export type FAQAnalysisJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FAQAnalysisJob.
+     */
+    data: XOR<FAQAnalysisJobUpdateInput, FAQAnalysisJobUncheckedUpdateInput>
+    /**
+     * Choose, which FAQAnalysisJob to update.
+     */
+    where: FAQAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisJob updateMany
+   */
+  export type FAQAnalysisJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FAQAnalysisJobs.
+     */
+    data: XOR<FAQAnalysisJobUpdateManyMutationInput, FAQAnalysisJobUncheckedUpdateManyInput>
+    /**
+     * Filter which FAQAnalysisJobs to update
+     */
+    where?: FAQAnalysisJobWhereInput
+    /**
+     * Limit how many FAQAnalysisJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FAQAnalysisJob updateManyAndReturn
+   */
+  export type FAQAnalysisJobUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * The data used to update FAQAnalysisJobs.
+     */
+    data: XOR<FAQAnalysisJobUpdateManyMutationInput, FAQAnalysisJobUncheckedUpdateManyInput>
+    /**
+     * Filter which FAQAnalysisJobs to update
+     */
+    where?: FAQAnalysisJobWhereInput
+    /**
+     * Limit how many FAQAnalysisJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FAQAnalysisJob upsert
+   */
+  export type FAQAnalysisJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FAQAnalysisJob to update in case it exists.
+     */
+    where: FAQAnalysisJobWhereUniqueInput
+    /**
+     * In case the FAQAnalysisJob found by the `where` argument doesn't exist, create a new FAQAnalysisJob with this data.
+     */
+    create: XOR<FAQAnalysisJobCreateInput, FAQAnalysisJobUncheckedCreateInput>
+    /**
+     * In case the FAQAnalysisJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FAQAnalysisJobUpdateInput, FAQAnalysisJobUncheckedUpdateInput>
+  }
+
+  /**
+   * FAQAnalysisJob delete
+   */
+  export type FAQAnalysisJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+    /**
+     * Filter which FAQAnalysisJob to delete.
+     */
+    where: FAQAnalysisJobWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisJob deleteMany
+   */
+  export type FAQAnalysisJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FAQAnalysisJobs to delete
+     */
+    where?: FAQAnalysisJobWhereInput
+    /**
+     * Limit how many FAQAnalysisJobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FAQAnalysisJob.results
+   */
+  export type FAQAnalysisJob$resultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    where?: FAQAnalysisResultWhereInput
+    orderBy?: FAQAnalysisResultOrderByWithRelationInput | FAQAnalysisResultOrderByWithRelationInput[]
+    cursor?: FAQAnalysisResultWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FAQAnalysisResultScalarFieldEnum | FAQAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * FAQAnalysisJob without action
+   */
+  export type FAQAnalysisJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisJob
+     */
+    select?: FAQAnalysisJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisJob
+     */
+    omit?: FAQAnalysisJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisJobInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FAQAnalysisResult
+   */
+
+  export type AggregateFAQAnalysisResult = {
+    _count: FAQAnalysisResultCountAggregateOutputType | null
+    _avg: FAQAnalysisResultAvgAggregateOutputType | null
+    _sum: FAQAnalysisResultSumAggregateOutputType | null
+    _min: FAQAnalysisResultMinAggregateOutputType | null
+    _max: FAQAnalysisResultMaxAggregateOutputType | null
+  }
+
+  export type FAQAnalysisResultAvgAggregateOutputType = {
+    rank: number | null
+    frequency: number | null
+  }
+
+  export type FAQAnalysisResultSumAggregateOutputType = {
+    rank: number | null
+    frequency: number | null
+  }
+
+  export type FAQAnalysisResultMinAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    rank: number | null
+    representativeQuestion: string | null
+    frequency: number | null
+    reasonAnalysis: string | null
+    isMerged: boolean | null
+    questions: string | null
+    createdAt: Date | null
+  }
+
+  export type FAQAnalysisResultMaxAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    rank: number | null
+    representativeQuestion: string | null
+    frequency: number | null
+    reasonAnalysis: string | null
+    isMerged: boolean | null
+    questions: string | null
+    createdAt: Date | null
+  }
+
+  export type FAQAnalysisResultCountAggregateOutputType = {
+    id: number
+    jobId: number
+    rank: number
+    representativeQuestion: number
+    frequency: number
+    reasonAnalysis: number
+    isMerged: number
+    questions: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FAQAnalysisResultAvgAggregateInputType = {
+    rank?: true
+    frequency?: true
+  }
+
+  export type FAQAnalysisResultSumAggregateInputType = {
+    rank?: true
+    frequency?: true
+  }
+
+  export type FAQAnalysisResultMinAggregateInputType = {
+    id?: true
+    jobId?: true
+    rank?: true
+    representativeQuestion?: true
+    frequency?: true
+    reasonAnalysis?: true
+    isMerged?: true
+    questions?: true
+    createdAt?: true
+  }
+
+  export type FAQAnalysisResultMaxAggregateInputType = {
+    id?: true
+    jobId?: true
+    rank?: true
+    representativeQuestion?: true
+    frequency?: true
+    reasonAnalysis?: true
+    isMerged?: true
+    questions?: true
+    createdAt?: true
+  }
+
+  export type FAQAnalysisResultCountAggregateInputType = {
+    id?: true
+    jobId?: true
+    rank?: true
+    representativeQuestion?: true
+    frequency?: true
+    reasonAnalysis?: true
+    isMerged?: true
+    questions?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FAQAnalysisResultAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FAQAnalysisResult to aggregate.
+     */
+    where?: FAQAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisResults to fetch.
+     */
+    orderBy?: FAQAnalysisResultOrderByWithRelationInput | FAQAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FAQAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FAQAnalysisResults
+    **/
+    _count?: true | FAQAnalysisResultCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FAQAnalysisResultAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FAQAnalysisResultSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FAQAnalysisResultMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FAQAnalysisResultMaxAggregateInputType
+  }
+
+  export type GetFAQAnalysisResultAggregateType<T extends FAQAnalysisResultAggregateArgs> = {
+        [P in keyof T & keyof AggregateFAQAnalysisResult]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFAQAnalysisResult[P]>
+      : GetScalarType<T[P], AggregateFAQAnalysisResult[P]>
+  }
+
+
+
+
+  export type FAQAnalysisResultGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FAQAnalysisResultWhereInput
+    orderBy?: FAQAnalysisResultOrderByWithAggregationInput | FAQAnalysisResultOrderByWithAggregationInput[]
+    by: FAQAnalysisResultScalarFieldEnum[] | FAQAnalysisResultScalarFieldEnum
+    having?: FAQAnalysisResultScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FAQAnalysisResultCountAggregateInputType | true
+    _avg?: FAQAnalysisResultAvgAggregateInputType
+    _sum?: FAQAnalysisResultSumAggregateInputType
+    _min?: FAQAnalysisResultMinAggregateInputType
+    _max?: FAQAnalysisResultMaxAggregateInputType
+  }
+
+  export type FAQAnalysisResultGroupByOutputType = {
+    id: string
+    jobId: string
+    rank: number
+    representativeQuestion: string
+    frequency: number
+    reasonAnalysis: string
+    isMerged: boolean
+    questions: string
+    createdAt: Date
+    _count: FAQAnalysisResultCountAggregateOutputType | null
+    _avg: FAQAnalysisResultAvgAggregateOutputType | null
+    _sum: FAQAnalysisResultSumAggregateOutputType | null
+    _min: FAQAnalysisResultMinAggregateOutputType | null
+    _max: FAQAnalysisResultMaxAggregateOutputType | null
+  }
+
+  type GetFAQAnalysisResultGroupByPayload<T extends FAQAnalysisResultGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FAQAnalysisResultGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FAQAnalysisResultGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FAQAnalysisResultGroupByOutputType[P]>
+            : GetScalarType<T[P], FAQAnalysisResultGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FAQAnalysisResultSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    rank?: boolean
+    representativeQuestion?: boolean
+    frequency?: boolean
+    reasonAnalysis?: boolean
+    isMerged?: boolean
+    questions?: boolean
+    createdAt?: boolean
+    job?: boolean | FAQAnalysisJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fAQAnalysisResult"]>
+
+  export type FAQAnalysisResultSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    rank?: boolean
+    representativeQuestion?: boolean
+    frequency?: boolean
+    reasonAnalysis?: boolean
+    isMerged?: boolean
+    questions?: boolean
+    createdAt?: boolean
+    job?: boolean | FAQAnalysisJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fAQAnalysisResult"]>
+
+  export type FAQAnalysisResultSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    rank?: boolean
+    representativeQuestion?: boolean
+    frequency?: boolean
+    reasonAnalysis?: boolean
+    isMerged?: boolean
+    questions?: boolean
+    createdAt?: boolean
+    job?: boolean | FAQAnalysisJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fAQAnalysisResult"]>
+
+  export type FAQAnalysisResultSelectScalar = {
+    id?: boolean
+    jobId?: boolean
+    rank?: boolean
+    representativeQuestion?: boolean
+    frequency?: boolean
+    reasonAnalysis?: boolean
+    isMerged?: boolean
+    questions?: boolean
+    createdAt?: boolean
+  }
+
+  export type FAQAnalysisResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "rank" | "representativeQuestion" | "frequency" | "reasonAnalysis" | "isMerged" | "questions" | "createdAt", ExtArgs["result"]["fAQAnalysisResult"]>
+  export type FAQAnalysisResultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | FAQAnalysisJobDefaultArgs<ExtArgs>
+  }
+  export type FAQAnalysisResultIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | FAQAnalysisJobDefaultArgs<ExtArgs>
+  }
+  export type FAQAnalysisResultIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | FAQAnalysisJobDefaultArgs<ExtArgs>
+  }
+
+  export type $FAQAnalysisResultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FAQAnalysisResult"
+    objects: {
+      job: Prisma.$FAQAnalysisJobPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      jobId: string
+      rank: number
+      representativeQuestion: string
+      frequency: number
+      reasonAnalysis: string
+      isMerged: boolean
+      questions: string
+      createdAt: Date
+    }, ExtArgs["result"]["fAQAnalysisResult"]>
+    composites: {}
+  }
+
+  type FAQAnalysisResultGetPayload<S extends boolean | null | undefined | FAQAnalysisResultDefaultArgs> = $Result.GetResult<Prisma.$FAQAnalysisResultPayload, S>
+
+  type FAQAnalysisResultCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FAQAnalysisResultFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FAQAnalysisResultCountAggregateInputType | true
+    }
+
+  export interface FAQAnalysisResultDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FAQAnalysisResult'], meta: { name: 'FAQAnalysisResult' } }
+    /**
+     * Find zero or one FAQAnalysisResult that matches the filter.
+     * @param {FAQAnalysisResultFindUniqueArgs} args - Arguments to find a FAQAnalysisResult
+     * @example
+     * // Get one FAQAnalysisResult
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FAQAnalysisResultFindUniqueArgs>(args: SelectSubset<T, FAQAnalysisResultFindUniqueArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FAQAnalysisResult that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FAQAnalysisResultFindUniqueOrThrowArgs} args - Arguments to find a FAQAnalysisResult
+     * @example
+     * // Get one FAQAnalysisResult
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FAQAnalysisResultFindUniqueOrThrowArgs>(args: SelectSubset<T, FAQAnalysisResultFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FAQAnalysisResult that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisResultFindFirstArgs} args - Arguments to find a FAQAnalysisResult
+     * @example
+     * // Get one FAQAnalysisResult
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FAQAnalysisResultFindFirstArgs>(args?: SelectSubset<T, FAQAnalysisResultFindFirstArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FAQAnalysisResult that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisResultFindFirstOrThrowArgs} args - Arguments to find a FAQAnalysisResult
+     * @example
+     * // Get one FAQAnalysisResult
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FAQAnalysisResultFindFirstOrThrowArgs>(args?: SelectSubset<T, FAQAnalysisResultFindFirstOrThrowArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FAQAnalysisResults that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisResultFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FAQAnalysisResults
+     * const fAQAnalysisResults = await prisma.fAQAnalysisResult.findMany()
+     * 
+     * // Get first 10 FAQAnalysisResults
+     * const fAQAnalysisResults = await prisma.fAQAnalysisResult.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fAQAnalysisResultWithIdOnly = await prisma.fAQAnalysisResult.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FAQAnalysisResultFindManyArgs>(args?: SelectSubset<T, FAQAnalysisResultFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FAQAnalysisResult.
+     * @param {FAQAnalysisResultCreateArgs} args - Arguments to create a FAQAnalysisResult.
+     * @example
+     * // Create one FAQAnalysisResult
+     * const FAQAnalysisResult = await prisma.fAQAnalysisResult.create({
+     *   data: {
+     *     // ... data to create a FAQAnalysisResult
+     *   }
+     * })
+     * 
+     */
+    create<T extends FAQAnalysisResultCreateArgs>(args: SelectSubset<T, FAQAnalysisResultCreateArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FAQAnalysisResults.
+     * @param {FAQAnalysisResultCreateManyArgs} args - Arguments to create many FAQAnalysisResults.
+     * @example
+     * // Create many FAQAnalysisResults
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FAQAnalysisResultCreateManyArgs>(args?: SelectSubset<T, FAQAnalysisResultCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FAQAnalysisResults and returns the data saved in the database.
+     * @param {FAQAnalysisResultCreateManyAndReturnArgs} args - Arguments to create many FAQAnalysisResults.
+     * @example
+     * // Create many FAQAnalysisResults
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FAQAnalysisResults and only return the `id`
+     * const fAQAnalysisResultWithIdOnly = await prisma.fAQAnalysisResult.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FAQAnalysisResultCreateManyAndReturnArgs>(args?: SelectSubset<T, FAQAnalysisResultCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FAQAnalysisResult.
+     * @param {FAQAnalysisResultDeleteArgs} args - Arguments to delete one FAQAnalysisResult.
+     * @example
+     * // Delete one FAQAnalysisResult
+     * const FAQAnalysisResult = await prisma.fAQAnalysisResult.delete({
+     *   where: {
+     *     // ... filter to delete one FAQAnalysisResult
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FAQAnalysisResultDeleteArgs>(args: SelectSubset<T, FAQAnalysisResultDeleteArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FAQAnalysisResult.
+     * @param {FAQAnalysisResultUpdateArgs} args - Arguments to update one FAQAnalysisResult.
+     * @example
+     * // Update one FAQAnalysisResult
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FAQAnalysisResultUpdateArgs>(args: SelectSubset<T, FAQAnalysisResultUpdateArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FAQAnalysisResults.
+     * @param {FAQAnalysisResultDeleteManyArgs} args - Arguments to filter FAQAnalysisResults to delete.
+     * @example
+     * // Delete a few FAQAnalysisResults
+     * const { count } = await prisma.fAQAnalysisResult.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FAQAnalysisResultDeleteManyArgs>(args?: SelectSubset<T, FAQAnalysisResultDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FAQAnalysisResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisResultUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FAQAnalysisResults
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FAQAnalysisResultUpdateManyArgs>(args: SelectSubset<T, FAQAnalysisResultUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FAQAnalysisResults and returns the data updated in the database.
+     * @param {FAQAnalysisResultUpdateManyAndReturnArgs} args - Arguments to update many FAQAnalysisResults.
+     * @example
+     * // Update many FAQAnalysisResults
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FAQAnalysisResults and only return the `id`
+     * const fAQAnalysisResultWithIdOnly = await prisma.fAQAnalysisResult.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FAQAnalysisResultUpdateManyAndReturnArgs>(args: SelectSubset<T, FAQAnalysisResultUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FAQAnalysisResult.
+     * @param {FAQAnalysisResultUpsertArgs} args - Arguments to update or create a FAQAnalysisResult.
+     * @example
+     * // Update or create a FAQAnalysisResult
+     * const fAQAnalysisResult = await prisma.fAQAnalysisResult.upsert({
+     *   create: {
+     *     // ... data to create a FAQAnalysisResult
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FAQAnalysisResult we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FAQAnalysisResultUpsertArgs>(args: SelectSubset<T, FAQAnalysisResultUpsertArgs<ExtArgs>>): Prisma__FAQAnalysisResultClient<$Result.GetResult<Prisma.$FAQAnalysisResultPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FAQAnalysisResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisResultCountArgs} args - Arguments to filter FAQAnalysisResults to count.
+     * @example
+     * // Count the number of FAQAnalysisResults
+     * const count = await prisma.fAQAnalysisResult.count({
+     *   where: {
+     *     // ... the filter for the FAQAnalysisResults we want to count
+     *   }
+     * })
+    **/
+    count<T extends FAQAnalysisResultCountArgs>(
+      args?: Subset<T, FAQAnalysisResultCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FAQAnalysisResultCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FAQAnalysisResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisResultAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FAQAnalysisResultAggregateArgs>(args: Subset<T, FAQAnalysisResultAggregateArgs>): Prisma.PrismaPromise<GetFAQAnalysisResultAggregateType<T>>
+
+    /**
+     * Group by FAQAnalysisResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FAQAnalysisResultGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FAQAnalysisResultGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FAQAnalysisResultGroupByArgs['orderBy'] }
+        : { orderBy?: FAQAnalysisResultGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FAQAnalysisResultGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFAQAnalysisResultGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FAQAnalysisResult model
+   */
+  readonly fields: FAQAnalysisResultFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FAQAnalysisResult.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FAQAnalysisResultClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends FAQAnalysisJobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FAQAnalysisJobDefaultArgs<ExtArgs>>): Prisma__FAQAnalysisJobClient<$Result.GetResult<Prisma.$FAQAnalysisJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FAQAnalysisResult model
+   */
+  interface FAQAnalysisResultFieldRefs {
+    readonly id: FieldRef<"FAQAnalysisResult", 'String'>
+    readonly jobId: FieldRef<"FAQAnalysisResult", 'String'>
+    readonly rank: FieldRef<"FAQAnalysisResult", 'Int'>
+    readonly representativeQuestion: FieldRef<"FAQAnalysisResult", 'String'>
+    readonly frequency: FieldRef<"FAQAnalysisResult", 'Int'>
+    readonly reasonAnalysis: FieldRef<"FAQAnalysisResult", 'String'>
+    readonly isMerged: FieldRef<"FAQAnalysisResult", 'Boolean'>
+    readonly questions: FieldRef<"FAQAnalysisResult", 'String'>
+    readonly createdAt: FieldRef<"FAQAnalysisResult", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FAQAnalysisResult findUnique
+   */
+  export type FAQAnalysisResultFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisResult to fetch.
+     */
+    where: FAQAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisResult findUniqueOrThrow
+   */
+  export type FAQAnalysisResultFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisResult to fetch.
+     */
+    where: FAQAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisResult findFirst
+   */
+  export type FAQAnalysisResultFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisResult to fetch.
+     */
+    where?: FAQAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisResults to fetch.
+     */
+    orderBy?: FAQAnalysisResultOrderByWithRelationInput | FAQAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FAQAnalysisResults.
+     */
+    cursor?: FAQAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FAQAnalysisResults.
+     */
+    distinct?: FAQAnalysisResultScalarFieldEnum | FAQAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * FAQAnalysisResult findFirstOrThrow
+   */
+  export type FAQAnalysisResultFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisResult to fetch.
+     */
+    where?: FAQAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisResults to fetch.
+     */
+    orderBy?: FAQAnalysisResultOrderByWithRelationInput | FAQAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FAQAnalysisResults.
+     */
+    cursor?: FAQAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FAQAnalysisResults.
+     */
+    distinct?: FAQAnalysisResultScalarFieldEnum | FAQAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * FAQAnalysisResult findMany
+   */
+  export type FAQAnalysisResultFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter, which FAQAnalysisResults to fetch.
+     */
+    where?: FAQAnalysisResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FAQAnalysisResults to fetch.
+     */
+    orderBy?: FAQAnalysisResultOrderByWithRelationInput | FAQAnalysisResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FAQAnalysisResults.
+     */
+    cursor?: FAQAnalysisResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FAQAnalysisResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FAQAnalysisResults.
+     */
+    skip?: number
+    distinct?: FAQAnalysisResultScalarFieldEnum | FAQAnalysisResultScalarFieldEnum[]
+  }
+
+  /**
+   * FAQAnalysisResult create
+   */
+  export type FAQAnalysisResultCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FAQAnalysisResult.
+     */
+    data: XOR<FAQAnalysisResultCreateInput, FAQAnalysisResultUncheckedCreateInput>
+  }
+
+  /**
+   * FAQAnalysisResult createMany
+   */
+  export type FAQAnalysisResultCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FAQAnalysisResults.
+     */
+    data: FAQAnalysisResultCreateManyInput | FAQAnalysisResultCreateManyInput[]
+  }
+
+  /**
+   * FAQAnalysisResult createManyAndReturn
+   */
+  export type FAQAnalysisResultCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * The data used to create many FAQAnalysisResults.
+     */
+    data: FAQAnalysisResultCreateManyInput | FAQAnalysisResultCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FAQAnalysisResult update
+   */
+  export type FAQAnalysisResultUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FAQAnalysisResult.
+     */
+    data: XOR<FAQAnalysisResultUpdateInput, FAQAnalysisResultUncheckedUpdateInput>
+    /**
+     * Choose, which FAQAnalysisResult to update.
+     */
+    where: FAQAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisResult updateMany
+   */
+  export type FAQAnalysisResultUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FAQAnalysisResults.
+     */
+    data: XOR<FAQAnalysisResultUpdateManyMutationInput, FAQAnalysisResultUncheckedUpdateManyInput>
+    /**
+     * Filter which FAQAnalysisResults to update
+     */
+    where?: FAQAnalysisResultWhereInput
+    /**
+     * Limit how many FAQAnalysisResults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FAQAnalysisResult updateManyAndReturn
+   */
+  export type FAQAnalysisResultUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * The data used to update FAQAnalysisResults.
+     */
+    data: XOR<FAQAnalysisResultUpdateManyMutationInput, FAQAnalysisResultUncheckedUpdateManyInput>
+    /**
+     * Filter which FAQAnalysisResults to update
+     */
+    where?: FAQAnalysisResultWhereInput
+    /**
+     * Limit how many FAQAnalysisResults to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FAQAnalysisResult upsert
+   */
+  export type FAQAnalysisResultUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FAQAnalysisResult to update in case it exists.
+     */
+    where: FAQAnalysisResultWhereUniqueInput
+    /**
+     * In case the FAQAnalysisResult found by the `where` argument doesn't exist, create a new FAQAnalysisResult with this data.
+     */
+    create: XOR<FAQAnalysisResultCreateInput, FAQAnalysisResultUncheckedCreateInput>
+    /**
+     * In case the FAQAnalysisResult was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FAQAnalysisResultUpdateInput, FAQAnalysisResultUncheckedUpdateInput>
+  }
+
+  /**
+   * FAQAnalysisResult delete
+   */
+  export type FAQAnalysisResultDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+    /**
+     * Filter which FAQAnalysisResult to delete.
+     */
+    where: FAQAnalysisResultWhereUniqueInput
+  }
+
+  /**
+   * FAQAnalysisResult deleteMany
+   */
+  export type FAQAnalysisResultDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FAQAnalysisResults to delete
+     */
+    where?: FAQAnalysisResultWhereInput
+    /**
+     * Limit how many FAQAnalysisResults to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FAQAnalysisResult without action
+   */
+  export type FAQAnalysisResultDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FAQAnalysisResult
+     */
+    select?: FAQAnalysisResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FAQAnalysisResult
+     */
+    omit?: FAQAnalysisResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FAQAnalysisResultInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserProfile
+   */
+
+  export type AggregateUserProfile = {
+    _count: UserProfileCountAggregateOutputType | null
+    _avg: UserProfileAvgAggregateOutputType | null
+    _sum: UserProfileSumAggregateOutputType | null
+    _min: UserProfileMinAggregateOutputType | null
+    _max: UserProfileMaxAggregateOutputType | null
+  }
+
+  export type UserProfileAvgAggregateOutputType = {
+    frustrationRate: number | null
+    aggressiveCount: number | null
+    totalMessages: number | null
+    analyzedMessages: number | null
+  }
+
+  export type UserProfileSumAggregateOutputType = {
+    frustrationRate: number | null
+    aggressiveCount: number | null
+    totalMessages: number | null
+    analyzedMessages: number | null
+  }
+
+  export type UserProfileMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    tenantId: string | null
+    frustrationRate: number | null
+    aggressiveCount: number | null
+    categoryDistribution: string | null
+    behaviorSummary: string | null
+    mainInterests: string | null
+    painPoints: string | null
+    totalMessages: number | null
+    analyzedMessages: number | null
+    lastAnalyzedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserProfileMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    tenantId: string | null
+    frustrationRate: number | null
+    aggressiveCount: number | null
+    categoryDistribution: string | null
+    behaviorSummary: string | null
+    mainInterests: string | null
+    painPoints: string | null
+    totalMessages: number | null
+    analyzedMessages: number | null
+    lastAnalyzedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserProfileCountAggregateOutputType = {
+    id: number
+    userId: number
+    tenantId: number
+    frustrationRate: number
+    aggressiveCount: number
+    categoryDistribution: number
+    behaviorSummary: number
+    mainInterests: number
+    painPoints: number
+    totalMessages: number
+    analyzedMessages: number
+    lastAnalyzedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserProfileAvgAggregateInputType = {
+    frustrationRate?: true
+    aggressiveCount?: true
+    totalMessages?: true
+    analyzedMessages?: true
+  }
+
+  export type UserProfileSumAggregateInputType = {
+    frustrationRate?: true
+    aggressiveCount?: true
+    totalMessages?: true
+    analyzedMessages?: true
+  }
+
+  export type UserProfileMinAggregateInputType = {
+    id?: true
+    userId?: true
+    tenantId?: true
+    frustrationRate?: true
+    aggressiveCount?: true
+    categoryDistribution?: true
+    behaviorSummary?: true
+    mainInterests?: true
+    painPoints?: true
+    totalMessages?: true
+    analyzedMessages?: true
+    lastAnalyzedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserProfileMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    tenantId?: true
+    frustrationRate?: true
+    aggressiveCount?: true
+    categoryDistribution?: true
+    behaviorSummary?: true
+    mainInterests?: true
+    painPoints?: true
+    totalMessages?: true
+    analyzedMessages?: true
+    lastAnalyzedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserProfileCountAggregateInputType = {
+    id?: true
+    userId?: true
+    tenantId?: true
+    frustrationRate?: true
+    aggressiveCount?: true
+    categoryDistribution?: true
+    behaviorSummary?: true
+    mainInterests?: true
+    painPoints?: true
+    totalMessages?: true
+    analyzedMessages?: true
+    lastAnalyzedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserProfile to aggregate.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserProfiles
+    **/
+    _count?: true | UserProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserProfileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserProfileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserProfileMaxAggregateInputType
+  }
+
+  export type GetUserProfileAggregateType<T extends UserProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserProfile[P]>
+      : GetScalarType<T[P], AggregateUserProfile[P]>
+  }
+
+
+
+
+  export type UserProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserProfileWhereInput
+    orderBy?: UserProfileOrderByWithAggregationInput | UserProfileOrderByWithAggregationInput[]
+    by: UserProfileScalarFieldEnum[] | UserProfileScalarFieldEnum
+    having?: UserProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserProfileCountAggregateInputType | true
+    _avg?: UserProfileAvgAggregateInputType
+    _sum?: UserProfileSumAggregateInputType
+    _min?: UserProfileMinAggregateInputType
+    _max?: UserProfileMaxAggregateInputType
+  }
+
+  export type UserProfileGroupByOutputType = {
+    id: string
+    userId: string
+    tenantId: string
+    frustrationRate: number
+    aggressiveCount: number
+    categoryDistribution: string
+    behaviorSummary: string | null
+    mainInterests: string | null
+    painPoints: string | null
+    totalMessages: number
+    analyzedMessages: number
+    lastAnalyzedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: UserProfileCountAggregateOutputType | null
+    _avg: UserProfileAvgAggregateOutputType | null
+    _sum: UserProfileSumAggregateOutputType | null
+    _min: UserProfileMinAggregateOutputType | null
+    _max: UserProfileMaxAggregateOutputType | null
+  }
+
+  type GetUserProfileGroupByPayload<T extends UserProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], UserProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    frustrationRate?: boolean
+    aggressiveCount?: boolean
+    categoryDistribution?: boolean
+    behaviorSummary?: boolean
+    mainInterests?: boolean
+    painPoints?: boolean
+    totalMessages?: boolean
+    analyzedMessages?: boolean
+    lastAnalyzedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["userProfile"]>
+
+  export type UserProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    frustrationRate?: boolean
+    aggressiveCount?: boolean
+    categoryDistribution?: boolean
+    behaviorSummary?: boolean
+    mainInterests?: boolean
+    painPoints?: boolean
+    totalMessages?: boolean
+    analyzedMessages?: boolean
+    lastAnalyzedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["userProfile"]>
+
+  export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    frustrationRate?: boolean
+    aggressiveCount?: boolean
+    categoryDistribution?: boolean
+    behaviorSummary?: boolean
+    mainInterests?: boolean
+    painPoints?: boolean
+    totalMessages?: boolean
+    analyzedMessages?: boolean
+    lastAnalyzedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["userProfile"]>
+
+  export type UserProfileSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    frustrationRate?: boolean
+    aggressiveCount?: boolean
+    categoryDistribution?: boolean
+    behaviorSummary?: boolean
+    mainInterests?: boolean
+    painPoints?: boolean
+    totalMessages?: boolean
+    analyzedMessages?: boolean
+    lastAnalyzedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "tenantId" | "frustrationRate" | "aggressiveCount" | "categoryDistribution" | "behaviorSummary" | "mainInterests" | "painPoints" | "totalMessages" | "analyzedMessages" | "lastAnalyzedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+
+  export type $UserProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserProfile"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      tenantId: string
+      frustrationRate: number
+      aggressiveCount: number
+      categoryDistribution: string
+      behaviorSummary: string | null
+      mainInterests: string | null
+      painPoints: string | null
+      totalMessages: number
+      analyzedMessages: number
+      lastAnalyzedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userProfile"]>
+    composites: {}
+  }
+
+  type UserProfileGetPayload<S extends boolean | null | undefined | UserProfileDefaultArgs> = $Result.GetResult<Prisma.$UserProfilePayload, S>
+
+  type UserProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserProfileCountAggregateInputType | true
+    }
+
+  export interface UserProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserProfile'], meta: { name: 'UserProfile' } }
+    /**
+     * Find zero or one UserProfile that matches the filter.
+     * @param {UserProfileFindUniqueArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserProfileFindUniqueArgs>(args: SelectSubset<T, UserProfileFindUniqueArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserProfile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserProfileFindUniqueOrThrowArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, UserProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileFindFirstArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserProfileFindFirstArgs>(args?: SelectSubset<T, UserProfileFindFirstArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileFindFirstOrThrowArgs} args - Arguments to find a UserProfile
+     * @example
+     * // Get one UserProfile
+     * const userProfile = await prisma.userProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, UserProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserProfiles
+     * const userProfiles = await prisma.userProfile.findMany()
+     * 
+     * // Get first 10 UserProfiles
+     * const userProfiles = await prisma.userProfile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userProfileWithIdOnly = await prisma.userProfile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserProfileFindManyArgs>(args?: SelectSubset<T, UserProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserProfile.
+     * @param {UserProfileCreateArgs} args - Arguments to create a UserProfile.
+     * @example
+     * // Create one UserProfile
+     * const UserProfile = await prisma.userProfile.create({
+     *   data: {
+     *     // ... data to create a UserProfile
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserProfileCreateArgs>(args: SelectSubset<T, UserProfileCreateArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserProfiles.
+     * @param {UserProfileCreateManyArgs} args - Arguments to create many UserProfiles.
+     * @example
+     * // Create many UserProfiles
+     * const userProfile = await prisma.userProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserProfileCreateManyArgs>(args?: SelectSubset<T, UserProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserProfiles and returns the data saved in the database.
+     * @param {UserProfileCreateManyAndReturnArgs} args - Arguments to create many UserProfiles.
+     * @example
+     * // Create many UserProfiles
+     * const userProfile = await prisma.userProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserProfiles and only return the `id`
+     * const userProfileWithIdOnly = await prisma.userProfile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, UserProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserProfile.
+     * @param {UserProfileDeleteArgs} args - Arguments to delete one UserProfile.
+     * @example
+     * // Delete one UserProfile
+     * const UserProfile = await prisma.userProfile.delete({
+     *   where: {
+     *     // ... filter to delete one UserProfile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserProfileDeleteArgs>(args: SelectSubset<T, UserProfileDeleteArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserProfile.
+     * @param {UserProfileUpdateArgs} args - Arguments to update one UserProfile.
+     * @example
+     * // Update one UserProfile
+     * const userProfile = await prisma.userProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserProfileUpdateArgs>(args: SelectSubset<T, UserProfileUpdateArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserProfiles.
+     * @param {UserProfileDeleteManyArgs} args - Arguments to filter UserProfiles to delete.
+     * @example
+     * // Delete a few UserProfiles
+     * const { count } = await prisma.userProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserProfileDeleteManyArgs>(args?: SelectSubset<T, UserProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserProfiles
+     * const userProfile = await prisma.userProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserProfileUpdateManyArgs>(args: SelectSubset<T, UserProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserProfiles and returns the data updated in the database.
+     * @param {UserProfileUpdateManyAndReturnArgs} args - Arguments to update many UserProfiles.
+     * @example
+     * // Update many UserProfiles
+     * const userProfile = await prisma.userProfile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserProfiles and only return the `id`
+     * const userProfileWithIdOnly = await prisma.userProfile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, UserProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserProfile.
+     * @param {UserProfileUpsertArgs} args - Arguments to update or create a UserProfile.
+     * @example
+     * // Update or create a UserProfile
+     * const userProfile = await prisma.userProfile.upsert({
+     *   create: {
+     *     // ... data to create a UserProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserProfileUpsertArgs>(args: SelectSubset<T, UserProfileUpsertArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileCountArgs} args - Arguments to filter UserProfiles to count.
+     * @example
+     * // Count the number of UserProfiles
+     * const count = await prisma.userProfile.count({
+     *   where: {
+     *     // ... the filter for the UserProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserProfileCountArgs>(
+      args?: Subset<T, UserProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserProfileAggregateArgs>(args: Subset<T, UserProfileAggregateArgs>): Prisma.PrismaPromise<GetUserProfileAggregateType<T>>
+
+    /**
+     * Group by UserProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserProfileGroupByArgs['orderBy'] }
+        : { orderBy?: UserProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserProfile model
+   */
+  readonly fields: UserProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserProfile model
+   */
+  interface UserProfileFieldRefs {
+    readonly id: FieldRef<"UserProfile", 'String'>
+    readonly userId: FieldRef<"UserProfile", 'String'>
+    readonly tenantId: FieldRef<"UserProfile", 'String'>
+    readonly frustrationRate: FieldRef<"UserProfile", 'Float'>
+    readonly aggressiveCount: FieldRef<"UserProfile", 'Int'>
+    readonly categoryDistribution: FieldRef<"UserProfile", 'String'>
+    readonly behaviorSummary: FieldRef<"UserProfile", 'String'>
+    readonly mainInterests: FieldRef<"UserProfile", 'String'>
+    readonly painPoints: FieldRef<"UserProfile", 'String'>
+    readonly totalMessages: FieldRef<"UserProfile", 'Int'>
+    readonly analyzedMessages: FieldRef<"UserProfile", 'Int'>
+    readonly lastAnalyzedAt: FieldRef<"UserProfile", 'DateTime'>
+    readonly createdAt: FieldRef<"UserProfile", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserProfile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserProfile findUnique
+   */
+  export type UserProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile findUniqueOrThrow
+   */
+  export type UserProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile findFirst
+   */
+  export type UserProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserProfiles.
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserProfiles.
+     */
+    distinct?: UserProfileScalarFieldEnum | UserProfileScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfile findFirstOrThrow
+   */
+  export type UserProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfile to fetch.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserProfiles.
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserProfiles.
+     */
+    distinct?: UserProfileScalarFieldEnum | UserProfileScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfile findMany
+   */
+  export type UserProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfiles to fetch.
+     */
+    where?: UserProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfiles to fetch.
+     */
+    orderBy?: UserProfileOrderByWithRelationInput | UserProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserProfiles.
+     */
+    cursor?: UserProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfiles.
+     */
+    skip?: number
+    distinct?: UserProfileScalarFieldEnum | UserProfileScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfile create
+   */
+  export type UserProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * The data needed to create a UserProfile.
+     */
+    data: XOR<UserProfileCreateInput, UserProfileUncheckedCreateInput>
+  }
+
+  /**
+   * UserProfile createMany
+   */
+  export type UserProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserProfiles.
+     */
+    data: UserProfileCreateManyInput | UserProfileCreateManyInput[]
+  }
+
+  /**
+   * UserProfile createManyAndReturn
+   */
+  export type UserProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserProfiles.
+     */
+    data: UserProfileCreateManyInput | UserProfileCreateManyInput[]
+  }
+
+  /**
+   * UserProfile update
+   */
+  export type UserProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * The data needed to update a UserProfile.
+     */
+    data: XOR<UserProfileUpdateInput, UserProfileUncheckedUpdateInput>
+    /**
+     * Choose, which UserProfile to update.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile updateMany
+   */
+  export type UserProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserProfiles.
+     */
+    data: XOR<UserProfileUpdateManyMutationInput, UserProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which UserProfiles to update
+     */
+    where?: UserProfileWhereInput
+    /**
+     * Limit how many UserProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfile updateManyAndReturn
+   */
+  export type UserProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * The data used to update UserProfiles.
+     */
+    data: XOR<UserProfileUpdateManyMutationInput, UserProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which UserProfiles to update
+     */
+    where?: UserProfileWhereInput
+    /**
+     * Limit how many UserProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfile upsert
+   */
+  export type UserProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * The filter to search for the UserProfile to update in case it exists.
+     */
+    where: UserProfileWhereUniqueInput
+    /**
+     * In case the UserProfile found by the `where` argument doesn't exist, create a new UserProfile with this data.
+     */
+    create: XOR<UserProfileCreateInput, UserProfileUncheckedCreateInput>
+    /**
+     * In case the UserProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserProfileUpdateInput, UserProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * UserProfile delete
+   */
+  export type UserProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Filter which UserProfile to delete.
+     */
+    where: UserProfileWhereUniqueInput
+  }
+
+  /**
+   * UserProfile deleteMany
+   */
+  export type UserProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserProfiles to delete
+     */
+    where?: UserProfileWhereInput
+    /**
+     * Limit how many UserProfiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfile without action
+   */
+  export type UserProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MessageCategoryAnalysis
+   */
+
+  export type AggregateMessageCategoryAnalysis = {
+    _count: MessageCategoryAnalysisCountAggregateOutputType | null
+    _avg: MessageCategoryAnalysisAvgAggregateOutputType | null
+    _sum: MessageCategoryAnalysisSumAggregateOutputType | null
+    _min: MessageCategoryAnalysisMinAggregateOutputType | null
+    _max: MessageCategoryAnalysisMaxAggregateOutputType | null
+  }
+
+  export type MessageCategoryAnalysisAvgAggregateOutputType = {
+    confidence: number | null
+  }
+
+  export type MessageCategoryAnalysisSumAggregateOutputType = {
+    confidence: number | null
+  }
+
+  export type MessageCategoryAnalysisMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    tenantId: string | null
+    messageHash: string | null
+    category: string | null
+    confidence: number | null
+    sentiment: string | null
+    isAggressive: boolean | null
+    userInput: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+  }
+
+  export type MessageCategoryAnalysisMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    tenantId: string | null
+    messageHash: string | null
+    category: string | null
+    confidence: number | null
+    sentiment: string | null
+    isAggressive: boolean | null
+    userInput: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+  }
+
+  export type MessageCategoryAnalysisCountAggregateOutputType = {
+    id: number
+    userId: number
+    tenantId: number
+    messageHash: number
+    category: number
+    confidence: number
+    sentiment: number
+    isAggressive: number
+    userInput: number
+    timestamp: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type MessageCategoryAnalysisAvgAggregateInputType = {
+    confidence?: true
+  }
+
+  export type MessageCategoryAnalysisSumAggregateInputType = {
+    confidence?: true
+  }
+
+  export type MessageCategoryAnalysisMinAggregateInputType = {
+    id?: true
+    userId?: true
+    tenantId?: true
+    messageHash?: true
+    category?: true
+    confidence?: true
+    sentiment?: true
+    isAggressive?: true
+    userInput?: true
+    timestamp?: true
+    createdAt?: true
+  }
+
+  export type MessageCategoryAnalysisMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    tenantId?: true
+    messageHash?: true
+    category?: true
+    confidence?: true
+    sentiment?: true
+    isAggressive?: true
+    userInput?: true
+    timestamp?: true
+    createdAt?: true
+  }
+
+  export type MessageCategoryAnalysisCountAggregateInputType = {
+    id?: true
+    userId?: true
+    tenantId?: true
+    messageHash?: true
+    category?: true
+    confidence?: true
+    sentiment?: true
+    isAggressive?: true
+    userInput?: true
+    timestamp?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type MessageCategoryAnalysisAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageCategoryAnalysis to aggregate.
+     */
+    where?: MessageCategoryAnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageCategoryAnalyses to fetch.
+     */
+    orderBy?: MessageCategoryAnalysisOrderByWithRelationInput | MessageCategoryAnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageCategoryAnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageCategoryAnalyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageCategoryAnalyses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MessageCategoryAnalyses
+    **/
+    _count?: true | MessageCategoryAnalysisCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MessageCategoryAnalysisAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MessageCategoryAnalysisSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageCategoryAnalysisMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageCategoryAnalysisMaxAggregateInputType
+  }
+
+  export type GetMessageCategoryAnalysisAggregateType<T extends MessageCategoryAnalysisAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessageCategoryAnalysis]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessageCategoryAnalysis[P]>
+      : GetScalarType<T[P], AggregateMessageCategoryAnalysis[P]>
+  }
+
+
+
+
+  export type MessageCategoryAnalysisGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageCategoryAnalysisWhereInput
+    orderBy?: MessageCategoryAnalysisOrderByWithAggregationInput | MessageCategoryAnalysisOrderByWithAggregationInput[]
+    by: MessageCategoryAnalysisScalarFieldEnum[] | MessageCategoryAnalysisScalarFieldEnum
+    having?: MessageCategoryAnalysisScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageCategoryAnalysisCountAggregateInputType | true
+    _avg?: MessageCategoryAnalysisAvgAggregateInputType
+    _sum?: MessageCategoryAnalysisSumAggregateInputType
+    _min?: MessageCategoryAnalysisMinAggregateInputType
+    _max?: MessageCategoryAnalysisMaxAggregateInputType
+  }
+
+  export type MessageCategoryAnalysisGroupByOutputType = {
+    id: string
+    userId: string
+    tenantId: string
+    messageHash: string
+    category: string
+    confidence: number
+    sentiment: string
+    isAggressive: boolean
+    userInput: string
+    timestamp: Date
+    createdAt: Date
+    _count: MessageCategoryAnalysisCountAggregateOutputType | null
+    _avg: MessageCategoryAnalysisAvgAggregateOutputType | null
+    _sum: MessageCategoryAnalysisSumAggregateOutputType | null
+    _min: MessageCategoryAnalysisMinAggregateOutputType | null
+    _max: MessageCategoryAnalysisMaxAggregateOutputType | null
+  }
+
+  type GetMessageCategoryAnalysisGroupByPayload<T extends MessageCategoryAnalysisGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageCategoryAnalysisGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageCategoryAnalysisGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageCategoryAnalysisGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageCategoryAnalysisGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageCategoryAnalysisSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    messageHash?: boolean
+    category?: boolean
+    confidence?: boolean
+    sentiment?: boolean
+    isAggressive?: boolean
+    userInput?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["messageCategoryAnalysis"]>
+
+  export type MessageCategoryAnalysisSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    messageHash?: boolean
+    category?: boolean
+    confidence?: boolean
+    sentiment?: boolean
+    isAggressive?: boolean
+    userInput?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["messageCategoryAnalysis"]>
+
+  export type MessageCategoryAnalysisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    messageHash?: boolean
+    category?: boolean
+    confidence?: boolean
+    sentiment?: boolean
+    isAggressive?: boolean
+    userInput?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["messageCategoryAnalysis"]>
+
+  export type MessageCategoryAnalysisSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    tenantId?: boolean
+    messageHash?: boolean
+    category?: boolean
+    confidence?: boolean
+    sentiment?: boolean
+    isAggressive?: boolean
+    userInput?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }
+
+  export type MessageCategoryAnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "tenantId" | "messageHash" | "category" | "confidence" | "sentiment" | "isAggressive" | "userInput" | "timestamp" | "createdAt", ExtArgs["result"]["messageCategoryAnalysis"]>
+
+  export type $MessageCategoryAnalysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MessageCategoryAnalysis"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      tenantId: string
+      messageHash: string
+      category: string
+      confidence: number
+      sentiment: string
+      isAggressive: boolean
+      userInput: string
+      timestamp: Date
+      createdAt: Date
+    }, ExtArgs["result"]["messageCategoryAnalysis"]>
+    composites: {}
+  }
+
+  type MessageCategoryAnalysisGetPayload<S extends boolean | null | undefined | MessageCategoryAnalysisDefaultArgs> = $Result.GetResult<Prisma.$MessageCategoryAnalysisPayload, S>
+
+  type MessageCategoryAnalysisCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageCategoryAnalysisFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageCategoryAnalysisCountAggregateInputType | true
+    }
+
+  export interface MessageCategoryAnalysisDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MessageCategoryAnalysis'], meta: { name: 'MessageCategoryAnalysis' } }
+    /**
+     * Find zero or one MessageCategoryAnalysis that matches the filter.
+     * @param {MessageCategoryAnalysisFindUniqueArgs} args - Arguments to find a MessageCategoryAnalysis
+     * @example
+     * // Get one MessageCategoryAnalysis
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageCategoryAnalysisFindUniqueArgs>(args: SelectSubset<T, MessageCategoryAnalysisFindUniqueArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MessageCategoryAnalysis that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageCategoryAnalysisFindUniqueOrThrowArgs} args - Arguments to find a MessageCategoryAnalysis
+     * @example
+     * // Get one MessageCategoryAnalysis
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageCategoryAnalysisFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageCategoryAnalysisFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageCategoryAnalysis that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCategoryAnalysisFindFirstArgs} args - Arguments to find a MessageCategoryAnalysis
+     * @example
+     * // Get one MessageCategoryAnalysis
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageCategoryAnalysisFindFirstArgs>(args?: SelectSubset<T, MessageCategoryAnalysisFindFirstArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageCategoryAnalysis that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCategoryAnalysisFindFirstOrThrowArgs} args - Arguments to find a MessageCategoryAnalysis
+     * @example
+     * // Get one MessageCategoryAnalysis
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageCategoryAnalysisFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageCategoryAnalysisFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MessageCategoryAnalyses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCategoryAnalysisFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MessageCategoryAnalyses
+     * const messageCategoryAnalyses = await prisma.messageCategoryAnalysis.findMany()
+     * 
+     * // Get first 10 MessageCategoryAnalyses
+     * const messageCategoryAnalyses = await prisma.messageCategoryAnalysis.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageCategoryAnalysisWithIdOnly = await prisma.messageCategoryAnalysis.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageCategoryAnalysisFindManyArgs>(args?: SelectSubset<T, MessageCategoryAnalysisFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MessageCategoryAnalysis.
+     * @param {MessageCategoryAnalysisCreateArgs} args - Arguments to create a MessageCategoryAnalysis.
+     * @example
+     * // Create one MessageCategoryAnalysis
+     * const MessageCategoryAnalysis = await prisma.messageCategoryAnalysis.create({
+     *   data: {
+     *     // ... data to create a MessageCategoryAnalysis
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageCategoryAnalysisCreateArgs>(args: SelectSubset<T, MessageCategoryAnalysisCreateArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MessageCategoryAnalyses.
+     * @param {MessageCategoryAnalysisCreateManyArgs} args - Arguments to create many MessageCategoryAnalyses.
+     * @example
+     * // Create many MessageCategoryAnalyses
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageCategoryAnalysisCreateManyArgs>(args?: SelectSubset<T, MessageCategoryAnalysisCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MessageCategoryAnalyses and returns the data saved in the database.
+     * @param {MessageCategoryAnalysisCreateManyAndReturnArgs} args - Arguments to create many MessageCategoryAnalyses.
+     * @example
+     * // Create many MessageCategoryAnalyses
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MessageCategoryAnalyses and only return the `id`
+     * const messageCategoryAnalysisWithIdOnly = await prisma.messageCategoryAnalysis.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageCategoryAnalysisCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageCategoryAnalysisCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MessageCategoryAnalysis.
+     * @param {MessageCategoryAnalysisDeleteArgs} args - Arguments to delete one MessageCategoryAnalysis.
+     * @example
+     * // Delete one MessageCategoryAnalysis
+     * const MessageCategoryAnalysis = await prisma.messageCategoryAnalysis.delete({
+     *   where: {
+     *     // ... filter to delete one MessageCategoryAnalysis
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageCategoryAnalysisDeleteArgs>(args: SelectSubset<T, MessageCategoryAnalysisDeleteArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MessageCategoryAnalysis.
+     * @param {MessageCategoryAnalysisUpdateArgs} args - Arguments to update one MessageCategoryAnalysis.
+     * @example
+     * // Update one MessageCategoryAnalysis
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageCategoryAnalysisUpdateArgs>(args: SelectSubset<T, MessageCategoryAnalysisUpdateArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MessageCategoryAnalyses.
+     * @param {MessageCategoryAnalysisDeleteManyArgs} args - Arguments to filter MessageCategoryAnalyses to delete.
+     * @example
+     * // Delete a few MessageCategoryAnalyses
+     * const { count } = await prisma.messageCategoryAnalysis.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageCategoryAnalysisDeleteManyArgs>(args?: SelectSubset<T, MessageCategoryAnalysisDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageCategoryAnalyses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCategoryAnalysisUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MessageCategoryAnalyses
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageCategoryAnalysisUpdateManyArgs>(args: SelectSubset<T, MessageCategoryAnalysisUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageCategoryAnalyses and returns the data updated in the database.
+     * @param {MessageCategoryAnalysisUpdateManyAndReturnArgs} args - Arguments to update many MessageCategoryAnalyses.
+     * @example
+     * // Update many MessageCategoryAnalyses
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MessageCategoryAnalyses and only return the `id`
+     * const messageCategoryAnalysisWithIdOnly = await prisma.messageCategoryAnalysis.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageCategoryAnalysisUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageCategoryAnalysisUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MessageCategoryAnalysis.
+     * @param {MessageCategoryAnalysisUpsertArgs} args - Arguments to update or create a MessageCategoryAnalysis.
+     * @example
+     * // Update or create a MessageCategoryAnalysis
+     * const messageCategoryAnalysis = await prisma.messageCategoryAnalysis.upsert({
+     *   create: {
+     *     // ... data to create a MessageCategoryAnalysis
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MessageCategoryAnalysis we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageCategoryAnalysisUpsertArgs>(args: SelectSubset<T, MessageCategoryAnalysisUpsertArgs<ExtArgs>>): Prisma__MessageCategoryAnalysisClient<$Result.GetResult<Prisma.$MessageCategoryAnalysisPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MessageCategoryAnalyses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCategoryAnalysisCountArgs} args - Arguments to filter MessageCategoryAnalyses to count.
+     * @example
+     * // Count the number of MessageCategoryAnalyses
+     * const count = await prisma.messageCategoryAnalysis.count({
+     *   where: {
+     *     // ... the filter for the MessageCategoryAnalyses we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageCategoryAnalysisCountArgs>(
+      args?: Subset<T, MessageCategoryAnalysisCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageCategoryAnalysisCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MessageCategoryAnalysis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCategoryAnalysisAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageCategoryAnalysisAggregateArgs>(args: Subset<T, MessageCategoryAnalysisAggregateArgs>): Prisma.PrismaPromise<GetMessageCategoryAnalysisAggregateType<T>>
+
+    /**
+     * Group by MessageCategoryAnalysis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCategoryAnalysisGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageCategoryAnalysisGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageCategoryAnalysisGroupByArgs['orderBy'] }
+        : { orderBy?: MessageCategoryAnalysisGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageCategoryAnalysisGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageCategoryAnalysisGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MessageCategoryAnalysis model
+   */
+  readonly fields: MessageCategoryAnalysisFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MessageCategoryAnalysis.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageCategoryAnalysisClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MessageCategoryAnalysis model
+   */
+  interface MessageCategoryAnalysisFieldRefs {
+    readonly id: FieldRef<"MessageCategoryAnalysis", 'String'>
+    readonly userId: FieldRef<"MessageCategoryAnalysis", 'String'>
+    readonly tenantId: FieldRef<"MessageCategoryAnalysis", 'String'>
+    readonly messageHash: FieldRef<"MessageCategoryAnalysis", 'String'>
+    readonly category: FieldRef<"MessageCategoryAnalysis", 'String'>
+    readonly confidence: FieldRef<"MessageCategoryAnalysis", 'Float'>
+    readonly sentiment: FieldRef<"MessageCategoryAnalysis", 'String'>
+    readonly isAggressive: FieldRef<"MessageCategoryAnalysis", 'Boolean'>
+    readonly userInput: FieldRef<"MessageCategoryAnalysis", 'String'>
+    readonly timestamp: FieldRef<"MessageCategoryAnalysis", 'DateTime'>
+    readonly createdAt: FieldRef<"MessageCategoryAnalysis", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MessageCategoryAnalysis findUnique
+   */
+  export type MessageCategoryAnalysisFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageCategoryAnalysis to fetch.
+     */
+    where: MessageCategoryAnalysisWhereUniqueInput
+  }
+
+  /**
+   * MessageCategoryAnalysis findUniqueOrThrow
+   */
+  export type MessageCategoryAnalysisFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageCategoryAnalysis to fetch.
+     */
+    where: MessageCategoryAnalysisWhereUniqueInput
+  }
+
+  /**
+   * MessageCategoryAnalysis findFirst
+   */
+  export type MessageCategoryAnalysisFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageCategoryAnalysis to fetch.
+     */
+    where?: MessageCategoryAnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageCategoryAnalyses to fetch.
+     */
+    orderBy?: MessageCategoryAnalysisOrderByWithRelationInput | MessageCategoryAnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageCategoryAnalyses.
+     */
+    cursor?: MessageCategoryAnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageCategoryAnalyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageCategoryAnalyses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageCategoryAnalyses.
+     */
+    distinct?: MessageCategoryAnalysisScalarFieldEnum | MessageCategoryAnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * MessageCategoryAnalysis findFirstOrThrow
+   */
+  export type MessageCategoryAnalysisFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageCategoryAnalysis to fetch.
+     */
+    where?: MessageCategoryAnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageCategoryAnalyses to fetch.
+     */
+    orderBy?: MessageCategoryAnalysisOrderByWithRelationInput | MessageCategoryAnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageCategoryAnalyses.
+     */
+    cursor?: MessageCategoryAnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageCategoryAnalyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageCategoryAnalyses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageCategoryAnalyses.
+     */
+    distinct?: MessageCategoryAnalysisScalarFieldEnum | MessageCategoryAnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * MessageCategoryAnalysis findMany
+   */
+  export type MessageCategoryAnalysisFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageCategoryAnalyses to fetch.
+     */
+    where?: MessageCategoryAnalysisWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageCategoryAnalyses to fetch.
+     */
+    orderBy?: MessageCategoryAnalysisOrderByWithRelationInput | MessageCategoryAnalysisOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MessageCategoryAnalyses.
+     */
+    cursor?: MessageCategoryAnalysisWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageCategoryAnalyses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageCategoryAnalyses.
+     */
+    skip?: number
+    distinct?: MessageCategoryAnalysisScalarFieldEnum | MessageCategoryAnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * MessageCategoryAnalysis create
+   */
+  export type MessageCategoryAnalysisCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * The data needed to create a MessageCategoryAnalysis.
+     */
+    data: XOR<MessageCategoryAnalysisCreateInput, MessageCategoryAnalysisUncheckedCreateInput>
+  }
+
+  /**
+   * MessageCategoryAnalysis createMany
+   */
+  export type MessageCategoryAnalysisCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MessageCategoryAnalyses.
+     */
+    data: MessageCategoryAnalysisCreateManyInput | MessageCategoryAnalysisCreateManyInput[]
+  }
+
+  /**
+   * MessageCategoryAnalysis createManyAndReturn
+   */
+  export type MessageCategoryAnalysisCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * The data used to create many MessageCategoryAnalyses.
+     */
+    data: MessageCategoryAnalysisCreateManyInput | MessageCategoryAnalysisCreateManyInput[]
+  }
+
+  /**
+   * MessageCategoryAnalysis update
+   */
+  export type MessageCategoryAnalysisUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * The data needed to update a MessageCategoryAnalysis.
+     */
+    data: XOR<MessageCategoryAnalysisUpdateInput, MessageCategoryAnalysisUncheckedUpdateInput>
+    /**
+     * Choose, which MessageCategoryAnalysis to update.
+     */
+    where: MessageCategoryAnalysisWhereUniqueInput
+  }
+
+  /**
+   * MessageCategoryAnalysis updateMany
+   */
+  export type MessageCategoryAnalysisUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MessageCategoryAnalyses.
+     */
+    data: XOR<MessageCategoryAnalysisUpdateManyMutationInput, MessageCategoryAnalysisUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageCategoryAnalyses to update
+     */
+    where?: MessageCategoryAnalysisWhereInput
+    /**
+     * Limit how many MessageCategoryAnalyses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageCategoryAnalysis updateManyAndReturn
+   */
+  export type MessageCategoryAnalysisUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * The data used to update MessageCategoryAnalyses.
+     */
+    data: XOR<MessageCategoryAnalysisUpdateManyMutationInput, MessageCategoryAnalysisUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageCategoryAnalyses to update
+     */
+    where?: MessageCategoryAnalysisWhereInput
+    /**
+     * Limit how many MessageCategoryAnalyses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageCategoryAnalysis upsert
+   */
+  export type MessageCategoryAnalysisUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * The filter to search for the MessageCategoryAnalysis to update in case it exists.
+     */
+    where: MessageCategoryAnalysisWhereUniqueInput
+    /**
+     * In case the MessageCategoryAnalysis found by the `where` argument doesn't exist, create a new MessageCategoryAnalysis with this data.
+     */
+    create: XOR<MessageCategoryAnalysisCreateInput, MessageCategoryAnalysisUncheckedCreateInput>
+    /**
+     * In case the MessageCategoryAnalysis was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageCategoryAnalysisUpdateInput, MessageCategoryAnalysisUncheckedUpdateInput>
+  }
+
+  /**
+   * MessageCategoryAnalysis delete
+   */
+  export type MessageCategoryAnalysisDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+    /**
+     * Filter which MessageCategoryAnalysis to delete.
+     */
+    where: MessageCategoryAnalysisWhereUniqueInput
+  }
+
+  /**
+   * MessageCategoryAnalysis deleteMany
+   */
+  export type MessageCategoryAnalysisDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageCategoryAnalyses to delete
+     */
+    where?: MessageCategoryAnalysisWhereInput
+    /**
+     * Limit how many MessageCategoryAnalyses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageCategoryAnalysis without action
+   */
+  export type MessageCategoryAnalysisDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageCategoryAnalysis
+     */
+    select?: MessageCategoryAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageCategoryAnalysis
+     */
+    omit?: MessageCategoryAnalysisOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserProfilingJob
+   */
+
+  export type AggregateUserProfilingJob = {
+    _count: UserProfilingJobCountAggregateOutputType | null
+    _avg: UserProfilingJobAvgAggregateOutputType | null
+    _sum: UserProfilingJobSumAggregateOutputType | null
+    _min: UserProfilingJobMinAggregateOutputType | null
+    _max: UserProfilingJobMaxAggregateOutputType | null
+  }
+
+  export type UserProfilingJobAvgAggregateOutputType = {
+    totalUsers: number | null
+    processedUsers: number | null
+    failedUsers: number | null
+  }
+
+  export type UserProfilingJobSumAggregateOutputType = {
+    totalUsers: number | null
+    processedUsers: number | null
+    failedUsers: number | null
+  }
+
+  export type UserProfilingJobMinAggregateOutputType = {
+    id: string | null
+    status: string | null
+    targetDate: Date | null
+    tenantId: string | null
+    totalUsers: number | null
+    processedUsers: number | null
+    failedUsers: number | null
+    startedAt: Date | null
+    completedAt: Date | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type UserProfilingJobMaxAggregateOutputType = {
+    id: string | null
+    status: string | null
+    targetDate: Date | null
+    tenantId: string | null
+    totalUsers: number | null
+    processedUsers: number | null
+    failedUsers: number | null
+    startedAt: Date | null
+    completedAt: Date | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type UserProfilingJobCountAggregateOutputType = {
+    id: number
+    status: number
+    targetDate: number
+    tenantId: number
+    totalUsers: number
+    processedUsers: number
+    failedUsers: number
+    startedAt: number
+    completedAt: number
+    errorMessage: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UserProfilingJobAvgAggregateInputType = {
+    totalUsers?: true
+    processedUsers?: true
+    failedUsers?: true
+  }
+
+  export type UserProfilingJobSumAggregateInputType = {
+    totalUsers?: true
+    processedUsers?: true
+    failedUsers?: true
+  }
+
+  export type UserProfilingJobMinAggregateInputType = {
+    id?: true
+    status?: true
+    targetDate?: true
+    tenantId?: true
+    totalUsers?: true
+    processedUsers?: true
+    failedUsers?: true
+    startedAt?: true
+    completedAt?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type UserProfilingJobMaxAggregateInputType = {
+    id?: true
+    status?: true
+    targetDate?: true
+    tenantId?: true
+    totalUsers?: true
+    processedUsers?: true
+    failedUsers?: true
+    startedAt?: true
+    completedAt?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type UserProfilingJobCountAggregateInputType = {
+    id?: true
+    status?: true
+    targetDate?: true
+    tenantId?: true
+    totalUsers?: true
+    processedUsers?: true
+    failedUsers?: true
+    startedAt?: true
+    completedAt?: true
+    errorMessage?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UserProfilingJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserProfilingJob to aggregate.
+     */
+    where?: UserProfilingJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfilingJobs to fetch.
+     */
+    orderBy?: UserProfilingJobOrderByWithRelationInput | UserProfilingJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserProfilingJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfilingJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfilingJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserProfilingJobs
+    **/
+    _count?: true | UserProfilingJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserProfilingJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserProfilingJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserProfilingJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserProfilingJobMaxAggregateInputType
+  }
+
+  export type GetUserProfilingJobAggregateType<T extends UserProfilingJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserProfilingJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserProfilingJob[P]>
+      : GetScalarType<T[P], AggregateUserProfilingJob[P]>
+  }
+
+
+
+
+  export type UserProfilingJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserProfilingJobWhereInput
+    orderBy?: UserProfilingJobOrderByWithAggregationInput | UserProfilingJobOrderByWithAggregationInput[]
+    by: UserProfilingJobScalarFieldEnum[] | UserProfilingJobScalarFieldEnum
+    having?: UserProfilingJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserProfilingJobCountAggregateInputType | true
+    _avg?: UserProfilingJobAvgAggregateInputType
+    _sum?: UserProfilingJobSumAggregateInputType
+    _min?: UserProfilingJobMinAggregateInputType
+    _max?: UserProfilingJobMaxAggregateInputType
+  }
+
+  export type UserProfilingJobGroupByOutputType = {
+    id: string
+    status: string
+    targetDate: Date
+    tenantId: string | null
+    totalUsers: number
+    processedUsers: number
+    failedUsers: number
+    startedAt: Date | null
+    completedAt: Date | null
+    errorMessage: string | null
+    createdAt: Date
+    _count: UserProfilingJobCountAggregateOutputType | null
+    _avg: UserProfilingJobAvgAggregateOutputType | null
+    _sum: UserProfilingJobSumAggregateOutputType | null
+    _min: UserProfilingJobMinAggregateOutputType | null
+    _max: UserProfilingJobMaxAggregateOutputType | null
+  }
+
+  type GetUserProfilingJobGroupByPayload<T extends UserProfilingJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserProfilingJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserProfilingJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserProfilingJobGroupByOutputType[P]>
+            : GetScalarType<T[P], UserProfilingJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserProfilingJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    totalUsers?: boolean
+    processedUsers?: boolean
+    failedUsers?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["userProfilingJob"]>
+
+  export type UserProfilingJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    totalUsers?: boolean
+    processedUsers?: boolean
+    failedUsers?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["userProfilingJob"]>
+
+  export type UserProfilingJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    totalUsers?: boolean
+    processedUsers?: boolean
+    failedUsers?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["userProfilingJob"]>
+
+  export type UserProfilingJobSelectScalar = {
+    id?: boolean
+    status?: boolean
+    targetDate?: boolean
+    tenantId?: boolean
+    totalUsers?: boolean
+    processedUsers?: boolean
+    failedUsers?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }
+
+  export type UserProfilingJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "targetDate" | "tenantId" | "totalUsers" | "processedUsers" | "failedUsers" | "startedAt" | "completedAt" | "errorMessage" | "createdAt", ExtArgs["result"]["userProfilingJob"]>
+
+  export type $UserProfilingJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserProfilingJob"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      status: string
+      targetDate: Date
+      tenantId: string | null
+      totalUsers: number
+      processedUsers: number
+      failedUsers: number
+      startedAt: Date | null
+      completedAt: Date | null
+      errorMessage: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["userProfilingJob"]>
+    composites: {}
+  }
+
+  type UserProfilingJobGetPayload<S extends boolean | null | undefined | UserProfilingJobDefaultArgs> = $Result.GetResult<Prisma.$UserProfilingJobPayload, S>
+
+  type UserProfilingJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserProfilingJobFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserProfilingJobCountAggregateInputType | true
+    }
+
+  export interface UserProfilingJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserProfilingJob'], meta: { name: 'UserProfilingJob' } }
+    /**
+     * Find zero or one UserProfilingJob that matches the filter.
+     * @param {UserProfilingJobFindUniqueArgs} args - Arguments to find a UserProfilingJob
+     * @example
+     * // Get one UserProfilingJob
+     * const userProfilingJob = await prisma.userProfilingJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserProfilingJobFindUniqueArgs>(args: SelectSubset<T, UserProfilingJobFindUniqueArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserProfilingJob that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserProfilingJobFindUniqueOrThrowArgs} args - Arguments to find a UserProfilingJob
+     * @example
+     * // Get one UserProfilingJob
+     * const userProfilingJob = await prisma.userProfilingJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserProfilingJobFindUniqueOrThrowArgs>(args: SelectSubset<T, UserProfilingJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserProfilingJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfilingJobFindFirstArgs} args - Arguments to find a UserProfilingJob
+     * @example
+     * // Get one UserProfilingJob
+     * const userProfilingJob = await prisma.userProfilingJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserProfilingJobFindFirstArgs>(args?: SelectSubset<T, UserProfilingJobFindFirstArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserProfilingJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfilingJobFindFirstOrThrowArgs} args - Arguments to find a UserProfilingJob
+     * @example
+     * // Get one UserProfilingJob
+     * const userProfilingJob = await prisma.userProfilingJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserProfilingJobFindFirstOrThrowArgs>(args?: SelectSubset<T, UserProfilingJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserProfilingJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfilingJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserProfilingJobs
+     * const userProfilingJobs = await prisma.userProfilingJob.findMany()
+     * 
+     * // Get first 10 UserProfilingJobs
+     * const userProfilingJobs = await prisma.userProfilingJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userProfilingJobWithIdOnly = await prisma.userProfilingJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserProfilingJobFindManyArgs>(args?: SelectSubset<T, UserProfilingJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserProfilingJob.
+     * @param {UserProfilingJobCreateArgs} args - Arguments to create a UserProfilingJob.
+     * @example
+     * // Create one UserProfilingJob
+     * const UserProfilingJob = await prisma.userProfilingJob.create({
+     *   data: {
+     *     // ... data to create a UserProfilingJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserProfilingJobCreateArgs>(args: SelectSubset<T, UserProfilingJobCreateArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserProfilingJobs.
+     * @param {UserProfilingJobCreateManyArgs} args - Arguments to create many UserProfilingJobs.
+     * @example
+     * // Create many UserProfilingJobs
+     * const userProfilingJob = await prisma.userProfilingJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserProfilingJobCreateManyArgs>(args?: SelectSubset<T, UserProfilingJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserProfilingJobs and returns the data saved in the database.
+     * @param {UserProfilingJobCreateManyAndReturnArgs} args - Arguments to create many UserProfilingJobs.
+     * @example
+     * // Create many UserProfilingJobs
+     * const userProfilingJob = await prisma.userProfilingJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserProfilingJobs and only return the `id`
+     * const userProfilingJobWithIdOnly = await prisma.userProfilingJob.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserProfilingJobCreateManyAndReturnArgs>(args?: SelectSubset<T, UserProfilingJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserProfilingJob.
+     * @param {UserProfilingJobDeleteArgs} args - Arguments to delete one UserProfilingJob.
+     * @example
+     * // Delete one UserProfilingJob
+     * const UserProfilingJob = await prisma.userProfilingJob.delete({
+     *   where: {
+     *     // ... filter to delete one UserProfilingJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserProfilingJobDeleteArgs>(args: SelectSubset<T, UserProfilingJobDeleteArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserProfilingJob.
+     * @param {UserProfilingJobUpdateArgs} args - Arguments to update one UserProfilingJob.
+     * @example
+     * // Update one UserProfilingJob
+     * const userProfilingJob = await prisma.userProfilingJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserProfilingJobUpdateArgs>(args: SelectSubset<T, UserProfilingJobUpdateArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserProfilingJobs.
+     * @param {UserProfilingJobDeleteManyArgs} args - Arguments to filter UserProfilingJobs to delete.
+     * @example
+     * // Delete a few UserProfilingJobs
+     * const { count } = await prisma.userProfilingJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserProfilingJobDeleteManyArgs>(args?: SelectSubset<T, UserProfilingJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserProfilingJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfilingJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserProfilingJobs
+     * const userProfilingJob = await prisma.userProfilingJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserProfilingJobUpdateManyArgs>(args: SelectSubset<T, UserProfilingJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserProfilingJobs and returns the data updated in the database.
+     * @param {UserProfilingJobUpdateManyAndReturnArgs} args - Arguments to update many UserProfilingJobs.
+     * @example
+     * // Update many UserProfilingJobs
+     * const userProfilingJob = await prisma.userProfilingJob.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserProfilingJobs and only return the `id`
+     * const userProfilingJobWithIdOnly = await prisma.userProfilingJob.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserProfilingJobUpdateManyAndReturnArgs>(args: SelectSubset<T, UserProfilingJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserProfilingJob.
+     * @param {UserProfilingJobUpsertArgs} args - Arguments to update or create a UserProfilingJob.
+     * @example
+     * // Update or create a UserProfilingJob
+     * const userProfilingJob = await prisma.userProfilingJob.upsert({
+     *   create: {
+     *     // ... data to create a UserProfilingJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserProfilingJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserProfilingJobUpsertArgs>(args: SelectSubset<T, UserProfilingJobUpsertArgs<ExtArgs>>): Prisma__UserProfilingJobClient<$Result.GetResult<Prisma.$UserProfilingJobPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserProfilingJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfilingJobCountArgs} args - Arguments to filter UserProfilingJobs to count.
+     * @example
+     * // Count the number of UserProfilingJobs
+     * const count = await prisma.userProfilingJob.count({
+     *   where: {
+     *     // ... the filter for the UserProfilingJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserProfilingJobCountArgs>(
+      args?: Subset<T, UserProfilingJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserProfilingJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserProfilingJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfilingJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserProfilingJobAggregateArgs>(args: Subset<T, UserProfilingJobAggregateArgs>): Prisma.PrismaPromise<GetUserProfilingJobAggregateType<T>>
+
+    /**
+     * Group by UserProfilingJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserProfilingJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserProfilingJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserProfilingJobGroupByArgs['orderBy'] }
+        : { orderBy?: UserProfilingJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserProfilingJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserProfilingJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserProfilingJob model
+   */
+  readonly fields: UserProfilingJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserProfilingJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserProfilingJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserProfilingJob model
+   */
+  interface UserProfilingJobFieldRefs {
+    readonly id: FieldRef<"UserProfilingJob", 'String'>
+    readonly status: FieldRef<"UserProfilingJob", 'String'>
+    readonly targetDate: FieldRef<"UserProfilingJob", 'DateTime'>
+    readonly tenantId: FieldRef<"UserProfilingJob", 'String'>
+    readonly totalUsers: FieldRef<"UserProfilingJob", 'Int'>
+    readonly processedUsers: FieldRef<"UserProfilingJob", 'Int'>
+    readonly failedUsers: FieldRef<"UserProfilingJob", 'Int'>
+    readonly startedAt: FieldRef<"UserProfilingJob", 'DateTime'>
+    readonly completedAt: FieldRef<"UserProfilingJob", 'DateTime'>
+    readonly errorMessage: FieldRef<"UserProfilingJob", 'String'>
+    readonly createdAt: FieldRef<"UserProfilingJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserProfilingJob findUnique
+   */
+  export type UserProfilingJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfilingJob to fetch.
+     */
+    where: UserProfilingJobWhereUniqueInput
+  }
+
+  /**
+   * UserProfilingJob findUniqueOrThrow
+   */
+  export type UserProfilingJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfilingJob to fetch.
+     */
+    where: UserProfilingJobWhereUniqueInput
+  }
+
+  /**
+   * UserProfilingJob findFirst
+   */
+  export type UserProfilingJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfilingJob to fetch.
+     */
+    where?: UserProfilingJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfilingJobs to fetch.
+     */
+    orderBy?: UserProfilingJobOrderByWithRelationInput | UserProfilingJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserProfilingJobs.
+     */
+    cursor?: UserProfilingJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfilingJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfilingJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserProfilingJobs.
+     */
+    distinct?: UserProfilingJobScalarFieldEnum | UserProfilingJobScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfilingJob findFirstOrThrow
+   */
+  export type UserProfilingJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfilingJob to fetch.
+     */
+    where?: UserProfilingJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfilingJobs to fetch.
+     */
+    orderBy?: UserProfilingJobOrderByWithRelationInput | UserProfilingJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserProfilingJobs.
+     */
+    cursor?: UserProfilingJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfilingJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfilingJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserProfilingJobs.
+     */
+    distinct?: UserProfilingJobScalarFieldEnum | UserProfilingJobScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfilingJob findMany
+   */
+  export type UserProfilingJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * Filter, which UserProfilingJobs to fetch.
+     */
+    where?: UserProfilingJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserProfilingJobs to fetch.
+     */
+    orderBy?: UserProfilingJobOrderByWithRelationInput | UserProfilingJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserProfilingJobs.
+     */
+    cursor?: UserProfilingJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserProfilingJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserProfilingJobs.
+     */
+    skip?: number
+    distinct?: UserProfilingJobScalarFieldEnum | UserProfilingJobScalarFieldEnum[]
+  }
+
+  /**
+   * UserProfilingJob create
+   */
+  export type UserProfilingJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * The data needed to create a UserProfilingJob.
+     */
+    data: XOR<UserProfilingJobCreateInput, UserProfilingJobUncheckedCreateInput>
+  }
+
+  /**
+   * UserProfilingJob createMany
+   */
+  export type UserProfilingJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserProfilingJobs.
+     */
+    data: UserProfilingJobCreateManyInput | UserProfilingJobCreateManyInput[]
+  }
+
+  /**
+   * UserProfilingJob createManyAndReturn
+   */
+  export type UserProfilingJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserProfilingJobs.
+     */
+    data: UserProfilingJobCreateManyInput | UserProfilingJobCreateManyInput[]
+  }
+
+  /**
+   * UserProfilingJob update
+   */
+  export type UserProfilingJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * The data needed to update a UserProfilingJob.
+     */
+    data: XOR<UserProfilingJobUpdateInput, UserProfilingJobUncheckedUpdateInput>
+    /**
+     * Choose, which UserProfilingJob to update.
+     */
+    where: UserProfilingJobWhereUniqueInput
+  }
+
+  /**
+   * UserProfilingJob updateMany
+   */
+  export type UserProfilingJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserProfilingJobs.
+     */
+    data: XOR<UserProfilingJobUpdateManyMutationInput, UserProfilingJobUncheckedUpdateManyInput>
+    /**
+     * Filter which UserProfilingJobs to update
+     */
+    where?: UserProfilingJobWhereInput
+    /**
+     * Limit how many UserProfilingJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfilingJob updateManyAndReturn
+   */
+  export type UserProfilingJobUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * The data used to update UserProfilingJobs.
+     */
+    data: XOR<UserProfilingJobUpdateManyMutationInput, UserProfilingJobUncheckedUpdateManyInput>
+    /**
+     * Filter which UserProfilingJobs to update
+     */
+    where?: UserProfilingJobWhereInput
+    /**
+     * Limit how many UserProfilingJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfilingJob upsert
+   */
+  export type UserProfilingJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * The filter to search for the UserProfilingJob to update in case it exists.
+     */
+    where: UserProfilingJobWhereUniqueInput
+    /**
+     * In case the UserProfilingJob found by the `where` argument doesn't exist, create a new UserProfilingJob with this data.
+     */
+    create: XOR<UserProfilingJobCreateInput, UserProfilingJobUncheckedCreateInput>
+    /**
+     * In case the UserProfilingJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserProfilingJobUpdateInput, UserProfilingJobUncheckedUpdateInput>
+  }
+
+  /**
+   * UserProfilingJob delete
+   */
+  export type UserProfilingJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+    /**
+     * Filter which UserProfilingJob to delete.
+     */
+    where: UserProfilingJobWhereUniqueInput
+  }
+
+  /**
+   * UserProfilingJob deleteMany
+   */
+  export type UserProfilingJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserProfilingJobs to delete
+     */
+    where?: UserProfilingJobWhereInput
+    /**
+     * Limit how many UserProfilingJobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserProfilingJob without action
+   */
+  export type UserProfilingJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfilingJob
+     */
+    select?: UserProfilingJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfilingJob
+     */
+    omit?: UserProfilingJobOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -19402,6 +25639,8 @@ export namespace Prisma {
     failedItems: 'failedItems',
     startedAt: 'startedAt',
     completedAt: 'completedAt',
+    errorMessage: 'errorMessage',
+    cancelRequested: 'cancelRequested',
     createdAt: 'createdAt'
   };
 
@@ -19471,6 +25710,93 @@ export namespace Prisma {
   };
 
   export type BatchSchedulerConfigScalarFieldEnum = (typeof BatchSchedulerConfigScalarFieldEnum)[keyof typeof BatchSchedulerConfigScalarFieldEnum]
+
+
+  export const FAQAnalysisJobScalarFieldEnum: {
+    id: 'id',
+    status: 'status',
+    tenantId: 'tenantId',
+    periodDays: 'periodDays',
+    topN: 'topN',
+    totalQuestions: 'totalQuestions',
+    clusterCount: 'clusterCount',
+    llmMergeApplied: 'llmMergeApplied',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt'
+  };
+
+  export type FAQAnalysisJobScalarFieldEnum = (typeof FAQAnalysisJobScalarFieldEnum)[keyof typeof FAQAnalysisJobScalarFieldEnum]
+
+
+  export const FAQAnalysisResultScalarFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    rank: 'rank',
+    representativeQuestion: 'representativeQuestion',
+    frequency: 'frequency',
+    reasonAnalysis: 'reasonAnalysis',
+    isMerged: 'isMerged',
+    questions: 'questions',
+    createdAt: 'createdAt'
+  };
+
+  export type FAQAnalysisResultScalarFieldEnum = (typeof FAQAnalysisResultScalarFieldEnum)[keyof typeof FAQAnalysisResultScalarFieldEnum]
+
+
+  export const UserProfileScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    tenantId: 'tenantId',
+    frustrationRate: 'frustrationRate',
+    aggressiveCount: 'aggressiveCount',
+    categoryDistribution: 'categoryDistribution',
+    behaviorSummary: 'behaviorSummary',
+    mainInterests: 'mainInterests',
+    painPoints: 'painPoints',
+    totalMessages: 'totalMessages',
+    analyzedMessages: 'analyzedMessages',
+    lastAnalyzedAt: 'lastAnalyzedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[keyof typeof UserProfileScalarFieldEnum]
+
+
+  export const MessageCategoryAnalysisScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    tenantId: 'tenantId',
+    messageHash: 'messageHash',
+    category: 'category',
+    confidence: 'confidence',
+    sentiment: 'sentiment',
+    isAggressive: 'isAggressive',
+    userInput: 'userInput',
+    timestamp: 'timestamp',
+    createdAt: 'createdAt'
+  };
+
+  export type MessageCategoryAnalysisScalarFieldEnum = (typeof MessageCategoryAnalysisScalarFieldEnum)[keyof typeof MessageCategoryAnalysisScalarFieldEnum]
+
+
+  export const UserProfilingJobScalarFieldEnum: {
+    id: 'id',
+    status: 'status',
+    targetDate: 'targetDate',
+    tenantId: 'tenantId',
+    totalUsers: 'totalUsers',
+    processedUsers: 'processedUsers',
+    failedUsers: 'failedUsers',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt'
+  };
+
+  export type UserProfilingJobScalarFieldEnum = (typeof UserProfilingJobScalarFieldEnum)[keyof typeof UserProfilingJobScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -20263,6 +26589,8 @@ export namespace Prisma {
     failedItems?: IntFilter<"BatchAnalysisJob"> | number
     startedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"BatchAnalysisJob"> | string | null
+    cancelRequested?: BoolFilter<"BatchAnalysisJob"> | boolean
     createdAt?: DateTimeFilter<"BatchAnalysisJob"> | Date | string
     results?: BatchAnalysisResultListRelationFilter
   }
@@ -20279,6 +26607,8 @@ export namespace Prisma {
     failedItems?: SortOrder
     startedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    cancelRequested?: SortOrder
     createdAt?: SortOrder
     results?: BatchAnalysisResultOrderByRelationAggregateInput
   }
@@ -20298,6 +26628,8 @@ export namespace Prisma {
     failedItems?: IntFilter<"BatchAnalysisJob"> | number
     startedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"BatchAnalysisJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"BatchAnalysisJob"> | string | null
+    cancelRequested?: BoolFilter<"BatchAnalysisJob"> | boolean
     createdAt?: DateTimeFilter<"BatchAnalysisJob"> | Date | string
     results?: BatchAnalysisResultListRelationFilter
   }, "id">
@@ -20314,6 +26646,8 @@ export namespace Prisma {
     failedItems?: SortOrder
     startedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    cancelRequested?: SortOrder
     createdAt?: SortOrder
     _count?: BatchAnalysisJobCountOrderByAggregateInput
     _avg?: BatchAnalysisJobAvgOrderByAggregateInput
@@ -20337,6 +26671,8 @@ export namespace Prisma {
     failedItems?: IntWithAggregatesFilter<"BatchAnalysisJob"> | number
     startedAt?: DateTimeNullableWithAggregatesFilter<"BatchAnalysisJob"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"BatchAnalysisJob"> | Date | string | null
+    errorMessage?: StringNullableWithAggregatesFilter<"BatchAnalysisJob"> | string | null
+    cancelRequested?: BoolWithAggregatesFilter<"BatchAnalysisJob"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"BatchAnalysisJob"> | Date | string
   }
 
@@ -20661,6 +26997,443 @@ export namespace Prisma {
     promptTemplateId?: StringNullableWithAggregatesFilter<"BatchSchedulerConfig"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"BatchSchedulerConfig"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"BatchSchedulerConfig"> | Date | string
+  }
+
+  export type FAQAnalysisJobWhereInput = {
+    AND?: FAQAnalysisJobWhereInput | FAQAnalysisJobWhereInput[]
+    OR?: FAQAnalysisJobWhereInput[]
+    NOT?: FAQAnalysisJobWhereInput | FAQAnalysisJobWhereInput[]
+    id?: StringFilter<"FAQAnalysisJob"> | string
+    status?: StringFilter<"FAQAnalysisJob"> | string
+    tenantId?: StringNullableFilter<"FAQAnalysisJob"> | string | null
+    periodDays?: IntFilter<"FAQAnalysisJob"> | number
+    topN?: IntFilter<"FAQAnalysisJob"> | number
+    totalQuestions?: IntNullableFilter<"FAQAnalysisJob"> | number | null
+    clusterCount?: IntNullableFilter<"FAQAnalysisJob"> | number | null
+    llmMergeApplied?: BoolFilter<"FAQAnalysisJob"> | boolean
+    startedAt?: DateTimeNullableFilter<"FAQAnalysisJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"FAQAnalysisJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"FAQAnalysisJob"> | string | null
+    createdAt?: DateTimeFilter<"FAQAnalysisJob"> | Date | string
+    results?: FAQAnalysisResultListRelationFilter
+  }
+
+  export type FAQAnalysisJobOrderByWithRelationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    periodDays?: SortOrder
+    topN?: SortOrder
+    totalQuestions?: SortOrderInput | SortOrder
+    clusterCount?: SortOrderInput | SortOrder
+    llmMergeApplied?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    results?: FAQAnalysisResultOrderByRelationAggregateInput
+  }
+
+  export type FAQAnalysisJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FAQAnalysisJobWhereInput | FAQAnalysisJobWhereInput[]
+    OR?: FAQAnalysisJobWhereInput[]
+    NOT?: FAQAnalysisJobWhereInput | FAQAnalysisJobWhereInput[]
+    status?: StringFilter<"FAQAnalysisJob"> | string
+    tenantId?: StringNullableFilter<"FAQAnalysisJob"> | string | null
+    periodDays?: IntFilter<"FAQAnalysisJob"> | number
+    topN?: IntFilter<"FAQAnalysisJob"> | number
+    totalQuestions?: IntNullableFilter<"FAQAnalysisJob"> | number | null
+    clusterCount?: IntNullableFilter<"FAQAnalysisJob"> | number | null
+    llmMergeApplied?: BoolFilter<"FAQAnalysisJob"> | boolean
+    startedAt?: DateTimeNullableFilter<"FAQAnalysisJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"FAQAnalysisJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"FAQAnalysisJob"> | string | null
+    createdAt?: DateTimeFilter<"FAQAnalysisJob"> | Date | string
+    results?: FAQAnalysisResultListRelationFilter
+  }, "id">
+
+  export type FAQAnalysisJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    periodDays?: SortOrder
+    topN?: SortOrder
+    totalQuestions?: SortOrderInput | SortOrder
+    clusterCount?: SortOrderInput | SortOrder
+    llmMergeApplied?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: FAQAnalysisJobCountOrderByAggregateInput
+    _avg?: FAQAnalysisJobAvgOrderByAggregateInput
+    _max?: FAQAnalysisJobMaxOrderByAggregateInput
+    _min?: FAQAnalysisJobMinOrderByAggregateInput
+    _sum?: FAQAnalysisJobSumOrderByAggregateInput
+  }
+
+  export type FAQAnalysisJobScalarWhereWithAggregatesInput = {
+    AND?: FAQAnalysisJobScalarWhereWithAggregatesInput | FAQAnalysisJobScalarWhereWithAggregatesInput[]
+    OR?: FAQAnalysisJobScalarWhereWithAggregatesInput[]
+    NOT?: FAQAnalysisJobScalarWhereWithAggregatesInput | FAQAnalysisJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FAQAnalysisJob"> | string
+    status?: StringWithAggregatesFilter<"FAQAnalysisJob"> | string
+    tenantId?: StringNullableWithAggregatesFilter<"FAQAnalysisJob"> | string | null
+    periodDays?: IntWithAggregatesFilter<"FAQAnalysisJob"> | number
+    topN?: IntWithAggregatesFilter<"FAQAnalysisJob"> | number
+    totalQuestions?: IntNullableWithAggregatesFilter<"FAQAnalysisJob"> | number | null
+    clusterCount?: IntNullableWithAggregatesFilter<"FAQAnalysisJob"> | number | null
+    llmMergeApplied?: BoolWithAggregatesFilter<"FAQAnalysisJob"> | boolean
+    startedAt?: DateTimeNullableWithAggregatesFilter<"FAQAnalysisJob"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"FAQAnalysisJob"> | Date | string | null
+    errorMessage?: StringNullableWithAggregatesFilter<"FAQAnalysisJob"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FAQAnalysisJob"> | Date | string
+  }
+
+  export type FAQAnalysisResultWhereInput = {
+    AND?: FAQAnalysisResultWhereInput | FAQAnalysisResultWhereInput[]
+    OR?: FAQAnalysisResultWhereInput[]
+    NOT?: FAQAnalysisResultWhereInput | FAQAnalysisResultWhereInput[]
+    id?: StringFilter<"FAQAnalysisResult"> | string
+    jobId?: StringFilter<"FAQAnalysisResult"> | string
+    rank?: IntFilter<"FAQAnalysisResult"> | number
+    representativeQuestion?: StringFilter<"FAQAnalysisResult"> | string
+    frequency?: IntFilter<"FAQAnalysisResult"> | number
+    reasonAnalysis?: StringFilter<"FAQAnalysisResult"> | string
+    isMerged?: BoolFilter<"FAQAnalysisResult"> | boolean
+    questions?: StringFilter<"FAQAnalysisResult"> | string
+    createdAt?: DateTimeFilter<"FAQAnalysisResult"> | Date | string
+    job?: XOR<FAQAnalysisJobScalarRelationFilter, FAQAnalysisJobWhereInput>
+  }
+
+  export type FAQAnalysisResultOrderByWithRelationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    rank?: SortOrder
+    representativeQuestion?: SortOrder
+    frequency?: SortOrder
+    reasonAnalysis?: SortOrder
+    isMerged?: SortOrder
+    questions?: SortOrder
+    createdAt?: SortOrder
+    job?: FAQAnalysisJobOrderByWithRelationInput
+  }
+
+  export type FAQAnalysisResultWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FAQAnalysisResultWhereInput | FAQAnalysisResultWhereInput[]
+    OR?: FAQAnalysisResultWhereInput[]
+    NOT?: FAQAnalysisResultWhereInput | FAQAnalysisResultWhereInput[]
+    jobId?: StringFilter<"FAQAnalysisResult"> | string
+    rank?: IntFilter<"FAQAnalysisResult"> | number
+    representativeQuestion?: StringFilter<"FAQAnalysisResult"> | string
+    frequency?: IntFilter<"FAQAnalysisResult"> | number
+    reasonAnalysis?: StringFilter<"FAQAnalysisResult"> | string
+    isMerged?: BoolFilter<"FAQAnalysisResult"> | boolean
+    questions?: StringFilter<"FAQAnalysisResult"> | string
+    createdAt?: DateTimeFilter<"FAQAnalysisResult"> | Date | string
+    job?: XOR<FAQAnalysisJobScalarRelationFilter, FAQAnalysisJobWhereInput>
+  }, "id">
+
+  export type FAQAnalysisResultOrderByWithAggregationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    rank?: SortOrder
+    representativeQuestion?: SortOrder
+    frequency?: SortOrder
+    reasonAnalysis?: SortOrder
+    isMerged?: SortOrder
+    questions?: SortOrder
+    createdAt?: SortOrder
+    _count?: FAQAnalysisResultCountOrderByAggregateInput
+    _avg?: FAQAnalysisResultAvgOrderByAggregateInput
+    _max?: FAQAnalysisResultMaxOrderByAggregateInput
+    _min?: FAQAnalysisResultMinOrderByAggregateInput
+    _sum?: FAQAnalysisResultSumOrderByAggregateInput
+  }
+
+  export type FAQAnalysisResultScalarWhereWithAggregatesInput = {
+    AND?: FAQAnalysisResultScalarWhereWithAggregatesInput | FAQAnalysisResultScalarWhereWithAggregatesInput[]
+    OR?: FAQAnalysisResultScalarWhereWithAggregatesInput[]
+    NOT?: FAQAnalysisResultScalarWhereWithAggregatesInput | FAQAnalysisResultScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FAQAnalysisResult"> | string
+    jobId?: StringWithAggregatesFilter<"FAQAnalysisResult"> | string
+    rank?: IntWithAggregatesFilter<"FAQAnalysisResult"> | number
+    representativeQuestion?: StringWithAggregatesFilter<"FAQAnalysisResult"> | string
+    frequency?: IntWithAggregatesFilter<"FAQAnalysisResult"> | number
+    reasonAnalysis?: StringWithAggregatesFilter<"FAQAnalysisResult"> | string
+    isMerged?: BoolWithAggregatesFilter<"FAQAnalysisResult"> | boolean
+    questions?: StringWithAggregatesFilter<"FAQAnalysisResult"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"FAQAnalysisResult"> | Date | string
+  }
+
+  export type UserProfileWhereInput = {
+    AND?: UserProfileWhereInput | UserProfileWhereInput[]
+    OR?: UserProfileWhereInput[]
+    NOT?: UserProfileWhereInput | UserProfileWhereInput[]
+    id?: StringFilter<"UserProfile"> | string
+    userId?: StringFilter<"UserProfile"> | string
+    tenantId?: StringFilter<"UserProfile"> | string
+    frustrationRate?: FloatFilter<"UserProfile"> | number
+    aggressiveCount?: IntFilter<"UserProfile"> | number
+    categoryDistribution?: StringFilter<"UserProfile"> | string
+    behaviorSummary?: StringNullableFilter<"UserProfile"> | string | null
+    mainInterests?: StringNullableFilter<"UserProfile"> | string | null
+    painPoints?: StringNullableFilter<"UserProfile"> | string | null
+    totalMessages?: IntFilter<"UserProfile"> | number
+    analyzedMessages?: IntFilter<"UserProfile"> | number
+    lastAnalyzedAt?: DateTimeNullableFilter<"UserProfile"> | Date | string | null
+    createdAt?: DateTimeFilter<"UserProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"UserProfile"> | Date | string
+  }
+
+  export type UserProfileOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    frustrationRate?: SortOrder
+    aggressiveCount?: SortOrder
+    categoryDistribution?: SortOrder
+    behaviorSummary?: SortOrderInput | SortOrder
+    mainInterests?: SortOrderInput | SortOrder
+    painPoints?: SortOrderInput | SortOrder
+    totalMessages?: SortOrder
+    analyzedMessages?: SortOrder
+    lastAnalyzedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: UserProfileWhereInput | UserProfileWhereInput[]
+    OR?: UserProfileWhereInput[]
+    NOT?: UserProfileWhereInput | UserProfileWhereInput[]
+    tenantId?: StringFilter<"UserProfile"> | string
+    frustrationRate?: FloatFilter<"UserProfile"> | number
+    aggressiveCount?: IntFilter<"UserProfile"> | number
+    categoryDistribution?: StringFilter<"UserProfile"> | string
+    behaviorSummary?: StringNullableFilter<"UserProfile"> | string | null
+    mainInterests?: StringNullableFilter<"UserProfile"> | string | null
+    painPoints?: StringNullableFilter<"UserProfile"> | string | null
+    totalMessages?: IntFilter<"UserProfile"> | number
+    analyzedMessages?: IntFilter<"UserProfile"> | number
+    lastAnalyzedAt?: DateTimeNullableFilter<"UserProfile"> | Date | string | null
+    createdAt?: DateTimeFilter<"UserProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"UserProfile"> | Date | string
+  }, "id" | "userId">
+
+  export type UserProfileOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    frustrationRate?: SortOrder
+    aggressiveCount?: SortOrder
+    categoryDistribution?: SortOrder
+    behaviorSummary?: SortOrderInput | SortOrder
+    mainInterests?: SortOrderInput | SortOrder
+    painPoints?: SortOrderInput | SortOrder
+    totalMessages?: SortOrder
+    analyzedMessages?: SortOrder
+    lastAnalyzedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserProfileCountOrderByAggregateInput
+    _avg?: UserProfileAvgOrderByAggregateInput
+    _max?: UserProfileMaxOrderByAggregateInput
+    _min?: UserProfileMinOrderByAggregateInput
+    _sum?: UserProfileSumOrderByAggregateInput
+  }
+
+  export type UserProfileScalarWhereWithAggregatesInput = {
+    AND?: UserProfileScalarWhereWithAggregatesInput | UserProfileScalarWhereWithAggregatesInput[]
+    OR?: UserProfileScalarWhereWithAggregatesInput[]
+    NOT?: UserProfileScalarWhereWithAggregatesInput | UserProfileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserProfile"> | string
+    userId?: StringWithAggregatesFilter<"UserProfile"> | string
+    tenantId?: StringWithAggregatesFilter<"UserProfile"> | string
+    frustrationRate?: FloatWithAggregatesFilter<"UserProfile"> | number
+    aggressiveCount?: IntWithAggregatesFilter<"UserProfile"> | number
+    categoryDistribution?: StringWithAggregatesFilter<"UserProfile"> | string
+    behaviorSummary?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+    mainInterests?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+    painPoints?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+    totalMessages?: IntWithAggregatesFilter<"UserProfile"> | number
+    analyzedMessages?: IntWithAggregatesFilter<"UserProfile"> | number
+    lastAnalyzedAt?: DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
+  }
+
+  export type MessageCategoryAnalysisWhereInput = {
+    AND?: MessageCategoryAnalysisWhereInput | MessageCategoryAnalysisWhereInput[]
+    OR?: MessageCategoryAnalysisWhereInput[]
+    NOT?: MessageCategoryAnalysisWhereInput | MessageCategoryAnalysisWhereInput[]
+    id?: StringFilter<"MessageCategoryAnalysis"> | string
+    userId?: StringFilter<"MessageCategoryAnalysis"> | string
+    tenantId?: StringFilter<"MessageCategoryAnalysis"> | string
+    messageHash?: StringFilter<"MessageCategoryAnalysis"> | string
+    category?: StringFilter<"MessageCategoryAnalysis"> | string
+    confidence?: FloatFilter<"MessageCategoryAnalysis"> | number
+    sentiment?: StringFilter<"MessageCategoryAnalysis"> | string
+    isAggressive?: BoolFilter<"MessageCategoryAnalysis"> | boolean
+    userInput?: StringFilter<"MessageCategoryAnalysis"> | string
+    timestamp?: DateTimeFilter<"MessageCategoryAnalysis"> | Date | string
+    createdAt?: DateTimeFilter<"MessageCategoryAnalysis"> | Date | string
+  }
+
+  export type MessageCategoryAnalysisOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    messageHash?: SortOrder
+    category?: SortOrder
+    confidence?: SortOrder
+    sentiment?: SortOrder
+    isAggressive?: SortOrder
+    userInput?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageCategoryAnalysisWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_messageHash?: MessageCategoryAnalysisUserIdMessageHashCompoundUniqueInput
+    AND?: MessageCategoryAnalysisWhereInput | MessageCategoryAnalysisWhereInput[]
+    OR?: MessageCategoryAnalysisWhereInput[]
+    NOT?: MessageCategoryAnalysisWhereInput | MessageCategoryAnalysisWhereInput[]
+    userId?: StringFilter<"MessageCategoryAnalysis"> | string
+    tenantId?: StringFilter<"MessageCategoryAnalysis"> | string
+    messageHash?: StringFilter<"MessageCategoryAnalysis"> | string
+    category?: StringFilter<"MessageCategoryAnalysis"> | string
+    confidence?: FloatFilter<"MessageCategoryAnalysis"> | number
+    sentiment?: StringFilter<"MessageCategoryAnalysis"> | string
+    isAggressive?: BoolFilter<"MessageCategoryAnalysis"> | boolean
+    userInput?: StringFilter<"MessageCategoryAnalysis"> | string
+    timestamp?: DateTimeFilter<"MessageCategoryAnalysis"> | Date | string
+    createdAt?: DateTimeFilter<"MessageCategoryAnalysis"> | Date | string
+  }, "id" | "userId_messageHash">
+
+  export type MessageCategoryAnalysisOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    messageHash?: SortOrder
+    category?: SortOrder
+    confidence?: SortOrder
+    sentiment?: SortOrder
+    isAggressive?: SortOrder
+    userInput?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    _count?: MessageCategoryAnalysisCountOrderByAggregateInput
+    _avg?: MessageCategoryAnalysisAvgOrderByAggregateInput
+    _max?: MessageCategoryAnalysisMaxOrderByAggregateInput
+    _min?: MessageCategoryAnalysisMinOrderByAggregateInput
+    _sum?: MessageCategoryAnalysisSumOrderByAggregateInput
+  }
+
+  export type MessageCategoryAnalysisScalarWhereWithAggregatesInput = {
+    AND?: MessageCategoryAnalysisScalarWhereWithAggregatesInput | MessageCategoryAnalysisScalarWhereWithAggregatesInput[]
+    OR?: MessageCategoryAnalysisScalarWhereWithAggregatesInput[]
+    NOT?: MessageCategoryAnalysisScalarWhereWithAggregatesInput | MessageCategoryAnalysisScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MessageCategoryAnalysis"> | string
+    userId?: StringWithAggregatesFilter<"MessageCategoryAnalysis"> | string
+    tenantId?: StringWithAggregatesFilter<"MessageCategoryAnalysis"> | string
+    messageHash?: StringWithAggregatesFilter<"MessageCategoryAnalysis"> | string
+    category?: StringWithAggregatesFilter<"MessageCategoryAnalysis"> | string
+    confidence?: FloatWithAggregatesFilter<"MessageCategoryAnalysis"> | number
+    sentiment?: StringWithAggregatesFilter<"MessageCategoryAnalysis"> | string
+    isAggressive?: BoolWithAggregatesFilter<"MessageCategoryAnalysis"> | boolean
+    userInput?: StringWithAggregatesFilter<"MessageCategoryAnalysis"> | string
+    timestamp?: DateTimeWithAggregatesFilter<"MessageCategoryAnalysis"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"MessageCategoryAnalysis"> | Date | string
+  }
+
+  export type UserProfilingJobWhereInput = {
+    AND?: UserProfilingJobWhereInput | UserProfilingJobWhereInput[]
+    OR?: UserProfilingJobWhereInput[]
+    NOT?: UserProfilingJobWhereInput | UserProfilingJobWhereInput[]
+    id?: StringFilter<"UserProfilingJob"> | string
+    status?: StringFilter<"UserProfilingJob"> | string
+    targetDate?: DateTimeFilter<"UserProfilingJob"> | Date | string
+    tenantId?: StringNullableFilter<"UserProfilingJob"> | string | null
+    totalUsers?: IntFilter<"UserProfilingJob"> | number
+    processedUsers?: IntFilter<"UserProfilingJob"> | number
+    failedUsers?: IntFilter<"UserProfilingJob"> | number
+    startedAt?: DateTimeNullableFilter<"UserProfilingJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"UserProfilingJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"UserProfilingJob"> | string | null
+    createdAt?: DateTimeFilter<"UserProfilingJob"> | Date | string
+  }
+
+  export type UserProfilingJobOrderByWithRelationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    totalUsers?: SortOrder
+    processedUsers?: SortOrder
+    failedUsers?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserProfilingJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: UserProfilingJobWhereInput | UserProfilingJobWhereInput[]
+    OR?: UserProfilingJobWhereInput[]
+    NOT?: UserProfilingJobWhereInput | UserProfilingJobWhereInput[]
+    status?: StringFilter<"UserProfilingJob"> | string
+    targetDate?: DateTimeFilter<"UserProfilingJob"> | Date | string
+    tenantId?: StringNullableFilter<"UserProfilingJob"> | string | null
+    totalUsers?: IntFilter<"UserProfilingJob"> | number
+    processedUsers?: IntFilter<"UserProfilingJob"> | number
+    failedUsers?: IntFilter<"UserProfilingJob"> | number
+    startedAt?: DateTimeNullableFilter<"UserProfilingJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"UserProfilingJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"UserProfilingJob"> | string | null
+    createdAt?: DateTimeFilter<"UserProfilingJob"> | Date | string
+  }, "id">
+
+  export type UserProfilingJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    totalUsers?: SortOrder
+    processedUsers?: SortOrder
+    failedUsers?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: UserProfilingJobCountOrderByAggregateInput
+    _avg?: UserProfilingJobAvgOrderByAggregateInput
+    _max?: UserProfilingJobMaxOrderByAggregateInput
+    _min?: UserProfilingJobMinOrderByAggregateInput
+    _sum?: UserProfilingJobSumOrderByAggregateInput
+  }
+
+  export type UserProfilingJobScalarWhereWithAggregatesInput = {
+    AND?: UserProfilingJobScalarWhereWithAggregatesInput | UserProfilingJobScalarWhereWithAggregatesInput[]
+    OR?: UserProfilingJobScalarWhereWithAggregatesInput[]
+    NOT?: UserProfilingJobScalarWhereWithAggregatesInput | UserProfilingJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserProfilingJob"> | string
+    status?: StringWithAggregatesFilter<"UserProfilingJob"> | string
+    targetDate?: DateTimeWithAggregatesFilter<"UserProfilingJob"> | Date | string
+    tenantId?: StringNullableWithAggregatesFilter<"UserProfilingJob"> | string | null
+    totalUsers?: IntWithAggregatesFilter<"UserProfilingJob"> | number
+    processedUsers?: IntWithAggregatesFilter<"UserProfilingJob"> | number
+    failedUsers?: IntWithAggregatesFilter<"UserProfilingJob"> | number
+    startedAt?: DateTimeNullableWithAggregatesFilter<"UserProfilingJob"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"UserProfilingJob"> | Date | string | null
+    errorMessage?: StringNullableWithAggregatesFilter<"UserProfilingJob"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"UserProfilingJob"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -21433,6 +28206,8 @@ export namespace Prisma {
     failedItems?: number
     startedAt?: Date | string | null
     completedAt?: Date | string | null
+    errorMessage?: string | null
+    cancelRequested?: boolean
     createdAt?: Date | string
     results?: BatchAnalysisResultCreateNestedManyWithoutJobInput
   }
@@ -21449,6 +28224,8 @@ export namespace Prisma {
     failedItems?: number
     startedAt?: Date | string | null
     completedAt?: Date | string | null
+    errorMessage?: string | null
+    cancelRequested?: boolean
     createdAt?: Date | string
     results?: BatchAnalysisResultUncheckedCreateNestedManyWithoutJobInput
   }
@@ -21465,6 +28242,8 @@ export namespace Prisma {
     failedItems?: IntFieldUpdateOperationsInput | number
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     results?: BatchAnalysisResultUpdateManyWithoutJobNestedInput
   }
@@ -21481,6 +28260,8 @@ export namespace Prisma {
     failedItems?: IntFieldUpdateOperationsInput | number
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     results?: BatchAnalysisResultUncheckedUpdateManyWithoutJobNestedInput
   }
@@ -21497,6 +28278,8 @@ export namespace Prisma {
     failedItems?: number
     startedAt?: Date | string | null
     completedAt?: Date | string | null
+    errorMessage?: string | null
+    cancelRequested?: boolean
     createdAt?: Date | string
   }
 
@@ -21512,6 +28295,8 @@ export namespace Prisma {
     failedItems?: IntFieldUpdateOperationsInput | number
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21527,6 +28312,8 @@ export namespace Prisma {
     failedItems?: IntFieldUpdateOperationsInput | number
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21919,6 +28706,513 @@ export namespace Prisma {
     promptTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisJobCreateInput = {
+    id?: string
+    status?: string
+    tenantId?: string | null
+    periodDays?: number
+    topN?: number
+    totalQuestions?: number | null
+    clusterCount?: number | null
+    llmMergeApplied?: boolean
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    results?: FAQAnalysisResultCreateNestedManyWithoutJobInput
+  }
+
+  export type FAQAnalysisJobUncheckedCreateInput = {
+    id?: string
+    status?: string
+    tenantId?: string | null
+    periodDays?: number
+    topN?: number
+    totalQuestions?: number | null
+    clusterCount?: number | null
+    llmMergeApplied?: boolean
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    results?: FAQAnalysisResultUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type FAQAnalysisJobUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodDays?: IntFieldUpdateOperationsInput | number
+    topN?: IntFieldUpdateOperationsInput | number
+    totalQuestions?: NullableIntFieldUpdateOperationsInput | number | null
+    clusterCount?: NullableIntFieldUpdateOperationsInput | number | null
+    llmMergeApplied?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: FAQAnalysisResultUpdateManyWithoutJobNestedInput
+  }
+
+  export type FAQAnalysisJobUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodDays?: IntFieldUpdateOperationsInput | number
+    topN?: IntFieldUpdateOperationsInput | number
+    totalQuestions?: NullableIntFieldUpdateOperationsInput | number | null
+    clusterCount?: NullableIntFieldUpdateOperationsInput | number | null
+    llmMergeApplied?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: FAQAnalysisResultUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type FAQAnalysisJobCreateManyInput = {
+    id?: string
+    status?: string
+    tenantId?: string | null
+    periodDays?: number
+    topN?: number
+    totalQuestions?: number | null
+    clusterCount?: number | null
+    llmMergeApplied?: boolean
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisJobUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodDays?: IntFieldUpdateOperationsInput | number
+    topN?: IntFieldUpdateOperationsInput | number
+    totalQuestions?: NullableIntFieldUpdateOperationsInput | number | null
+    clusterCount?: NullableIntFieldUpdateOperationsInput | number | null
+    llmMergeApplied?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisJobUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodDays?: IntFieldUpdateOperationsInput | number
+    topN?: IntFieldUpdateOperationsInput | number
+    totalQuestions?: NullableIntFieldUpdateOperationsInput | number | null
+    clusterCount?: NullableIntFieldUpdateOperationsInput | number | null
+    llmMergeApplied?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisResultCreateInput = {
+    id?: string
+    rank: number
+    representativeQuestion: string
+    frequency: number
+    reasonAnalysis: string
+    isMerged?: boolean
+    questions: string
+    createdAt?: Date | string
+    job: FAQAnalysisJobCreateNestedOneWithoutResultsInput
+  }
+
+  export type FAQAnalysisResultUncheckedCreateInput = {
+    id?: string
+    jobId: string
+    rank: number
+    representativeQuestion: string
+    frequency: number
+    reasonAnalysis: string
+    isMerged?: boolean
+    questions: string
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisResultUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rank?: IntFieldUpdateOperationsInput | number
+    representativeQuestion?: StringFieldUpdateOperationsInput | string
+    frequency?: IntFieldUpdateOperationsInput | number
+    reasonAnalysis?: StringFieldUpdateOperationsInput | string
+    isMerged?: BoolFieldUpdateOperationsInput | boolean
+    questions?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: FAQAnalysisJobUpdateOneRequiredWithoutResultsNestedInput
+  }
+
+  export type FAQAnalysisResultUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    rank?: IntFieldUpdateOperationsInput | number
+    representativeQuestion?: StringFieldUpdateOperationsInput | string
+    frequency?: IntFieldUpdateOperationsInput | number
+    reasonAnalysis?: StringFieldUpdateOperationsInput | string
+    isMerged?: BoolFieldUpdateOperationsInput | boolean
+    questions?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisResultCreateManyInput = {
+    id?: string
+    jobId: string
+    rank: number
+    representativeQuestion: string
+    frequency: number
+    reasonAnalysis: string
+    isMerged?: boolean
+    questions: string
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisResultUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rank?: IntFieldUpdateOperationsInput | number
+    representativeQuestion?: StringFieldUpdateOperationsInput | string
+    frequency?: IntFieldUpdateOperationsInput | number
+    reasonAnalysis?: StringFieldUpdateOperationsInput | string
+    isMerged?: BoolFieldUpdateOperationsInput | boolean
+    questions?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisResultUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    rank?: IntFieldUpdateOperationsInput | number
+    representativeQuestion?: StringFieldUpdateOperationsInput | string
+    frequency?: IntFieldUpdateOperationsInput | number
+    reasonAnalysis?: StringFieldUpdateOperationsInput | string
+    isMerged?: BoolFieldUpdateOperationsInput | boolean
+    questions?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfileCreateInput = {
+    id?: string
+    userId: string
+    tenantId: string
+    frustrationRate?: number
+    aggressiveCount?: number
+    categoryDistribution?: string
+    behaviorSummary?: string | null
+    mainInterests?: string | null
+    painPoints?: string | null
+    totalMessages?: number
+    analyzedMessages?: number
+    lastAnalyzedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserProfileUncheckedCreateInput = {
+    id?: string
+    userId: string
+    tenantId: string
+    frustrationRate?: number
+    aggressiveCount?: number
+    categoryDistribution?: string
+    behaviorSummary?: string | null
+    mainInterests?: string | null
+    painPoints?: string | null
+    totalMessages?: number
+    analyzedMessages?: number
+    lastAnalyzedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserProfileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    frustrationRate?: FloatFieldUpdateOperationsInput | number
+    aggressiveCount?: IntFieldUpdateOperationsInput | number
+    categoryDistribution?: StringFieldUpdateOperationsInput | string
+    behaviorSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    mainInterests?: NullableStringFieldUpdateOperationsInput | string | null
+    painPoints?: NullableStringFieldUpdateOperationsInput | string | null
+    totalMessages?: IntFieldUpdateOperationsInput | number
+    analyzedMessages?: IntFieldUpdateOperationsInput | number
+    lastAnalyzedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    frustrationRate?: FloatFieldUpdateOperationsInput | number
+    aggressiveCount?: IntFieldUpdateOperationsInput | number
+    categoryDistribution?: StringFieldUpdateOperationsInput | string
+    behaviorSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    mainInterests?: NullableStringFieldUpdateOperationsInput | string | null
+    painPoints?: NullableStringFieldUpdateOperationsInput | string | null
+    totalMessages?: IntFieldUpdateOperationsInput | number
+    analyzedMessages?: IntFieldUpdateOperationsInput | number
+    lastAnalyzedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfileCreateManyInput = {
+    id?: string
+    userId: string
+    tenantId: string
+    frustrationRate?: number
+    aggressiveCount?: number
+    categoryDistribution?: string
+    behaviorSummary?: string | null
+    mainInterests?: string | null
+    painPoints?: string | null
+    totalMessages?: number
+    analyzedMessages?: number
+    lastAnalyzedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserProfileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    frustrationRate?: FloatFieldUpdateOperationsInput | number
+    aggressiveCount?: IntFieldUpdateOperationsInput | number
+    categoryDistribution?: StringFieldUpdateOperationsInput | string
+    behaviorSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    mainInterests?: NullableStringFieldUpdateOperationsInput | string | null
+    painPoints?: NullableStringFieldUpdateOperationsInput | string | null
+    totalMessages?: IntFieldUpdateOperationsInput | number
+    analyzedMessages?: IntFieldUpdateOperationsInput | number
+    lastAnalyzedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    frustrationRate?: FloatFieldUpdateOperationsInput | number
+    aggressiveCount?: IntFieldUpdateOperationsInput | number
+    categoryDistribution?: StringFieldUpdateOperationsInput | string
+    behaviorSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    mainInterests?: NullableStringFieldUpdateOperationsInput | string | null
+    painPoints?: NullableStringFieldUpdateOperationsInput | string | null
+    totalMessages?: IntFieldUpdateOperationsInput | number
+    analyzedMessages?: IntFieldUpdateOperationsInput | number
+    lastAnalyzedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCategoryAnalysisCreateInput = {
+    id?: string
+    userId: string
+    tenantId: string
+    messageHash: string
+    category: string
+    confidence?: number
+    sentiment?: string
+    isAggressive?: boolean
+    userInput: string
+    timestamp: Date | string
+    createdAt?: Date | string
+  }
+
+  export type MessageCategoryAnalysisUncheckedCreateInput = {
+    id?: string
+    userId: string
+    tenantId: string
+    messageHash: string
+    category: string
+    confidence?: number
+    sentiment?: string
+    isAggressive?: boolean
+    userInput: string
+    timestamp: Date | string
+    createdAt?: Date | string
+  }
+
+  export type MessageCategoryAnalysisUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    messageHash?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    confidence?: FloatFieldUpdateOperationsInput | number
+    sentiment?: StringFieldUpdateOperationsInput | string
+    isAggressive?: BoolFieldUpdateOperationsInput | boolean
+    userInput?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCategoryAnalysisUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    messageHash?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    confidence?: FloatFieldUpdateOperationsInput | number
+    sentiment?: StringFieldUpdateOperationsInput | string
+    isAggressive?: BoolFieldUpdateOperationsInput | boolean
+    userInput?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCategoryAnalysisCreateManyInput = {
+    id?: string
+    userId: string
+    tenantId: string
+    messageHash: string
+    category: string
+    confidence?: number
+    sentiment?: string
+    isAggressive?: boolean
+    userInput: string
+    timestamp: Date | string
+    createdAt?: Date | string
+  }
+
+  export type MessageCategoryAnalysisUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    messageHash?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    confidence?: FloatFieldUpdateOperationsInput | number
+    sentiment?: StringFieldUpdateOperationsInput | string
+    isAggressive?: BoolFieldUpdateOperationsInput | boolean
+    userInput?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCategoryAnalysisUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    messageHash?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    confidence?: FloatFieldUpdateOperationsInput | number
+    sentiment?: StringFieldUpdateOperationsInput | string
+    isAggressive?: BoolFieldUpdateOperationsInput | boolean
+    userInput?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfilingJobCreateInput = {
+    id?: string
+    status?: string
+    targetDate: Date | string
+    tenantId?: string | null
+    totalUsers?: number
+    processedUsers?: number
+    failedUsers?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type UserProfilingJobUncheckedCreateInput = {
+    id?: string
+    status?: string
+    targetDate: Date | string
+    tenantId?: string | null
+    totalUsers?: number
+    processedUsers?: number
+    failedUsers?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type UserProfilingJobUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalUsers?: IntFieldUpdateOperationsInput | number
+    processedUsers?: IntFieldUpdateOperationsInput | number
+    failedUsers?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfilingJobUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalUsers?: IntFieldUpdateOperationsInput | number
+    processedUsers?: IntFieldUpdateOperationsInput | number
+    failedUsers?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfilingJobCreateManyInput = {
+    id?: string
+    status?: string
+    targetDate: Date | string
+    tenantId?: string | null
+    totalUsers?: number
+    processedUsers?: number
+    failedUsers?: number
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type UserProfilingJobUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalUsers?: IntFieldUpdateOperationsInput | number
+    processedUsers?: IntFieldUpdateOperationsInput | number
+    failedUsers?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfilingJobUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalUsers?: IntFieldUpdateOperationsInput | number
+    processedUsers?: IntFieldUpdateOperationsInput | number
+    failedUsers?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -22535,6 +29829,8 @@ export namespace Prisma {
     failedItems?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
+    errorMessage?: SortOrder
+    cancelRequested?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22557,6 +29853,8 @@ export namespace Prisma {
     failedItems?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
+    errorMessage?: SortOrder
+    cancelRequested?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22572,6 +29870,8 @@ export namespace Prisma {
     failedItems?: SortOrder
     startedAt?: SortOrder
     completedAt?: SortOrder
+    errorMessage?: SortOrder
+    cancelRequested?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22843,6 +30143,327 @@ export namespace Prisma {
     hour?: SortOrder
     minute?: SortOrder
     sampleSize?: SortOrder
+  }
+
+  export type FAQAnalysisResultListRelationFilter = {
+    every?: FAQAnalysisResultWhereInput
+    some?: FAQAnalysisResultWhereInput
+    none?: FAQAnalysisResultWhereInput
+  }
+
+  export type FAQAnalysisResultOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FAQAnalysisJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    tenantId?: SortOrder
+    periodDays?: SortOrder
+    topN?: SortOrder
+    totalQuestions?: SortOrder
+    clusterCount?: SortOrder
+    llmMergeApplied?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FAQAnalysisJobAvgOrderByAggregateInput = {
+    periodDays?: SortOrder
+    topN?: SortOrder
+    totalQuestions?: SortOrder
+    clusterCount?: SortOrder
+  }
+
+  export type FAQAnalysisJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    tenantId?: SortOrder
+    periodDays?: SortOrder
+    topN?: SortOrder
+    totalQuestions?: SortOrder
+    clusterCount?: SortOrder
+    llmMergeApplied?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FAQAnalysisJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    tenantId?: SortOrder
+    periodDays?: SortOrder
+    topN?: SortOrder
+    totalQuestions?: SortOrder
+    clusterCount?: SortOrder
+    llmMergeApplied?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FAQAnalysisJobSumOrderByAggregateInput = {
+    periodDays?: SortOrder
+    topN?: SortOrder
+    totalQuestions?: SortOrder
+    clusterCount?: SortOrder
+  }
+
+  export type FAQAnalysisJobScalarRelationFilter = {
+    is?: FAQAnalysisJobWhereInput
+    isNot?: FAQAnalysisJobWhereInput
+  }
+
+  export type FAQAnalysisResultCountOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    rank?: SortOrder
+    representativeQuestion?: SortOrder
+    frequency?: SortOrder
+    reasonAnalysis?: SortOrder
+    isMerged?: SortOrder
+    questions?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FAQAnalysisResultAvgOrderByAggregateInput = {
+    rank?: SortOrder
+    frequency?: SortOrder
+  }
+
+  export type FAQAnalysisResultMaxOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    rank?: SortOrder
+    representativeQuestion?: SortOrder
+    frequency?: SortOrder
+    reasonAnalysis?: SortOrder
+    isMerged?: SortOrder
+    questions?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FAQAnalysisResultMinOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    rank?: SortOrder
+    representativeQuestion?: SortOrder
+    frequency?: SortOrder
+    reasonAnalysis?: SortOrder
+    isMerged?: SortOrder
+    questions?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FAQAnalysisResultSumOrderByAggregateInput = {
+    rank?: SortOrder
+    frequency?: SortOrder
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type UserProfileCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    frustrationRate?: SortOrder
+    aggressiveCount?: SortOrder
+    categoryDistribution?: SortOrder
+    behaviorSummary?: SortOrder
+    mainInterests?: SortOrder
+    painPoints?: SortOrder
+    totalMessages?: SortOrder
+    analyzedMessages?: SortOrder
+    lastAnalyzedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserProfileAvgOrderByAggregateInput = {
+    frustrationRate?: SortOrder
+    aggressiveCount?: SortOrder
+    totalMessages?: SortOrder
+    analyzedMessages?: SortOrder
+  }
+
+  export type UserProfileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    frustrationRate?: SortOrder
+    aggressiveCount?: SortOrder
+    categoryDistribution?: SortOrder
+    behaviorSummary?: SortOrder
+    mainInterests?: SortOrder
+    painPoints?: SortOrder
+    totalMessages?: SortOrder
+    analyzedMessages?: SortOrder
+    lastAnalyzedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserProfileMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    frustrationRate?: SortOrder
+    aggressiveCount?: SortOrder
+    categoryDistribution?: SortOrder
+    behaviorSummary?: SortOrder
+    mainInterests?: SortOrder
+    painPoints?: SortOrder
+    totalMessages?: SortOrder
+    analyzedMessages?: SortOrder
+    lastAnalyzedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserProfileSumOrderByAggregateInput = {
+    frustrationRate?: SortOrder
+    aggressiveCount?: SortOrder
+    totalMessages?: SortOrder
+    analyzedMessages?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type MessageCategoryAnalysisUserIdMessageHashCompoundUniqueInput = {
+    userId: string
+    messageHash: string
+  }
+
+  export type MessageCategoryAnalysisCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    messageHash?: SortOrder
+    category?: SortOrder
+    confidence?: SortOrder
+    sentiment?: SortOrder
+    isAggressive?: SortOrder
+    userInput?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageCategoryAnalysisAvgOrderByAggregateInput = {
+    confidence?: SortOrder
+  }
+
+  export type MessageCategoryAnalysisMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    messageHash?: SortOrder
+    category?: SortOrder
+    confidence?: SortOrder
+    sentiment?: SortOrder
+    isAggressive?: SortOrder
+    userInput?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageCategoryAnalysisMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    tenantId?: SortOrder
+    messageHash?: SortOrder
+    category?: SortOrder
+    confidence?: SortOrder
+    sentiment?: SortOrder
+    isAggressive?: SortOrder
+    userInput?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageCategoryAnalysisSumOrderByAggregateInput = {
+    confidence?: SortOrder
+  }
+
+  export type UserProfilingJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrder
+    totalUsers?: SortOrder
+    processedUsers?: SortOrder
+    failedUsers?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserProfilingJobAvgOrderByAggregateInput = {
+    totalUsers?: SortOrder
+    processedUsers?: SortOrder
+    failedUsers?: SortOrder
+  }
+
+  export type UserProfilingJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrder
+    totalUsers?: SortOrder
+    processedUsers?: SortOrder
+    failedUsers?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserProfilingJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    targetDate?: SortOrder
+    tenantId?: SortOrder
+    totalUsers?: SortOrder
+    processedUsers?: SortOrder
+    failedUsers?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserProfilingJobSumOrderByAggregateInput = {
+    totalUsers?: SortOrder
+    processedUsers?: SortOrder
+    failedUsers?: SortOrder
   }
 
   export type UserRoleCreateNestedManyWithoutUserInput = {
@@ -23507,6 +31128,70 @@ export namespace Prisma {
     update?: XOR<XOR<BatchAnalysisJobUpdateToOneWithWhereWithoutResultsInput, BatchAnalysisJobUpdateWithoutResultsInput>, BatchAnalysisJobUncheckedUpdateWithoutResultsInput>
   }
 
+  export type FAQAnalysisResultCreateNestedManyWithoutJobInput = {
+    create?: XOR<FAQAnalysisResultCreateWithoutJobInput, FAQAnalysisResultUncheckedCreateWithoutJobInput> | FAQAnalysisResultCreateWithoutJobInput[] | FAQAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: FAQAnalysisResultCreateOrConnectWithoutJobInput | FAQAnalysisResultCreateOrConnectWithoutJobInput[]
+    createMany?: FAQAnalysisResultCreateManyJobInputEnvelope
+    connect?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+  }
+
+  export type FAQAnalysisResultUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<FAQAnalysisResultCreateWithoutJobInput, FAQAnalysisResultUncheckedCreateWithoutJobInput> | FAQAnalysisResultCreateWithoutJobInput[] | FAQAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: FAQAnalysisResultCreateOrConnectWithoutJobInput | FAQAnalysisResultCreateOrConnectWithoutJobInput[]
+    createMany?: FAQAnalysisResultCreateManyJobInputEnvelope
+    connect?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+  }
+
+  export type FAQAnalysisResultUpdateManyWithoutJobNestedInput = {
+    create?: XOR<FAQAnalysisResultCreateWithoutJobInput, FAQAnalysisResultUncheckedCreateWithoutJobInput> | FAQAnalysisResultCreateWithoutJobInput[] | FAQAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: FAQAnalysisResultCreateOrConnectWithoutJobInput | FAQAnalysisResultCreateOrConnectWithoutJobInput[]
+    upsert?: FAQAnalysisResultUpsertWithWhereUniqueWithoutJobInput | FAQAnalysisResultUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: FAQAnalysisResultCreateManyJobInputEnvelope
+    set?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    disconnect?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    delete?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    connect?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    update?: FAQAnalysisResultUpdateWithWhereUniqueWithoutJobInput | FAQAnalysisResultUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: FAQAnalysisResultUpdateManyWithWhereWithoutJobInput | FAQAnalysisResultUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: FAQAnalysisResultScalarWhereInput | FAQAnalysisResultScalarWhereInput[]
+  }
+
+  export type FAQAnalysisResultUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<FAQAnalysisResultCreateWithoutJobInput, FAQAnalysisResultUncheckedCreateWithoutJobInput> | FAQAnalysisResultCreateWithoutJobInput[] | FAQAnalysisResultUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: FAQAnalysisResultCreateOrConnectWithoutJobInput | FAQAnalysisResultCreateOrConnectWithoutJobInput[]
+    upsert?: FAQAnalysisResultUpsertWithWhereUniqueWithoutJobInput | FAQAnalysisResultUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: FAQAnalysisResultCreateManyJobInputEnvelope
+    set?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    disconnect?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    delete?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    connect?: FAQAnalysisResultWhereUniqueInput | FAQAnalysisResultWhereUniqueInput[]
+    update?: FAQAnalysisResultUpdateWithWhereUniqueWithoutJobInput | FAQAnalysisResultUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: FAQAnalysisResultUpdateManyWithWhereWithoutJobInput | FAQAnalysisResultUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: FAQAnalysisResultScalarWhereInput | FAQAnalysisResultScalarWhereInput[]
+  }
+
+  export type FAQAnalysisJobCreateNestedOneWithoutResultsInput = {
+    create?: XOR<FAQAnalysisJobCreateWithoutResultsInput, FAQAnalysisJobUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: FAQAnalysisJobCreateOrConnectWithoutResultsInput
+    connect?: FAQAnalysisJobWhereUniqueInput
+  }
+
+  export type FAQAnalysisJobUpdateOneRequiredWithoutResultsNestedInput = {
+    create?: XOR<FAQAnalysisJobCreateWithoutResultsInput, FAQAnalysisJobUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: FAQAnalysisJobCreateOrConnectWithoutResultsInput
+    upsert?: FAQAnalysisJobUpsertWithoutResultsInput
+    connect?: FAQAnalysisJobWhereUniqueInput
+    update?: XOR<XOR<FAQAnalysisJobUpdateToOneWithWhereWithoutResultsInput, FAQAnalysisJobUpdateWithoutResultsInput>, FAQAnalysisJobUncheckedUpdateWithoutResultsInput>
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -23722,6 +31407,22 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type UserRoleCreateWithoutUserInput = {
@@ -25092,6 +32793,8 @@ export namespace Prisma {
     failedItems?: number
     startedAt?: Date | string | null
     completedAt?: Date | string | null
+    errorMessage?: string | null
+    cancelRequested?: boolean
     createdAt?: Date | string
   }
 
@@ -25107,6 +32810,8 @@ export namespace Prisma {
     failedItems?: number
     startedAt?: Date | string | null
     completedAt?: Date | string | null
+    errorMessage?: string | null
+    cancelRequested?: boolean
     createdAt?: Date | string
   }
 
@@ -25138,6 +32843,8 @@ export namespace Prisma {
     failedItems?: IntFieldUpdateOperationsInput | number
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25153,6 +32860,146 @@ export namespace Prisma {
     failedItems?: IntFieldUpdateOperationsInput | number
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelRequested?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisResultCreateWithoutJobInput = {
+    id?: string
+    rank: number
+    representativeQuestion: string
+    frequency: number
+    reasonAnalysis: string
+    isMerged?: boolean
+    questions: string
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisResultUncheckedCreateWithoutJobInput = {
+    id?: string
+    rank: number
+    representativeQuestion: string
+    frequency: number
+    reasonAnalysis: string
+    isMerged?: boolean
+    questions: string
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisResultCreateOrConnectWithoutJobInput = {
+    where: FAQAnalysisResultWhereUniqueInput
+    create: XOR<FAQAnalysisResultCreateWithoutJobInput, FAQAnalysisResultUncheckedCreateWithoutJobInput>
+  }
+
+  export type FAQAnalysisResultCreateManyJobInputEnvelope = {
+    data: FAQAnalysisResultCreateManyJobInput | FAQAnalysisResultCreateManyJobInput[]
+  }
+
+  export type FAQAnalysisResultUpsertWithWhereUniqueWithoutJobInput = {
+    where: FAQAnalysisResultWhereUniqueInput
+    update: XOR<FAQAnalysisResultUpdateWithoutJobInput, FAQAnalysisResultUncheckedUpdateWithoutJobInput>
+    create: XOR<FAQAnalysisResultCreateWithoutJobInput, FAQAnalysisResultUncheckedCreateWithoutJobInput>
+  }
+
+  export type FAQAnalysisResultUpdateWithWhereUniqueWithoutJobInput = {
+    where: FAQAnalysisResultWhereUniqueInput
+    data: XOR<FAQAnalysisResultUpdateWithoutJobInput, FAQAnalysisResultUncheckedUpdateWithoutJobInput>
+  }
+
+  export type FAQAnalysisResultUpdateManyWithWhereWithoutJobInput = {
+    where: FAQAnalysisResultScalarWhereInput
+    data: XOR<FAQAnalysisResultUpdateManyMutationInput, FAQAnalysisResultUncheckedUpdateManyWithoutJobInput>
+  }
+
+  export type FAQAnalysisResultScalarWhereInput = {
+    AND?: FAQAnalysisResultScalarWhereInput | FAQAnalysisResultScalarWhereInput[]
+    OR?: FAQAnalysisResultScalarWhereInput[]
+    NOT?: FAQAnalysisResultScalarWhereInput | FAQAnalysisResultScalarWhereInput[]
+    id?: StringFilter<"FAQAnalysisResult"> | string
+    jobId?: StringFilter<"FAQAnalysisResult"> | string
+    rank?: IntFilter<"FAQAnalysisResult"> | number
+    representativeQuestion?: StringFilter<"FAQAnalysisResult"> | string
+    frequency?: IntFilter<"FAQAnalysisResult"> | number
+    reasonAnalysis?: StringFilter<"FAQAnalysisResult"> | string
+    isMerged?: BoolFilter<"FAQAnalysisResult"> | boolean
+    questions?: StringFilter<"FAQAnalysisResult"> | string
+    createdAt?: DateTimeFilter<"FAQAnalysisResult"> | Date | string
+  }
+
+  export type FAQAnalysisJobCreateWithoutResultsInput = {
+    id?: string
+    status?: string
+    tenantId?: string | null
+    periodDays?: number
+    topN?: number
+    totalQuestions?: number | null
+    clusterCount?: number | null
+    llmMergeApplied?: boolean
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisJobUncheckedCreateWithoutResultsInput = {
+    id?: string
+    status?: string
+    tenantId?: string | null
+    periodDays?: number
+    topN?: number
+    totalQuestions?: number | null
+    clusterCount?: number | null
+    llmMergeApplied?: boolean
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisJobCreateOrConnectWithoutResultsInput = {
+    where: FAQAnalysisJobWhereUniqueInput
+    create: XOR<FAQAnalysisJobCreateWithoutResultsInput, FAQAnalysisJobUncheckedCreateWithoutResultsInput>
+  }
+
+  export type FAQAnalysisJobUpsertWithoutResultsInput = {
+    update: XOR<FAQAnalysisJobUpdateWithoutResultsInput, FAQAnalysisJobUncheckedUpdateWithoutResultsInput>
+    create: XOR<FAQAnalysisJobCreateWithoutResultsInput, FAQAnalysisJobUncheckedCreateWithoutResultsInput>
+    where?: FAQAnalysisJobWhereInput
+  }
+
+  export type FAQAnalysisJobUpdateToOneWithWhereWithoutResultsInput = {
+    where?: FAQAnalysisJobWhereInput
+    data: XOR<FAQAnalysisJobUpdateWithoutResultsInput, FAQAnalysisJobUncheckedUpdateWithoutResultsInput>
+  }
+
+  export type FAQAnalysisJobUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodDays?: IntFieldUpdateOperationsInput | number
+    topN?: IntFieldUpdateOperationsInput | number
+    totalQuestions?: NullableIntFieldUpdateOperationsInput | number | null
+    clusterCount?: NullableIntFieldUpdateOperationsInput | number | null
+    llmMergeApplied?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisJobUncheckedUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodDays?: IntFieldUpdateOperationsInput | number
+    topN?: IntFieldUpdateOperationsInput | number
+    totalQuestions?: NullableIntFieldUpdateOperationsInput | number | null
+    clusterCount?: NullableIntFieldUpdateOperationsInput | number | null
+    llmMergeApplied?: BoolFieldUpdateOperationsInput | boolean
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25591,6 +33438,50 @@ export namespace Prisma {
     avgScore?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisResultCreateManyJobInput = {
+    id?: string
+    rank: number
+    representativeQuestion: string
+    frequency: number
+    reasonAnalysis: string
+    isMerged?: boolean
+    questions: string
+    createdAt?: Date | string
+  }
+
+  export type FAQAnalysisResultUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rank?: IntFieldUpdateOperationsInput | number
+    representativeQuestion?: StringFieldUpdateOperationsInput | string
+    frequency?: IntFieldUpdateOperationsInput | number
+    reasonAnalysis?: StringFieldUpdateOperationsInput | string
+    isMerged?: BoolFieldUpdateOperationsInput | boolean
+    questions?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisResultUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rank?: IntFieldUpdateOperationsInput | number
+    representativeQuestion?: StringFieldUpdateOperationsInput | string
+    frequency?: IntFieldUpdateOperationsInput | number
+    reasonAnalysis?: StringFieldUpdateOperationsInput | string
+    isMerged?: BoolFieldUpdateOperationsInput | boolean
+    questions?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FAQAnalysisResultUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rank?: IntFieldUpdateOperationsInput | number
+    representativeQuestion?: StringFieldUpdateOperationsInput | string
+    frequency?: IntFieldUpdateOperationsInput | number
+    reasonAnalysis?: StringFieldUpdateOperationsInput | string
+    isMerged?: BoolFieldUpdateOperationsInput | boolean
+    questions?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
