@@ -525,6 +525,37 @@ export class BatchAnalysisService {
   }
 
   /**
+   * Cancel 요청 체크 및 처리
+   * @returns true if cancelled, false otherwise
+   */
+  private async checkAndHandleCancellation(jobId: string): Promise<boolean> {
+    const currentJob = await this.prisma.batchAnalysisJob.findUnique({
+      where: { id: jobId },
+      select: { cancelRequested: true, status: true },
+    });
+
+    // 이미 취소되었거나 완료된 경우
+    if (currentJob?.status === 'CANCELLED' || currentJob?.status === 'COMPLETED') {
+      return true;
+    }
+
+    if (currentJob?.cancelRequested) {
+      this.logger.log(`Job ${jobId} cancelled by user`);
+      await this.prisma.batchAnalysisJob.update({
+        where: { id: jobId },
+        data: {
+          status: 'CANCELLED',
+          cancelRequested: false,
+          completedAt: new Date(),
+        },
+      });
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Execute job asynchronously
    */
   private async executeJobAsync(jobId: string): Promise<void> {
@@ -587,29 +618,25 @@ export class BatchAnalysisService {
 
       for (let i = 0; i < samples.length; i += batchSize) {
         // 취소 요청 체크 (매 배치 시작 전)
-        const currentJob = await this.prisma.batchAnalysisJob.findUnique({
-          where: { id: jobId },
-          select: { cancelRequested: true },
-        });
-
-        if (currentJob?.cancelRequested) {
-          this.logger.log(`Job ${jobId} cancelled by user`);
-          await this.prisma.batchAnalysisJob.update({
-            where: { id: jobId },
-            data: {
-              status: 'CANCELLED',
-              cancelRequested: false,
-              completedAt: new Date(),
-            },
-          });
-          return; // 루프 종료
+        if (await this.checkAndHandleCancellation(jobId)) {
+          return;
         }
 
         const batch = samples.slice(i, i + batchSize);
         const results = await this.analyzeBatch(batch, job.promptTemplate);
 
+        // 배치 분석 완료 후 취소 요청 체크
+        if (await this.checkAndHandleCancellation(jobId)) {
+          return;
+        }
+
         // Save results
         for (const result of results) {
+          // 각 결과 저장 전 취소 요청 체크
+          if (await this.checkAndHandleCancellation(jobId)) {
+            return;
+          }
+
           try {
             // Parse analysis result to extract structured fields
             const parsed =

@@ -7,6 +7,7 @@ import {
   DataSourceConfig,
   ResolvedDataSourceConfig,
   DataSourceType,
+  ServiceDomain,
 } from './interfaces';
 
 /**
@@ -148,5 +149,92 @@ export class DataSourceConfigService implements OnModuleInit {
   reloadConfig(): void {
     this.loadConfig();
     this.logger.log('Data source configuration reloaded');
+  }
+
+  // ==================== 도메인 기반 조회 메서드 ====================
+
+  /**
+   * Get project IDs filtered by domain.
+   * @param domain The service domain to filter by
+   * @returns Array of project IDs belonging to the specified domain
+   */
+  getProjectIdsByDomain(domain: ServiceDomain): string[] {
+    if (!this.config) {
+      this.loadConfig();
+    }
+
+    const projects = this.config?.projects ?? {};
+    return Object.entries(projects)
+      .filter(([_, config]) => config.domain === domain)
+      .map(([projectId]) => projectId);
+  }
+
+  /**
+   * Get all configured project IDs.
+   * Alias for getConfiguredProjects() with clearer naming.
+   * @returns Array of all project IDs
+   */
+  getAllProjectIds(): string[] {
+    return this.getConfiguredProjects();
+  }
+
+  /**
+   * Get all available (unique) domains from configuration.
+   * @returns Array of unique ServiceDomain values
+   */
+  getAvailableDomains(): ServiceDomain[] {
+    if (!this.config) {
+      this.loadConfig();
+    }
+
+    const domains = new Set<ServiceDomain>();
+
+    // Add default domain if set
+    if (this.config?.default.domain) {
+      domains.add(this.config.default.domain);
+    }
+
+    // Add domains from projects
+    const projects = this.config?.projects ?? {};
+    for (const config of Object.values(projects)) {
+      if (config.domain) {
+        domains.add(config.domain);
+      }
+    }
+
+    return Array.from(domains);
+  }
+
+  /**
+   * Get the domain for a specific project.
+   * @param projectId The project ID to look up
+   * @returns The service domain, or undefined if not configured
+   */
+  getDomainForProject(projectId: string): ServiceDomain | undefined {
+    if (!this.config) {
+      this.loadConfig();
+    }
+
+    const projectConfig = this.config?.projects?.[projectId];
+    if (projectConfig?.domain) {
+      return projectConfig.domain;
+    }
+
+    // Fall back to default domain
+    return this.config?.default.domain;
+  }
+
+  /**
+   * Get raw configuration for a project (without environment variable resolution).
+   * Useful for accessing domain metadata.
+   * @param projectId The project ID
+   * @returns Raw DataSourceConfig or undefined
+   */
+  getRawConfigForProject(projectId: string): DataSourceConfig | undefined {
+    if (!this.config) {
+      this.loadConfig();
+    }
+
+    return this.config?.projects?.[projectId] ?? this.config?.default;
   }
 }

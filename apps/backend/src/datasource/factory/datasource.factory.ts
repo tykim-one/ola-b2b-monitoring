@@ -1,10 +1,29 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MetricsDataSource, ResolvedDataSourceConfig } from '../interfaces';
+import {
+  MetricsDataSource,
+  ResolvedDataSourceConfig,
+  ServiceDomain,
+} from '../interfaces';
 import {
   BigQueryMetricsDataSource,
   BigQueryMetricsConfig,
 } from '../implementations';
 import { DataSourceConfigService } from '../datasource.config';
+
+/**
+ * DataSource with project metadata.
+ */
+export interface DataSourceWithProject {
+  projectId: string;
+  ds: MetricsDataSource;
+}
+
+/**
+ * DataSource with project and domain metadata.
+ */
+export interface DataSourceWithDomain extends DataSourceWithProject {
+  domain: ServiceDomain | undefined;
+}
 
 /**
  * Factory for creating MetricsDataSource instances.
@@ -130,5 +149,83 @@ export class DataSourceFactory {
       this.instances.delete(cacheKey);
       this.logger.log(`Data source invalidated: ${cacheKey}`);
     }
+  }
+
+  // ==================== 도메인 기반 DataSource 조회 ====================
+
+  /**
+   * Get all DataSource instances for a specific domain.
+   * @param domain The service domain to filter by
+   * @returns Array of DataSource instances with their project IDs
+   */
+  async getDataSourcesByDomain(
+    domain: ServiceDomain,
+  ): Promise<DataSourceWithProject[]> {
+    const projectIds = this.configService.getProjectIdsByDomain(domain);
+
+    if (projectIds.length === 0) {
+      this.logger.debug(`No projects found for domain: ${domain}`);
+      return [];
+    }
+
+    const results = await Promise.all(
+      projectIds.map(async (projectId) => ({
+        projectId,
+        ds: await this.getDataSource(projectId),
+      })),
+    );
+
+    this.logger.debug(
+      `Retrieved ${results.length} data sources for domain: ${domain}`,
+    );
+
+    return results;
+  }
+
+  /**
+   * Get all DataSource instances across all projects.
+   * @returns Array of DataSource instances with project IDs and domains
+   */
+  async getAllDataSources(): Promise<DataSourceWithDomain[]> {
+    const projectIds = this.configService.getAllProjectIds();
+
+    if (projectIds.length === 0) {
+      this.logger.debug('No projects configured, using default data source');
+      const defaultDs = await this.getDefaultDataSource();
+      const defaultDomain = this.configService.getDomainForProject('default');
+      return [{ projectId: 'default', domain: defaultDomain, ds: defaultDs }];
+    }
+
+    const results = await Promise.all(
+      projectIds.map(async (projectId) => {
+        const domain = this.configService.getDomainForProject(projectId);
+        return {
+          projectId,
+          domain,
+          ds: await this.getDataSource(projectId),
+        };
+      }),
+    );
+
+    this.logger.debug(
+      `Retrieved ${results.length} data sources across all projects`,
+    );
+
+    return results;
+  }
+
+  /**
+   * Get list of available domains.
+   * Convenience method that delegates to configService.
+   */
+  getAvailableDomains(): ServiceDomain[] {
+    return this.configService.getAvailableDomains();
+  }
+
+  /**
+   * Expose config service for advanced use cases.
+   */
+  getConfigService(): DataSourceConfigService {
+    return this.configService;
   }
 }

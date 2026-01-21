@@ -624,3 +624,53 @@ export interface ChatbotSession {
   createdAt: string;
   lastActivity: string;
 }
+
+// ==================== 도메인 집계 타입 ====================
+
+/**
+ * Service domain types for grouping projects.
+ */
+export type ServiceDomain = 'chatbot' | 'report' | 'analytics';
+
+/**
+ * Project-level KPI with project identifier.
+ */
+export interface ProjectKPI {
+  projectId: string;
+  kpi: RealtimeKPI;
+}
+
+/**
+ * Domain-level aggregated KPI summary.
+ * Combines KPI data from all projects in a domain.
+ */
+export interface DomainSummaryKPI {
+  domain: ServiceDomain;
+  totalRequests: number;
+  successRate: number;
+  totalTokens: number;
+  avgTokens: number;
+  totalInputTokens: number;
+  totalOutputTokens: number;
+  projectCount: number;
+  activeTenants: number;
+  byProject: ProjectKPI[];
+}
+
+/**
+ * Global aggregated KPI summary.
+ * Combines KPI data from all projects across all domains.
+ */
+export interface GlobalSummaryKPI {
+  totalRequests: number;
+  successRate: number;
+  totalTokens: number;
+  avgTokens: number;
+  totalInputTokens: number;
+  totalOutputTokens: number;
+  projectCount: number;
+  activeTenants: number;
+  domainCount: number;
+  byProject: ProjectKPI[];
+  byDomain: Record<ServiceDomain, DomainSummaryKPI>;
+}
