@@ -14,6 +14,8 @@ import { BatchAnalysisModule } from './batch-analysis/batch-analysis.module';
 import { FAQAnalysisModule } from './faq-analysis/faq-analysis.module';
 import { SessionAnalysisModule } from './session-analysis/session-analysis.module';
 import { UserProfilingModule } from './user-profiling/user-profiling.module';
+import { WindETLModule } from './wind-etl/wind-etl.module';
+import { MinkabuETLModule } from './minkabu-etl/minkabu-etl.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { UserProfilingModule } from './user-profiling/user-profiling.module';
     FAQAnalysisModule,
     SessionAnalysisModule,
     UserProfilingModule,
+    WindETLModule,
+    MinkabuETLModule,
   ],
   controllers: [AppController],
   providers: [AppService],
