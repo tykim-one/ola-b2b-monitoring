@@ -124,9 +124,9 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
       WITH stats AS (
         SELECT
           COUNT(*) as total_runs,
-          COUNT(*) FILTER (WHERE status = 'SUCCESS') as success_count,
-          COUNT(*) FILTER (WHERE status = 'FAILED') as failure_count,
-          COUNT(*) FILTER (WHERE status = 'RUNNING') as running_count,
+          COUNT(*) FILTER (WHERE status = 'success') as success_count,
+          COUNT(*) FILTER (WHERE status = 'failed') as failure_count,
+          COUNT(*) FILTER (WHERE status = 'running') as running_count,
           AVG(duration_ms) FILTER (WHERE duration_ms IS NOT NULL) as avg_duration_ms,
           AVG(articles_fetched) as avg_articles_fetched,
           AVG(today_headlines) as avg_today_headlines
@@ -169,10 +169,10 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
       SELECT
         DATE(started_at)::text as period,
         COUNT(*) as "runCount",
-        COUNT(*) FILTER (WHERE status = 'SUCCESS') as "successCount",
-        COUNT(*) FILTER (WHERE status = 'FAILED') as "failureCount",
+        COUNT(*) FILTER (WHERE status = 'success') as "successCount",
+        COUNT(*) FILTER (WHERE status = 'failed') as "failureCount",
         CASE WHEN COUNT(*) > 0
-          THEN ROUND((COUNT(*) FILTER (WHERE status = 'SUCCESS')::numeric / COUNT(*)) * 100, 2)
+          THEN ROUND((COUNT(*) FILTER (WHERE status = 'success')::numeric / COUNT(*)) * 100, 2)
           ELSE 0
         END as "successRate",
         COALESCE(SUM(articles_fetched), 0) as "totalArticlesFetched",
@@ -195,10 +195,10 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
       SELECT
         TO_CHAR(DATE_TRUNC('hour', started_at), 'YYYY-MM-DD HH24:00') as period,
         COUNT(*) as "runCount",
-        COUNT(*) FILTER (WHERE status = 'SUCCESS') as "successCount",
-        COUNT(*) FILTER (WHERE status = 'FAILED') as "failureCount",
+        COUNT(*) FILTER (WHERE status = 'success') as "successCount",
+        COUNT(*) FILTER (WHERE status = 'failed') as "failureCount",
         CASE WHEN COUNT(*) > 0
-          THEN ROUND((COUNT(*) FILTER (WHERE status = 'SUCCESS')::numeric / COUNT(*)) * 100, 2)
+          THEN ROUND((COUNT(*) FILTER (WHERE status = 'success')::numeric / COUNT(*)) * 100, 2)
           ELSE 0
         END as "successRate",
         COALESCE(SUM(articles_fetched), 0) as "totalArticlesFetched",

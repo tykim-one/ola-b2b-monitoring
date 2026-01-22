@@ -23,6 +23,9 @@ NestJS 백엔드 애플리케이션의 소스 코드입니다. 모듈화된 구�
 - `chatbot/` - 글로벌 플로팅 AI 챗봇 모듈 (페이지 컨텍스트 기반 대화)
 - `faq-analysis/` - FAQ 분석 모듈 (자주 묻는 질문 클러스터링, LLM 사유 분석)
 - `session-analysis/` - 세션 분석 모듈 (해결률, 효율성, 이탈률 분석, 하이브리드 휴리스틱+LLM)
+- `minkabu-etl/` - Minkabu 뉴스 ETL 모니터링 모듈 (PostgreSQL 기반)
+- `wind-etl/` - Wind 금융 데이터 ETL 모니터링 모듈 (PostgreSQL 기반)
+- `user-profiling/` - 사용자 프로파일링 모듈 (카테고리 분류, 감정 분석, 행동 패턴)
 
 ## For AI Agents
 - NestJS 모듈 구조를 따름 (module, controller, service 패턴)

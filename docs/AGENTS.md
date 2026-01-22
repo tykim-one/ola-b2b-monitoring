@@ -29,6 +29,8 @@ OLA B2B Monitoring 프로젝트의 공식 문서 폴더입니다. 개발자, 기
 
 - `guides/` - 기능별 상세 사용 가이드 (see guides/AGENTS.md)
 - `plans/` - 기능 계획 및 설계 문서 (see plans/AGENTS.md)
+- `learning/` - 학습 자료 및 설계 패턴 문서
+- `wind/` - Wind ETL 관련 설계/구현 문서
 
 ## For AI Agents
 
