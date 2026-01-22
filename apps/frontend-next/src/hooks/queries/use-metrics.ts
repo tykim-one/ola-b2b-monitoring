@@ -20,11 +20,11 @@ export const metricsKeys = {
   all: ['metrics'] as const,
   realtime: (projectId: string) => [...metricsKeys.all, 'realtime', projectId] as const,
   hourly: (projectId: string) => [...metricsKeys.all, 'hourly', projectId] as const,
-  daily: (projectId: string) => [...metricsKeys.all, 'daily', projectId] as const,
+  daily: (projectId: string, days?: number) => [...metricsKeys.all, 'daily', projectId, { days }] as const,
   tenantUsage: (projectId: string, days?: number) =>
     [...metricsKeys.all, 'tenant-usage', projectId, { days }] as const,
-  costTrend: (projectId: string) => [...metricsKeys.all, 'cost-trend', projectId] as const,
-  heatmap: (projectId: string) => [...metricsKeys.all, 'heatmap', projectId] as const,
+  costTrend: (projectId: string, days?: number) => [...metricsKeys.all, 'cost-trend', projectId, { days }] as const,
+  heatmap: (projectId: string, days?: number) => [...metricsKeys.all, 'heatmap', projectId, { days }] as const,
   errors: (projectId: string) => [...metricsKeys.all, 'errors', projectId] as const,
   anomaly: (projectId: string) => [...metricsKeys.all, 'anomaly', projectId] as const,
 };
@@ -79,15 +79,17 @@ export function useHourlyTraffic(
 
 /**
  * 일별 트래픽 조회 (15분 캐시)
+ * @param days - 조회 기간 (기본: 30일)
  */
 export function useDailyTraffic(
   projectId: string,
+  days = 30,
   options?: Omit<UseQueryOptions<DailyTraffic[]>, 'queryKey' | 'queryFn'>
 ) {
   return useQuery({
-    queryKey: metricsKeys.daily(projectId),
+    queryKey: metricsKeys.daily(projectId, days),
     queryFn: () => fetchJson<DailyTraffic[]>(
-      `${API_BASE}/projects/${projectId}/api/metrics/daily`
+      `${API_BASE}/projects/${projectId}/api/metrics/daily?days=${days}`
     ),
     staleTime: CACHE_TIME.MEDIUM,
     ...options,
@@ -114,15 +116,17 @@ export function useTenantUsage(
 
 /**
  * 비용 트렌드 조회 (15분 캐시)
+ * @param days - 조회 기간 (기본: 30일)
  */
 export function useCostTrend(
   projectId: string,
+  days = 30,
   options?: Omit<UseQueryOptions<CostTrend[]>, 'queryKey' | 'queryFn'>
 ) {
   return useQuery({
-    queryKey: metricsKeys.costTrend(projectId),
+    queryKey: metricsKeys.costTrend(projectId, days),
     queryFn: () => fetchJson<CostTrend[]>(
-      `${API_BASE}/projects/${projectId}/api/analytics/cost-trend`
+      `${API_BASE}/projects/${projectId}/api/analytics/cost-trend?days=${days}`
     ),
     staleTime: CACHE_TIME.MEDIUM,
     ...options,
@@ -131,15 +135,17 @@ export function useCostTrend(
 
 /**
  * 사용량 히트맵 조회 (15분 캐시)
+ * @param days - 조회 기간 (기본: 30일)
  */
 export function useHeatmap(
   projectId: string,
+  days = 30,
   options?: Omit<UseQueryOptions<UsageHeatmapCell[]>, 'queryKey' | 'queryFn'>
 ) {
   return useQuery({
-    queryKey: metricsKeys.heatmap(projectId),
+    queryKey: metricsKeys.heatmap(projectId, days),
     queryFn: () => fetchJson<UsageHeatmapCell[]>(
-      `${API_BASE}/projects/${projectId}/api/analytics/heatmap`
+      `${API_BASE}/projects/${projectId}/api/analytics/heatmap?days=${days}`
     ),
     staleTime: CACHE_TIME.MEDIUM,
     ...options,

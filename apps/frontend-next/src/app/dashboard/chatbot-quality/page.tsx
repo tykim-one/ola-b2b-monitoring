@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, TrendingUp, CheckCircle2, Users } from 'lucide-react';
 import KPICard from '@/components/kpi/KPICard';
 import { Dashboard } from '@/components/compound/Dashboard';
 import { DataTable, Column } from '@/components/compound/DataTable';
+import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
 import {
   getEmergingPatterns,
   getSentimentAnalysis,
@@ -299,28 +301,30 @@ const tenantQualityColumns: Column<TenantQualitySummary>[] = [
 ];
 
 export default function ChatbotQualityPage() {
-  // Data fetching
+  const [dateRange, setDateRange] = useState<DateRange>({ startDate: '', endDate: '', days: 7 });
+
+  // Data fetching with dynamic days
   const emergingQuery = useQuery({
-    queryKey: ['chatbotQuality', 'emerging', PROJECT_ID],
-    queryFn: () => getEmergingPatterns(PROJECT_ID),
+    queryKey: ['chatbotQuality', 'emerging', PROJECT_ID, dateRange.days],
+    queryFn: () => getEmergingPatterns(PROJECT_ID, dateRange.days, dateRange.days * 4),
     staleTime: CACHE_TIME,
   });
 
   const sentimentQuery = useQuery({
-    queryKey: ['chatbotQuality', 'sentiment', PROJECT_ID],
-    queryFn: () => getSentimentAnalysis(PROJECT_ID),
+    queryKey: ['chatbotQuality', 'sentiment', PROJECT_ID, dateRange.days],
+    queryFn: () => getSentimentAnalysis(PROJECT_ID, dateRange.days),
     staleTime: CACHE_TIME,
   });
 
   const rephrasedQuery = useQuery({
-    queryKey: ['chatbotQuality', 'rephrased', PROJECT_ID],
-    queryFn: () => getRephrasedQueries(PROJECT_ID),
+    queryKey: ['chatbotQuality', 'rephrased', PROJECT_ID, dateRange.days],
+    queryFn: () => getRephrasedQueries(PROJECT_ID, dateRange.days),
     staleTime: CACHE_TIME,
   });
 
   const tenantQualityQuery = useQuery({
-    queryKey: ['chatbotQuality', 'tenantSummary', PROJECT_ID],
-    queryFn: () => getTenantQualitySummary(PROJECT_ID),
+    queryKey: ['chatbotQuality', 'tenantSummary', PROJECT_ID, dateRange.days],
+    queryFn: () => getTenantQualitySummary(PROJECT_ID, dateRange.days),
     staleTime: CACHE_TIME,
   });
 
@@ -363,7 +367,10 @@ export default function ChatbotQualityPage() {
       <Dashboard.Header
         title="챗봇 품질 분석"
         rightContent={
-          <span className="text-slate-400 text-sm">기간: 최근 7일</span>
+          <DateRangeFilter
+            defaultPreset="week"
+            onChange={(range) => setDateRange(range)}
+          />
         }
       />
 

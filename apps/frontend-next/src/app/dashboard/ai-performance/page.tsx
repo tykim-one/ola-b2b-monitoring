@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Brain, Zap, TrendingUp, AlertCircle } from 'lucide-react';
 import KPICard from '@/components/kpi/KPICard';
 import TokenScatterPlot from '@/components/charts/TokenScatterPlot';
+import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
 
 const API_BASE = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/projects/ibks/api`;
 
@@ -32,34 +33,70 @@ export default function AIPerformancePage() {
   const [anomalyStats, setAnomalyStats] = useState<AnomalyStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange>({ startDate: '', endDate: '', days: 7 });
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
-  const fetchData = async () => {
-    try {
-      const [efficiencyRes, anomalyRes] = await Promise.all([
-        fetch(`${API_BASE}/ai/token-efficiency`),
-        fetch(`${API_BASE}/ai/anomaly-stats`),
-      ]);
+  // AbortController를 사용한 요청 취소 관리
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-      if (!efficiencyRes.ok || !anomalyRes.ok) {
-        throw new Error('API 요청 실패');
-      }
+  // 15분마다 자동 새로고침을 위한 트리거
+  const [refreshKey, setRefreshKey] = useState(0);
 
-      const efficiencyData = await efficiencyRes.json();
-      const anomalyData = await anomalyRes.json();
-
-      setTokenEfficiency(efficiencyData.data || []);
-      setAnomalyStats(anomalyData.data || []);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // 날짜 범위 변경 또는 새로고침 시 데이터 재조회
   useEffect(() => {
+    // 이전 요청 취소
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [efficiencyRes, anomalyRes] = await Promise.all([
+          fetch(`${API_BASE}/ai/token-efficiency?days=${dateRange.days}`),
+          fetch(`${API_BASE}/ai/anomaly-stats?days=${dateRange.days}`),
+        ]);
+
+        if (!efficiencyRes.ok || !anomalyRes.ok) {
+          throw new Error('API 요청 실패');
+        }
+
+        const efficiencyData = await efficiencyRes.json();
+        const anomalyData = await anomalyRes.json();
+
+        // 요청이 취소되지 않았을 때만 상태 업데이트
+        if (!controller.signal.aborted) {
+          setTokenEfficiency(efficiencyData.data || []);
+          setAnomalyStats(anomalyData.data || []);
+          setError(null);
+          setLastRefresh(new Date());
+        }
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          setError(err instanceof Error ? err.message : 'Unknown error');
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
     fetchData();
-    const interval = setInterval(fetchData, 15 * 60 * 1000);
+
+    return () => {
+      controller.abort();
+    };
+  }, [dateRange.days, refreshKey]);
+
+  // 15분마다 자동 새로고침
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, 15 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -79,58 +116,67 @@ export default function AIPerformancePage() {
 
   const totalP99 = anomalyStats.reduce((max, s) => Math.max(max, s.p99_tokens || 0), 0);
 
-  if (loading) {
-    return (
-      <div className="p-8 flex items-center justify-center h-full">
-        <div className="text-slate-400">데이터 로딩 중...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-8">
-        <div className="bg-rose-900/20 border border-rose-800 rounded-lg p-4 text-rose-400">
-          오류: {error}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="p-8 h-full overflow-y-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-white">AI 성능 분석</h2>
-        <div className="text-slate-400 text-sm">
-          분석 기간: 최근 7일
+      {/* Header - 항상 렌더링하여 DateRangeFilter가 unmount되지 않도록 함 */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h2 className="text-3xl font-bold text-white">AI 성능 분석</h2>
+          <p className="text-slate-400 text-sm mt-1">
+            마지막 갱신: {lastRefresh.toLocaleTimeString('ko-KR')}
+          </p>
         </div>
+        <DateRangeFilter
+          defaultPreset="week"
+          onChange={(range) => setDateRange(range)}
+        />
       </div>
+
+      {/* 로딩 상태 */}
+      {loading && (
+        <div className="flex items-center justify-center py-20">
+          <div className="text-slate-400">데이터 로딩 중...</div>
+        </div>
+      )}
+
+      {/* 에러 상태 */}
+      {error && !loading && (
+        <div className="py-8">
+          <div className="bg-rose-900/20 border border-rose-800 rounded-lg p-4 text-rose-400">
+            오류: {error}
+          </div>
+        </div>
+      )}
+
+      {/* 정상 콘텐츠 */}
+      {!loading && !error && (
+        <>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <KPICard
-          title="평균 효율성 비율"
+          title={`평균 효율성 비율 (${dateRange.days === 1 ? '24h' : `${dateRange.days}일`})`}
           value={avgEfficiency.toFixed(3)}
           icon={<Brain className="w-5 h-5" />}
           status="neutral"
           subtitle="출력/입력 토큰 비율"
         />
         <KPICard
-          title="평균 토큰/요청"
+          title={`평균 토큰/요청 (${dateRange.days === 1 ? '24h' : `${dateRange.days}일`})`}
           value={Math.round(avgTokens)}
           format="number"
           icon={<Zap className="w-5 h-5" />}
           status="neutral"
         />
         <KPICard
-          title="응답 성공률"
+          title={`응답 성공률 (${dateRange.days === 1 ? '24h' : `${dateRange.days}일`})`}
           value={successRate}
           format="percentage"
           icon={<TrendingUp className="w-5 h-5" />}
           status={successRate >= 95 ? 'success' : successRate >= 90 ? 'warning' : 'error'}
         />
         <KPICard
-          title="P99 토큰"
+          title={`P99 토큰 (${dateRange.days === 1 ? '24h' : `${dateRange.days}일`})`}
           value={totalP99}
           format="tokens"
           icon={<AlertCircle className="w-5 h-5" />}
@@ -143,13 +189,15 @@ export default function AIPerformancePage() {
       <div className="mb-8">
         <TokenScatterPlot
           data={tokenEfficiency}
-          title="토큰 입출력 분포"
+          title={`토큰 입출력 분포 (${dateRange.days === 1 ? '24h' : `${dateRange.days}일`})`}
         />
       </div>
 
       {/* Anomaly Stats Table */}
       <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl mb-8">
-        <h3 className="text-lg font-semibold text-white mb-4">테넌트별 이상 탐지 통계</h3>
+        <h3 className="text-lg font-semibold text-white mb-4">
+          테넌트별 이상 탐지 통계 ({dateRange.days === 1 ? '24h' : `${dateRange.days}일`})
+        </h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -226,6 +274,8 @@ export default function AIPerformancePage() {
           </div>
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 }

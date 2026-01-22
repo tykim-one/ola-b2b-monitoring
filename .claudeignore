@@ -1,0 +1,7 @@
+# Environment files (secrets)
+.env
+.env.*
+*.env
+
+# Service account keys
+**/service-account*.json

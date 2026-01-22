@@ -92,14 +92,16 @@ export interface MetricsDataSource {
   /**
    * Get token efficiency metrics.
    * Returns input/output token ratios per request.
+   * @param days Number of days to look back (default: 7)
    */
-  getTokenEfficiency(): Promise<TokenEfficiency[]>;
+  getTokenEfficiency(days?: number): Promise<TokenEfficiency[]>;
 
   /**
    * Get anomaly detection statistics.
    * Returns statistical measures (mean, stddev, percentiles) for anomaly detection.
+   * @param days Number of days to look back (default: 30)
    */
-  getAnomalyStats(): Promise<AnomalyStats[]>;
+  getAnomalyStats(days?: number): Promise<AnomalyStats[]>;
 
   /**
    * Get daily cost trend data.
@@ -161,10 +163,12 @@ export interface MetricsDataSource {
   /**
    * Get frequently asked question patterns per user.
    * @param userId Optional user ID (x_enc_data) to filter
+   * @param days Number of days to look back (default: 7)
    * @param limit Maximum number of patterns to return (default: 100)
    */
   getUserQuestionPatterns(
     userId?: string,
+    days?: number,
     limit?: number,
   ): Promise<UserQuestionPattern[]>;
 

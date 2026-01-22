@@ -242,26 +242,38 @@ export class MetricsService implements OnModuleInit {
 
   /**
    * 토큰 효율성 분석 (캐시 TTL: 15분)
+   * @param days Number of days to look back (default: 7)
    */
-  async getTokenEfficiency(): Promise<TokenEfficiency[]> {
-    const cacheKey = CacheService.generateKey('metrics', 'token', 'efficiency');
+  async getTokenEfficiency(days: number = 7): Promise<TokenEfficiency[]> {
+    const cacheKey = CacheService.generateKey(
+      'metrics',
+      'token',
+      'efficiency',
+      `days_${days}`,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getTokenEfficiency(),
+      async () => this.metricsDataSource.getTokenEfficiency(days),
       CacheTTL.MEDIUM,
     );
   }
 
   /**
    * 이상 탐지용 통계 (캐시 TTL: 5분)
+   * @param days Number of days to look back (default: 30)
    */
-  async getAnomalyStats(): Promise<AnomalyStats[]> {
-    const cacheKey = CacheService.generateKey('metrics', 'anomaly', 'stats');
+  async getAnomalyStats(days: number = 30): Promise<AnomalyStats[]> {
+    const cacheKey = CacheService.generateKey(
+      'metrics',
+      'anomaly',
+      'stats',
+      `days_${days}`,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getAnomalyStats(),
+      async () => this.metricsDataSource.getAnomalyStats(days),
       CacheTTL.SHORT,
     );
   }
@@ -392,6 +404,7 @@ export class MetricsService implements OnModuleInit {
    */
   async getUserQuestionPatterns(
     userId?: string,
+    days: number = 7,
     limit: number = 1000,
   ): Promise<UserQuestionPattern[]> {
     const cacheKey = CacheService.generateKey(
@@ -399,12 +412,14 @@ export class MetricsService implements OnModuleInit {
       'question',
       'patterns',
       userId ?? 'all',
+      days,
       limit,
     );
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getUserQuestionPatterns(userId, limit),
+      async () =>
+        this.metricsDataSource.getUserQuestionPatterns(userId, days, limit),
       CacheTTL.MEDIUM,
     );
   }

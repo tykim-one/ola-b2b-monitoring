@@ -44,7 +44,7 @@ export class WindETLDataSource implements OnModuleDestroy {
 
     this.pool = new Pool(config);
 
-    this.pool.on('error', (err) => {
+    this.pool.on('error', (err: Error) => {
       this.logger.error(`Unexpected PostgreSQL error: ${err.message}`);
     });
 

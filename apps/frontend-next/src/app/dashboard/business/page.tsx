@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { DollarSign, TrendingUp, Users, BarChart3 } from 'lucide-react';
 import { useBusinessDashboard } from '@/hooks/queries/use-dashboard';
 import { Dashboard } from '@/components/compound/Dashboard';
@@ -8,6 +9,7 @@ import KPICard from '@/components/kpi/KPICard';
 import TenantPieChart from '@/components/charts/TenantPieChart';
 import CostTrendChart from '@/components/charts/CostTrendChart';
 import UsageHeatmap from '@/components/charts/UsageHeatmap';
+import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
 import type { TenantUsage } from '@ola/shared-types';
 
 // 현재 projectId - 추후 동적으로 변경 가능
@@ -61,6 +63,8 @@ const tenantColumns: Column<TenantUsage>[] = [
 ];
 
 export default function BusinessPage() {
+  const [dateRange, setDateRange] = useState<DateRange>({ startDate: '', endDate: '', days: 30 });
+
   const {
     tenantUsage,
     costTrend,
@@ -68,13 +72,18 @@ export default function BusinessPage() {
     kpis,
     isLoading,
     error,
-  } = useBusinessDashboard(PROJECT_ID);
+  } = useBusinessDashboard(PROJECT_ID, dateRange.days);
 
   return (
     <Dashboard isLoading={isLoading} error={error as Error | null}>
       <Dashboard.Header
         title="비즈니스 분석"
-        rightContent={<span className="text-slate-400 text-sm">기간: 최근 30일</span>}
+        rightContent={
+          <DateRangeFilter
+            defaultPreset="month"
+            onChange={(range) => setDateRange(range)}
+          />
+        }
       />
 
       <Dashboard.Skeleton />
@@ -130,7 +139,7 @@ export default function BusinessPage() {
         <div className="mb-8">
           <UsageHeatmap
             data={heatmap}
-            title="시간대별 사용량 히트맵 (최근 30일)"
+            title={`시간대별 사용량 히트맵 (최근 ${dateRange.days}일)`}
           />
         </div>
 

@@ -64,10 +64,12 @@ export async function fetchUserTokenUsage(
 export async function fetchUserQuestionPatterns(
   projectId: string,
   userId?: string,
+  days: number = 7,
   limit: number = 100
 ): Promise<UserQuestionPattern[]> {
   const params = new URLSearchParams();
   if (userId) params.append('userId', userId);
+  params.append('days', days.toString());
   params.append('limit', limit.toString());
 
   const response = await fetch(

@@ -228,19 +228,25 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     return this.executeQuery<ErrorAnalysis>(query, 100);
   }
 
-  async getTokenEfficiency(): Promise<TokenEfficiency[]> {
+  async getTokenEfficiency(days: number = 7): Promise<TokenEfficiency[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
     const query = MetricsQueries.tokenEfficiency(
       projectId,
       datasetId,
       tableName,
+      days,
     );
     return this.executeQuery<TokenEfficiency>(query, 1000);
   }
 
-  async getAnomalyStats(): Promise<AnomalyStats[]> {
+  async getAnomalyStats(days: number = 30): Promise<AnomalyStats[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.anomalyStats(projectId, datasetId, tableName);
+    const query = MetricsQueries.anomalyStats(
+      projectId,
+      datasetId,
+      tableName,
+      days,
+    );
     return this.executeQuery<AnomalyStats>(query, 100);
   }
 
@@ -350,6 +356,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   async getUserQuestionPatterns(
     userId?: string,
+    days: number = 7,
     limit: number = 1000,
   ): Promise<UserQuestionPattern[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
@@ -358,6 +365,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
       datasetId,
       tableName,
       userId ?? null,
+      days,
       limit,
     );
     const rows = await this.executeQuery<UserQuestionPattern>(query, limit);

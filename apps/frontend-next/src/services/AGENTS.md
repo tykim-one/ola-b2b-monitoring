@@ -58,6 +58,24 @@
   - `getUserProfile()` - 사용자 프로필 조회
   - `getCategoryDistribution()` - 카테고리 분포 조회
   - `getSentimentAnalysis()` - 감정 분석 결과 조회
+- `windEtlService.ts` - Wind ETL 모니터링 API (PostgreSQL ops.cn_wind_etl_runs)
+  - `windEtlApi.healthCheck()` - PostgreSQL 연결 상태 확인
+  - `windEtlApi.getRecentRuns()` - 최근 실행 목록 조회
+  - `windEtlApi.getSummary()` - 요약 통계 조회
+  - `windEtlApi.getDailyTrend()` - 일별 트렌드 조회
+  - `windEtlApi.getHourlyTrend()` - 시간별 트렌드 조회
+  - `windEtlApi.getErrorAnalysis()` - 에러 분석 조회
+  - `windEtlApi.getFileStats()` - 파일 처리 통계 조회
+  - `windEtlApi.getRecordStats()` - 레코드 처리 통계 조회
+- `minkabuEtlService.ts` - Minkabu ETL 모니터링 API (PostgreSQL ops.jp_minkabu_etl_runs)
+  - `minkabuEtlApi.healthCheck()` - PostgreSQL 연결 상태 확인
+  - `minkabuEtlApi.getRecentRuns()` - 최근 실행 목록 조회
+  - `minkabuEtlApi.getSummary()` - 요약 통계 조회
+  - `minkabuEtlApi.getDailyTrend()` - 일별 트렌드 조회
+  - `minkabuEtlApi.getHourlyTrend()` - 시간별 트렌드 조회
+  - `minkabuEtlApi.getErrorAnalysis()` - 에러 분석 조회
+  - `minkabuEtlApi.getHeadlineStats()` - 헤드라인 수집 통계 조회
+  - `minkabuEtlApi.getIndexStats()` - 인덱스 통계 조회
 
 ## For AI Agents
 - API 클라이언트는 이 디렉토리에 추가

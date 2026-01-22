@@ -117,11 +117,13 @@ export const MetricsQueries = {
 
   /**
    * 토큰 효율성 분석
+   * @param days Number of days to look back (default: 7)
    */
   tokenEfficiency: (
     projectId: string,
     datasetId: string,
     tableName: string,
+    days: number = 7,
   ) => `
     SELECT
       tenant_id,
@@ -135,7 +137,7 @@ export const MetricsQueries = {
       success,
       timestamp
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
       AND SAFE_CAST(total_tokens AS FLOAT64) > 0
     ORDER BY timestamp DESC
     LIMIT 1000
@@ -143,8 +145,14 @@ export const MetricsQueries = {
 
   /**
    * 이상 탐지용 통계 (평균, 표준편차)
+   * @param days Number of days to look back (default: 30)
    */
-  anomalyStats: (projectId: string, datasetId: string, tableName: string) => `
+  anomalyStats: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    days: number = 30,
+  ) => `
     SELECT
       tenant_id,
       AVG(CAST(total_tokens AS FLOAT64)) as avg_tokens,
@@ -154,7 +162,7 @@ export const MetricsQueries = {
       COUNT(*) as sample_count,
       APPROX_QUANTILES(CAST(CAST(total_tokens AS FLOAT64) AS INT64), 100)[OFFSET(99)] as p99_tokens
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
     GROUP BY tenant_id
   `,
 
@@ -363,6 +371,7 @@ export const MetricsQueries = {
     datasetId: string,
     tableName: string,
     userId: string | null = null,
+    days: number = 7,
     limit: number = 1000,
   ) => `
     SELECT
@@ -371,7 +380,7 @@ export const MetricsQueries = {
       COUNT(*) AS frequency,
       MAX(timestamp) AS lastAsked
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
       AND request_metadata.x_enc_data IS NOT NULL
       AND user_input IS NOT NULL
       AND LENGTH(user_input) > 5

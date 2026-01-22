@@ -69,11 +69,13 @@ export interface AIPerformanceDashboardData {
  * 비즈니스 대시보드 통합 훅
  * - 테넌트 사용량, 비용 트렌드, 히트맵 데이터 조회
  * - KPI 자동 계산
+ * @param projectId - 프로젝트 ID
+ * @param days - 조회 기간 (기본: 30일)
  */
-export function useBusinessDashboard(projectId: string): BusinessDashboardData {
-  const tenantUsageQuery = useTenantUsage(projectId, 30);
-  const costTrendQuery = useCostTrend(projectId);
-  const heatmapQuery = useHeatmap(projectId);
+export function useBusinessDashboard(projectId: string, days = 30): BusinessDashboardData {
+  const tenantUsageQuery = useTenantUsage(projectId, days);
+  const costTrendQuery = useCostTrend(projectId, days);
+  const heatmapQuery = useHeatmap(projectId, days);
 
   const isLoading =
     tenantUsageQuery.isLoading ||

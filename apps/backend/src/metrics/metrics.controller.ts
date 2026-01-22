@@ -237,10 +237,16 @@ export class MetricsController {
    * 토큰 효율성 분석
    */
   @ApiOperation({ summary: 'Get token efficiency analysis' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
   @ApiResponse({ status: 200, description: 'Token efficiency data returned' })
   @Get('ai/token-efficiency')
-  async getTokenEfficiency() {
-    const data = await this.metricsService.getTokenEfficiency();
+  async getTokenEfficiency(@Query('days') days?: string) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const data = await this.metricsService.getTokenEfficiency(daysNum);
     return {
       success: true,
       count: data.length,
@@ -255,10 +261,16 @@ export class MetricsController {
    * 이상 탐지용 통계
    */
   @ApiOperation({ summary: 'Get anomaly detection statistics' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
   @ApiResponse({ status: 200, description: 'Anomaly stats returned' })
   @Get('ai/anomaly-stats')
-  async getAnomalyStats() {
-    const data = await this.metricsService.getAnomalyStats();
+  async getAnomalyStats(@Query('days') days?: string) {
+    const daysNum = days ? parseInt(days, 10) : 30;
+    const data = await this.metricsService.getAnomalyStats(daysNum);
     return {
       success: true,
       count: data.length,
@@ -599,6 +611,11 @@ export class MetricsController {
     description: 'Filter by user ID (x_enc_data)',
   })
   @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
+  @ApiQuery({
     name: 'limit',
     required: false,
     description: 'Max patterns to return (default: 100)',
@@ -610,11 +627,14 @@ export class MetricsController {
   @Get('analytics/user-patterns')
   async getUserQuestionPatterns(
     @Query('userId') userId?: string,
+    @Query('days') days?: string,
     @Query('limit') limit?: string,
   ) {
+    const daysNum = days ? parseInt(days, 10) : 7;
     const limitNum = limit ? parseInt(limit, 10) : 100;
     const data = await this.metricsService.getUserQuestionPatterns(
       userId,
+      daysNum,
       limitNum,
     );
     return {
