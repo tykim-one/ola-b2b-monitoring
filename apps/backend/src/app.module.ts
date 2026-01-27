@@ -16,6 +16,7 @@ import { SessionAnalysisModule } from './session-analysis/session-analysis.modul
 import { UserProfilingModule } from './user-profiling/user-profiling.module';
 import { WindETLModule } from './wind-etl/wind-etl.module';
 import { MinkabuETLModule } from './minkabu-etl/minkabu-etl.module';
+import { ReportMonitoringModule } from './report-monitoring/report-monitoring.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { MinkabuETLModule } from './minkabu-etl/minkabu-etl.module';
     UserProfilingModule,
     WindETLModule,
     MinkabuETLModule,
+    ReportMonitoringModule,
   ],
   controllers: [AppController],
   providers: [AppService],
