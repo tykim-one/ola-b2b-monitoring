@@ -240,6 +240,16 @@ export interface MetricsDataSource {
    * @param days Number of days to look back (default: 30)
    */
   getResponseQualityMetrics(days?: number): Promise<ResponseQualityMetrics[]>;
+
+  // ==================== Raw Query Methods ====================
+
+  /**
+   * Execute a raw query against the data source.
+   * The query string may contain {{TABLE}} placeholder which will be replaced with the actual table reference.
+   * @param query The raw query string
+   * @returns Array of result rows
+   */
+  executeRawQuery<T = Record<string, unknown>>(query: string): Promise<T[]>;
 }
 
 /**

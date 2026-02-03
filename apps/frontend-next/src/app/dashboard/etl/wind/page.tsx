@@ -215,9 +215,8 @@ export default function WindETLMonitoringPage() {
         />
         <KPICard
           title="평균 소요시간"
-          value={summary?.avgDurationMs ? (summary.avgDurationMs / 1000).toFixed(2) : 0}
+          value={summary?.avgDurationMs ? (summary.avgDurationMs / 1000).toFixed(2) + '초' : '0초'}
           format="number"
-          suffix="초"
           icon={<Clock className="w-5 h-5" />}
           status="neutral"
         />

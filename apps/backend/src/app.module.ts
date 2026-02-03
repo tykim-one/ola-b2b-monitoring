@@ -17,6 +17,7 @@ import { UserProfilingModule } from './user-profiling/user-profiling.module';
 import { WindETLModule } from './wind-etl/wind-etl.module';
 import { MinkabuETLModule } from './minkabu-etl/minkabu-etl.module';
 import { ReportMonitoringModule } from './report-monitoring/report-monitoring.module';
+import { ProblematicChatModule } from './problematic-chat/problematic-chat.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ReportMonitoringModule } from './report-monitoring/report-monitoring.mo
     WindETLModule,
     MinkabuETLModule,
     ReportMonitoringModule,
+    ProblematicChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

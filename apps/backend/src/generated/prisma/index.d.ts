@@ -113,6 +113,11 @@ export type MessageCategoryAnalysis = $Result.DefaultSelection<Prisma.$MessageCa
  * 유저 프로필링 배치 작업
  */
 export type UserProfilingJob = $Result.DefaultSelection<Prisma.$UserProfilingJobPayload>
+/**
+ * Model ProblematicChatRule
+ * 문제 채팅 필터링 규칙
+ */
+export type ProblematicChatRule = $Result.DefaultSelection<Prisma.$ProblematicChatRulePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -430,6 +435,16 @@ export class PrismaClient<
     * ```
     */
   get userProfilingJob(): Prisma.UserProfilingJobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.problematicChatRule`: Exposes CRUD operations for the **ProblematicChatRule** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProblematicChatRules
+    * const problematicChatRules = await prisma.problematicChatRule.findMany()
+    * ```
+    */
+  get problematicChatRule(): Prisma.ProblematicChatRuleDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -883,7 +898,8 @@ export namespace Prisma {
     FAQAnalysisResult: 'FAQAnalysisResult',
     UserProfile: 'UserProfile',
     MessageCategoryAnalysis: 'MessageCategoryAnalysis',
-    UserProfilingJob: 'UserProfilingJob'
+    UserProfilingJob: 'UserProfilingJob',
+    ProblematicChatRule: 'ProblematicChatRule'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -899,7 +915,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate" | "batchSchedulerConfig" | "fAQAnalysisJob" | "fAQAnalysisResult" | "userProfile" | "messageCategoryAnalysis" | "userProfilingJob"
+      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate" | "batchSchedulerConfig" | "fAQAnalysisJob" | "fAQAnalysisResult" | "userProfile" | "messageCategoryAnalysis" | "userProfilingJob" | "problematicChatRule"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2383,6 +2399,80 @@ export namespace Prisma {
           }
         }
       }
+      ProblematicChatRule: {
+        payload: Prisma.$ProblematicChatRulePayload<ExtArgs>
+        fields: Prisma.ProblematicChatRuleFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProblematicChatRuleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProblematicChatRuleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>
+          }
+          findFirst: {
+            args: Prisma.ProblematicChatRuleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProblematicChatRuleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>
+          }
+          findMany: {
+            args: Prisma.ProblematicChatRuleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>[]
+          }
+          create: {
+            args: Prisma.ProblematicChatRuleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>
+          }
+          createMany: {
+            args: Prisma.ProblematicChatRuleCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProblematicChatRuleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>[]
+          }
+          delete: {
+            args: Prisma.ProblematicChatRuleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>
+          }
+          update: {
+            args: Prisma.ProblematicChatRuleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>
+          }
+          deleteMany: {
+            args: Prisma.ProblematicChatRuleDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProblematicChatRuleUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProblematicChatRuleUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>[]
+          }
+          upsert: {
+            args: Prisma.ProblematicChatRuleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProblematicChatRulePayload>
+          }
+          aggregate: {
+            args: Prisma.ProblematicChatRuleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProblematicChatRule>
+          }
+          groupBy: {
+            args: Prisma.ProblematicChatRuleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProblematicChatRuleGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProblematicChatRuleCountArgs<ExtArgs>
+            result: $Utils.Optional<ProblematicChatRuleCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2511,6 +2601,7 @@ export namespace Prisma {
     userProfile?: UserProfileOmit
     messageCategoryAnalysis?: MessageCategoryAnalysisOmit
     userProfilingJob?: UserProfilingJobOmit
+    problematicChatRule?: ProblematicChatRuleOmit
   }
 
   /* Types for Logging */
@@ -25480,6 +25571,1038 @@ export namespace Prisma {
 
 
   /**
+   * Model ProblematicChatRule
+   */
+
+  export type AggregateProblematicChatRule = {
+    _count: ProblematicChatRuleCountAggregateOutputType | null
+    _min: ProblematicChatRuleMinAggregateOutputType | null
+    _max: ProblematicChatRuleMaxAggregateOutputType | null
+  }
+
+  export type ProblematicChatRuleMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    isEnabled: boolean | null
+    type: string | null
+    config: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProblematicChatRuleMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    isEnabled: boolean | null
+    type: string | null
+    config: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProblematicChatRuleCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    isEnabled: number
+    type: number
+    config: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProblematicChatRuleMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isEnabled?: true
+    type?: true
+    config?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProblematicChatRuleMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isEnabled?: true
+    type?: true
+    config?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProblematicChatRuleCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isEnabled?: true
+    type?: true
+    config?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProblematicChatRuleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProblematicChatRule to aggregate.
+     */
+    where?: ProblematicChatRuleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProblematicChatRules to fetch.
+     */
+    orderBy?: ProblematicChatRuleOrderByWithRelationInput | ProblematicChatRuleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProblematicChatRuleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProblematicChatRules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProblematicChatRules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProblematicChatRules
+    **/
+    _count?: true | ProblematicChatRuleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProblematicChatRuleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProblematicChatRuleMaxAggregateInputType
+  }
+
+  export type GetProblematicChatRuleAggregateType<T extends ProblematicChatRuleAggregateArgs> = {
+        [P in keyof T & keyof AggregateProblematicChatRule]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProblematicChatRule[P]>
+      : GetScalarType<T[P], AggregateProblematicChatRule[P]>
+  }
+
+
+
+
+  export type ProblematicChatRuleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProblematicChatRuleWhereInput
+    orderBy?: ProblematicChatRuleOrderByWithAggregationInput | ProblematicChatRuleOrderByWithAggregationInput[]
+    by: ProblematicChatRuleScalarFieldEnum[] | ProblematicChatRuleScalarFieldEnum
+    having?: ProblematicChatRuleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProblematicChatRuleCountAggregateInputType | true
+    _min?: ProblematicChatRuleMinAggregateInputType
+    _max?: ProblematicChatRuleMaxAggregateInputType
+  }
+
+  export type ProblematicChatRuleGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    isEnabled: boolean
+    type: string
+    config: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ProblematicChatRuleCountAggregateOutputType | null
+    _min: ProblematicChatRuleMinAggregateOutputType | null
+    _max: ProblematicChatRuleMaxAggregateOutputType | null
+  }
+
+  type GetProblematicChatRuleGroupByPayload<T extends ProblematicChatRuleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProblematicChatRuleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProblematicChatRuleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProblematicChatRuleGroupByOutputType[P]>
+            : GetScalarType<T[P], ProblematicChatRuleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProblematicChatRuleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isEnabled?: boolean
+    type?: boolean
+    config?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["problematicChatRule"]>
+
+  export type ProblematicChatRuleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isEnabled?: boolean
+    type?: boolean
+    config?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["problematicChatRule"]>
+
+  export type ProblematicChatRuleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isEnabled?: boolean
+    type?: boolean
+    config?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["problematicChatRule"]>
+
+  export type ProblematicChatRuleSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isEnabled?: boolean
+    type?: boolean
+    config?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ProblematicChatRuleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "isEnabled" | "type" | "config" | "createdAt" | "updatedAt", ExtArgs["result"]["problematicChatRule"]>
+
+  export type $ProblematicChatRulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProblematicChatRule"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      isEnabled: boolean
+      type: string
+      config: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["problematicChatRule"]>
+    composites: {}
+  }
+
+  type ProblematicChatRuleGetPayload<S extends boolean | null | undefined | ProblematicChatRuleDefaultArgs> = $Result.GetResult<Prisma.$ProblematicChatRulePayload, S>
+
+  type ProblematicChatRuleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProblematicChatRuleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProblematicChatRuleCountAggregateInputType | true
+    }
+
+  export interface ProblematicChatRuleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProblematicChatRule'], meta: { name: 'ProblematicChatRule' } }
+    /**
+     * Find zero or one ProblematicChatRule that matches the filter.
+     * @param {ProblematicChatRuleFindUniqueArgs} args - Arguments to find a ProblematicChatRule
+     * @example
+     * // Get one ProblematicChatRule
+     * const problematicChatRule = await prisma.problematicChatRule.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProblematicChatRuleFindUniqueArgs>(args: SelectSubset<T, ProblematicChatRuleFindUniqueArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProblematicChatRule that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProblematicChatRuleFindUniqueOrThrowArgs} args - Arguments to find a ProblematicChatRule
+     * @example
+     * // Get one ProblematicChatRule
+     * const problematicChatRule = await prisma.problematicChatRule.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProblematicChatRuleFindUniqueOrThrowArgs>(args: SelectSubset<T, ProblematicChatRuleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProblematicChatRule that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProblematicChatRuleFindFirstArgs} args - Arguments to find a ProblematicChatRule
+     * @example
+     * // Get one ProblematicChatRule
+     * const problematicChatRule = await prisma.problematicChatRule.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProblematicChatRuleFindFirstArgs>(args?: SelectSubset<T, ProblematicChatRuleFindFirstArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProblematicChatRule that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProblematicChatRuleFindFirstOrThrowArgs} args - Arguments to find a ProblematicChatRule
+     * @example
+     * // Get one ProblematicChatRule
+     * const problematicChatRule = await prisma.problematicChatRule.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProblematicChatRuleFindFirstOrThrowArgs>(args?: SelectSubset<T, ProblematicChatRuleFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProblematicChatRules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProblematicChatRuleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProblematicChatRules
+     * const problematicChatRules = await prisma.problematicChatRule.findMany()
+     * 
+     * // Get first 10 ProblematicChatRules
+     * const problematicChatRules = await prisma.problematicChatRule.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const problematicChatRuleWithIdOnly = await prisma.problematicChatRule.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProblematicChatRuleFindManyArgs>(args?: SelectSubset<T, ProblematicChatRuleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProblematicChatRule.
+     * @param {ProblematicChatRuleCreateArgs} args - Arguments to create a ProblematicChatRule.
+     * @example
+     * // Create one ProblematicChatRule
+     * const ProblematicChatRule = await prisma.problematicChatRule.create({
+     *   data: {
+     *     // ... data to create a ProblematicChatRule
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProblematicChatRuleCreateArgs>(args: SelectSubset<T, ProblematicChatRuleCreateArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProblematicChatRules.
+     * @param {ProblematicChatRuleCreateManyArgs} args - Arguments to create many ProblematicChatRules.
+     * @example
+     * // Create many ProblematicChatRules
+     * const problematicChatRule = await prisma.problematicChatRule.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProblematicChatRuleCreateManyArgs>(args?: SelectSubset<T, ProblematicChatRuleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProblematicChatRules and returns the data saved in the database.
+     * @param {ProblematicChatRuleCreateManyAndReturnArgs} args - Arguments to create many ProblematicChatRules.
+     * @example
+     * // Create many ProblematicChatRules
+     * const problematicChatRule = await prisma.problematicChatRule.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProblematicChatRules and only return the `id`
+     * const problematicChatRuleWithIdOnly = await prisma.problematicChatRule.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProblematicChatRuleCreateManyAndReturnArgs>(args?: SelectSubset<T, ProblematicChatRuleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProblematicChatRule.
+     * @param {ProblematicChatRuleDeleteArgs} args - Arguments to delete one ProblematicChatRule.
+     * @example
+     * // Delete one ProblematicChatRule
+     * const ProblematicChatRule = await prisma.problematicChatRule.delete({
+     *   where: {
+     *     // ... filter to delete one ProblematicChatRule
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProblematicChatRuleDeleteArgs>(args: SelectSubset<T, ProblematicChatRuleDeleteArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProblematicChatRule.
+     * @param {ProblematicChatRuleUpdateArgs} args - Arguments to update one ProblematicChatRule.
+     * @example
+     * // Update one ProblematicChatRule
+     * const problematicChatRule = await prisma.problematicChatRule.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProblematicChatRuleUpdateArgs>(args: SelectSubset<T, ProblematicChatRuleUpdateArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProblematicChatRules.
+     * @param {ProblematicChatRuleDeleteManyArgs} args - Arguments to filter ProblematicChatRules to delete.
+     * @example
+     * // Delete a few ProblematicChatRules
+     * const { count } = await prisma.problematicChatRule.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProblematicChatRuleDeleteManyArgs>(args?: SelectSubset<T, ProblematicChatRuleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProblematicChatRules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProblematicChatRuleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProblematicChatRules
+     * const problematicChatRule = await prisma.problematicChatRule.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProblematicChatRuleUpdateManyArgs>(args: SelectSubset<T, ProblematicChatRuleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProblematicChatRules and returns the data updated in the database.
+     * @param {ProblematicChatRuleUpdateManyAndReturnArgs} args - Arguments to update many ProblematicChatRules.
+     * @example
+     * // Update many ProblematicChatRules
+     * const problematicChatRule = await prisma.problematicChatRule.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProblematicChatRules and only return the `id`
+     * const problematicChatRuleWithIdOnly = await prisma.problematicChatRule.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProblematicChatRuleUpdateManyAndReturnArgs>(args: SelectSubset<T, ProblematicChatRuleUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProblematicChatRule.
+     * @param {ProblematicChatRuleUpsertArgs} args - Arguments to update or create a ProblematicChatRule.
+     * @example
+     * // Update or create a ProblematicChatRule
+     * const problematicChatRule = await prisma.problematicChatRule.upsert({
+     *   create: {
+     *     // ... data to create a ProblematicChatRule
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProblematicChatRule we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProblematicChatRuleUpsertArgs>(args: SelectSubset<T, ProblematicChatRuleUpsertArgs<ExtArgs>>): Prisma__ProblematicChatRuleClient<$Result.GetResult<Prisma.$ProblematicChatRulePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProblematicChatRules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProblematicChatRuleCountArgs} args - Arguments to filter ProblematicChatRules to count.
+     * @example
+     * // Count the number of ProblematicChatRules
+     * const count = await prisma.problematicChatRule.count({
+     *   where: {
+     *     // ... the filter for the ProblematicChatRules we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProblematicChatRuleCountArgs>(
+      args?: Subset<T, ProblematicChatRuleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProblematicChatRuleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProblematicChatRule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProblematicChatRuleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProblematicChatRuleAggregateArgs>(args: Subset<T, ProblematicChatRuleAggregateArgs>): Prisma.PrismaPromise<GetProblematicChatRuleAggregateType<T>>
+
+    /**
+     * Group by ProblematicChatRule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProblematicChatRuleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProblematicChatRuleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProblematicChatRuleGroupByArgs['orderBy'] }
+        : { orderBy?: ProblematicChatRuleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProblematicChatRuleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProblematicChatRuleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProblematicChatRule model
+   */
+  readonly fields: ProblematicChatRuleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProblematicChatRule.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProblematicChatRuleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProblematicChatRule model
+   */
+  interface ProblematicChatRuleFieldRefs {
+    readonly id: FieldRef<"ProblematicChatRule", 'String'>
+    readonly name: FieldRef<"ProblematicChatRule", 'String'>
+    readonly description: FieldRef<"ProblematicChatRule", 'String'>
+    readonly isEnabled: FieldRef<"ProblematicChatRule", 'Boolean'>
+    readonly type: FieldRef<"ProblematicChatRule", 'String'>
+    readonly config: FieldRef<"ProblematicChatRule", 'String'>
+    readonly createdAt: FieldRef<"ProblematicChatRule", 'DateTime'>
+    readonly updatedAt: FieldRef<"ProblematicChatRule", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProblematicChatRule findUnique
+   */
+  export type ProblematicChatRuleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * Filter, which ProblematicChatRule to fetch.
+     */
+    where: ProblematicChatRuleWhereUniqueInput
+  }
+
+  /**
+   * ProblematicChatRule findUniqueOrThrow
+   */
+  export type ProblematicChatRuleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * Filter, which ProblematicChatRule to fetch.
+     */
+    where: ProblematicChatRuleWhereUniqueInput
+  }
+
+  /**
+   * ProblematicChatRule findFirst
+   */
+  export type ProblematicChatRuleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * Filter, which ProblematicChatRule to fetch.
+     */
+    where?: ProblematicChatRuleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProblematicChatRules to fetch.
+     */
+    orderBy?: ProblematicChatRuleOrderByWithRelationInput | ProblematicChatRuleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProblematicChatRules.
+     */
+    cursor?: ProblematicChatRuleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProblematicChatRules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProblematicChatRules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProblematicChatRules.
+     */
+    distinct?: ProblematicChatRuleScalarFieldEnum | ProblematicChatRuleScalarFieldEnum[]
+  }
+
+  /**
+   * ProblematicChatRule findFirstOrThrow
+   */
+  export type ProblematicChatRuleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * Filter, which ProblematicChatRule to fetch.
+     */
+    where?: ProblematicChatRuleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProblematicChatRules to fetch.
+     */
+    orderBy?: ProblematicChatRuleOrderByWithRelationInput | ProblematicChatRuleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProblematicChatRules.
+     */
+    cursor?: ProblematicChatRuleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProblematicChatRules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProblematicChatRules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProblematicChatRules.
+     */
+    distinct?: ProblematicChatRuleScalarFieldEnum | ProblematicChatRuleScalarFieldEnum[]
+  }
+
+  /**
+   * ProblematicChatRule findMany
+   */
+  export type ProblematicChatRuleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * Filter, which ProblematicChatRules to fetch.
+     */
+    where?: ProblematicChatRuleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProblematicChatRules to fetch.
+     */
+    orderBy?: ProblematicChatRuleOrderByWithRelationInput | ProblematicChatRuleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProblematicChatRules.
+     */
+    cursor?: ProblematicChatRuleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProblematicChatRules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProblematicChatRules.
+     */
+    skip?: number
+    distinct?: ProblematicChatRuleScalarFieldEnum | ProblematicChatRuleScalarFieldEnum[]
+  }
+
+  /**
+   * ProblematicChatRule create
+   */
+  export type ProblematicChatRuleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ProblematicChatRule.
+     */
+    data: XOR<ProblematicChatRuleCreateInput, ProblematicChatRuleUncheckedCreateInput>
+  }
+
+  /**
+   * ProblematicChatRule createMany
+   */
+  export type ProblematicChatRuleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProblematicChatRules.
+     */
+    data: ProblematicChatRuleCreateManyInput | ProblematicChatRuleCreateManyInput[]
+  }
+
+  /**
+   * ProblematicChatRule createManyAndReturn
+   */
+  export type ProblematicChatRuleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProblematicChatRules.
+     */
+    data: ProblematicChatRuleCreateManyInput | ProblematicChatRuleCreateManyInput[]
+  }
+
+  /**
+   * ProblematicChatRule update
+   */
+  export type ProblematicChatRuleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ProblematicChatRule.
+     */
+    data: XOR<ProblematicChatRuleUpdateInput, ProblematicChatRuleUncheckedUpdateInput>
+    /**
+     * Choose, which ProblematicChatRule to update.
+     */
+    where: ProblematicChatRuleWhereUniqueInput
+  }
+
+  /**
+   * ProblematicChatRule updateMany
+   */
+  export type ProblematicChatRuleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProblematicChatRules.
+     */
+    data: XOR<ProblematicChatRuleUpdateManyMutationInput, ProblematicChatRuleUncheckedUpdateManyInput>
+    /**
+     * Filter which ProblematicChatRules to update
+     */
+    where?: ProblematicChatRuleWhereInput
+    /**
+     * Limit how many ProblematicChatRules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProblematicChatRule updateManyAndReturn
+   */
+  export type ProblematicChatRuleUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * The data used to update ProblematicChatRules.
+     */
+    data: XOR<ProblematicChatRuleUpdateManyMutationInput, ProblematicChatRuleUncheckedUpdateManyInput>
+    /**
+     * Filter which ProblematicChatRules to update
+     */
+    where?: ProblematicChatRuleWhereInput
+    /**
+     * Limit how many ProblematicChatRules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProblematicChatRule upsert
+   */
+  export type ProblematicChatRuleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ProblematicChatRule to update in case it exists.
+     */
+    where: ProblematicChatRuleWhereUniqueInput
+    /**
+     * In case the ProblematicChatRule found by the `where` argument doesn't exist, create a new ProblematicChatRule with this data.
+     */
+    create: XOR<ProblematicChatRuleCreateInput, ProblematicChatRuleUncheckedCreateInput>
+    /**
+     * In case the ProblematicChatRule was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProblematicChatRuleUpdateInput, ProblematicChatRuleUncheckedUpdateInput>
+  }
+
+  /**
+   * ProblematicChatRule delete
+   */
+  export type ProblematicChatRuleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+    /**
+     * Filter which ProblematicChatRule to delete.
+     */
+    where: ProblematicChatRuleWhereUniqueInput
+  }
+
+  /**
+   * ProblematicChatRule deleteMany
+   */
+  export type ProblematicChatRuleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProblematicChatRules to delete
+     */
+    where?: ProblematicChatRuleWhereInput
+    /**
+     * Limit how many ProblematicChatRules to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProblematicChatRule without action
+   */
+  export type ProblematicChatRuleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProblematicChatRule
+     */
+    select?: ProblematicChatRuleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProblematicChatRule
+     */
+    omit?: ProblematicChatRuleOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -25797,6 +26920,20 @@ export namespace Prisma {
   };
 
   export type UserProfilingJobScalarFieldEnum = (typeof UserProfilingJobScalarFieldEnum)[keyof typeof UserProfilingJobScalarFieldEnum]
+
+
+  export const ProblematicChatRuleScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    isEnabled: 'isEnabled',
+    type: 'type',
+    config: 'config',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProblematicChatRuleScalarFieldEnum = (typeof ProblematicChatRuleScalarFieldEnum)[keyof typeof ProblematicChatRuleScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -27434,6 +28571,73 @@ export namespace Prisma {
     completedAt?: DateTimeNullableWithAggregatesFilter<"UserProfilingJob"> | Date | string | null
     errorMessage?: StringNullableWithAggregatesFilter<"UserProfilingJob"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"UserProfilingJob"> | Date | string
+  }
+
+  export type ProblematicChatRuleWhereInput = {
+    AND?: ProblematicChatRuleWhereInput | ProblematicChatRuleWhereInput[]
+    OR?: ProblematicChatRuleWhereInput[]
+    NOT?: ProblematicChatRuleWhereInput | ProblematicChatRuleWhereInput[]
+    id?: StringFilter<"ProblematicChatRule"> | string
+    name?: StringFilter<"ProblematicChatRule"> | string
+    description?: StringNullableFilter<"ProblematicChatRule"> | string | null
+    isEnabled?: BoolFilter<"ProblematicChatRule"> | boolean
+    type?: StringFilter<"ProblematicChatRule"> | string
+    config?: StringFilter<"ProblematicChatRule"> | string
+    createdAt?: DateTimeFilter<"ProblematicChatRule"> | Date | string
+    updatedAt?: DateTimeFilter<"ProblematicChatRule"> | Date | string
+  }
+
+  export type ProblematicChatRuleOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isEnabled?: SortOrder
+    type?: SortOrder
+    config?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProblematicChatRuleWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: ProblematicChatRuleWhereInput | ProblematicChatRuleWhereInput[]
+    OR?: ProblematicChatRuleWhereInput[]
+    NOT?: ProblematicChatRuleWhereInput | ProblematicChatRuleWhereInput[]
+    description?: StringNullableFilter<"ProblematicChatRule"> | string | null
+    isEnabled?: BoolFilter<"ProblematicChatRule"> | boolean
+    type?: StringFilter<"ProblematicChatRule"> | string
+    config?: StringFilter<"ProblematicChatRule"> | string
+    createdAt?: DateTimeFilter<"ProblematicChatRule"> | Date | string
+    updatedAt?: DateTimeFilter<"ProblematicChatRule"> | Date | string
+  }, "id" | "name">
+
+  export type ProblematicChatRuleOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isEnabled?: SortOrder
+    type?: SortOrder
+    config?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProblematicChatRuleCountOrderByAggregateInput
+    _max?: ProblematicChatRuleMaxOrderByAggregateInput
+    _min?: ProblematicChatRuleMinOrderByAggregateInput
+  }
+
+  export type ProblematicChatRuleScalarWhereWithAggregatesInput = {
+    AND?: ProblematicChatRuleScalarWhereWithAggregatesInput | ProblematicChatRuleScalarWhereWithAggregatesInput[]
+    OR?: ProblematicChatRuleScalarWhereWithAggregatesInput[]
+    NOT?: ProblematicChatRuleScalarWhereWithAggregatesInput | ProblematicChatRuleScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProblematicChatRule"> | string
+    name?: StringWithAggregatesFilter<"ProblematicChatRule"> | string
+    description?: StringNullableWithAggregatesFilter<"ProblematicChatRule"> | string | null
+    isEnabled?: BoolWithAggregatesFilter<"ProblematicChatRule"> | boolean
+    type?: StringWithAggregatesFilter<"ProblematicChatRule"> | string
+    config?: StringWithAggregatesFilter<"ProblematicChatRule"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ProblematicChatRule"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ProblematicChatRule"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -29215,6 +30419,83 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ProblematicChatRuleCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isEnabled?: boolean
+    type: string
+    config: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProblematicChatRuleUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isEnabled?: boolean
+    type: string
+    config: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProblematicChatRuleUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    type?: StringFieldUpdateOperationsInput | string
+    config?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProblematicChatRuleUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    type?: StringFieldUpdateOperationsInput | string
+    config?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProblematicChatRuleCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isEnabled?: boolean
+    type: string
+    config: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProblematicChatRuleUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    type?: StringFieldUpdateOperationsInput | string
+    config?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProblematicChatRuleUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    type?: StringFieldUpdateOperationsInput | string
+    config?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -30464,6 +31745,39 @@ export namespace Prisma {
     totalUsers?: SortOrder
     processedUsers?: SortOrder
     failedUsers?: SortOrder
+  }
+
+  export type ProblematicChatRuleCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isEnabled?: SortOrder
+    type?: SortOrder
+    config?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProblematicChatRuleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isEnabled?: SortOrder
+    type?: SortOrder
+    config?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProblematicChatRuleMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isEnabled?: SortOrder
+    type?: SortOrder
+    config?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserRoleCreateNestedManyWithoutUserInput = {

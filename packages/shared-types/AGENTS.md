@@ -65,3 +65,19 @@
 - **IssueFrequency** - 이슈 빈도 분석
 - **PromptTemplate** - 프롬프트 템플릿
 - **AnalysisSchedule** - 분석 스케줄
+
+### 도메인 집계 타입
+- **ServiceDomain** - 서비스 도메인 타입 ('chatbot' | 'report' | 'analytics')
+- **ProjectKPI** - 프로젝트별 KPI
+- **DomainSummaryKPI** - 도메인별 집계 KPI
+- **GlobalSummaryKPI** - 전체 글로벌 KPI
+
+### 문제 채팅 모니터링 타입
+- **ProblematicChatRuleType** - 규칙 타입 ('token_threshold' | 'keyword_match' | 'token_ratio')
+- **TokenOperator** - 토큰 비교 연산자 ('lt' | 'gt')
+- **KeywordMatchField** - 키워드 매칭 대상 ('llm_response' | 'user_input')
+- **ProblematicChatRuleConfig** - 규칙 설정 (threshold, operator, keywords, matchField, minRatio, maxRatio)
+- **ProblematicChatRule** - 규칙 엔티티
+- **ProblematicChat** - 문제 채팅 항목
+- **ProblematicChatFilter** - 필터 DTO
+- **ProblematicChatStats** - 통계 (규칙별, 테넌트별)

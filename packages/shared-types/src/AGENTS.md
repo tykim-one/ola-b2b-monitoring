@@ -34,4 +34,19 @@ ApiResponse, ApiErrorResponse, CacheStats
 
 // 설정 타입
 ChartConfig, DerivedMetrics
+
+// 어드민/인증 타입
+LoginRequest, LoginResponse, UserInfo, TokenPayload, User, Role, Permission
+SavedFilter, FilterCriteria, AnalysisSession, AnalysisMessage
+
+// 글로벌 챗봇 타입
+ChatbotRequest, ChatbotMessage, ChatbotResponse, ChatbotSession
+
+// 도메인 집계 타입
+ServiceDomain, ProjectKPI, DomainSummaryKPI, GlobalSummaryKPI
+
+// 문제 채팅 모니터링 타입
+ProblematicChatRuleType, TokenOperator, KeywordMatchField
+ProblematicChatRuleConfig, ProblematicChatRule
+ProblematicChat, ProblematicChatFilter, ProblematicChatStats
 ```

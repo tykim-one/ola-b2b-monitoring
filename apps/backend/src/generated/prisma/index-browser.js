@@ -366,6 +366,17 @@ exports.Prisma.UserProfilingJobScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ProblematicChatRuleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  isEnabled: 'isEnabled',
+  type: 'type',
+  config: 'config',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -397,7 +408,8 @@ exports.Prisma.ModelName = {
   FAQAnalysisResult: 'FAQAnalysisResult',
   UserProfile: 'UserProfile',
   MessageCategoryAnalysis: 'MessageCategoryAnalysis',
-  UserProfilingJob: 'UserProfilingJob'
+  UserProfilingJob: 'UserProfilingJob',
+  ProblematicChatRule: 'ProblematicChatRule'
 };
 
 /**

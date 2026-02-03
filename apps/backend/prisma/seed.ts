@@ -308,6 +308,42 @@ async function main() {
     console.log(`⏭️ Default batch schedule already exists: "${defaultSchedule.name}"`);
   }
 
+  // 6. 문제 채팅 필터링 규칙 생성
+  console.log('Creating problematic chat rules...');
+  const problematicRules = [
+    {
+      name: 'Output 토큰 부족',
+      description: 'Output 토큰이 1500 미만인 응답',
+      type: 'token_threshold',
+      config: JSON.stringify({ threshold: 1500, operator: 'lt' }),
+      isEnabled: true,
+    },
+    {
+      name: '데이터 없음 응답',
+      description: 'LLM이 데이터 부재를 언급하는 응답',
+      type: 'keyword_match',
+      config: JSON.stringify({
+        keywords: ['질문의 범위가', '죄송합니다', '데이터', '없습니다', '존재하지 않습니다'],
+        matchField: 'llm_response',
+      }),
+      isEnabled: true,
+    },
+  ];
+
+  for (const rule of problematicRules) {
+    const existing = await prisma.problematicChatRule.findUnique({
+      where: { name: rule.name },
+    });
+
+    if (!existing) {
+      await prisma.problematicChatRule.create({ data: rule });
+      console.log(`  ✅ Created rule: "${rule.name}"`);
+    } else {
+      console.log(`  ⏭️ Rule already exists: "${rule.name}"`);
+    }
+  }
+  console.log(`✅ Processed ${problematicRules.length} problematic chat rules`);
+
   console.log('🎉 Seeding completed!');
 }
 

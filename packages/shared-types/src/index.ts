@@ -199,6 +199,10 @@ export interface QueryResponseCorrelation {
   output_tokens: number;
   efficiency_ratio: number;
   timestamp: string;
+  /** 사용자 입력 텍스트 (상세 분석용) */
+  user_input?: string;
+  /** LLM 응답 텍스트 (상세 분석용) */
+  llm_response?: string;
 }
 
 /** 반복 질문 패턴 */
@@ -673,4 +677,102 @@ export interface GlobalSummaryKPI {
   domainCount: number;
   byProject: ProjectKPI[];
   byDomain: Record<ServiceDomain, DomainSummaryKPI>;
+}
+
+// ==================== 문제 채팅 모니터링 타입 ====================
+
+/** 문제 채팅 필터링 규칙 타입 */
+export type ProblematicChatRuleType = 'token_threshold' | 'keyword_match' | 'token_ratio';
+
+/** 토큰 임계값 비교 연산자 */
+export type TokenOperator = 'lt' | 'gt';
+
+/** 키워드 매칭 대상 필드 */
+export type KeywordMatchField = 'llm_response' | 'user_input';
+
+/** 문제 채팅 필터링 규칙 설정 */
+export interface ProblematicChatRuleConfig {
+  threshold?: number;           // token_threshold용: 토큰 임계값
+  operator?: TokenOperator;     // token_threshold용: lt(미만), gt(초과)
+  keywords?: string[];          // keyword_match용: 검색할 키워드 목록
+  matchField?: KeywordMatchField; // keyword_match용: 검색 대상 필드
+  minRatio?: number;            // token_ratio용: 최소 비율 (미만이면 문제)
+  maxRatio?: number;            // token_ratio용: 최대 비율 (초과면 문제)
+}
+
+/** 문제 채팅 필터링 규칙 */
+export interface ProblematicChatRule {
+  id: string;
+  name: string;
+  description?: string;
+  isEnabled: boolean;
+  type: ProblematicChatRuleType;
+  config: ProblematicChatRuleConfig;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** 문제 채팅 규칙 생성 요청 */
+export interface CreateProblematicChatRuleRequest {
+  name: string;
+  description?: string;
+  isEnabled?: boolean;
+  type: ProblematicChatRuleType;
+  config: ProblematicChatRuleConfig;
+}
+
+/** 문제 채팅 규칙 수정 요청 */
+export interface UpdateProblematicChatRuleRequest {
+  name?: string;
+  description?: string;
+  isEnabled?: boolean;
+  type?: ProblematicChatRuleType;
+  config?: ProblematicChatRuleConfig;
+}
+
+/** 문제 채팅 항목 */
+export interface ProblematicChat {
+  id: string;
+  timestamp: string;
+  userId: string;
+  tenantId: string;
+  userInput: string;
+  llmResponse: string;
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  success: boolean;
+  matchedRules: string[];  // 매칭된 규칙 ID 또는 이름 목록
+  sessionId?: string;
+}
+
+/** 문제 채팅 필터 DTO */
+export interface ProblematicChatFilter {
+  days: number;
+  ruleIds?: string[];      // 특정 규칙만 필터
+  userId?: string;
+  tenantId?: string;
+  limit?: number;
+  offset?: number;
+}
+
+/** 규칙별 문제 채팅 통계 */
+export interface ProblematicChatRuleStats {
+  ruleId: string;
+  ruleName: string;
+  count: number;
+  percentage: number;
+}
+
+/** 테넌트별 문제 채팅 통계 */
+export interface ProblematicChatTenantStats {
+  tenantId: string;
+  count: number;
+}
+
+/** 문제 채팅 전체 통계 */
+export interface ProblematicChatStats {
+  totalCount: number;
+  byRule: ProblematicChatRuleStats[];
+  byTenant: ProblematicChatTenantStats[];
 }

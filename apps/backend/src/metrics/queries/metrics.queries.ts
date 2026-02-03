@@ -243,6 +243,7 @@ export const MetricsQueries = {
 
   /**
    * 질문-응답 길이 상관관계 분석
+   * - user_input, llm_response: 상세 분석용 (각 최대 2000자)
    */
   queryResponseCorrelation: (
     projectId: string,
@@ -259,7 +260,9 @@ export const MetricsQueries = {
         SAFE_CAST(output_tokens AS FLOAT64) / NULLIF(SAFE_CAST(input_tokens AS FLOAT64), 0),
         3
       ) as efficiency_ratio,
-      timestamp
+      timestamp,
+      SUBSTR(user_input, 1, 2000) as user_input,
+      SUBSTR(llm_response, 1, 2000) as llm_response
     FROM \`${projectId}.${datasetId}.${tableName}\`
     WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
       AND user_input IS NOT NULL

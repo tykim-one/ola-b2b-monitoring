@@ -417,3 +417,19 @@ model UserProfilingJob {
   @@index([status])
   @@index([targetDate])
 }
+
+// ==================== 문제 채팅 모니터링 테이블 ====================
+
+/// 문제 채팅 필터링 규칙
+model ProblematicChatRule {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  isEnabled   Boolean  @default(true)
+  type        String   // 'token_threshold' | 'keyword_match'
+  config      String   // JSON string: { threshold?, operator?, keywords?, matchField? }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isEnabled])
+}

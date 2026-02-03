@@ -502,6 +502,21 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     }));
   }
 
+  // ==================== Raw Query Methods ====================
+
+  /**
+   * Execute a raw query against BigQuery.
+   * Replaces {{TABLE}} placeholder with the actual table reference.
+   * @param query The raw query string
+   * @returns Array of result rows
+   */
+  async executeRawQuery<T = Record<string, unknown>>(query: string): Promise<T[]> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    const tableReference = `${projectId}.${datasetId}.${tableName}`;
+    const processedQuery = query.replace(/\{\{TABLE\}\}/g, tableReference);
+    return this.executeQuery<T>(processedQuery, 1000);
+  }
+
   // ==================== Helper Methods ====================
 
   /**

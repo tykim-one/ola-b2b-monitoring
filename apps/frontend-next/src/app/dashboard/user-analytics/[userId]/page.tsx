@@ -21,7 +21,7 @@ const PROJECT_ID = 'ibks';
 export default function UserDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const userId = decodeURIComponent(params.userId as string);
+  const userId = params?.userId ? decodeURIComponent(params.userId as string) : '';
 
   const [profile, setProfile] = useState<UserProfileSummary | null>(null);
   const [userInfo, setUserInfo] = useState<UserListItem | null>(null);
@@ -194,6 +194,7 @@ export default function UserDetailPage() {
       {/* 대화 내역 모달 */}
       {isDialogOpen && userInfo && (
         <UserActivityDialog
+          isOpen={isDialogOpen}
           userId={userId}
           userInfo={userInfo}
           projectId={PROJECT_ID}
@@ -204,10 +205,11 @@ export default function UserDetailPage() {
       {/* userInfo가 없을 때 기본 모달 */}
       {isDialogOpen && !userInfo && (
         <UserActivityDialog
+          isOpen={isDialogOpen}
           userId={userId}
           userInfo={{
             userId,
-            questionCount: profile.totalMessages,
+            questionCount: profile?.totalMessages || 0,
             successCount: 0,
             errorCount: 0,
             successRate: 0,

@@ -316,7 +316,9 @@ export default function SessionAnalysisTab() {
                           </span>
                         )}
                         {session.hasFrustration && (
-                          <AlertTriangle className="w-4 h-4 text-amber-400" title="Frustration detected" />
+                          <span title="Frustration detected">
+                            <AlertTriangle className="w-4 h-4 text-amber-400" />
+                          </span>
                         )}
                       </div>
                     </td>
