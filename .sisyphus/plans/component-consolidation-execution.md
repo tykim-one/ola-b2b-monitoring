@@ -17,9 +17,9 @@
 
 | Phase | 상태 | 설명 |
 |-------|------|------|
-| Phase 1 | ⬜ 대기 | 공통 컴포넌트 확장 (StatusBadge, Modal, EmptyState, KPICard) |
-| Phase 2 | ⬜ 대기 | 로그 테이블 3중 복사 통합 |
-| Phase 3 | ⬜ 대기 | batch-analysis 3개 탭 표준화 |
+| Phase 1 | ✅ 완료 | 공통 컴포넌트 확장 (StatusBadge, Modal, EmptyState, KPICard) |
+| Phase 2 | ✅ 완료 | 로그 테이블 3중 복사 통합 |
+| Phase 3 | ✅ 완료 | batch-analysis 3개 탭 표준화 |
 | Phase 4 | ⬜ 대기 | 자체 모달 → Modal 컴포넌트 교체 |
 | Phase 5 | ⬜ 대기 | 인라인 EmptyState 10곳 교체 |
 | Phase 6 | ⬜ 대기 | 인라인 StatusBadge 6곳 교체 |

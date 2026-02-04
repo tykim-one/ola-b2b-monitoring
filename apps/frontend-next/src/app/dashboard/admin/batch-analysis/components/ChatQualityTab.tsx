@@ -27,7 +27,18 @@ import {
   JobStatistics,
 } from '@/services/batchAnalysisService';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import KPICard from '@/components/kpi/KPICard';
+import { StatusBadge, BadgeVariant } from '@/components/ui/StatusBadge';
+import { DataTable, Column } from '@/components/compound/DataTable';
 import CreateJobModal from './CreateJobModal';
+
+const statusVariantMap: Record<string, BadgeVariant> = {
+  PENDING: 'warning',
+  RUNNING: 'info',
+  COMPLETED: 'success',
+  FAILED: 'error',
+  CANCELLED: 'neutral',
+};
 
 export default function ChatQualityTab() {
   const router = useRouter();
@@ -42,6 +53,8 @@ export default function ChatQualityTab() {
   const [runningJobId, setRunningJobId] = useState<string | null>(null);
   const [expandedJobId, setExpandedJobId] = useState<string | null>(null);
   const [cancellingJobId, setCancellingJobId] = useState<string | null>(null);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [jobToCancel, setJobToCancel] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -82,17 +95,23 @@ export default function ChatQualityTab() {
     }
   };
 
-  const handleCancelJob = async (jobId: string) => {
-    if (!confirm('정말 이 작업을 정지하시겠습니까?')) return;
+  const handleCancelClick = (jobId: string) => {
+    setJobToCancel(jobId);
+    setIsCancelDialogOpen(true);
+  };
 
+  const handleCancelConfirm = async () => {
+    if (!jobToCancel) return;
     try {
-      setCancellingJobId(jobId);
-      await batchAnalysisApi.cancelJob(jobId);
+      setCancellingJobId(jobToCancel);
+      setIsCancelDialogOpen(false);
+      await batchAnalysisApi.cancelJob(jobToCancel);
       await fetchData();
     } catch (err: any) {
       alert(err.message || 'Failed to cancel job');
     } finally {
       setCancellingJobId(null);
+      setJobToCancel(null);
     }
   };
 
@@ -139,23 +158,6 @@ export default function ChatQualityTab() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'text-yellow-400 bg-yellow-950/30 border-yellow-500/30';
-      case 'RUNNING':
-        return 'text-cyan-400 bg-cyan-50 border-cyan-500/30';
-      case 'COMPLETED':
-        return 'text-green-400 bg-green-50 border-green-500/30';
-      case 'FAILED':
-        return 'text-red-400 bg-red-50 border-red-500/30';
-      case 'CANCELLED':
-        return 'text-orange-400 bg-orange-950/30 border-orange-500/30';
-      default:
-        return 'text-gray-500 bg-gray-50/30 border-gray-200';
-    }
-  };
-
   if (loading && jobs.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -198,43 +200,11 @@ export default function ChatQualityTab() {
       {/* Statistics */}
       {stats && (
         <div className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="p-4 border border-gray-200 bg-gray-50">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="w-4 h-4 text-cyan-400" />
-              <p className="text-gray-400 text-xs uppercase">Total Jobs</p>
-            </div>
-            <p className="text-cyan-400 text-2xl font-bold">{stats.jobs.total}</p>
-          </div>
-          <div className="p-4 border border-gray-200 bg-gray-50">
-            <div className="flex items-center gap-2 mb-2">
-              <RefreshCw className="w-4 h-4 text-yellow-400" />
-              <p className="text-gray-400 text-xs uppercase">Running</p>
-            </div>
-            <p className="text-yellow-400 text-2xl font-bold">{stats.jobs.running}</p>
-          </div>
-          <div className="p-4 border border-gray-200 bg-gray-50">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-4 h-4 text-green-400" />
-              <p className="text-gray-400 text-xs uppercase">Completed</p>
-            </div>
-            <p className="text-green-400 text-2xl font-bold">{stats.jobs.completed}</p>
-          </div>
-          <div className="p-4 border border-gray-200 bg-gray-50">
-            <div className="flex items-center gap-2 mb-2">
-              <XCircle className="w-4 h-4 text-red-400" />
-              <p className="text-gray-400 text-xs uppercase">Failed</p>
-            </div>
-            <p className="text-red-400 text-2xl font-bold">{stats.jobs.failed}</p>
-          </div>
-          <div className="p-4 border border-gray-200 bg-gray-50">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-              <p className="text-gray-400 text-xs uppercase">Results</p>
-            </div>
-            <p className="text-emerald-400 text-2xl font-bold">
-              {stats.results.success}/{stats.results.total}
-            </p>
-          </div>
+          <KPICard title="Total Jobs" value={stats.jobs.total} format="number" icon={<BarChart3 className="w-5 h-5" />} />
+          <KPICard title="Running" value={stats.jobs.running} format="number" status="warning" icon={<RefreshCw className="w-5 h-5" />} />
+          <KPICard title="Completed" value={stats.jobs.completed} format="number" status="success" icon={<CheckCircle className="w-5 h-5" />} />
+          <KPICard title="Failed" value={stats.jobs.failed} format="number" status="error" icon={<XCircle className="w-5 h-5" />} />
+          <KPICard title="Results" value={`${stats.results.success}/${stats.results.total}`} icon={<CheckCircle className="w-5 h-5" />} />
         </div>
       )}
 
@@ -289,10 +259,11 @@ export default function ChatQualityTab() {
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className={`inline-flex items-center gap-2 px-2 py-1 border ${getStatusColor(job.status)}`}>
-                            {getStatusIcon(job.status)}
-                            <span className="text-xs uppercase">{job.status}</span>
-                          </div>
+                          <StatusBadge
+                            label={job.status}
+                            variant={statusVariantMap[job.status] || 'neutral'}
+                            icon={getStatusIcon(job.status)}
+                          />
                           {job.status === 'FAILED' && job.errorMessage && (
                             expandedJobId === job.id ? (
                               <ChevronUp className="w-4 h-4 text-red-400" />
@@ -393,7 +364,7 @@ export default function ChatQualityTab() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleCancelJob(job.id);
+                                handleCancelClick(job.id);
                               }}
                               disabled={cancellingJobId === job.id}
                               className="p-2 bg-red-800/30 hover:bg-red-600/30 border border-red-500/30 text-red-400 transition-all disabled:opacity-50"
@@ -489,6 +460,17 @@ export default function ChatQualityTab() {
         confirmText="Delete"
         variant="danger"
         isLoading={isDeleting}
+      />
+
+      {/* Cancel Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isCancelDialogOpen}
+        onClose={() => setIsCancelDialogOpen(false)}
+        onConfirm={handleCancelConfirm}
+        title="Stop Job"
+        message="정말 이 작업을 정지하시겠습니까?"
+        confirmText="Stop"
+        variant="warning"
       />
     </div>
   );

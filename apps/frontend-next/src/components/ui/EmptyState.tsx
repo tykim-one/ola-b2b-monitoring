@@ -14,7 +14,7 @@ export interface EmptyStateProps {
   searchQuery?: string;
   searchMessage?: string;
   action?: EmptyStateAction;
-  variant?: 'dashed' | 'solid';
+  variant?: 'dashed' | 'solid' | 'compact';
   className?: string;
 }
 
@@ -28,9 +28,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   variant = 'dashed',
   className = '',
 }) => {
-  const baseClasses = variant === 'dashed'
-    ? 'border border-dashed border-gray-200 bg-gray-50 text-center p-12'
-    : 'bg-white border border-gray-200 rounded-xl text-center p-12';
+  const isCompact = variant === 'compact';
+  const baseClasses = {
+    dashed: 'border border-dashed border-gray-200 bg-gray-50 text-center p-12',
+    solid: 'bg-white border border-gray-200 rounded-xl text-center p-12',
+    compact: 'text-center py-8 px-4',
+  }[variant];
 
   const combinedClasses = `${baseClasses} ${className}`.trim();
 
@@ -48,12 +51,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         <div className="mx-auto mb-4">{icon}</div>
       )}
       {title && (
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
+        <h3 className={`${isCompact ? 'text-base' : 'text-xl'} font-semibold text-gray-900 mb-2`}>{title}</h3>
       )}
       {action ? (
-        <p className="text-gray-500 mb-6">{description}</p>
+        <p className={`text-gray-500 mb-6 ${isCompact ? 'text-xs' : ''}`}>{description}</p>
       ) : (
-        <p className="text-gray-400 text-sm">{description}</p>
+        <p className={`text-gray-400 ${isCompact ? 'text-xs' : 'text-sm'}`}>{description}</p>
       )}
       {action && (
         <button

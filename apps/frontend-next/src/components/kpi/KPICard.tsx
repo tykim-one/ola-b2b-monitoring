@@ -14,6 +14,8 @@ export interface KPICardProps {
   status?: 'success' | 'warning' | 'error' | 'neutral';
   icon?: React.ReactNode;
   format?: 'number' | 'percentage' | 'currency' | 'tokens';
+  size?: 'default' | 'compact';
+  iconPosition?: 'right' | 'left';
 }
 
 const formatValue = (value: string | number, format?: string): string => {
@@ -69,15 +71,24 @@ const KPICard: React.FC<KPICardProps> = ({
   status,
   icon,
   format,
+  size = 'default',
+  iconPosition = 'right',
 }) => {
+  const sizeConfig = {
+    default: { padding: 'p-5', valueSize: 'text-3xl', titleSize: 'text-sm' },
+    compact: { padding: 'p-3', valueSize: 'text-xl', titleSize: 'text-xs' },
+  };
+  const cfg = sizeConfig[size];
+
   return (
-    <div className="bg-white border border-gray-200 p-5 rounded-2xl shadow-sm hover:border-gray-300 transition-colors">
+    <div className={`bg-white border border-gray-200 ${cfg.padding} rounded-2xl shadow-sm hover:border-gray-300 transition-colors`}>
       <div className="flex items-center justify-between mb-1">
-        <div className="text-gray-500 text-sm font-medium">{title}</div>
-        {icon && <div className="text-gray-400">{icon}</div>}
+        {iconPosition === 'left' && icon && <div className="text-gray-400">{icon}</div>}
+        <div className={`text-gray-500 ${cfg.titleSize} font-medium`}>{title}</div>
+        {iconPosition === 'right' && icon && <div className="text-gray-400">{icon}</div>}
       </div>
 
-      <div className={`text-3xl font-bold ${getStatusColor(status)}`}>
+      <div className={`${cfg.valueSize} font-bold ${getStatusColor(status)}`}>
         {formatValue(value, format)}
       </div>
 

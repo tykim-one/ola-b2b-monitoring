@@ -8,7 +8,8 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  maxWidth?: string;
 }
 
 export default function Modal({
@@ -17,6 +18,7 @@ export default function Modal({
   title,
   children,
   size = 'md',
+  maxWidth,
 }: ModalProps) {
   if (!isOpen) return null;
 
@@ -25,6 +27,7 @@ export default function Modal({
     md: 'max-w-2xl',
     lg: 'max-w-4xl',
     xl: 'max-w-6xl',
+    full: 'max-w-[95vw]',
   };
 
   return (
@@ -38,7 +41,7 @@ export default function Modal({
       {/* Modal */}
       <div
         className={`
-          relative z-10 w-full ${sizeClasses[size]}
+          relative z-10 w-full ${maxWidth || sizeClasses[size]}
           bg-white border border-gray-200 rounded-2xl
           shadow-xl
           max-h-[90vh] flex flex-col

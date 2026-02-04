@@ -394,6 +394,7 @@ export default function ChatbotQualityPage() {
         </Dashboard.KPISection>
 
         {/* Emerging Patterns Table */}
+        <>
         <Dashboard.TableSection title="신규 질문 패턴 (Emerging Patterns)">
           <DataTable
             data={emergingPatterns}
@@ -464,7 +465,9 @@ export default function ChatbotQualityPage() {
             <DataTable.Footer />
           </DataTable>
         </Dashboard.TableSection>
+        </>
       </Dashboard.Content>
     </Dashboard>
+    
   );
 }

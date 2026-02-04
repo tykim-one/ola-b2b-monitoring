@@ -1,12 +1,13 @@
 import React from 'react';
 
-export type BadgeVariant = 'success' | 'error' | 'warning' | 'info' | 'neutral';
+export type BadgeVariant = 'success' | 'error' | 'warning' | 'info' | 'neutral' | 'purple';
 
 export interface StatusBadgeProps {
   label: string;
   variant: BadgeVariant;
   shape?: 'pill' | 'rect';
   size?: 'sm' | 'md';
+  icon?: React.ReactNode;
   className?: string;
 }
 
@@ -16,6 +17,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   warning: 'bg-amber-50 text-amber-700 border-amber-200',
   info: 'bg-cyan-50 text-cyan-700 border-cyan-200',
   neutral: 'bg-gray-100 text-gray-600 border-gray-300',
+  purple: 'bg-purple-50 text-purple-700 border-purple-200',
 };
 
 const shapeStyles = {
@@ -33,6 +35,7 @@ export function StatusBadge({
   variant,
   shape = 'rect',
   size = 'sm',
+  icon,
   className = '',
 }: StatusBadgeProps) {
   const classes = [
@@ -45,5 +48,5 @@ export function StatusBadge({
     .filter(Boolean)
     .join(' ');
 
-  return <span className={classes}>{label}</span>;
+  return <span className={classes}>{icon && <span className="mr-1 inline-flex">{icon}</span>}{label}</span>;
 }

@@ -21,6 +21,8 @@ import {
   SessionFilter,
 } from '@/services/sessionAnalysisService';
 import SessionTimelineModal from '@/components/session-analysis/SessionTimelineModal';
+import KPICard from '@/components/kpi/KPICard';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 
 export default function SessionAnalysisTab() {
   const [stats, setStats] = useState<SessionStats | null>(null);
@@ -131,53 +133,34 @@ export default function SessionAnalysisTab() {
       {/* KPI Cards */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-gray-50/50 border border-emerald-500/30 p-4 rounded">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-emerald-400" />
-              <span className="text-gray-500 text-xs uppercase">Resolution Rate</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats.resolutionRate}%
-            </p>
-            <p className="text-gray-400 text-xs mt-1">
-              {stats.resolvedSessions} / {stats.totalSessions} sessions
-            </p>
-          </div>
-
-          <div className="bg-gray-50/50 border border-cyan-500/30 p-4 rounded">
-            <div className="flex items-center gap-2 mb-2">
-              <MessageSquare className="w-5 h-5 text-cyan-400" />
-              <span className="text-gray-500 text-xs uppercase">Avg Turns</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats.avgTurnsToResolution || '-'}
-            </p>
-            <p className="text-gray-400 text-xs mt-1">turns to resolution</p>
-          </div>
-
-          <div className="bg-gray-50/50 border border-amber-500/30 p-4 rounded">
-            <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle className="w-5 h-5 text-amber-400" />
-              <span className="text-gray-500 text-xs uppercase">Abandonment</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats.abandonmentRate}%
-            </p>
-            <p className="text-gray-400 text-xs mt-1">
-              {stats.frustratedSessions} frustrated sessions
-            </p>
-          </div>
-
-          <div className="bg-gray-50/50 border border-violet-500/30 p-4 rounded">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-5 h-5 text-violet-400" />
-              <span className="text-gray-500 text-xs uppercase">Avg Duration</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats.avgSessionDuration || '-'}
-            </p>
-            <p className="text-gray-400 text-xs mt-1">minutes per session</p>
-          </div>
+          <KPICard
+            title="Resolution Rate"
+            value={stats.resolutionRate}
+            format="percentage"
+            status="success"
+            icon={<TrendingUp className="w-5 h-5" />}
+            subtitle={`${stats.resolvedSessions} / ${stats.totalSessions} sessions`}
+          />
+          <KPICard
+            title="Avg Turns"
+            value={stats.avgTurnsToResolution || '-'}
+            icon={<MessageSquare className="w-5 h-5" />}
+            subtitle="turns to resolution"
+          />
+          <KPICard
+            title="Abandonment"
+            value={stats.abandonmentRate}
+            format="percentage"
+            status={stats.abandonmentRate > 20 ? 'error' : stats.abandonmentRate > 10 ? 'warning' : 'success'}
+            icon={<AlertTriangle className="w-5 h-5" />}
+            subtitle={`${stats.frustratedSessions} frustrated sessions`}
+          />
+          <KPICard
+            title="Avg Duration"
+            value={stats.avgSessionDuration || '-'}
+            icon={<Clock className="w-5 h-5" />}
+            subtitle="minutes per session"
+          />
         </div>
       )}
 
@@ -304,17 +287,11 @@ export default function SessionAnalysisTab() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        {session.isResolved ? (
-                          <span className="flex items-center gap-1 text-green-400 text-xs font-mono">
-                            <CheckCircle className="w-4 h-4" />
-                            Resolved
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1 text-red-400 text-xs font-mono">
-                            <XCircle className="w-4 h-4" />
-                            Unresolved
-                          </span>
-                        )}
+                        <StatusBadge
+                          label={session.isResolved ? 'Resolved' : 'Unresolved'}
+                          variant={session.isResolved ? 'success' : 'error'}
+                          icon={session.isResolved ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                        />
                         {session.hasFrustration && (
                           <span title="Frustration detected">
                             <AlertTriangle className="w-4 h-4 text-amber-400" />

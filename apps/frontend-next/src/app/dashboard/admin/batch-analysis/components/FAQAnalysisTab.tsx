@@ -22,6 +22,16 @@ import {
   getFAQTenants,
 } from '@/services/faqAnalysisService';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import KPICard from '@/components/kpi/KPICard';
+import { StatusBadge, BadgeVariant } from '@/components/ui/StatusBadge';
+import Modal from '@/components/ui/Modal';
+
+const statusVariantMap: Record<string, BadgeVariant> = {
+  PENDING: 'warning',
+  RUNNING: 'info',
+  COMPLETED: 'success',
+  FAILED: 'error',
+};
 
 export default function FAQAnalysisTab() {
   const router = useRouter();
@@ -130,21 +140,6 @@ export default function FAQAnalysisTab() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'text-yellow-400 bg-yellow-950/30 border-yellow-500/30';
-      case 'RUNNING':
-        return 'text-violet-400 bg-violet-50 border-violet-500/30';
-      case 'COMPLETED':
-        return 'text-green-400 bg-green-50 border-green-500/30';
-      case 'FAILED':
-        return 'text-red-400 bg-red-50 border-red-500/30';
-      default:
-        return 'text-gray-500 bg-gray-50/30 border-gray-200';
-    }
-  };
-
   // Statistics
   const stats = {
     total: jobs.length,
@@ -195,41 +190,11 @@ export default function FAQAnalysisTab() {
 
       {/* Statistics */}
       <div className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="p-4 border border-gray-200 bg-gray-50">
-          <div className="flex items-center gap-2 mb-2">
-            <FileQuestion className="w-4 h-4 text-violet-400" />
-            <p className="text-gray-400 text-xs uppercase">Total Jobs</p>
-          </div>
-          <p className="text-violet-400 text-2xl font-bold">{stats.total}</p>
-        </div>
-        <div className="p-4 border border-gray-200 bg-gray-50">
-          <div className="flex items-center gap-2 mb-2">
-            <Clock className="w-4 h-4 text-yellow-400" />
-            <p className="text-gray-400 text-xs uppercase">Pending</p>
-          </div>
-          <p className="text-yellow-400 text-2xl font-bold">{stats.pending}</p>
-        </div>
-        <div className="p-4 border border-gray-200 bg-gray-50">
-          <div className="flex items-center gap-2 mb-2">
-            <RefreshCw className="w-4 h-4 text-violet-400" />
-            <p className="text-gray-400 text-xs uppercase">Running</p>
-          </div>
-          <p className="text-violet-400 text-2xl font-bold">{stats.running}</p>
-        </div>
-        <div className="p-4 border border-gray-200 bg-gray-50">
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="w-4 h-4 text-green-400" />
-            <p className="text-gray-400 text-xs uppercase">Completed</p>
-          </div>
-          <p className="text-green-400 text-2xl font-bold">{stats.completed}</p>
-        </div>
-        <div className="p-4 border border-gray-200 bg-gray-50">
-          <div className="flex items-center gap-2 mb-2">
-            <Layers className="w-4 h-4 text-emerald-400" />
-            <p className="text-gray-400 text-xs uppercase">Clusters</p>
-          </div>
-          <p className="text-emerald-400 text-2xl font-bold">{stats.totalClusters}</p>
-        </div>
+        <KPICard title="Total Jobs" value={stats.total} format="number" icon={<FileQuestion className="w-5 h-5" />} />
+        <KPICard title="Pending" value={stats.pending} format="number" status="warning" icon={<Clock className="w-5 h-5" />} />
+        <KPICard title="Running" value={stats.running} format="number" icon={<RefreshCw className="w-5 h-5" />} />
+        <KPICard title="Completed" value={stats.completed} format="number" status="success" icon={<CheckCircle className="w-5 h-5" />} />
+        <KPICard title="Clusters" value={stats.totalClusters} format="number" icon={<Layers className="w-5 h-5" />} />
       </div>
 
       {/* Jobs Table */}
@@ -278,10 +243,11 @@ export default function FAQAnalysisTab() {
                     className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="px-4 py-3">
-                      <div className={`inline-flex items-center gap-2 px-2 py-1 border ${getStatusColor(job.status)}`}>
-                        {getStatusIcon(job.status)}
-                        <span className="text-xs uppercase">{job.status}</span>
-                      </div>
+                      <StatusBadge
+                        label={job.status}
+                        variant={statusVariantMap[job.status] || 'neutral'}
+                        icon={getStatusIcon(job.status)}
+                      />
                     </td>
                     <td className="px-4 py-3">
                       <span className="text-gray-600 text-sm">{job.periodDays}일</span>
@@ -375,90 +341,82 @@ export default function FAQAnalysisTab() {
       </div>
 
       {/* Create Job Modal */}
-      {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white border border-gray-200 p-6 w-full max-w-md">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
-              Create FAQ Analysis Job
-            </h3>
+      <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} title="Create FAQ Analysis Job" size="sm">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-gray-500 text-xs uppercase mb-2">
+              Period (Days)
+            </label>
+            <select
+              value={createForm.periodDays}
+              onChange={(e) =>
+                setCreateForm({ ...createForm, periodDays: Number(e.target.value) as 7 | 14 | 30 })
+              }
+              className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
+            >
+              <option value={7}>7 Days</option>
+              <option value={14}>14 Days</option>
+              <option value={30}>30 Days</option>
+            </select>
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-500 text-xs uppercase mb-2">
-                  Period (Days)
-                </label>
-                <select
-                  value={createForm.periodDays}
-                  onChange={(e) =>
-                    setCreateForm({ ...createForm, periodDays: Number(e.target.value) as 7 | 14 | 30 })
-                  }
-                  className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
-                >
-                  <option value={7}>7 Days</option>
-                  <option value={14}>14 Days</option>
-                  <option value={30}>30 Days</option>
-                </select>
-              </div>
+          <div>
+            <label className="block text-gray-500 text-xs uppercase mb-2">
+              Top N
+            </label>
+            <select
+              value={createForm.topN}
+              onChange={(e) =>
+                setCreateForm({ ...createForm, topN: Number(e.target.value) as 10 | 20 | 50 })
+              }
+              className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
+            >
+              <option value={10}>Top 10</option>
+              <option value={20}>Top 20</option>
+              <option value={50}>Top 50</option>
+            </select>
+          </div>
 
-              <div>
-                <label className="block text-gray-500 text-xs uppercase mb-2">
-                  Top N
-                </label>
-                <select
-                  value={createForm.topN}
-                  onChange={(e) =>
-                    setCreateForm({ ...createForm, topN: Number(e.target.value) as 10 | 20 | 50 })
-                  }
-                  className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
-                >
-                  <option value={10}>Top 10</option>
-                  <option value={20}>Top 20</option>
-                  <option value={50}>Top 50</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-gray-500 text-xs uppercase mb-2">
-                  Tenant (Optional)
-                </label>
-                <select
-                  value={createForm.tenantId || ''}
-                  onChange={(e) =>
-                    setCreateForm({
-                      ...createForm,
-                      tenantId: e.target.value || undefined,
-                    })
-                  }
-                  className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
-                >
-                  <option value="">All Tenants</option>
-                  {tenants.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setIsCreateModalOpen(false)}
-                className="px-4 py-2 bg-white border border-gray-200 text-gray-500 text-sm uppercase"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCreateJob}
-                disabled={isCreating}
-                className="px-4 py-2 bg-violet-600 hover:bg-violet-700 border border-violet-500 text-white text-sm font-medium disabled:opacity-50"
-              >
-                {isCreating ? 'Creating...' : 'Create'}
-              </button>
-            </div>
+          <div>
+            <label className="block text-gray-500 text-xs uppercase mb-2">
+              Tenant (Optional)
+            </label>
+            <select
+              value={createForm.tenantId || ''}
+              onChange={(e) =>
+                setCreateForm({
+                  ...createForm,
+                  tenantId: e.target.value || undefined,
+                })
+              }
+              className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
+            >
+              <option value="">All Tenants</option>
+              {tenants.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
-      )}
+
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            onClick={() => setIsCreateModalOpen(false)}
+            className="px-4 py-2 bg-white border border-gray-200 text-gray-500 text-sm uppercase"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCreateJob}
+            disabled={isCreating}
+            className="px-4 py-2 bg-violet-600 hover:bg-violet-700 border border-violet-500 text-white text-sm font-medium disabled:opacity-50"
+          >
+            {isCreating ? 'Creating...' : 'Create'}
+          </button>
+        </div>
+      </Modal>
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
