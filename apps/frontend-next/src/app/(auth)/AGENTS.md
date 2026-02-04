@@ -1,13 +1,12 @@
 <!-- Parent: ../AGENTS.md -->
-# Auth Route Group
+# (auth)
 
 ## Purpose
-인증 관련 페이지 라우트 그룹. Next.js App Router의 Route Group 기능을 사용하여 인증 페이지를 그룹화.
+Next.js App Router의 인증 레이아웃 그룹입니다. 로그인 등 인증 관련 페이지를 별도 레이아웃으로 감쌉니다.
 
 ## Subdirectories
-- `login/` - 로그인 페이지
+- `login/` - 로그인 페이지 (see login/AGENTS.md)
 
 ## For AI Agents
-- Route Group이므로 URL 경로에 (auth)는 포함되지 않음
-- 실제 경로: /login
-- 비인증 사용자만 접근 가능 (인증된 사용자는 대시보드로 리다이렉트)
+- 괄호 `()` 그룹은 URL 경로에 포함되지 않음 (라우트: `/login`)
+- 인증되지 않은 사용자만 접근 가능 (middleware.ts에서 리다이렉트 처리)

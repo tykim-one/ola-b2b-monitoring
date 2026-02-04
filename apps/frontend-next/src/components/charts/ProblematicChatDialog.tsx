@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { X, Clock, User, Hash, Tag, CheckCircle, XCircle } from 'lucide-react';
-import { ProblematicChat, ProblematicChatRule } from '@ola/shared-types';
+import { ProblematicChat, ProblematicChatRule, getFieldDefinition, getOperatorDefinition, isCompoundConfig } from '@ola/shared-types';
 
 interface ProblematicChatDialogProps {
   isOpen: boolean;
@@ -38,22 +38,42 @@ export default function ProblematicChatDialog({
   const getRuleColor = (ruleName: string) => {
     const rule = getRuleDetails(ruleName);
     if (!rule) return 'bg-slate-600';
-    if (rule.type === 'token_threshold') return 'bg-amber-600';
-    if (rule.type === 'keyword_match') return 'bg-rose-600';
-    if (rule.type === 'token_ratio') return 'bg-cyan-600';
+    if (isCompoundConfig(rule.config)) return 'bg-purple-600';
+    const fieldDef = getFieldDefinition(rule.config.field);
+    if (!fieldDef) return 'bg-slate-600';
+    if (fieldDef.dataType === 'numeric') return 'bg-amber-600';
+    if (fieldDef.dataType === 'text') return 'bg-rose-600';
+    if (fieldDef.dataType === 'boolean') return 'bg-cyan-600';
     return 'bg-slate-600';
   };
 
-  // 매칭된 keyword_match 규칙들에서 키워드 추출
+  // 매칭된 text 규칙들에서 키워드 추출
   const getMatchedKeywords = (): string[] => {
     const keywords: string[] = [];
     chat.matchedRules.forEach((ruleName) => {
       const rule = getRuleDetails(ruleName);
-      if (rule?.type === 'keyword_match' && rule.config.keywords) {
-        keywords.push(...rule.config.keywords);
+      if (!rule) return;
+      if (isCompoundConfig(rule.config)) {
+        rule.config.conditions.forEach((c) => {
+          const fd = getFieldDefinition(c.field);
+          if (fd?.dataType === 'text' && Array.isArray(c.value)) {
+            keywords.push(...(c.value as string[]));
+          } else if (fd?.dataType === 'text' && typeof c.value === 'string') {
+            keywords.push(c.value);
+          }
+        });
+      } else {
+        const fieldDef = getFieldDefinition(rule.config.field);
+        if (fieldDef?.dataType === 'text') {
+          if (Array.isArray(rule.config.value)) {
+            keywords.push(...(rule.config.value as string[]));
+          } else if (typeof rule.config.value === 'string') {
+            keywords.push(rule.config.value);
+          }
+        }
       }
     });
-    return [...new Set(keywords)]; // 중복 제거
+    return [...new Set(keywords)];
   };
 
   // 텍스트에서 키워드 하이라이팅
@@ -186,11 +206,22 @@ export default function ProblematicChatDialog({
                     <div className="font-medium">{ruleName}</div>
                     {rule && (
                       <div className="text-xs opacity-75">
-                        {rule.type === 'token_threshold'
-                          ? `Output ${rule.config.operator === 'lt' ? '<' : '>'} ${rule.config.threshold}`
-                          : rule.type === 'keyword_match'
-                            ? `키워드: ${rule.config.keywords?.join(', ')}`
-                            : `비율: ${rule.config.minRatio ?? '-'} ~ ${rule.config.maxRatio ?? '-'}`}
+                        {(() => {
+                          if (isCompoundConfig(rule.config)) {
+                            return rule.config.conditions.map((c, i) => {
+                              const fd = getFieldDefinition(c.field);
+                              const od = getOperatorDefinition(c.operator);
+                              const val = Array.isArray(c.value) ? (c.value as string[]).join(', ') : String(c.value);
+                              return `${fd?.label || c.field} ${od?.label || c.operator} ${val}`;
+                            }).join(` ${rule.config.logic} `);
+                          }
+                          const fd = getFieldDefinition(rule.config.field);
+                          const od = getOperatorDefinition(rule.config.operator);
+                          const val = Array.isArray(rule.config.value)
+                            ? (rule.config.value as string[]).join(', ')
+                            : String(rule.config.value);
+                          return `${fd?.label || rule.config.field} ${od?.label || rule.config.operator} ${val}`;
+                        })()}
                       </div>
                     )}
                   </div>

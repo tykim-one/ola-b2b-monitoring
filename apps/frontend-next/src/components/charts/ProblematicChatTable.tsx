@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { AlertTriangle, Eye, Clock, User, Hash, MessageSquare } from 'lucide-react';
-import { ProblematicChat, ProblematicChatRule } from '@ola/shared-types';
+import { ProblematicChat, ProblematicChatRule, getFieldDefinition, isCompoundConfig } from '@ola/shared-types';
 
 interface ProblematicChatTableProps {
   data: ProblematicChat[];
@@ -70,9 +70,12 @@ export default function ProblematicChatTable({
   const getRuleColor = (ruleName: string) => {
     const rule = rules.find((r) => r.name === ruleName);
     if (!rule) return 'bg-slate-600';
-    if (rule.type === 'token_threshold') return 'bg-amber-600';
-    if (rule.type === 'keyword_match') return 'bg-rose-600';
-    if (rule.type === 'token_ratio') return 'bg-cyan-600';
+    if (isCompoundConfig(rule.config)) return 'bg-purple-600';
+    const fieldDef = getFieldDefinition(rule.config.field);
+    if (!fieldDef) return 'bg-slate-600';
+    if (fieldDef.dataType === 'numeric') return 'bg-amber-600';
+    if (fieldDef.dataType === 'text') return 'bg-rose-600';
+    if (fieldDef.dataType === 'boolean') return 'bg-cyan-600';
     return 'bg-slate-600';
   };
 

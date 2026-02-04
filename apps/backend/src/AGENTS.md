@@ -26,6 +26,9 @@ NestJS 백엔드 애플리케이션의 소스 코드입니다. 모듈화된 구�
 - `minkabu-etl/` - Minkabu 뉴스 ETL 모니터링 모듈 (PostgreSQL 기반)
 - `wind-etl/` - Wind 금융 데이터 ETL 모니터링 모듈 (PostgreSQL 기반)
 - `user-profiling/` - 사용자 프로파일링 모듈 (카테고리 분류, 감정 분석, 행동 패턴)
+- `problematic-chat/` - 문제 채팅 탐지 모듈 (동적 규칙 엔진, BigQuery 기반 필터링)
+- `report-monitoring/` - 리포트 모니터링 모듈 (리포트 생성 품질 검증, 필드 유효성 검사)
+- `generated/` - 자동 생성 코드 (Prisma 클라이언트 런타임)
 
 ## For AI Agents
 - NestJS 모듈 구조를 따름 (module, controller, service 패턴)

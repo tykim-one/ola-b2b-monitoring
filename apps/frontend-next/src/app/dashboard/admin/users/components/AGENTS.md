@@ -1,12 +1,8 @@
 <!-- Parent: ../AGENTS.md -->
-# Users Page Components
+# components
 
 ## Purpose
-사용자 관리 페이지 전용 UI 컴포넌트.
-
-## Key Files
-- `UserFormModal.tsx` - 사용자 생성/수정 모달 폼
+사용자 관리 페이지 전용 로컬 컴포넌트입니다.
 
 ## For AI Agents
-- 폼 검증은 클라이언트 사이드에서 수행
-- 역할 선택 드롭다운 포함
+- 사용자 폼, 역할 할당 UI 등 사용자 관련 컴포넌트

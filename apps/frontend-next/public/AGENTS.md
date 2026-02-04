@@ -1,26 +1,16 @@
 <!-- Parent: ../AGENTS.md -->
-
-# Public Assets
-
-Next.js 정적 파일 디렉토리입니다.
+# public
 
 ## Purpose
-
-- **정적 리소스**: 이미지, 아이콘, 폰트 등 정적 파일 제공
-- **루트 경로 접근**: `/file.svg`와 같이 루트 경로로 직접 접근 가능
+정적 자산 디렉토리입니다. Next.js의 public 폴더로 빌드 시 루트 경로에 직접 서빙됩니다.
 
 ## Key Files
-
-| File | Description |
-|------|-------------|
-| `file.svg` | 파일 아이콘 |
-| `globe.svg` | 글로브 아이콘 |
-| `next.svg` | Next.js 로고 |
-| `vercel.svg` | Vercel 로고 |
-| `window.svg` | 윈도우 아이콘 |
+- `file.svg` - 파일 아이콘
+- `window.svg` - 윈도우 아이콘
+- `globe.svg` - 글로브 아이콘
+- `vercel.svg` - Vercel 로고
+- `next.svg` - Next.js 로고
 
 ## For AI Agents
-
-- **이미지 추가**: 이 디렉토리에 파일 추가 시 `/filename.ext`로 접근
-- **최적화**: Next.js는 자동으로 이미지 최적화 제공
-- **favicon**: `app/favicon.ico` 또는 `app/icon.png`로 별도 관리
+- 이미지/아이콘 추가 시 이 디렉토리에 배치
+- URL 접근: `/파일명` (예: `/globe.svg`)

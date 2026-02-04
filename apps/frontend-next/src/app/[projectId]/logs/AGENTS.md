@@ -2,8 +2,12 @@
 # logs
 
 ## Purpose
-프로젝트별 로그 탐색 페이지입니다. BigQuery에서 가져온 LLM 대화 로그를 테이블 형태로 표시합니다.
+특정 프로젝트의 로그를 탐색하는 페이지입니다.
+
+## Key Files
+- `page.tsx` - 로그 뷰어 페이지 (프로젝트별 필터링, 페이지네이션)
 
 ## For AI Agents
-- API 엔드포인트: `/projects/:projectId/api/logs`
-- LogExplorer 또는 LogTableWidget 컴포넌트 사용
+- 라우트: `/[projectId]/logs`
+- LogExplorer 컴포넌트 활용
+- 프로젝트 ID 기반 BigQuery 로그 조회

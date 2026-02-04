@@ -1,14 +1,15 @@
 <!-- Parent: ../AGENTS.md -->
-# Roles Management Page
+# roles
 
 ## Purpose
-관리자 역할 관리 페이지. 역할 목록 조회, 생성, 수정, 삭제 기능.
+역할 및 권한 관리 페이지입니다. RBAC 기반 권한 체계를 관리합니다.
 
 ## Key Files
-- `page.tsx` - 역할 관리 페이지 컴포넌트
+- `page.tsx` - 역할 목록, 생성/수정/삭제
 
 ## Subdirectories
-- `components/` - 페이지 전용 컴포넌트
+- `components/` - 역할 페이지 로컬 컴포넌트
 
 ## For AI Agents
-- API: /admin/roles 엔드포인트 사용
+- 라우트: `/dashboard/admin/roles`
+- 권한 형식: `resource:action` (예: `users:read`, `metrics:write`)

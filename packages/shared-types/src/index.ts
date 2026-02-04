@@ -681,23 +681,203 @@ export interface GlobalSummaryKPI {
 
 // ==================== 문제 채팅 모니터링 타입 ====================
 
-/** 문제 채팅 필터링 규칙 타입 */
-export type ProblematicChatRuleType = 'token_threshold' | 'keyword_match' | 'token_ratio';
+// --- 필드/연산자 레지스트리 ---
 
-/** 토큰 임계값 비교 연산자 */
-export type TokenOperator = 'lt' | 'gt';
+/** 필드 데이터 타입 */
+export type RuleFieldDataType = 'numeric' | 'text' | 'boolean';
 
-/** 키워드 매칭 대상 필드 */
-export type KeywordMatchField = 'llm_response' | 'user_input';
+/** 규칙에서 사용할 수 있는 필드 정의 */
+export interface RuleFieldDefinition {
+  field: string;
+  label: string;
+  dataType: RuleFieldDataType;
+  sqlExpression: string;
+  description?: string;
+  requiresCTE?: boolean;
+}
 
-/** 문제 채팅 필터링 규칙 설정 */
-export interface ProblematicChatRuleConfig {
-  threshold?: number;           // token_threshold용: 토큰 임계값
-  operator?: TokenOperator;     // token_threshold용: lt(미만), gt(초과)
-  keywords?: string[];          // keyword_match용: 검색할 키워드 목록
-  matchField?: KeywordMatchField; // keyword_match용: 검색 대상 필드
-  minRatio?: number;            // token_ratio용: 최소 비율 (미만이면 문제)
-  maxRatio?: number;            // token_ratio용: 최대 비율 (초과면 문제)
+/** 연산자에서 기대하는 값 타입 */
+export type RuleValueType = 'number' | 'string' | 'string_array' | 'boolean';
+
+/** 연산자 정의 */
+export interface RuleOperatorDefinition {
+  operator: string;
+  label: string;
+  sqlTemplate: string;
+  applicableTo: RuleFieldDataType[];
+  valueType: RuleValueType;
+}
+
+/** 사용 가능한 BigQuery 필드 화이트리스트 */
+export const RULE_FIELDS: RuleFieldDefinition[] = [
+  {
+    field: 'output_tokens',
+    label: 'Output 토큰',
+    dataType: 'numeric',
+    sqlExpression: 'COALESCE(SAFE_CAST(output_tokens AS FLOAT64), 0)',
+    description: 'LLM 응답 토큰 수',
+  },
+  {
+    field: 'input_tokens',
+    label: 'Input 토큰',
+    dataType: 'numeric',
+    sqlExpression: 'COALESCE(SAFE_CAST(input_tokens AS FLOAT64), 0)',
+    description: '사용자 입력 토큰 수',
+  },
+  {
+    field: 'total_tokens',
+    label: 'Total 토큰',
+    dataType: 'numeric',
+    sqlExpression: 'COALESCE(SAFE_CAST(total_tokens AS FLOAT64), 0)',
+    description: '전체 토큰 수 (input + output)',
+  },
+  {
+    field: 'token_ratio',
+    label: '토큰 비율 (output/input)',
+    dataType: 'numeric',
+    sqlExpression:
+      'SAFE_DIVIDE(COALESCE(SAFE_CAST(output_tokens AS FLOAT64), 0), NULLIF(COALESCE(SAFE_CAST(input_tokens AS FLOAT64), 0), 0))',
+    description: 'output 토큰 / input 토큰 비율',
+  },
+  {
+    field: 'llm_response',
+    label: 'LLM 응답',
+    dataType: 'text',
+    sqlExpression: 'COALESCE(llm_response, \'\')',
+    description: 'LLM이 생성한 응답 텍스트',
+  },
+  {
+    field: 'user_input',
+    label: '사용자 입력',
+    dataType: 'text',
+    sqlExpression: 'COALESCE(user_input, \'\')',
+    description: '사용자가 입력한 질문 텍스트',
+  },
+  {
+    field: 'success',
+    label: '성공 여부',
+    dataType: 'boolean',
+    sqlExpression: 'success',
+    description: '요청 성공 여부 (true/false)',
+  },
+  {
+    field: 'response_length',
+    label: '응답 글자 수',
+    dataType: 'numeric',
+    sqlExpression: "LENGTH(COALESCE(llm_response, ''))",
+    description: 'LLM 응답의 글자 수',
+  },
+  {
+    field: 'korean_ratio',
+    label: '한글 비율',
+    dataType: 'numeric',
+    sqlExpression: "SAFE_DIVIDE(LENGTH(REGEXP_REPLACE(COALESCE(llm_response, ''), r'[^가-힣]', '')), NULLIF(LENGTH(REGEXP_REPLACE(COALESCE(llm_response, ''), r'\\s', '')), 0))",
+    description: '응답 텍스트 내 한글 문자 비율 (0.0~1.0)',
+  },
+  {
+    field: 'response_ends_complete',
+    label: '응답 완결성',
+    dataType: 'boolean',
+    sqlExpression: "REGEXP_CONTAINS(RTRIM(COALESCE(llm_response, '')), r'(습니다|세요|입니다|합니다|됩니다|에요|아요|어요|해요|다|요|음|죠|까요|네요|군요|거든요|답니다|\\.|!|\\?)\\s*$')",
+    description: '응답이 종결어미/마침표로 끝나는지 여부',
+  },
+  {
+    field: 'has_unclosed_code_block',
+    label: '코드블록 깨짐',
+    dataType: 'boolean',
+    sqlExpression: "MOD(ARRAY_LENGTH(REGEXP_EXTRACT_ALL(COALESCE(llm_response, ''), r'```')), 2) != 0",
+    description: '열린 코드블록(```)이 닫히지 않았는지 여부',
+  },
+  {
+    field: 'response_question_count',
+    label: '응답 내 물음표 수',
+    dataType: 'numeric',
+    sqlExpression: "ARRAY_LENGTH(REGEXP_EXTRACT_ALL(COALESCE(llm_response, ''), r'\\?'))",
+    description: '응답에 포함된 물음표(?) 개수',
+  },
+  {
+    field: 'apology_count',
+    label: '사과 표현 횟수',
+    dataType: 'numeric',
+    sqlExpression: "ARRAY_LENGTH(REGEXP_EXTRACT_ALL(LOWER(COALESCE(llm_response, '')), r'죄송|미안|sorry|apologize|이해하지 못|답변.*어렵|도움.*드리기.*어렵'))",
+    description: '응답에 포함된 사과/거부 표현 횟수',
+  },
+  {
+    field: 'next_user_input',
+    label: '다음 사용자 입력',
+    dataType: 'text',
+    sqlExpression: "LEAD(user_input) OVER (PARTITION BY request_metadata.session_id ORDER BY timestamp)",
+    description: '같은 세션의 다음 사용자 메시지 (세션 컨텍스트)',
+    requiresCTE: true,
+  },
+];
+
+/** 사용 가능한 연산자 목록 */
+export const RULE_OPERATORS: RuleOperatorDefinition[] = [
+  { operator: 'lt', label: '미만 (<)', sqlTemplate: '{field} < {value}', applicableTo: ['numeric'], valueType: 'number' },
+  { operator: 'lte', label: '이하 (≤)', sqlTemplate: '{field} <= {value}', applicableTo: ['numeric'], valueType: 'number' },
+  { operator: 'gt', label: '초과 (>)', sqlTemplate: '{field} > {value}', applicableTo: ['numeric'], valueType: 'number' },
+  { operator: 'gte', label: '이상 (≥)', sqlTemplate: '{field} >= {value}', applicableTo: ['numeric'], valueType: 'number' },
+  { operator: 'eq', label: '같음 (=)', sqlTemplate: '{field} = {value}', applicableTo: ['numeric', 'boolean'], valueType: 'number' },
+  { operator: 'neq', label: '다름 (≠)', sqlTemplate: '{field} != {value}', applicableTo: ['numeric', 'boolean'], valueType: 'number' },
+  { operator: 'contains', label: '포함', sqlTemplate: 'LOWER({field}) LIKE LOWER(\'%{value}%\')', applicableTo: ['text'], valueType: 'string' },
+  { operator: 'not_contains', label: '미포함', sqlTemplate: 'LOWER({field}) NOT LIKE LOWER(\'%{value}%\')', applicableTo: ['text'], valueType: 'string' },
+  { operator: 'contains_any', label: '하나라도 포함 (OR)', sqlTemplate: '', applicableTo: ['text'], valueType: 'string_array' },
+  { operator: 'not_contains_any', label: '모두 미포함 (AND)', sqlTemplate: '', applicableTo: ['text'], valueType: 'string_array' },
+];
+
+/** 특정 필드에 사용 가능한 연산자 목록 반환 */
+export function getOperatorsForField(fieldKey: string): RuleOperatorDefinition[] {
+  const fieldDef = RULE_FIELDS.find((f) => f.field === fieldKey);
+  if (!fieldDef) return [];
+  return RULE_OPERATORS.filter((op) => op.applicableTo.includes(fieldDef.dataType));
+}
+
+/** 필드 정의 조회 */
+export function getFieldDefinition(fieldKey: string): RuleFieldDefinition | undefined {
+  return RULE_FIELDS.find((f) => f.field === fieldKey);
+}
+
+/** 연산자 정의 조회 */
+export function getOperatorDefinition(operatorKey: string): RuleOperatorDefinition | undefined {
+  return RULE_OPERATORS.find((op) => op.operator === operatorKey);
+}
+
+// --- 규칙 config 타입 (동적 field + operator + value) ---
+
+/** 단일 조건 */
+export interface SingleCondition {
+  field: string;
+  operator: string;
+  value: number | string | boolean | string[];
+}
+
+/** 복합 규칙 설정 (v2 - 다중 조건) */
+export interface CompoundRuleConfig {
+  version: 2;
+  logic: 'AND' | 'OR';
+  conditions: SingleCondition[];
+}
+
+/** 단순 규칙 설정 (v1 - 하위 호환) */
+export type SimpleRuleConfig = SingleCondition;
+
+/** 문제 채팅 필터링 규칙 설정 (통합 타입) */
+export type ProblematicChatRuleConfig = SimpleRuleConfig | CompoundRuleConfig;
+
+/** 복합 규칙인지 판별 */
+export function isCompoundConfig(config: ProblematicChatRuleConfig): config is CompoundRuleConfig {
+  return 'version' in config && (config as CompoundRuleConfig).version === 2;
+}
+
+/** v1 설정을 v2로 정규화 */
+export function normalizeToCompound(config: ProblematicChatRuleConfig): CompoundRuleConfig {
+  if (isCompoundConfig(config)) return config;
+  return {
+    version: 2,
+    logic: 'AND',
+    conditions: [{ field: config.field, operator: config.operator, value: config.value }],
+  };
 }
 
 /** 문제 채팅 필터링 규칙 */
@@ -706,7 +886,6 @@ export interface ProblematicChatRule {
   name: string;
   description?: string;
   isEnabled: boolean;
-  type: ProblematicChatRuleType;
   config: ProblematicChatRuleConfig;
   createdAt: string;
   updatedAt: string;
@@ -717,7 +896,6 @@ export interface CreateProblematicChatRuleRequest {
   name: string;
   description?: string;
   isEnabled?: boolean;
-  type: ProblematicChatRuleType;
   config: ProblematicChatRuleConfig;
 }
 
@@ -726,7 +904,6 @@ export interface UpdateProblematicChatRuleRequest {
   name?: string;
   description?: string;
   isEnabled?: boolean;
-  type?: ProblematicChatRuleType;
   config?: ProblematicChatRuleConfig;
 }
 

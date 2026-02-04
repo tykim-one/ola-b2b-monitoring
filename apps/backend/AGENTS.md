@@ -36,6 +36,14 @@ BigQueryMetricsDataSource / MySQLMetricsDataSource / ... — 실제 쿼리 실�
 - `src/ml/anomaly/` - Z-Score 기반 이상 탐지
 - `src/notifications/` - Slack 웹훅 알림 서비스
 - `src/quality/` - 챗봇 품질 분석 (감정 분석)
+- `src/faq-analysis/` - FAQ 분석 모듈 (자주 묻는 질문 클러스터링, LLM 사유 분석)
+- `src/session-analysis/` - 세션 분석 모듈 (해결률, 효율성, 이탈률, 휴리스틱+LLM)
+- `src/user-profiling/` - 사용자 프로파일링 모듈 (카테고리 분류, 감정 분석, 행동 패턴)
+- `src/problematic-chat/` - 문제 채팅 탐지 모듈 (동적 규칙 엔진, BigQuery 필터링)
+- `src/report-monitoring/` - 리포트 모니터링 모듈 (리포트 생성 품질 검증)
+- `src/minkabu-etl/` - Minkabu 뉴스 ETL 모니터링 모듈 (PostgreSQL 기반)
+- `src/wind-etl/` - Wind 금융 데이터 ETL 모니터링 모듈 (PostgreSQL 기반)
+- `src/generated/` - 자동 생성 코드 (Prisma 클라이언트 런타임)
 - `prisma/` - [Prisma 스키마](prisma/AGENTS.md) (SQLite + libSQL, 사용자/역할/권한)
 - `config/` - 설정 파일 (datasources.config.json)
 - `test/` - E2E 테스트

@@ -1,17 +1,16 @@
 <!-- Parent: ../AGENTS.md -->
-# Analysis Management Page
+# analysis
 
 ## Purpose
-LLM 분석 세션 관리 페이지. 분석 세션 목록 조회, 생성, 세션별 대화 기능.
+LLM 기반 대화형 분석 세션 관리 페이지입니다. Gemini API를 통해 메트릭 데이터를 분석합니다.
 
 ## Key Files
 - `page.tsx` - 분석 세션 목록 페이지
-- `[id]/page.tsx` - 개별 분석 세션 대화 페이지
 
 ## Subdirectories
-- `components/` - 페이지 전용 컴포넌트
-- `[id]/` - 동적 라우트 (세션 상세)
+- `[id]/` - 개별 분석 세션 상세 페이지 (대화형 채팅 인터페이스)
+- `components/` - 분석 페이지 로컬 컴포넌트
 
 ## For AI Agents
-- API: /admin/analysis 엔드포인트 사용
-- LLM 채팅 인터페이스 제공
+- 분석 세션은 ChatInterface 컴포넌트를 사용하여 LLM과 대화
+- 메트릭 컨텍스트를 자동으로 LLM에 전달

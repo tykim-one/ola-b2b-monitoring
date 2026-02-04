@@ -10,16 +10,23 @@ import {
   ToggleRight,
   Save,
   X,
-  Hash,
-  MessageSquare,
+  CopyPlus,
+  Minus,
 } from 'lucide-react';
 import {
   ProblematicChatRule,
   CreateProblematicChatRuleRequest,
   UpdateProblematicChatRuleRequest,
-  ProblematicChatRuleType,
-  TokenOperator,
-  KeywordMatchField,
+  RULE_FIELDS,
+  getOperatorsForField,
+  getFieldDefinition,
+  getOperatorDefinition,
+  RuleOperatorDefinition,
+  isCompoundConfig,
+  SingleCondition,
+  CompoundRuleConfig,
+  SimpleRuleConfig,
+  normalizeToCompound,
 } from '@ola/shared-types';
 import {
   fetchRules,
@@ -29,48 +36,113 @@ import {
   toggleRuleEnabled,
 } from '@/services/problematicChatService';
 
+interface ConditionFormData {
+  field: string;
+  operator: string;
+  numericValue: number;
+  stringValue: string;
+  stringArrayValue: string;
+  booleanValue: boolean;
+}
+
 interface RuleFormData {
   name: string;
   description: string;
-  type: ProblematicChatRuleType;
-  threshold: number;
-  operator: TokenOperator;
-  keywords: string;
-  matchField: KeywordMatchField;
-  minRatio: number;
-  maxRatio: number;
+  isCompound: boolean;
+  // 단순 규칙 (기존 필드들 유지)
+  field: string;
+  operator: string;
+  numericValue: number;
+  stringValue: string;
+  stringArrayValue: string; // 쉼표 구분
+  booleanValue: boolean;
+  // 복합 규칙
+  conditions: ConditionFormData[];
+  logic: 'AND' | 'OR';
 }
+
+const createDefaultCondition = (): ConditionFormData => ({
+  field: RULE_FIELDS[0].field,
+  operator: getOperatorsForField(RULE_FIELDS[0].field)[0]?.operator || '',
+  numericValue: 0,
+  stringValue: '',
+  stringArrayValue: '',
+  booleanValue: false,
+});
 
 const defaultFormData: RuleFormData = {
   name: '',
   description: '',
-  type: 'token_threshold',
-  threshold: 1500,
-  operator: 'lt',
-  keywords: '',
-  matchField: 'llm_response',
-  minRatio: 0.3,
-  maxRatio: 5.0,
+  isCompound: false,
+  field: RULE_FIELDS[0].field,
+  operator: '',
+  numericValue: 1500,
+  stringValue: '',
+  stringArrayValue: '',
+  booleanValue: false,
+  conditions: [],
+  logic: 'AND',
 };
+
+/** 필드의 dataType에 따른 뱃지 색상 */
+function getFieldColor(fieldKey: string): string {
+  const def = getFieldDefinition(fieldKey);
+  if (!def) return 'bg-slate-600/20 text-slate-400';
+  switch (def.dataType) {
+    case 'numeric': return 'bg-amber-600/20 text-amber-400';
+    case 'text': return 'bg-rose-600/20 text-rose-400';
+    case 'boolean': return 'bg-cyan-600/20 text-cyan-400';
+    default: return 'bg-slate-600/20 text-slate-400';
+  }
+}
+
+/** 규칙 config를 사람이 읽기 쉬운 요약으로 변환 */
+function formatRuleSummary(config: ProblematicChatRule['config']): string {
+  if (isCompoundConfig(config)) {
+    // TODO(human): 복합 규칙 요약을 사람이 읽기 쉽게 표현하세요
+    // config.logic ('AND' | 'OR'), config.conditions (SingleCondition[])을 활용합니다
+    // 예: "(응답 글자수 >= 10) AND (한글 비율 < 0.3)" 또는 "2개 조건 (AND)" 등
+    return `${config.conditions.length}개 조건 (${config.logic})`;
+  }
+  // 기존 단순 규칙 로직 유지
+  const fieldDef = getFieldDefinition(config.field);
+  const opDef = getOperatorDefinition(config.operator);
+  if (!fieldDef || !opDef) return `${config.field} ${config.operator} ${config.value}`;
+
+  if (Array.isArray(config.value)) {
+    return `${config.value.slice(0, 3).join(', ')}${config.value.length > 3 ? ` +${config.value.length - 3}개` : ''}`;
+  }
+
+  return `${opDef.label} ${config.value}`;
+}
 
 export default function ProblematicRulesPage() {
   const [rules, setRules] = useState<ProblematicChatRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<ProblematicChatRule | null>(null);
   const [formData, setFormData] = useState<RuleFormData>(defaultFormData);
   const [saving, setSaving] = useState(false);
+  const [availableOperators, setAvailableOperators] = useState<RuleOperatorDefinition[]>([]);
 
-  // 삭제 확인 상태
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  // 규칙 목록 로드
   useEffect(() => {
     loadRules();
   }, []);
+
+  // 필드 변경 시 사용 가능한 연산자 업데이트 (단순 규칙 모드에서만)
+  useEffect(() => {
+    if (formData.isCompound) return;
+    const ops = getOperatorsForField(formData.field);
+    setAvailableOperators(ops);
+    // 현재 operator가 유효하지 않으면 첫 번째로 변경
+    if (ops.length > 0 && !ops.find((o) => o.operator === formData.operator)) {
+      setFormData((prev) => ({ ...prev, operator: ops[0].operator }));
+    }
+  }, [formData.field, formData.isCompound]);
 
   const loadRules = async () => {
     try {
@@ -85,38 +157,103 @@ export default function ProblematicRulesPage() {
     }
   };
 
-  // 모달 열기 (생성)
   const handleOpenCreate = () => {
     setEditingRule(null);
-    setFormData(defaultFormData);
-    setIsModalOpen(true);
-  };
-
-  // 모달 열기 (수정)
-  const handleOpenEdit = (rule: ProblematicChatRule) => {
-    setEditingRule(rule);
+    const firstField = RULE_FIELDS[0].field;
+    const ops = getOperatorsForField(firstField);
     setFormData({
-      name: rule.name,
-      description: rule.description || '',
-      type: rule.type,
-      threshold: rule.config.threshold || 1500,
-      operator: rule.config.operator || 'lt',
-      keywords: rule.config.keywords?.join(', ') || '',
-      matchField: rule.config.matchField || 'llm_response',
-      minRatio: rule.config.minRatio ?? 0.3,
-      maxRatio: rule.config.maxRatio ?? 5.0,
+      ...defaultFormData,
+      field: firstField,
+      operator: ops[0]?.operator || '',
+      isCompound: false,
+      conditions: [],
+      logic: 'AND',
     });
     setIsModalOpen(true);
   };
 
-  // 모달 닫기
+  const handleOpenEdit = (rule: ProblematicChatRule) => {
+    setEditingRule(rule);
+
+    if (isCompoundConfig(rule.config)) {
+      const conditions: ConditionFormData[] = rule.config.conditions.map((c) => {
+        const opDef = getOperatorDefinition(c.operator);
+        return {
+          field: c.field,
+          operator: c.operator,
+          numericValue: opDef?.valueType === 'number' ? Number(c.value) : 0,
+          stringValue: opDef?.valueType === 'string' ? String(c.value) : '',
+          stringArrayValue: opDef?.valueType === 'string_array' && Array.isArray(c.value) ? c.value.join(', ') : '',
+          booleanValue: opDef?.valueType === 'boolean' ? Boolean(c.value) : false,
+        };
+      });
+      setFormData({
+        ...defaultFormData,
+        name: rule.name,
+        description: rule.description || '',
+        isCompound: true,
+        conditions,
+        logic: rule.config.logic,
+      });
+    } else {
+      // 기존 단순 규칙 로직 유지
+      const opDef = getOperatorDefinition(rule.config.operator);
+      setFormData({
+        ...defaultFormData,
+        name: rule.name,
+        description: rule.description || '',
+        isCompound: false,
+        field: rule.config.field,
+        operator: rule.config.operator,
+        numericValue: opDef?.valueType === 'number' ? Number(rule.config.value) : 1500,
+        stringValue: opDef?.valueType === 'string' ? String(rule.config.value) : '',
+        stringArrayValue: opDef?.valueType === 'string_array' && Array.isArray(rule.config.value)
+          ? rule.config.value.join(', ')
+          : '',
+        booleanValue: opDef?.valueType === 'boolean' ? Boolean(rule.config.value) : false,
+      });
+    }
+    setIsModalOpen(true);
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingRule(null);
     setFormData(defaultFormData);
   };
 
-  // 폼 저장
+  /** 현재 연산자의 valueType에 맞게 config.value를 추출 (단순 규칙용) */
+  const getConfigValue = (): number | string | boolean | string[] => {
+    const opDef = getOperatorDefinition(formData.operator);
+    if (!opDef) return formData.numericValue;
+
+    switch (opDef.valueType) {
+      case 'number': return formData.numericValue;
+      case 'string': return formData.stringValue;
+      case 'string_array':
+        return formData.stringArrayValue
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s);
+      case 'boolean': return formData.booleanValue;
+      default: return formData.numericValue;
+    }
+  };
+
+  /** 각 조건의 value를 추출 (복합 규칙용) */
+  const getConditionValue = (cond: ConditionFormData): number | string | boolean | string[] => {
+    const opDef = getOperatorDefinition(cond.operator);
+    if (!opDef) return cond.numericValue;
+    switch (opDef.valueType) {
+      case 'number': return cond.numericValue;
+      case 'string': return cond.stringValue;
+      case 'string_array':
+        return cond.stringArrayValue.split(',').map(s => s.trim()).filter(s => s);
+      case 'boolean': return cond.booleanValue;
+      default: return cond.numericValue;
+    }
+  };
+
   const handleSave = async () => {
     if (!formData.name.trim()) {
       alert('규칙 이름을 입력하세요.');
@@ -126,39 +263,42 @@ export default function ProblematicRulesPage() {
     try {
       setSaving(true);
 
-      let config;
-      if (formData.type === 'token_threshold') {
-        config = { threshold: formData.threshold, operator: formData.operator };
-      } else if (formData.type === 'keyword_match') {
+      let config: SimpleRuleConfig | CompoundRuleConfig;
+
+      if (formData.isCompound) {
+        if (formData.conditions.length < 2) {
+          alert('복합 규칙은 최소 2개 조건이 필요합니다.');
+          setSaving(false);
+          return;
+        }
         config = {
-          keywords: formData.keywords
-            .split(',')
-            .map((k) => k.trim())
-            .filter((k) => k),
-          matchField: formData.matchField,
+          version: 2,
+          logic: formData.logic,
+          conditions: formData.conditions.map(c => ({
+            field: c.field,
+            operator: c.operator,
+            value: getConditionValue(c),
+          })),
         };
       } else {
         config = {
-          minRatio: formData.minRatio || undefined,
-          maxRatio: formData.maxRatio || undefined,
+          field: formData.field,
+          operator: formData.operator,
+          value: getConfigValue(),
         };
       }
 
       if (editingRule) {
-        // 수정
         const updateData: UpdateProblematicChatRuleRequest = {
           name: formData.name,
           description: formData.description || undefined,
-          type: formData.type,
           config,
         };
         await updateRule(editingRule.id, updateData);
       } else {
-        // 생성
         const createData: CreateProblematicChatRuleRequest = {
           name: formData.name,
           description: formData.description || undefined,
-          type: formData.type,
           config,
         };
         await createRule(createData);
@@ -173,7 +313,6 @@ export default function ProblematicRulesPage() {
     }
   };
 
-  // 활성화/비활성화 토글
   const handleToggle = async (rule: ProblematicChatRule) => {
     try {
       await toggleRuleEnabled(rule.id, !rule.isEnabled);
@@ -183,7 +322,6 @@ export default function ProblematicRulesPage() {
     }
   };
 
-  // 삭제
   const handleDelete = async (id: string) => {
     try {
       await deleteRule(id);
@@ -212,7 +350,7 @@ export default function ProblematicRulesPage() {
             문제 채팅 필터링 규칙
           </h2>
           <p className="text-slate-400 mt-1">
-            룰 기반으로 개선이 필요한 채팅을 필터링합니다
+            BigQuery 필드와 연산자를 조합하여 문제 채팅을 필터링합니다
           </p>
         </div>
 
@@ -239,8 +377,8 @@ export default function ProblematicRulesPage() {
             <tr className="text-left text-slate-400 border-b border-slate-700">
               <th className="px-6 py-4">상태</th>
               <th className="px-6 py-4">이름</th>
-              <th className="px-6 py-4">타입</th>
-              <th className="px-6 py-4">설정</th>
+              <th className="px-6 py-4">필드</th>
+              <th className="px-6 py-4">조건</th>
               <th className="px-6 py-4">설명</th>
               <th className="px-6 py-4">액션</th>
             </tr>
@@ -275,55 +413,48 @@ export default function ProblematicRulesPage() {
                   </td>
                   <td className="px-6 py-4 text-white font-medium">{rule.name}</td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${
-                        rule.type === 'token_threshold'
-                          ? 'bg-amber-600/20 text-amber-400'
-                          : rule.type === 'keyword_match'
-                            ? 'bg-rose-600/20 text-rose-400'
-                            : 'bg-cyan-600/20 text-cyan-400'
-                      }`}
-                    >
-                      {rule.type === 'token_threshold' ? (
-                        <span className="flex items-center gap-1">
-                          <Hash className="w-3 h-3" />
-                          토큰 임계값
+                    {isCompoundConfig(rule.config) ? (
+                      <div className="flex flex-wrap gap-1">
+                        <span className="px-2 py-0.5 rounded text-xs font-medium bg-purple-600/20 text-purple-400">
+                          {rule.config.logic}
                         </span>
-                      ) : rule.type === 'keyword_match' ? (
-                        <span className="flex items-center gap-1">
-                          <MessageSquare className="w-3 h-3" />
-                          키워드 매칭
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1">
-                          <Hash className="w-3 h-3" />
-                          토큰 비율
-                        </span>
-                      )}
-                    </span>
+                        {rule.config.conditions.map((c, i) => {
+                          const fd = getFieldDefinition(c.field);
+                          return (
+                            <span key={i} className={`px-2 py-1 rounded text-xs font-medium ${getFieldColor(c.field)}`}>
+                              {fd?.label || c.field}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${getFieldColor(rule.config.field)}`}>
+                        {getFieldDefinition(rule.config.field)?.label || rule.config.field}
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-slate-300 text-sm">
-                    {rule.type === 'token_threshold' ? (
-                      <span>
-                        Output {rule.config.operator === 'lt' ? '<' : '>'} {rule.config.threshold}
-                      </span>
-                    ) : rule.type === 'keyword_match' ? (
-                      <span className="flex flex-wrap gap-1">
-                        {rule.config.keywords?.slice(0, 3).map((kw, i) => (
-                          <span key={i} className="px-1.5 py-0.5 bg-slate-700 rounded text-xs">
-                            {kw}
-                          </span>
-                        ))}
-                        {(rule.config.keywords?.length || 0) > 3 && (
-                          <span className="text-slate-400">
-                            +{(rule.config.keywords?.length || 0) - 3}개
-                          </span>
-                        )}
-                      </span>
+                    {isCompoundConfig(rule.config) ? (
+                      <span>{formatRuleSummary(rule.config)}</span>
                     ) : (
-                      <span>
-                        비율: {rule.config.minRatio ?? '-'} ~ {rule.config.maxRatio ?? '-'}
-                      </span>
+                      <>
+                        {Array.isArray(rule.config.value) ? (
+                          <span className="flex flex-wrap gap-1">
+                            {(rule.config.value as string[]).slice(0, 3).map((v, i) => (
+                              <span key={i} className="px-1.5 py-0.5 bg-slate-700 rounded text-xs">
+                                {v}
+                              </span>
+                            ))}
+                            {(rule.config.value as string[]).length > 3 && (
+                              <span className="text-slate-400">
+                                +{(rule.config.value as string[]).length - 3}개
+                              </span>
+                            )}
+                          </span>
+                        ) : (
+                          <span>{formatRuleSummary(rule.config)}</span>
+                        )}
+                      </>
                     )}
                   </td>
                   <td className="px-6 py-4 text-slate-400 text-sm max-w-[200px] truncate">
@@ -375,7 +506,7 @@ export default function ProblematicRulesPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleCloseModal} />
-          <div className="relative bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg">
+          <div className="relative bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-700">
               <h3 className="text-lg font-semibold text-white">
@@ -390,7 +521,7 @@ export default function ProblematicRulesPage() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-slate-400 mb-1">규칙 이름 *</label>
@@ -415,153 +546,361 @@ export default function ProblematicRulesPage() {
                 />
               </div>
 
-              {/* Type */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">규칙 타입 *</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="token_threshold"
-                      checked={formData.type === 'token_threshold'}
-                      onChange={() => setFormData({ ...formData, type: 'token_threshold' })}
-                      className="text-blue-500"
-                    />
-                    <span className="text-slate-300">토큰 임계값</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="keyword_match"
-                      checked={formData.type === 'keyword_match'}
-                      onChange={() => setFormData({ ...formData, type: 'keyword_match' })}
-                      className="text-blue-500"
-                    />
-                    <span className="text-slate-300">키워드 매칭</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="token_ratio"
-                      checked={formData.type === 'token_ratio'}
-                      onChange={() => setFormData({ ...formData, type: 'token_ratio' })}
-                      className="text-blue-500"
-                    />
-                    <span className="text-slate-300">토큰 비율</span>
-                  </label>
-                </div>
+              {/* 규칙 모드 토글 */}
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50 border border-slate-700/50">
+                <span className="text-sm text-slate-400">규칙 유형:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newIsCompound = !formData.isCompound;
+                    setFormData(prev => ({
+                      ...prev,
+                      isCompound: newIsCompound,
+                      conditions: newIsCompound && prev.conditions.length === 0
+                        ? [createDefaultCondition(), createDefaultCondition()]
+                        : prev.conditions,
+                    }));
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    formData.isCompound
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  {formData.isCompound ? '복합 규칙 (다중 조건)' : '단순 규칙'}
+                </button>
               </div>
 
-              {/* Token Threshold Options */}
-              {formData.type === 'token_threshold' && (
-                <div className="grid grid-cols-2 gap-4">
+              {formData.isCompound ? (
+                <div className="space-y-3">
+                  {/* Logic selector */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-slate-400">로직:</span>
+                    {(['AND', 'OR'] as const).map(l => (
+                      <button
+                        key={l}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, logic: l }))}
+                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                          formData.logic === l
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
+                        }`}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Conditions */}
+                  {formData.conditions.map((cond, idx) => {
+                    const condOps = getOperatorsForField(cond.field);
+                    const condOpDef = getOperatorDefinition(cond.operator);
+                    return (
+                      <div key={idx} className="p-3 rounded-lg bg-slate-900/70 border border-slate-700/50 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium text-slate-500">조건 {idx + 1}</span>
+                          {formData.conditions.length > 2 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  conditions: prev.conditions.filter((_, i) => i !== idx),
+                                }));
+                              }}
+                              className="p-1 rounded hover:bg-slate-700 text-slate-500 hover:text-rose-400 transition-colors"
+                              title="조건 삭제"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                        {/* Field selector */}
+                        <select
+                          value={cond.field}
+                          onChange={(e) => {
+                            const newField = e.target.value;
+                            const newOps = getOperatorsForField(newField);
+                            setFormData(prev => ({
+                              ...prev,
+                              conditions: prev.conditions.map((c, i) => i === idx
+                                ? { ...c, field: newField, operator: newOps[0]?.operator || '' }
+                                : c),
+                            }));
+                          }}
+                          className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                        >
+                          {RULE_FIELDS.map(f => (
+                            <option key={f.field} value={f.field}>{f.label} ({f.dataType})</option>
+                          ))}
+                        </select>
+                        {/* Operator selector */}
+                        <select
+                          value={cond.operator}
+                          onChange={(e) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              conditions: prev.conditions.map((c, i) => i === idx
+                                ? { ...c, operator: e.target.value }
+                                : c),
+                            }));
+                          }}
+                          className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                        >
+                          {condOps.map(op => (
+                            <option key={op.operator} value={op.operator}>{op.label}</option>
+                          ))}
+                        </select>
+                        {/* Value input based on valueType */}
+                        {condOpDef?.valueType === 'number' && (
+                          <input
+                            type="number"
+                            value={cond.numericValue}
+                            onChange={(e) => {
+                              setFormData(prev => ({
+                                ...prev,
+                                conditions: prev.conditions.map((c, i) => i === idx
+                                  ? { ...c, numericValue: parseFloat(e.target.value) || 0 }
+                                  : c),
+                              }));
+                            }}
+                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                            step="any"
+                          />
+                        )}
+                        {condOpDef?.valueType === 'string' && (
+                          <input
+                            type="text"
+                            value={cond.stringValue}
+                            onChange={(e) => {
+                              setFormData(prev => ({
+                                ...prev,
+                                conditions: prev.conditions.map((c, i) => i === idx
+                                  ? { ...c, stringValue: e.target.value }
+                                  : c),
+                              }));
+                            }}
+                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                            placeholder="검색할 텍스트"
+                          />
+                        )}
+                        {condOpDef?.valueType === 'string_array' && (
+                          <textarea
+                            value={cond.stringArrayValue}
+                            onChange={(e) => {
+                              setFormData(prev => ({
+                                ...prev,
+                                conditions: prev.conditions.map((c, i) => i === idx
+                                  ? { ...c, stringArrayValue: e.target.value }
+                                  : c),
+                              }));
+                            }}
+                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none resize-none"
+                            rows={2}
+                            placeholder="키워드1, 키워드2, ..."
+                          />
+                        )}
+                        {condOpDef?.valueType === 'boolean' && (
+                          <select
+                            value={cond.booleanValue ? 'true' : 'false'}
+                            onChange={(e) => {
+                              setFormData(prev => ({
+                                ...prev,
+                                conditions: prev.conditions.map((c, i) => i === idx
+                                  ? { ...c, booleanValue: e.target.value === 'true' }
+                                  : c),
+                              }));
+                            }}
+                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                          >
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                          </select>
+                        )}
+                        {/* AND/OR separator between conditions */}
+                        {idx < formData.conditions.length - 1 && (
+                          <div className="flex items-center justify-center pt-1">
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                              formData.logic === 'AND' ? 'bg-blue-600/20 text-blue-400' : 'bg-amber-600/20 text-amber-400'
+                            }`}>
+                              {formData.logic}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {/* Add condition button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData(prev => ({
+                        ...prev,
+                        conditions: [...prev.conditions, createDefaultCondition()],
+                      }));
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-500 transition-colors text-sm"
+                  >
+                    <CopyPlus className="w-4 h-4" />
+                    조건 추가
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {/* Field Selector (단순 규칙) */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-400 mb-1">연산자</label>
+                    <label className="block text-sm font-medium text-slate-400 mb-1">대상 필드 *</label>
+                    <select
+                      value={formData.field}
+                      onChange={(e) => setFormData({ ...formData, field: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    >
+                      {RULE_FIELDS.map((f) => (
+                        <option key={f.field} value={f.field}>
+                          {f.label} ({f.dataType})
+                        </option>
+                      ))}
+                    </select>
+                    {(() => {
+                      const fd = getFieldDefinition(formData.field);
+                      return fd?.description ? (
+                        <p className="mt-1 text-xs text-slate-500">{fd.description}</p>
+                      ) : null;
+                    })()}
+                  </div>
+
+                  {/* Operator Selector (단순 규칙) */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-1">연산자 *</label>
                     <select
                       value={formData.operator}
-                      onChange={(e) =>
-                        setFormData({ ...formData, operator: e.target.value as TokenOperator })
-                      }
+                      onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
                       className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                     >
-                      <option value="lt">미만 (&lt;)</option>
-                      <option value="gt">초과 (&gt;)</option>
+                      {availableOperators.map((op) => (
+                        <option key={op.operator} value={op.operator}>
+                          {op.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-400 mb-1">임계값</label>
-                    <input
-                      type="number"
-                      value={formData.threshold}
-                      onChange={(e) =>
-                        setFormData({ ...formData, threshold: parseInt(e.target.value) || 0 })
-                      }
-                      className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                      min={0}
-                    />
-                  </div>
-                </div>
-              )}
 
-              {/* Token Ratio Options */}
-              {formData.type === 'token_ratio' && (
-                <div className="space-y-4">
-                  <p className="text-sm text-slate-400">
-                    output/input 토큰 비율이 아래 범위를 벗어나면 문제로 탐지합니다.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-400 mb-1">
-                        최소 비율 (미만이면 문제)
-                      </label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        value={formData.minRatio}
-                        onChange={(e) =>
-                          setFormData({ ...formData, minRatio: parseFloat(e.target.value) || 0 })
-                        }
-                        className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                        placeholder="예: 0.3"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-400 mb-1">
-                        최대 비율 (초과면 문제)
-                      </label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        value={formData.maxRatio}
-                        onChange={(e) =>
-                          setFormData({ ...formData, maxRatio: parseFloat(e.target.value) || 0 })
-                        }
-                        className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                        placeholder="예: 5.0"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-xs text-slate-500">
-                    예: 최소 0.3, 최대 5.0 → 비율이 0.3 미만이거나 5.0 초과면 문제로 탐지
-                  </p>
-                </div>
-              )}
+                  {/* Value Input (단순 규칙) */}
+                  {(() => {
+                    const opDef = getOperatorDefinition(formData.operator);
+                    if (!opDef) return null;
 
-              {/* Keyword Match Options */}
-              {formData.type === 'keyword_match' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-400 mb-1">검색 대상</label>
-                    <select
-                      value={formData.matchField}
-                      onChange={(e) =>
-                        setFormData({ ...formData, matchField: e.target.value as KeywordMatchField })
-                      }
-                      className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                    >
-                      <option value="llm_response">LLM 응답</option>
-                      <option value="user_input">사용자 입력</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-400 mb-1">
-                      키워드 (쉼표로 구분)
-                    </label>
-                    <textarea
-                      value={formData.keywords}
-                      onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none resize-none"
-                      rows={3}
-                      placeholder="예: 죄송합니다, 데이터, 없습니다"
-                    />
-                  </div>
+                    switch (opDef.valueType) {
+                      case 'number':
+                        return (
+                          <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-1">값 *</label>
+                            <input
+                              type="number"
+                              value={formData.numericValue}
+                              onChange={(e) =>
+                                setFormData({ ...formData, numericValue: parseFloat(e.target.value) || 0 })
+                              }
+                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                              step="any"
+                            />
+                          </div>
+                        );
+                      case 'string':
+                        return (
+                          <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-1">값 *</label>
+                            <input
+                              type="text"
+                              value={formData.stringValue}
+                              onChange={(e) => setFormData({ ...formData, stringValue: e.target.value })}
+                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                              placeholder="검색할 텍스트"
+                            />
+                          </div>
+                        );
+                      case 'string_array':
+                        return (
+                          <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-1">
+                              키워드 (쉼표로 구분) *
+                            </label>
+                            <textarea
+                              value={formData.stringArrayValue}
+                              onChange={(e) => setFormData({ ...formData, stringArrayValue: e.target.value })}
+                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none resize-none"
+                              rows={3}
+                              placeholder="예: 죄송합니다, 데이터 없습니다, 찾을 수 없습니다"
+                            />
+                          </div>
+                        );
+                      case 'boolean':
+                        return (
+                          <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-1">값 *</label>
+                            <select
+                              value={formData.booleanValue ? 'true' : 'false'}
+                              onChange={(e) =>
+                                setFormData({ ...formData, booleanValue: e.target.value === 'true' })
+                              }
+                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                            >
+                              <option value="true">True (성공)</option>
+                              <option value="false">False (실패)</option>
+                            </select>
+                          </div>
+                        );
+                      default:
+                        return null;
+                    }
+                  })()}
                 </>
               )}
+
+              {/* Preview */}
+              <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700/50">
+                <p className="text-xs text-slate-500 mb-1">규칙 미리보기</p>
+                {formData.isCompound ? (
+                  <div className="space-y-1">
+                    {formData.conditions.map((cond, idx) => {
+                      const condOpDef = getOperatorDefinition(cond.operator);
+                      const condFieldDef = getFieldDefinition(cond.field);
+                      const val = getConditionValue(cond);
+                      return (
+                        <div key={idx}>
+                          <p className="text-sm text-slate-300">
+                            <span className="text-blue-400">{condFieldDef?.label}</span>
+                            {' '}
+                            <span className="text-amber-400">{condOpDef?.label}</span>
+                            {' '}
+                            <span className="text-green-400">
+                              {Array.isArray(val) ? val.join(', ') : String(val)}
+                            </span>
+                          </p>
+                          {idx < formData.conditions.length - 1 && (
+                            <p className="text-xs text-center text-purple-400 font-bold">{formData.logic}</p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-300">
+                    <span className="text-blue-400">{getFieldDefinition(formData.field)?.label}</span>
+                    {' '}
+                    <span className="text-amber-400">{getOperatorDefinition(formData.operator)?.label}</span>
+                    {' '}
+                    <span className="text-green-400">
+                      {(() => {
+                        const v = getConfigValue();
+                        return Array.isArray(v) ? v.join(', ') : String(v);
+                      })()}
+                    </span>
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Modal Footer */}

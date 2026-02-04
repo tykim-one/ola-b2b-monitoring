@@ -24,6 +24,9 @@ import {
   ProblematicChat,
   ProblematicChatRule,
   ProblematicChatStats,
+  getFieldDefinition,
+  getOperatorDefinition,
+  isCompoundConfig,
 } from '@ola/shared-types';
 
 const PROJECT_ID = 'ibks';
@@ -443,12 +446,24 @@ export default function UserAnalyticsPage() {
                   <div className="flex flex-wrap gap-2">
                     {enabledRules.map((rule) => {
                       const isSelected = selectedRuleIds.has(rule.id);
-                      const typeColor =
-                        rule.type === 'token_threshold'
-                          ? 'bg-amber-600'
-                          : rule.type === 'keyword_match'
-                            ? 'bg-rose-600'
-                            : 'bg-cyan-600';
+                      let typeColor = 'bg-cyan-600';
+                      let summary = '';
+                      if (isCompoundConfig(rule.config)) {
+                        typeColor = 'bg-purple-600';
+                        summary = `${rule.config.conditions.length}개 조건 (${rule.config.logic})`;
+                      } else {
+                        const fieldDef = getFieldDefinition(rule.config.field);
+                        const opDef = getOperatorDefinition(rule.config.operator);
+                        typeColor =
+                          fieldDef?.dataType === 'numeric'
+                            ? 'bg-amber-600'
+                            : fieldDef?.dataType === 'text'
+                              ? 'bg-rose-600'
+                              : 'bg-cyan-600';
+                        summary = Array.isArray(rule.config.value)
+                          ? `${(rule.config.value as string[]).length}개 키워드`
+                          : `${opDef?.label || rule.config.operator} ${rule.config.value}`;
+                      }
                       return (
                         <button
                           key={rule.id}
@@ -460,13 +475,7 @@ export default function UserAnalyticsPage() {
                           }`}
                         >
                           <span className="font-medium">{rule.name}</span>
-                          <span className="ml-2 text-xs opacity-75">
-                            {rule.type === 'token_threshold'
-                              ? `Output ${rule.config.operator === 'lt' ? '<' : '>'} ${rule.config.threshold}`
-                              : rule.type === 'keyword_match'
-                                ? `${rule.config.keywords?.length || 0}개 키워드`
-                                : `비율 ${rule.config.minRatio}~${rule.config.maxRatio}`}
-                          </span>
+                          <span className="ml-2 text-xs opacity-75">{summary}</span>
                         </button>
                       );
                     })}

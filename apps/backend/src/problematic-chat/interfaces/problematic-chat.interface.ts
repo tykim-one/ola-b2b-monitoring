@@ -2,18 +2,7 @@
  * 문제 채팅 모니터링 인터페이스
  */
 
-export type ProblematicChatRuleType = 'token_threshold' | 'keyword_match' | 'token_ratio';
-export type TokenOperator = 'lt' | 'gt';
-export type KeywordMatchField = 'llm_response' | 'user_input';
-
-export interface ProblematicChatRuleConfig {
-  threshold?: number;
-  operator?: TokenOperator;
-  keywords?: string[];
-  matchField?: KeywordMatchField;
-  minRatio?: number;
-  maxRatio?: number;
-}
+import { ProblematicChatRuleConfig } from '@ola/shared-types';
 
 export interface ProblematicChatRuleEntity {
   id: string;
@@ -31,7 +20,6 @@ export interface ParsedProblematicChatRule {
   name: string;
   description?: string;
   isEnabled: boolean;
-  type: ProblematicChatRuleType;
   config: ProblematicChatRuleConfig;
   createdAt: string;
   updatedAt: string;
@@ -50,6 +38,7 @@ export interface ProblematicChatItem {
   success: boolean;
   sessionId?: string;
   matchedRules: string[];
+  nextUserInput?: string;
 }
 
 export interface ProblematicChatStats {
