@@ -9,7 +9,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   Cell,
 } from 'recharts';
 import {
@@ -20,6 +19,7 @@ import {
 } from '@/services/batchAnalysisService';
 import { EmptyState } from '@/components/ui/EmptyState';
 import KPICard from '@/components/kpi/KPICard';
+import { Chart } from '@/components/compound/Chart';
 
 export default function IssueFrequencyPage() {
   const [data, setData] = useState<IssueFrequencyResponse | null>(null);
@@ -216,43 +216,40 @@ export default function IssueFrequencyPage() {
 
       {/* Chart */}
       {data && data.issues.length > 0 && (
-        <div className="bg-white rounded-lg p-4 mb-6">
-          <h2 className="text-lg font-semibold mb-4">이슈 빈도 차트</h2>
-          <div className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                layout="vertical"
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis type="number" stroke="#9ca3af" />
-                <YAxis
-                  type="category"
-                  dataKey="name"
-                  stroke="#9ca3af"
-                  width={200}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                  formatter={(value, _name, props) => [
-                    `${value}회 (${(props as any).payload.percentage}%)`,
-                    (props as any).payload.fullName,
-                  ]}
-                />
-                <Bar dataKey="count" radius={[0, 4, 4, 0]}>
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="mb-6">
+          <Chart title="이슈 빈도 차트" height={400}>
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis type="number" stroke="#9ca3af" />
+              <YAxis
+                type="category"
+                dataKey="name"
+                stroke="#9ca3af"
+                width={200}
+                tick={{ fontSize: 12 }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                }}
+                formatter={(value, _name, props) => [
+                  `${value}회 (${(props as any).payload.percentage}%)`,
+                  (props as any).payload.fullName,
+                ]}
+              />
+              <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </Chart>
         </div>
       )}
 

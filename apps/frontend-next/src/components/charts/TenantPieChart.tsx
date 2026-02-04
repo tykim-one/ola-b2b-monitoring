@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { Chart } from '@/components/compound/Chart';
 import { TOOLTIP_STYLE } from './chart-theme';
 
 interface TenantData {
@@ -41,44 +42,41 @@ const TenantPieChart: React.FC<TenantPieChartProps> = ({
   };
 
   return (
-    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+    <Chart.Wrapper title={title}>
       <div className="h-[300px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={100}
-              paddingAngle={2}
-              dataKey="value"
-            >
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{
-                ...TOOLTIP_STYLE,
-                borderRadius: '8px',
-              }}
-              formatter={(value) => {
-                const numValue = typeof value === 'number' ? value : 0;
-                return [formatValue(numValue), dataKey === 'total_tokens' ? '토큰' : '요청'];
-              }}
-            />
-            <Legend
-              layout="vertical"
-              align="right"
-              verticalAlign="middle"
-              formatter={(value) => (
-                <span className="text-gray-600 text-sm">{value}</span>
-              )}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+        <PieChart width={800} height={300}>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={100}
+            paddingAngle={2}
+            dataKey="value"
+          >
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.fill} />
+            ))}
+          </Pie>
+          <Tooltip
+            contentStyle={{
+              ...TOOLTIP_STYLE,
+              borderRadius: '8px',
+            }}
+            formatter={(value) => {
+              const numValue = typeof value === 'number' ? value : 0;
+              return [formatValue(numValue), dataKey === 'total_tokens' ? '토큰' : '요청'];
+            }}
+          />
+          <Legend
+            layout="vertical"
+            align="right"
+            verticalAlign="middle"
+            formatter={(value) => (
+              <span className="text-gray-600 text-sm">{value}</span>
+            )}
+          />
+        </PieChart>
       </div>
 
       {/* Summary */}
@@ -88,7 +86,7 @@ const TenantPieChart: React.FC<TenantPieChartProps> = ({
           <span className="text-gray-900 font-medium">{formatValue(total)}</span>
         </div>
       </div>
-    </div>
+    </Chart.Wrapper>
   );
 };
 

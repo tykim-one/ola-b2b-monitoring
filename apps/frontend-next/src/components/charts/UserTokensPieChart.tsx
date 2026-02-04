@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { UserTokenUsage } from '@ola/shared-types';
+import { Chart } from '@/components/compound/Chart';
 import { TOOLTIP_STYLE } from './chart-theme';
 
 interface UserTokensPieChartProps {
@@ -69,11 +70,9 @@ const UserTokensPieChart: React.FC<UserTokensPieChartProps> = ({
   ];
 
   return (
-    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-
-        {/* Token Type Selector */}
+    <Chart.Wrapper title={title}>
+      {/* Token Type Selector */}
+      <div className="flex justify-end mb-4">
         <div className="flex gap-1 bg-white rounded-lg p-1">
           {(Object.keys(tokenTypeLabels) as TokenType[]).map((type) => (
             <button
@@ -146,7 +145,7 @@ const UserTokensPieChart: React.FC<UserTokensPieChartProps> = ({
           유저 수: <span className="text-gray-900 font-medium">{data.length}명</span>
         </div>
       </div>
-    </div>
+    </Chart.Wrapper>
   );
 };
 

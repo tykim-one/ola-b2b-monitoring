@@ -12,6 +12,7 @@ import {
   Cell,
 } from 'recharts';
 import { UserRequestCount } from '@ola/shared-types';
+import { Chart } from '@/components/compound/Chart';
 import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface UserRequestsBarChartProps {
@@ -53,9 +54,8 @@ const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = ({
   const totalUsers = data.length;
 
   return (
-    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+    <Chart.Wrapper title={title}>
+      <div className="flex justify-end mb-4">
         <div className="flex gap-4 text-sm">
           <div className="text-right">
             <div className="text-gray-500 text-xs">총 유저</div>
@@ -125,7 +125,7 @@ const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = ({
           <span className="text-gray-500">성공률 80% 미만</span>
         </div>
       </div>
-    </div>
+    </Chart.Wrapper>
   );
 };
 

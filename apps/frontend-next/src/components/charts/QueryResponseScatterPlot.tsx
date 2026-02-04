@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import Modal from '../ui/Modal';
 import MarkdownViewer from '../markdown/MarkdownViewer';
+import { Chart } from '@/components/compound/Chart';
 import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface CorrelationData {
@@ -81,12 +82,11 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
 
   return (
     <>
-      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-            <p className="text-xs text-gray-500 mt-1">클릭하여 상세 내용 보기</p>
-          </div>
+      <Chart
+        title={title}
+        subtitle="클릭하여 상세 내용 보기"
+        height={300}
+        headerRight={
           <div className="text-right">
             <div className="text-gray-500 text-xs">상관계수</div>
             <div
@@ -101,104 +101,100 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
               r = {correlation.toFixed(3)}
             </div>
           </div>
-        </div>
-
-        <div className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
-              <XAxis
-                type="number"
-                dataKey="query_length"
-                name="질문 길이"
-                stroke={CHART_COLORS.axis}
-                fontSize={12}
-                tickLine={false}
-                tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : v)}
-                label={{
-                  value: '질문 길이 (문자)',
-                  position: 'insideBottom',
-                  offset: -10,
-                  fill: CHART_COLORS.axisText,
-                  fontSize: 11,
-                }}
-              />
-              <YAxis
-                type="number"
-                dataKey="response_length"
-                name="응답 길이"
-                stroke={CHART_COLORS.axis}
-                fontSize={12}
-                tickLine={false}
-                tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : v)}
-                label={{
-                  value: '응답 길이 (문자)',
-                  angle: -90,
-                  position: 'insideLeft',
-                  fill: CHART_COLORS.axisText,
-                  fontSize: 11,
-                }}
-              />
-              <ZAxis
-                type="number"
-                dataKey="efficiency_ratio"
-                range={[30, 150]}
-                name="효율성"
-              />
-              <Tooltip
-                contentStyle={TOOLTIP_STYLE}
-                cursor={{ strokeDasharray: '3 3' }}
-                formatter={(value, name) => {
-                  const labels: Record<string, string> = {
-                    query_length: '질문 길이',
-                    response_length: '응답 길이',
-                    efficiency_ratio: '효율성',
-                  };
-                  return [value, labels[String(name)] || String(name)];
-                }}
-                labelFormatter={(_, payload) => {
-                  if (payload && payload[0]) {
-                    const item = payload[0].payload as CorrelationData;
-                    return `${item.tenant_id} (클릭하여 상세보기)`;
-                  }
-                  return '';
-                }}
-              />
-              <Legend
-                formatter={(value) => {
-                  const labels: Record<string, string> = {
-                    high: '높은 효율성 (2x+)',
-                    normal: '정상 (0.5-2x)',
-                    low: '낮은 효율성 (<0.5x)',
-                  };
-                  return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
-                }}
-              />
-              <Scatter
-                name="high"
-                data={highEfficiency}
-                fill="#10b981"
-                onClick={handleScatterClick}
-                cursor="pointer"
-              />
-              <Scatter
-                name="normal"
-                data={normalEfficiency}
-                fill="#3b82f6"
-                onClick={handleScatterClick}
-                cursor="pointer"
-              />
-              <Scatter
-                name="low"
-                data={lowEfficiency}
-                fill="#f43f5e"
-                onClick={handleScatterClick}
-                cursor="pointer"
-              />
-            </ScatterChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+        }
+      >
+        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+          <XAxis
+            type="number"
+            dataKey="query_length"
+            name="질문 길이"
+            stroke={CHART_COLORS.axis}
+            fontSize={12}
+            tickLine={false}
+            tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : v)}
+            label={{
+              value: '질문 길이 (문자)',
+              position: 'insideBottom',
+              offset: -10,
+              fill: CHART_COLORS.axisText,
+              fontSize: 11,
+            }}
+          />
+          <YAxis
+            type="number"
+            dataKey="response_length"
+            name="응답 길이"
+            stroke={CHART_COLORS.axis}
+            fontSize={12}
+            tickLine={false}
+            tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : v)}
+            label={{
+              value: '응답 길이 (문자)',
+              angle: -90,
+              position: 'insideLeft',
+              fill: CHART_COLORS.axisText,
+              fontSize: 11,
+            }}
+          />
+          <ZAxis
+            type="number"
+            dataKey="efficiency_ratio"
+            range={[30, 150]}
+            name="효율성"
+          />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE}
+            cursor={{ strokeDasharray: '3 3' }}
+            formatter={(value, name) => {
+              const labels: Record<string, string> = {
+                query_length: '질문 길이',
+                response_length: '응답 길이',
+                efficiency_ratio: '효율성',
+              };
+              return [value, labels[String(name)] || String(name)];
+            }}
+            labelFormatter={(_, payload) => {
+              if (payload && payload[0]) {
+                const item = payload[0].payload as CorrelationData;
+                return `${item.tenant_id} (클릭하여 상세보기)`;
+              }
+              return '';
+            }}
+          />
+          <Legend
+            formatter={(value) => {
+              const labels: Record<string, string> = {
+                high: '높은 효율성 (2x+)',
+                normal: '정상 (0.5-2x)',
+                low: '낮은 효율성 (<0.5x)',
+              };
+              return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
+            }}
+          />
+          <Scatter
+            name="high"
+            data={highEfficiency}
+            fill="#10b981"
+            onClick={handleScatterClick}
+            cursor="pointer"
+          />
+          <Scatter
+            name="normal"
+            data={normalEfficiency}
+            fill="#3b82f6"
+            onClick={handleScatterClick}
+            cursor="pointer"
+          />
+          <Scatter
+            name="low"
+            data={lowEfficiency}
+            fill="#f43f5e"
+            onClick={handleScatterClick}
+            cursor="pointer"
+          />
+        </ScatterChart>
+      </Chart>
 
       {/* 상세 분석 모달 */}
       <Modal

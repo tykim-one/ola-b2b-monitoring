@@ -2,11 +2,12 @@
 
 import React, { useMemo } from 'react';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   BarChart, Bar
 } from 'recharts';
 import { MetricData } from '@/types';
 import { CHART_COLORS, TOOLTIP_STYLE } from './charts/chart-theme';
+import { Chart } from '@/components/compound/Chart';
 
 interface DashboardProps {
   metrics: MetricData[];
@@ -53,47 +54,37 @@ const Dashboard: React.FC<DashboardProps> = ({ metrics }) => {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Volume Chart */}
-        <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Traffic Volume</h3>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={metrics}>
-                <defs>
-                  <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
-                <XAxis dataKey="time" stroke={CHART_COLORS.axis} fontSize={12} tickLine={false} />
-                <YAxis stroke={CHART_COLORS.axis} fontSize={12} tickLine={false} />
-                <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Area type="monotone" dataKey="requests" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRequests)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <Chart title="Traffic Volume" height={300}>
+          <AreaChart data={metrics}>
+            <defs>
+              <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+            <XAxis dataKey="time" stroke={CHART_COLORS.axis} fontSize={12} tickLine={false} />
+            <YAxis stroke={CHART_COLORS.axis} fontSize={12} tickLine={false} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} />
+            <Area type="monotone" dataKey="requests" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRequests)" />
+          </AreaChart>
+        </Chart>
 
         {/* Latency/Errors Mixed Chart */}
-        <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Errors vs Latency</h3>
-           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={metrics}>
-                <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
-                <XAxis dataKey="time" stroke={CHART_COLORS.axis} fontSize={12} tickLine={false} />
-                <YAxis yAxisId="left" stroke="#f43f5e" fontSize={12} tickLine={false} />
-                <YAxis yAxisId="right" orientation="right" stroke="#10b981" fontSize={12} tickLine={false} />
-                <Tooltip
-                  cursor={{fill: CHART_COLORS.cursor}}
-                  contentStyle={TOOLTIP_STYLE}
-                />
-                <Bar yAxisId="left" dataKey="errors" fill="#f43f5e" radius={[4, 4, 0, 0]} />
-                <Bar yAxisId="right" dataKey="latency" fill="#10b981" radius={[4, 4, 0, 0]} fillOpacity={0.5} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <Chart title="Errors vs Latency" height={300}>
+          <BarChart data={metrics}>
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+            <XAxis dataKey="time" stroke={CHART_COLORS.axis} fontSize={12} tickLine={false} />
+            <YAxis yAxisId="left" stroke="#f43f5e" fontSize={12} tickLine={false} />
+            <YAxis yAxisId="right" orientation="right" stroke="#10b981" fontSize={12} tickLine={false} />
+            <Tooltip
+              cursor={{fill: CHART_COLORS.cursor}}
+              contentStyle={TOOLTIP_STYLE}
+            />
+            <Bar yAxisId="left" dataKey="errors" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+            <Bar yAxisId="right" dataKey="latency" fill="#10b981" radius={[4, 4, 0, 0]} fillOpacity={0.5} />
+          </BarChart>
+        </Chart>
       </div>
 
        <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">

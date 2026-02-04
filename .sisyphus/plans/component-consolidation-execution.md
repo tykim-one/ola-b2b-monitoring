@@ -20,11 +20,11 @@
 | Phase 1 | ✅ 완료 | 공통 컴포넌트 확장 (StatusBadge, Modal, EmptyState, KPICard) |
 | Phase 2 | ✅ 완료 | 로그 테이블 3중 복사 통합 |
 | Phase 3 | ✅ 완료 | batch-analysis 3개 탭 표준화 |
-| Phase 4 | ⬜ 대기 | 자체 모달 → Modal 컴포넌트 교체 |
-| Phase 5 | ⬜ 대기 | 인라인 EmptyState 10곳 교체 |
-| Phase 6 | ⬜ 대기 | 인라인 StatusBadge 6곳 교체 |
-| Phase 7 | ⬜ 대기 | 인라인 KPI 카드 7개 교체 |
-| Phase 8 | ⬜ 대기 | Chart compound 17개 차트 마이그레이션 |
+| Phase 4 | ✅ 완료 | 자체 모달 → Modal 컴포넌트 교체 |
+| Phase 5 | ✅ 완료 | 인라인 EmptyState 10곳 교체 |
+| Phase 6 | ✅ 완료 | 인라인 StatusBadge 2곳 교체 (4곳 특수UI 유지) |
+| Phase 7 | ✅ 완료 | 인라인 KPI 카드 7개 교체 |
+| Phase 8 | ✅ 완료 | Chart compound 16개 차트 마이그레이션 |
 | Phase 9 | ⬜ 대기 | 기타 소규모 교체 (DateRangeFilter) |
 
 > Phase 완료 시 ⬜를 ✅로 변경하세요.
@@ -1060,17 +1060,21 @@ export default function SomeChart({ data, title }: Props) {
 
 각 차트 파일에 동일 패턴 적용:
 
-| File | Specific Notes |
-|------|---------------|
-| `CostTrendChart.tsx` | ComposedChart, 이미 chart-theme.ts import -> Chart compound의 CHART_COLORS로 통합 |
-| `QueryResponseScatterPlot.tsx` | ScatterChart, custom tooltip -> 유지, 래퍼만 교체 |
-| `UserRequestsBarChart.tsx` | BarChart, Legend 자체 구현 -> Chart.Legend로 교체 가능 |
-| `UserTokensPieChart.tsx` | PieChart, custom center label -> 유지 |
-| `TokenScatterPlot.tsx` | ScatterChart |
-| `ErrorGauge.tsx` | RadialBarChart, CHART_COLORS.bgFill 사용 -> 유지 |
-| `TokenEfficiencyTrendChart.tsx` | LineChart, dual Y axis |
-| `RealtimeTrafficChart.tsx` | LineChart, gradient fill |
-| `TenantPieChart.tsx` | PieChart, Legend 포함 |
+| File | Status | Specific Notes |
+|------|--------|---------------|
+| `CostTrendChart.tsx` | ⬜ 대기 | ComposedChart, 이미 chart-theme.ts import -> Chart compound의 CHART_COLORS로 통합 |
+| `QueryResponseScatterPlot.tsx` | ✅ 완료 | ScatterChart, custom tooltip 유지, Chart + headerRight 사용 |
+| `UserRequestsBarChart.tsx` | ✅ 완료 | BarChart, Chart.Wrapper + 커스텀 Legend 하단 유지 |
+| `UserTokensPieChart.tsx` | ✅ 완료 | PieChart, Chart.Wrapper + 토큰 타입 선택기 + 하단 Summary 유지 |
+| `TokenScatterPlot.tsx` | ✅ 완료 | ScatterChart, Chart.Wrapper + 평균 효율성 표시 + 하단 Legend 유지 |
+| `ErrorGauge.tsx` | ✅ 완료 | RadialBarChart, Chart.Wrapper + 중앙 오버레이 텍스트 + 하단 통계 유지 |
+| `TokenEfficiencyTrendChart.tsx` | ⬜ 대기 | LineChart, dual Y axis |
+| `RealtimeTrafficChart.tsx` | ⬜ 대기 | LineChart, gradient fill |
+| `TenantPieChart.tsx` | ⬜ 대기 | PieChart, Legend 포함 |
+
+**그룹 B (복잡한 차트 5개) 완료**: QueryResponseScatterPlot, UserRequestsBarChart, UserTokensPieChart, TokenScatterPlot, ErrorGauge
+- `Chart` 사용: QueryResponseScatterPlot (headerRight로 상관계수 표시)
+- `Chart.Wrapper` 사용: 나머지 4개 (커스텀 레이아웃 유지 위해)
 
 #### 8-10. components/Dashboard.tsx (2개 인라인 차트)
 

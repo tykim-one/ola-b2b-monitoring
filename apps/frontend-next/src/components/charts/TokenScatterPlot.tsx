@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   ZAxis,
 } from 'recharts';
+import { Chart } from '@/components/compound/Chart';
 import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface TokenData {
@@ -56,9 +57,8 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
       : 0;
 
   return (
-    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+    <Chart.Wrapper title={title}>
+      <div className="flex justify-end mb-4">
         <div className="text-right">
           <div className="text-gray-500 text-xs">평균 효율성 비율</div>
           <div className="text-blue-400 font-bold">{avgEfficiency.toFixed(3)}</div>
@@ -141,7 +141,7 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
           </div>
         ))}
       </div>
-    </div>
+    </Chart.Wrapper>
   );
 };
 

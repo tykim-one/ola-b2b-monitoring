@@ -17,10 +17,10 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
 } from 'recharts';
 import { useMinkabuETLDashboard } from '@/hooks/queries/use-etl';
 import { Dashboard } from '@/components/compound/Dashboard';
+import { Chart } from '@/components/compound/Chart';
 import { DataTable, Column } from '@/components/compound/DataTable';
 import KPICard from '@/components/kpi/KPICard';
 import { StatusBadge, type BadgeVariant } from '@/components/ui/StatusBadge';
@@ -199,64 +199,54 @@ export default function MinkabuETLPage() {
 
         {/* Charts */}
         <Dashboard.ChartsSection columns={2}>
-          <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              일별 실행 트렌드 ({dateRange.days}일)
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={dailyTrend}>
-                <defs>
-                  <linearGradient id="colorRunCount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorSuccessRate" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
-                <XAxis dataKey="period" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
-                <YAxis yAxisId="left" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
-                <YAxis yAxisId="right" orientation="right" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
-                <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Area
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="runCount"
-                  stroke="#3b82f6"
-                  fillOpacity={1}
-                  fill="url(#colorRunCount)"
-                  name="실행 횟수"
-                />
-                <Area
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="successRate"
-                  stroke="#10b981"
-                  fillOpacity={1}
-                  fill="url(#colorSuccessRate)"
-                  name="성공률 (%)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <Chart title={`일별 실행 트렌드 (${dateRange.days}일)`} height={300}>
+            <AreaChart data={dailyTrend}>
+              <defs>
+                <linearGradient id="colorRunCount" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorSuccessRate" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+              <XAxis dataKey="period" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
+              <YAxis yAxisId="left" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
+              <YAxis yAxisId="right" orientation="right" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <Area
+                yAxisId="left"
+                type="monotone"
+                dataKey="runCount"
+                stroke="#3b82f6"
+                fillOpacity={1}
+                fill="url(#colorRunCount)"
+                name="실행 횟수"
+              />
+              <Area
+                yAxisId="right"
+                type="monotone"
+                dataKey="successRate"
+                stroke="#10b981"
+                fillOpacity={1}
+                fill="url(#colorSuccessRate)"
+                name="성공률 (%)"
+              />
+            </AreaChart>
+          </Chart>
 
-          <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              헤드라인 수집 통계 ({dateRange.days}일)
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={headlineStats}>
-                <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
-                <XAxis dataKey="date" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
-                <YAxis stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
-                <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Bar dataKey="totalTodayHeadlines" fill="#8b5cf6" name="오늘 헤드라인" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="totalArticlesFetched" fill="#3b82f6" name="기사 수집" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <Chart title={`헤드라인 수집 통계 (${dateRange.days}일)`} height={300}>
+            <BarChart data={headlineStats}>
+              <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+              <XAxis dataKey="date" stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
+              <YAxis stroke={CHART_COLORS.axis} tick={{ fontSize: 12 }} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <Bar dataKey="totalTodayHeadlines" fill="#8b5cf6" name="오늘 헤드라인" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="totalArticlesFetched" fill="#3b82f6" name="기사 수집" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </Chart>
         </Dashboard.ChartsSection>
 
         {/* Recent Runs Table */}

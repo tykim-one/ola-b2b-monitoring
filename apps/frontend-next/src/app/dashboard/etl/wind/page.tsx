@@ -18,11 +18,11 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   Legend,
 } from 'recharts';
 import { useWindETLDashboard } from '@/hooks/queries/use-etl';
 import { Dashboard } from '@/components/compound/Dashboard';
+import { Chart } from '@/components/compound/Chart';
 import { DataTable, Column } from '@/components/compound/DataTable';
 import KPICard from '@/components/kpi/KPICard';
 import { StatusBadge, type BadgeVariant } from '@/components/ui/StatusBadge';
@@ -191,55 +191,45 @@ export default function WindETLMonitoringPage() {
 
         {/* Charts */}
         <Dashboard.ChartsSection columns={2}>
-          <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              일별 실행 트렌드 ({dateRange.days}일)
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={dailyTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="period" stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
-                <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                  labelStyle={{ color: '#111827' }}
-                  itemStyle={{ color: '#6b7280' }}
-                />
-                <Legend />
-                <Area type="monotone" dataKey="runCount" name="실행 수" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="successRate" name="성공률 (%)" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <Chart title={`일별 실행 트렌드 (${dateRange.days}일)`} height={300}>
+            <AreaChart data={dailyTrend}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="period" stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
+              <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                }}
+                labelStyle={{ color: '#111827' }}
+                itemStyle={{ color: '#6b7280' }}
+              />
+              <Legend />
+              <Area type="monotone" dataKey="runCount" name="실행 수" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+              <Area type="monotone" dataKey="successRate" name="성공률 (%)" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
+            </AreaChart>
+          </Chart>
 
-          <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              파일 처리 통계 ({dateRange.days}일)
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={fileStats}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
-                <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                  labelStyle={{ color: '#111827' }}
-                  itemStyle={{ color: '#6b7280' }}
-                />
-                <Legend />
-                <Bar dataKey="totalFilesProcessed" name="처리 완료" fill="#3b82f6" />
-                <Bar dataKey="totalFilesSkipped" name="스킵됨" fill="#8b5cf6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <Chart title={`파일 처리 통계 (${dateRange.days}일)`} height={300}>
+            <BarChart data={fileStats}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="date" stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
+              <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                }}
+                labelStyle={{ color: '#111827' }}
+                itemStyle={{ color: '#6b7280' }}
+              />
+              <Legend />
+              <Bar dataKey="totalFilesProcessed" name="처리 완료" fill="#3b82f6" />
+              <Bar dataKey="totalFilesSkipped" name="스킵됨" fill="#8b5cf6" />
+            </BarChart>
+          </Chart>
         </Dashboard.ChartsSection>
 
         {/* Recent Runs Table */}

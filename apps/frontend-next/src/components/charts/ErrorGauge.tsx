@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
+import { Chart } from '@/components/compound/Chart';
 import { CHART_COLORS } from './chart-theme';
 
 interface ErrorGaugeProps {
@@ -32,8 +33,7 @@ const ErrorGauge: React.FC<ErrorGaugeProps> = ({
   ];
 
   return (
-    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+    <Chart.Wrapper title={title}>
       <div className="h-[200px] w-full relative">
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart
@@ -71,7 +71,7 @@ const ErrorGauge: React.FC<ErrorGaugeProps> = ({
           임계값: {threshold}%
         </div>
       </div>
-    </div>
+    </Chart.Wrapper>
   );
 };
 
