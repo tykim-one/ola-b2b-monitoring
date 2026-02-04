@@ -17,6 +17,7 @@ import {
 import { UserActivityDetail, UserListItem } from '@ola/shared-types';
 import { useUserActivity } from '@/hooks/queries';
 import Modal from '@/components/ui/Modal';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface UserActivityDialogProps {
   isOpen: boolean;
@@ -196,9 +197,7 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
         ) : error ? (
           <div className="text-center py-12 text-rose-400">{error}</div>
         ) : activities.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">
-            해당 기간에 활동 내역이 없습니다.
-          </div>
+          <EmptyState variant="compact" description="해당 기간에 활동 내역이 없습니다." />
         ) : (
           <table className="w-full text-sm">
             <thead className="sticky top-0 bg-white">

@@ -19,6 +19,7 @@ import {
   AnalysisPromptTemplate,
 } from '@/services/batchAnalysisService';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function PromptsPage() {
   const router = useRouter();
@@ -342,12 +343,11 @@ export default function PromptsPage() {
       {/* Templates List */}
       <div className="space-y-4">
         {templates.length === 0 ? (
-          <div className="border border-gray-200 bg-gray-50 p-12 text-center">
-            <p className="text-gray-400 text-sm">NO TEMPLATES FOUND</p>
-            <p className="text-gray-400 text-xs mt-2">
-              Create a template to customize analysis prompts
-            </p>
-          </div>
+          <EmptyState
+            title="NO TEMPLATES FOUND"
+            description="Create a template to customize analysis prompts"
+            action={{ label: 'New Template', onClick: handleCreate }}
+          />
         ) : (
           templates.map((template) => (
             <div

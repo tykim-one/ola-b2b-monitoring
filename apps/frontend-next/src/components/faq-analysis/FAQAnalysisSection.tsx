@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Search, Loader2, AlertCircle, FileQuestion, Clock } from 'lucide-react';
 import FAQClusterCard from './FAQClusterCard';
 import { useFAQTenants, useRunFAQAnalysis } from '@/hooks/queries';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function FAQAnalysisSection() {
   // Filter state
@@ -120,10 +121,11 @@ export default function FAQAnalysisSection() {
 
         {/* Empty State */}
         {!isLoading && !error && !result && (
-          <div className="text-center py-12 text-gray-400">
-            <FileQuestion className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>필터를 설정하고 &quot;분석 실행&quot; 버튼을 클릭하세요.</p>
-          </div>
+          <EmptyState
+            icon={<FileQuestion className="w-12 h-12" />}
+            description='필터를 설정하고 "분석 실행" 버튼을 클릭하세요.'
+            variant="dashed"
+          />
         )}
 
         {/* Loading State */}
@@ -164,9 +166,7 @@ export default function FAQAnalysisSection() {
 
             {/* No Results */}
             {result.clusters.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
-                <p>분석할 데이터가 없습니다.</p>
-              </div>
+              <EmptyState variant="compact" description="분석할 데이터가 없습니다." />
             ) : (
               /* Cluster Cards */
               <div className="space-y-4">

@@ -18,6 +18,7 @@ import {
   IssueFrequencyItem,
   TenantInfo,
 } from '@/services/batchAnalysisService';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function IssueFrequencyPage() {
   const [data, setData] = useState<IssueFrequencyResponse | null>(null);
@@ -256,9 +257,7 @@ export default function IssueFrequencyPage() {
           </div>
 
           {data.issues.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              분석된 이슈가 없습니다.
-            </div>
+            <EmptyState variant="compact" description="분석된 이슈가 없습니다." />
           ) : (
             <div className="divide-y divide-gray-200">
               {data.issues.map((item, index) => (

@@ -26,6 +26,7 @@ import {
   BatchAnalysisResult,
 } from '@/services/batchAnalysisService';
 import { MarkdownViewer } from '@/components/markdown';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -608,12 +609,15 @@ export default function JobDetailPage() {
         </div>
 
         {results.length === 0 ? (
-          <div className="px-6 py-12 text-center">
-            <p className="text-gray-400 text-sm">
-              {job?.status === 'PENDING' ? 'Run the job to generate results' :
-               job?.status === 'RUNNING' ? 'Processing... Results will appear here' :
-               'No results found'}
-            </p>
+          <div className="px-6">
+            <EmptyState
+              variant="compact"
+              description={
+                job?.status === 'PENDING' ? 'Run the job to generate results' :
+                job?.status === 'RUNNING' ? 'Processing... Results will appear here' :
+                'No results found'
+              }
+            />
           </div>
         ) : (
           <div className="divide-y divide-gray-200">

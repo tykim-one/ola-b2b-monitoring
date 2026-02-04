@@ -2,6 +2,7 @@
 
 import { AnalysisSession } from '@ola/shared-types';
 import { useState } from 'react';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface SessionListProps {
   sessions: AnalysisSession[];
@@ -70,10 +71,12 @@ export default function SessionList({
             <div className="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full" />
           </div>
         ) : sessions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center p-6">
-            <div className="text-4xl mb-4">💬</div>
-            <p className="text-gray-500 text-sm">No sessions yet</p>
-            <p className="text-gray-400 text-xs mt-2">Create a new session to start chatting</p>
+          <div className="flex items-center justify-center h-full p-6">
+            <EmptyState
+              icon={<span className="text-4xl">💬</span>}
+              title="No sessions yet"
+              description="Create a new session to start chatting"
+            />
           </div>
         ) : (
           <div className="p-2 space-y-1">

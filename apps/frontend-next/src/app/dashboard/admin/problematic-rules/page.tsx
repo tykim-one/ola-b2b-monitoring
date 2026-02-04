@@ -42,6 +42,7 @@ import {
   fetchRulePreviewQuery,
 } from '@/services/problematicChatService';
 import Modal from '@/components/ui/Modal';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface ConditionFormData {
   field: string;
@@ -436,8 +437,12 @@ export default function ProblematicRulesPage() {
           <tbody>
             {rules.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                  등록된 규칙이 없습니다. 새 규칙을 추가하세요.
+                <td colSpan={6} className="px-6 py-12">
+                  <EmptyState
+                    variant="compact"
+                    description="등록된 규칙이 없습니다."
+                    action={{ label: '새 규칙 추가', onClick: handleOpenCreate }}
+                  />
                 </td>
               </tr>
             ) : (

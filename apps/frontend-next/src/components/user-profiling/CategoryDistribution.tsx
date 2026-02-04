@@ -1,6 +1,7 @@
 'use client';
 
 import { TopCategory, CategoryLabels } from '@/services/userProfilingService';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface Props {
   topCategories: TopCategory[];
@@ -25,9 +26,7 @@ export function CategoryDistribution({ topCategories }: Props) {
     return (
       <div className="bg-white rounded-lg p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">질문 카테고리 분포</h2>
-        <div className="text-gray-500 text-sm">
-          분석된 카테고리 정보가 없습니다.
-        </div>
+        <EmptyState variant="compact" description="분석된 카테고리 정보가 없습니다." />
       </div>
     );
   }

@@ -21,6 +21,7 @@ import {
   FAQJob,
   FAQJobResult,
 } from '@/services/faqAnalysisService';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function FAQJobDetailPage() {
   const params = useParams();
@@ -274,14 +275,17 @@ export default function FAQJobDetailPage() {
         </div>
 
         {results.length === 0 ? (
-          <div className="px-6 py-12 text-center">
-            <p className="text-gray-400 text-sm">
-              {job?.status === 'PENDING'
-                ? 'Run the job to generate clusters'
-                : job?.status === 'RUNNING'
-                ? 'Processing... Results will appear here'
-                : 'No clusters found'}
-            </p>
+          <div className="px-6">
+            <EmptyState
+              variant="compact"
+              description={
+                job?.status === 'PENDING'
+                  ? 'Run the job to generate clusters'
+                  : job?.status === 'RUNNING'
+                  ? 'Processing... Results will appear here'
+                  : 'No clusters found'
+              }
+            />
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
