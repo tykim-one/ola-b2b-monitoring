@@ -23,6 +23,7 @@
   - 실제 데이터 조회는 `MetricsDataSource` 인터페이스 통해
   - 새 데이터 소스 추가 시 `datasource/` 모듈 확장
 - **BigQuery 관리 기능**: `executeQuery()`, `getDatasets()`, `getTables()`, `getSampleLogs()` 메서드는 BigQuery 전용 관리 기능
+- **글로벌/도메인 메트릭**: `GlobalMetricsService`는 전체 프로젝트 통계, `DomainMetricsService`는 도메인별 집계
 - 새 메트릭 추가 시:
   1. `@ola/shared-types`에 타입 추가
   2. `datasource/interfaces/metrics-datasource.interface.ts`에 메서드 추가

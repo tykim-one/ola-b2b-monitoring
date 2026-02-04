@@ -2,13 +2,19 @@
 # problematic-rules
 
 ## Purpose
-문제 채팅 탐지 규칙 관리 페이지입니다. 동적 규칙 엔진을 통해 BigQuery 로그에서 문제 채팅을 필터링하는 규칙을 설정합니다.
+문제 채팅 필터링 규칙 관리 페이지입니다. BigQuery 필드와 연산자를 조합하여 동적 규칙을 생성/관리합니다.
 
 ## Key Files
-- `page.tsx` - 규칙 목록, 생성/수정/삭제, 규칙별 통계, 탐지된 채팅 목록
+- `page.tsx` - 규칙 CRUD 인터페이스, 단순/복합 규칙 모드 전환, SQL 쿼리 미리보기
 
 ## For AI Agents
-- 라우트: `/dashboard/admin/problematic-rules`
-- problematicChatService로 백엔드 API 호출
-- 규칙 설정: field(필드), operator(연산자), value(값) 구조
-- `@ola/shared-types`의 RULE_FIELDS, RULE_OPERATORS 활용
+- **규칙 타입**: 단순 규칙 (단일 조건) vs 복합 규칙 (다중 조건 + AND/OR 로직)
+- **필드**: output_tokens, korean_char_ratio, success, llm_response_text 등 (RULE_FIELDS 참조)
+- **연산자**: >, <, >=, <=, CONTAINS, NOT_CONTAINS, IN, NOT_IN 등
+- **SQL 미리보기**: GET /api/admin/problematic-rules/:id/preview-sql로 생성될 WHERE 절 확인
+- **활성화/비활성화**: 규칙별로 토글 가능, 비활성 규칙은 필터링에서 제외
+
+## Dependencies
+- Backend: `/api/admin/problematic-rules/*` (NestJS)
+- Shared types: `@ola/shared-types` (ProblematicChatRule, RULE_FIELDS, operators)
+- Service: `problematicChatService.ts`

@@ -3,7 +3,7 @@
 
 ## Purpose
 
-Global floating chatbot API module that provides context-aware AI conversations based on the current dashboard page. This module enables users to ask questions about metrics data displayed on any dashboard page.
+페이지 컨텍스트 기반 AI 대화를 제공하는 글로벌 플로팅 챗봇 API 모듈입니다. 사용자가 현재 대시보드 페이지에 표시된 메트릭 데이터에 대해 질문할 수 있도록 지원합니다.
 
 ## Key Files
 

@@ -6,8 +6,16 @@ React Query 기반 데이터 페칭 커스텀 훅입니다. 백엔드 API와 동
 
 ## Key Files
 - `use-metrics.ts` - 메트릭 API 훅 (realtime, hourly, tenant-usage, cost-trend, heatmap 등)
-- `use-admin.ts` - 관리자 CRUD 훅 (users, roles, filters)
+- `use-admin.ts` - 관리자 CRUD 훅 (users, roles, filters, analysis sessions)
 - `use-dashboard.ts` - 대시보드별 통합 훅 (useBusinessDashboard, useOperationsDashboard 등)
+- `use-quality.ts` - 품질 분석 훅 (반복 쿼리, 효율성, 상관관계, 챗봇 품질)
+- `use-user-analytics.ts` - 유저 분석 훅 (요청 수, 토큰 사용량, 질문 패턴, 활동 내역)
+- `use-faq-analysis.ts` - FAQ 분석 훅 (클러스터링 실행, 테넌트 목록)
+- `use-session-analysis.ts` - 세션 분석 훅 (통계, 목록, 타임라인, LLM 분석)
+- `use-log-analysis.ts` - 로그 분석 훅
+- `use-batch-schedules.ts` - 배치 스케줄 훅 (목록, 생성, 수정, 삭제, 토글)
+- `use-etl.ts` - ETL 모니터링 훅 (Wind, Minkabu)
+- `use-report-monitoring.ts` - 보고서 모니터링 훅 (상태, 실행, 헬스체크)
 - `index.ts` - 배럴 익스포트
 
 ## For AI Agents

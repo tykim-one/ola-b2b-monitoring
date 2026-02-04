@@ -19,8 +19,11 @@
 | `batch-analysis.service.ts` | 핵심 서비스 (작업 생성, 실행, 결과 관리) |
 | `batch-analysis.controller.ts` | REST API 엔드포인트 |
 | `batch-analysis.scheduler.ts` | 동적 크론 스케줄러 (DB 설정 기반, 다중 스케줄 지원) |
-| `dto/` | 요청/응답 DTO 정의 |
-| `interfaces/batch-analysis.interface.ts` | 타입 정의 |
+| `index.ts` | 배럴 export |
+
+## Subdirectories
+- `dto/` - [요청/응답 DTO 정의](dto/AGENTS.md)
+- `interfaces/` - [타입 정의](interfaces/AGENTS.md)
 
 ## API Endpoints
 

@@ -18,8 +18,10 @@
 | `session-analysis.module.ts` | NestJS 모듈 정의 |
 | `session-analysis.service.ts` | 핵심 비즈니스 로직 (휴리스틱 + LLM 분석) |
 | `session-analysis.controller.ts` | REST API 엔드포인트 |
-| `interfaces/session-analysis.interface.ts` | 타입 정의 (SessionStats, SessionTimeline 등) |
-| `dto/session-filter.dto.ts` | API 요청 유효성 검사 DTO |
+| `index.ts` | 배럴 export |
+
+## Subdirectories
+- `dto/` - [API 요청 유효성 검사 DTO](dto/AGENTS.md) (SessionFilterDto)
 
 ## Architecture
 

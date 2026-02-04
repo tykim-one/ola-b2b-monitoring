@@ -2,14 +2,20 @@
 # roles
 
 ## Purpose
-역할 및 권한 관리 페이지입니다. RBAC 기반 권한 체계를 관리합니다.
+역할/권한 관리 페이지입니다. RBAC (Role-Based Access Control) 시스템의 역할을 생성/수정/삭제합니다.
 
 ## Key Files
-- `page.tsx` - 역할 목록, 생성/수정/삭제
+- `page.tsx` - 역할 카드 그리드, 권한 표시, 사용자 수 표시
 
 ## Subdirectories
-- `components/` - 역할 페이지 로컬 컴포넌트
+- `components/` - RoleFormModal
 
 ## For AI Agents
-- 라우트: `/dashboard/admin/roles`
-- 권한 형식: `resource:action` (예: `users:read`, `metrics:write`)
+- **권한 형식**: `resource:action` (예: `users:read`, `roles:write`, `analysis:execute`)
+- **사용자 할당**: 역할별로 할당된 사용자 수 표시 (users API 연동)
+- **삭제 주의**: 사용자가 할당된 역할 삭제 시 경고 메시지
+
+## Dependencies
+- Backend: `/api/admin/roles/*` (NestJS)
+- Shared types: `@ola/shared-types` (Role, Permission)
+- React Query: useRoles, useUsers, useDeleteRole

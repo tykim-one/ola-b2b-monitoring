@@ -37,23 +37,24 @@ Individual message display component:
 - Copy button for AI responses (visible on hover)
 - Simple markdown parsing (headers, lists, bold)
 
-### MetricsContext.tsx
+### MetricsSidePanel.tsx
 Right sidebar panel showing current system metrics:
 - Realtime KPI (requests, success rate, tokens, active tenants)
 - Top 5 tenants by usage
 - 7-day cost trend
 - Collapsible with toggle button
 - Auto-refresh capability
-- Fetches data from API endpoints
+- Fetches data via React Query hooks (useRealtimeKPI, useTenantUsage, useCostTrend)
+- **라이트 테마**: bg-white, text-gray-900 (다크 테마와 다름)
 
 ## Component Hierarchy
 
 ```
-AnalysisPage (dashboard/analysis/page.tsx)
+AnalysisPage (dashboard/admin/analysis/page.tsx)
 ├── SessionList
 ├── ChatInterface
 │   └── MessageBubble (multiple)
-└── MetricsContext
+└── MetricsSidePanel
 ```
 
 ## Styling

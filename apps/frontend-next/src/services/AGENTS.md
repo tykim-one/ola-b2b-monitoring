@@ -7,6 +7,11 @@
 ## Key Files
 - `geminiService.ts` - Google Gemini AI API 연동
 - `analysisService.ts` - LLM 분석 세션 관리 API
+  - `fetchSessions()` - 세션 목록
+  - `createSession()` - 세션 생성
+  - `fetchSessionWithMessages()` - 세션 상세 (메시지 포함)
+  - `deleteSession()` - 세션 삭제
+  - `sendMessage()` - 메시지 전송 및 AI 응답 수신
 - `userAnalyticsService.ts` - 유저 분석 API (x_enc_data 기준)
   - `fetchUserRequestCounts()` - 유저별 요청 수 조회
   - `fetchUserTokenUsage()` - 유저별 토큰 사용량 조회
@@ -76,6 +81,20 @@
   - `minkabuEtlApi.getErrorAnalysis()` - 에러 분석 조회
   - `minkabuEtlApi.getHeadlineStats()` - 헤드라인 수집 통계 조회
   - `minkabuEtlApi.getIndexStats()` - 인덱스 통계 조회
+- `problematicChatService.ts` - 문제성 채팅 분석 API
+  - `fetchRules()` - 규칙 목록 조회
+  - `createRule()` - 규칙 생성
+  - `updateRule()` - 규칙 수정
+  - `deleteRule()` - 규칙 삭제
+  - `toggleRuleEnabled()` - 규칙 활성화/비활성화
+  - `fetchProblematicChats()` - 문제 채팅 목록 조회
+  - `fetchProblematicChatStats()` - 통계 조회
+  - `fetchRulePreviewQuery()` - 규칙 SQL 미리보기
+- `reportMonitoringService.ts` - 보고서 모니터링 API
+  - `reportMonitoringApi.getStatus()` - 최근 체크 결과 조회
+  - `reportMonitoringApi.runFullCheck()` - 전체 체크 실행
+  - `reportMonitoringApi.getHealth()` - 헬스 체크 (DB, 스케줄러 상태)
+  - `isMonitoringResult()` - 타입 가드 함수
 
 ## For AI Agents
 - API 클라이언트는 이 디렉토리에 추가

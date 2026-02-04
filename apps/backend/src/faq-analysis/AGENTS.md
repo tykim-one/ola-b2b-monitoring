@@ -10,9 +10,8 @@ FAQ(자주 묻는 질문) 분석 모듈입니다. BigQuery에서 사용자 질�
 - `faq-analysis.service.ts` - 메인 오케스트레이터, BigQuery 연동
 
 ## Subdirectories
-- `services/` - 핵심 서비스들 (FAQClusteringService, ReasonAnalysisService)
+- `services/` - [핵심 서비스들](services/AGENTS.md) (FAQClusteringService, ReasonAnalysisService)
 - `dto/` - 요청/응답 DTO (FAQAnalysisRequestDto, FAQAnalysisResponseDto)
-- `interfaces/` - 타입 정의 (RawQuestion, NormalizedGroup, MergedCluster, FAQCluster)
 
 ## Processing Pipeline
 ```
