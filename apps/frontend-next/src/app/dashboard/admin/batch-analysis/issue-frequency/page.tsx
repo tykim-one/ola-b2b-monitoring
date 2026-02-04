@@ -19,6 +19,7 @@ import {
   TenantInfo,
 } from '@/services/batchAnalysisService';
 import { EmptyState } from '@/components/ui/EmptyState';
+import KPICard from '@/components/kpi/KPICard';
 
 export default function IssueFrequencyPage() {
   const [data, setData] = useState<IssueFrequencyResponse | null>(null);
@@ -192,18 +193,24 @@ export default function IssueFrequencyPage() {
       {/* Summary Stats */}
       {data && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-lg p-4">
-            <div className="text-gray-500 text-sm">총 이슈 수</div>
-            <div className="text-2xl font-bold text-red-400">{data.totalIssues.toLocaleString()}</div>
-          </div>
-          <div className="bg-white rounded-lg p-4">
-            <div className="text-gray-500 text-sm">분석된 결과 수</div>
-            <div className="text-2xl font-bold text-blue-400">{data.totalResults.toLocaleString()}</div>
-          </div>
-          <div className="bg-white rounded-lg p-4">
-            <div className="text-gray-500 text-sm">고유 이슈 유형</div>
-            <div className="text-2xl font-bold text-yellow-400">{data.issues.length}</div>
-          </div>
+          <KPICard
+            title="총 이슈 수"
+            value={data.totalIssues}
+            format="number"
+            status="error"
+          />
+          <KPICard
+            title="분석된 결과 수"
+            value={data.totalResults}
+            format="number"
+            status="neutral"
+          />
+          <KPICard
+            title="고유 이슈 유형"
+            value={data.issues.length}
+            format="number"
+            status="warning"
+          />
         </div>
       )}
 

@@ -18,6 +18,7 @@ import { UserActivityDetail, UserListItem } from '@ola/shared-types';
 import { useUserActivity } from '@/hooks/queries';
 import Modal from '@/components/ui/Modal';
 import { EmptyState } from '@/components/ui/EmptyState';
+import KPICard from '@/components/kpi/KPICard';
 
 interface UserActivityDialogProps {
   isOpen: boolean;
@@ -106,38 +107,31 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
       {/* User Summary KPI Cards */}
       {userInfo && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 px-6 py-4 border-b border-gray-200 bg-gray-50 -mx-6 -mt-6 mb-4">
-          <div className="text-center">
-            <div className="text-gray-500 text-xs mb-1">총 질문</div>
-            <div className="text-xl font-bold text-gray-900">
-              {formatNumber(userInfo.questionCount)}
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-gray-500 text-xs mb-1">성공률</div>
-            <div
-              className={`text-xl font-bold ${
-                userInfo.successRate >= 90
-                  ? 'text-emerald-400'
-                  : userInfo.successRate >= 70
-                  ? 'text-yellow-400'
-                  : 'text-rose-400'
-              }`}
-            >
-              {userInfo.successRate.toFixed(1)}%
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-gray-500 text-xs mb-1">총 토큰</div>
-            <div className="text-xl font-bold text-purple-400">
-              {formatNumber(userInfo.totalTokens)}
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-gray-500 text-xs mb-1">평균 토큰</div>
-            <div className="text-xl font-bold text-blue-400">
-              {userInfo.avgTokens.toFixed(0)}
-            </div>
-          </div>
+          <KPICard
+            title="총 질문"
+            value={userInfo.questionCount}
+            format="number"
+            size="compact"
+          />
+          <KPICard
+            title="성공률"
+            value={userInfo.successRate}
+            format="percentage"
+            size="compact"
+            status={userInfo.successRate >= 90 ? 'success' : userInfo.successRate >= 70 ? 'warning' : 'error'}
+          />
+          <KPICard
+            title="총 토큰"
+            value={userInfo.totalTokens}
+            format="tokens"
+            size="compact"
+          />
+          <KPICard
+            title="평균 토큰"
+            value={userInfo.avgTokens}
+            format="number"
+            size="compact"
+          />
         </div>
       )}
 
