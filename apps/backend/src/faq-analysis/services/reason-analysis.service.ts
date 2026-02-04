@@ -41,9 +41,7 @@ export class ReasonAnalysisService {
   /**
    * 여러 클러스터의 사유 분석 (배치)
    */
-  async analyzeReasonsBatch(
-    clusters: MergedCluster[],
-  ): Promise<FAQCluster[]> {
+  async analyzeReasonsBatch(clusters: MergedCluster[]): Promise<FAQCluster[]> {
     const results: FAQCluster[] = [];
 
     // 배치로 한 번에 분석 요청 (효율성)
@@ -57,7 +55,10 @@ export class ReasonAnalysisService {
         },
       ]);
 
-      const reasonMap = this.parseBatchReasonResponse(response.content, clusters);
+      const reasonMap = this.parseBatchReasonResponse(
+        response.content,
+        clusters,
+      );
 
       for (const cluster of clusters) {
         results.push({
@@ -184,10 +185,7 @@ ${clusterList}
    */
   private cleanReasonResponse(response: string): string {
     // 줄바꿈 제거, 앞뒤 공백 제거, 50자 제한
-    let cleaned = response
-      .replace(/\n/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    let cleaned = response.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
 
     // 따옴표 제거
     if (

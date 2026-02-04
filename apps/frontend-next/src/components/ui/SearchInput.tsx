@@ -18,7 +18,7 @@ export default function SearchInput({
 }: SearchInputProps) {
   return (
     <div className={`relative ${className}`}>
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
         <Search className="w-5 h-5" />
       </div>
       <input
@@ -27,9 +27,9 @@ export default function SearchInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="
-          w-full pl-12 pr-12 py-3 font-mono text-sm
-          bg-slate-900 border border-slate-700
-          text-slate-100 placeholder-slate-500
+          w-full pl-12 pr-12 py-3 text-sm
+          bg-white border border-gray-200
+          text-gray-800 placeholder-slate-500
           focus:outline-none focus:border-cyan-500/50 focus:shadow-lg focus:shadow-cyan-500/10
           transition-all
         "
@@ -39,7 +39,7 @@ export default function SearchInput({
           onClick={() => onChange('')}
           className="
             absolute right-4 top-1/2 -translate-y-1/2
-            text-slate-500 hover:text-slate-300 transition-colors
+            text-gray-400 hover:text-gray-600 transition-colors
           "
         >
           <X className="w-5 h-5" />

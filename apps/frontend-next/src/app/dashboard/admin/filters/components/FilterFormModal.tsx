@@ -138,14 +138,14 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Error */}
         {error && (
-          <div className="p-4 border-2 border-red-500/50 bg-red-950/30">
-            <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+          <div className="p-4 border border-red-200 bg-red-50">
+            <p className="text-red-400 text-sm">ERROR: {error}</p>
           </div>
         )}
 
         {/* Name */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-purple-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-purple-400 uppercase tracking-wider">
             Filter Name *
           </label>
           <input
@@ -153,9 +153,9 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-purple-500/50 focus:shadow-lg focus:shadow-purple-500/10
               transition-all
             "
@@ -165,7 +165,7 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
 
         {/* Description */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-purple-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-purple-400 uppercase tracking-wider">
             Description
           </label>
           <textarea
@@ -173,9 +173,9 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={2}
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-purple-500/50 focus:shadow-lg focus:shadow-purple-500/10
               transition-all resize-none
             "
@@ -185,12 +185,12 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
 
         {/* Date Range */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-purple-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-purple-400 uppercase tracking-wider">
             Date Range
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-slate-500 text-xs">Start Date</label>
+              <label className="block mb-1 text-gray-400 text-xs">Start Date</label>
               <input
                 type="date"
                 value={formData.criteria.dateRange?.start || ''}
@@ -207,16 +207,16 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
                   })
                 }
                 className="
-                  w-full px-4 py-2 font-mono text-sm
-                  bg-slate-900 border border-slate-700
-                  text-slate-100
+                  w-full px-4 py-2 text-sm
+                  bg-white border border-gray-200
+                  text-gray-800
                   focus:outline-none focus:border-purple-500/50
                   transition-all
                 "
               />
             </div>
             <div>
-              <label className="block mb-1 text-slate-500 text-xs">End Date</label>
+              <label className="block mb-1 text-gray-400 text-xs">End Date</label>
               <input
                 type="date"
                 value={formData.criteria.dateRange?.end || ''}
@@ -233,9 +233,9 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
                   })
                 }
                 className="
-                  w-full px-4 py-2 font-mono text-sm
-                  bg-slate-900 border border-slate-700
-                  text-slate-100
+                  w-full px-4 py-2 text-sm
+                  bg-white border border-gray-200
+                  text-gray-800
                   focus:outline-none focus:border-purple-500/50
                   transition-all
                 "
@@ -246,7 +246,7 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
 
         {/* Severities */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-purple-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-purple-400 uppercase tracking-wider">
             Severities
           </label>
           <div className="flex flex-wrap gap-2">
@@ -256,12 +256,12 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
                 type="button"
                 onClick={() => handleSeverityToggle(severity)}
                 className={`
-                  px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider
+                  px-4 py-2 text-xs font-semibold uppercase tracking-wider
                   border transition-all
                   ${
                     formData.criteria.severities?.includes(severity)
                       ? 'bg-purple-600/30 border-purple-500/50 text-purple-400'
-                      : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
+                      : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
                   }
                 `}
               >
@@ -273,7 +273,7 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
 
         {/* Tenant IDs */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-purple-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-purple-400 uppercase tracking-wider">
             Tenant IDs
           </label>
           <div className="flex gap-2 mb-2">
@@ -283,9 +283,9 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
               onChange={(e) => setTenantInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTenant())}
               className="
-                flex-1 px-4 py-2 font-mono text-sm
-                bg-slate-900 border border-slate-700
-                text-slate-100 placeholder-slate-500
+                flex-1 px-4 py-2 text-sm
+                bg-white border border-gray-200
+                text-gray-800 placeholder-gray-400
                 focus:outline-none focus:border-purple-500/50
                 transition-all
               "
@@ -295,7 +295,7 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
               type="button"
               onClick={handleAddTenant}
               className="
-                px-4 py-2 font-mono text-sm font-semibold uppercase
+                px-4 py-2 text-sm font-semibold uppercase
                 bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/50
                 text-purple-400 transition-all
               "
@@ -310,8 +310,8 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
                   key={tenant}
                   className="
                     flex items-center gap-2 px-3 py-1
-                    bg-cyan-950/30 border border-cyan-500/30
-                    text-cyan-400 font-mono text-xs uppercase tracking-wider
+                    bg-cyan-50 border border-cyan-500/30
+                    text-gray-500 text-xs uppercase tracking-wider
                   "
                 >
                   {tenant}
@@ -330,12 +330,12 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
 
         {/* Token Range */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-purple-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-purple-400 uppercase tracking-wider">
             Token Range
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-slate-500 text-xs">Min Tokens</label>
+              <label className="block mb-1 text-gray-400 text-xs">Min Tokens</label>
               <input
                 type="number"
                 value={formData.criteria.minTokens || ''}
@@ -349,9 +349,9 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
                   })
                 }
                 className="
-                  w-full px-4 py-2 font-mono text-sm
-                  bg-slate-900 border border-slate-700
-                  text-slate-100
+                  w-full px-4 py-2 text-sm
+                  bg-white border border-gray-200
+                  text-gray-800
                   focus:outline-none focus:border-purple-500/50
                   transition-all
                 "
@@ -360,7 +360,7 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
               />
             </div>
             <div>
-              <label className="block mb-1 text-slate-500 text-xs">Max Tokens</label>
+              <label className="block mb-1 text-gray-400 text-xs">Max Tokens</label>
               <input
                 type="number"
                 value={formData.criteria.maxTokens || ''}
@@ -374,9 +374,9 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
                   })
                 }
                 className="
-                  w-full px-4 py-2 font-mono text-sm
-                  bg-slate-900 border border-slate-700
-                  text-slate-100
+                  w-full px-4 py-2 text-sm
+                  bg-white border border-gray-200
+                  text-gray-800
                   focus:outline-none focus:border-purple-500/50
                   transition-all
                 "
@@ -389,7 +389,7 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
 
         {/* Search Query */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-purple-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-purple-400 uppercase tracking-wider">
             Search Query
           </label>
           <input
@@ -402,9 +402,9 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
               })
             }
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-purple-500/50 focus:shadow-lg focus:shadow-purple-500/10
               transition-all
             "
@@ -413,35 +413,35 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
         </div>
 
         {/* Set as Default */}
-        <div className="flex items-center gap-3 p-4 bg-slate-800/50 border border-slate-700">
+        <div className="flex items-center gap-3 p-4 bg-gray-50/50 border border-gray-200">
           <input
             type="checkbox"
             id="isDefault"
             checked={formData.isDefault}
             onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
             className="
-              w-5 h-5 bg-slate-900 border-2 border-slate-700
+              w-5 h-5 bg-white border border-gray-200
               checked:bg-yellow-600 checked:border-yellow-500
               focus:outline-none focus:ring-2 focus:ring-yellow-500/50
               transition-all cursor-pointer
             "
           />
           <label htmlFor="isDefault" className="cursor-pointer">
-            <span className="text-slate-300 font-mono text-sm font-semibold">Set as Default Filter</span>
-            <p className="text-slate-500 text-xs mt-1">This filter will be automatically applied when loading the dashboard</p>
+            <span className="text-gray-600 text-sm font-semibold">Set as Default Filter</span>
+            <p className="text-gray-400 text-xs mt-1">This filter will be automatically applied when loading the dashboard</p>
           </label>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
-              bg-slate-800 hover:bg-slate-700 border border-slate-600
-              text-slate-300 transition-all
+              bg-white hover:bg-gray-100 border border-gray-300
+              text-gray-600 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
@@ -453,7 +453,7 @@ export default function FilterFormModal({ filter, onClose, onSuccess }: FilterFo
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
               bg-purple-600 hover:bg-purple-700 border border-purple-500
-              text-white transition-all
+              text-gray-900 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
               shadow-lg shadow-purple-500/20
             "

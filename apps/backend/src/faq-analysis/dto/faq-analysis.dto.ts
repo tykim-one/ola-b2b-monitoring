@@ -1,11 +1,4 @@
-import {
-  IsString,
-  IsOptional,
-  IsInt,
-  IsIn,
-  Min,
-  Max,
-} from 'class-validator';
+import { IsString, IsOptional, IsInt, IsIn, Min, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { FAQCluster } from '../interfaces/faq-cluster.interface';
@@ -130,7 +123,10 @@ export class FAQJobDto {
   @ApiProperty({ description: 'Job ID' })
   id: string;
 
-  @ApiProperty({ description: 'Job 상태', enum: ['PENDING', 'RUNNING', 'COMPLETED', 'FAILED'] })
+  @ApiProperty({
+    description: 'Job 상태',
+    enum: ['PENDING', 'RUNNING', 'COMPLETED', 'FAILED'],
+  })
   status: string;
 
   @ApiPropertyOptional({ description: '테넌트 ID' })

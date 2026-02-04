@@ -18,10 +18,10 @@ const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
 const getIntensityColor = (value: number, max: number): string => {
-  if (max === 0) return 'bg-slate-800';
+  if (max === 0) return 'bg-white';
   const intensity = value / max;
 
-  if (intensity === 0) return 'bg-slate-800';
+  if (intensity === 0) return 'bg-white';
   if (intensity < 0.2) return 'bg-blue-900/30';
   if (intensity < 0.4) return 'bg-blue-800/50';
   if (intensity < 0.6) return 'bg-blue-600/60';
@@ -43,8 +43,8 @@ const UsageHeatmap: React.FC<UsageHeatmapProps> = ({
   const maxRequests = Math.max(...data.map((d) => d.request_count), 1);
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
-      <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
 
       <div className="overflow-x-auto">
         <div className="min-w-[600px]">
@@ -54,7 +54,7 @@ const UsageHeatmap: React.FC<UsageHeatmapProps> = ({
             {HOURS.map((hour) => (
               <div
                 key={hour}
-                className="flex-1 text-center text-slate-500 text-[10px]"
+                className="flex-1 text-center text-gray-400 text-[10px]"
               >
                 {hour % 3 === 0 ? `${hour}` : ''}
               </div>
@@ -64,7 +64,7 @@ const UsageHeatmap: React.FC<UsageHeatmapProps> = ({
           {/* Heatmap grid */}
           {DAYS.map((day, dayIndex) => (
             <div key={day} className="flex items-center mb-1">
-              <div className="w-8 shrink-0 text-slate-400 text-xs pr-2 text-right">
+              <div className="w-8 shrink-0 text-gray-500 text-xs pr-2 text-right">
                 {day}
               </div>
               <div className="flex flex-1 gap-[2px]">
@@ -90,16 +90,16 @@ const UsageHeatmap: React.FC<UsageHeatmapProps> = ({
 
       {/* Legend */}
       <div className="flex items-center justify-end gap-2 mt-4">
-        <span className="text-slate-500 text-xs">적음</span>
+        <span className="text-gray-400 text-xs">적음</span>
         <div className="flex gap-1">
-          <div className="w-4 h-4 rounded-sm bg-slate-800" />
+          <div className="w-4 h-4 rounded-sm bg-white" />
           <div className="w-4 h-4 rounded-sm bg-blue-900/30" />
           <div className="w-4 h-4 rounded-sm bg-blue-800/50" />
           <div className="w-4 h-4 rounded-sm bg-blue-600/60" />
           <div className="w-4 h-4 rounded-sm bg-blue-500/70" />
           <div className="w-4 h-4 rounded-sm bg-blue-400/80" />
         </div>
-        <span className="text-slate-500 text-xs">많음</span>
+        <span className="text-gray-400 text-xs">많음</span>
       </div>
     </div>
   );

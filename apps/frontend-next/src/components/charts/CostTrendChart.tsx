@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
+import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface CostData {
   date: string;
@@ -49,11 +50,11 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
   const totalCost = data.reduce((sum, item) => sum + item.total_cost, 0);
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         <div className="text-right">
-          <div className="text-slate-400 text-xs">총 비용 (30일)</div>
+          <div className="text-gray-500 text-xs">총 비용 (30일)</div>
           <div className="text-emerald-400 font-bold">${totalCost.toFixed(2)}</div>
         </div>
       </div>
@@ -61,10 +62,10 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={sortedData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
             <XAxis
               dataKey="date"
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={11}
               tickLine={false}
               tickFormatter={formatDate}
@@ -72,7 +73,7 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
             />
             <YAxis
               yAxisId="left"
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={12}
               tickLine={false}
               tickFormatter={(v) => `$${v}`}
@@ -80,17 +81,13 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
             <YAxis
               yAxisId="right"
               orientation="right"
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={12}
               tickLine={false}
               tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
             />
             <Tooltip
-              contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
-                borderRadius: '8px',
-              }}
+              contentStyle={TOOLTIP_STYLE}
               labelFormatter={formatDate}
               formatter={(value, name) => {
                 const labels: Record<string, string> = {
@@ -114,7 +111,7 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
                   output_cost: '출력 비용',
                   total_tokens: '총 토큰',
                 };
-                return <span className="text-slate-400 text-xs">{labels[value] || value}</span>;
+                return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
               }}
             />
             <Bar

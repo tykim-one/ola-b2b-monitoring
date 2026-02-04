@@ -175,11 +175,16 @@ export class SessionAnalysisService {
         resolutionMethod: analysis.method,
         resolutionTurn: analysis.turn,
         hasFrustration: this.detectFrustration(turns),
-        abandonmentReason: analysis.isResolved ? null : 'Unknown - requires LLM analysis',
+        abandonmentReason: analysis.isResolved
+          ? null
+          : 'Unknown - requires LLM analysis',
         qualityScore: null,
         sessionStart: turns[0].timestamp,
         sessionEnd: turns[turns.length - 1].timestamp,
-        durationMinutes: this.calculateDuration(turns[0].timestamp, turns[turns.length - 1].timestamp),
+        durationMinutes: this.calculateDuration(
+          turns[0].timestamp,
+          turns[turns.length - 1].timestamp,
+        ),
       },
     };
   }
@@ -214,7 +219,10 @@ ${turns.map((t, i) => `[턴 ${i + 1}] 사용자: ${t.userInput}\n챗봇: ${t.llm
       const cleanedResponse = this.cleanJsonResponse(response.content);
       return JSON.parse(cleanedResponse);
     } catch (error) {
-      this.logger.error(`Failed to analyze session with LLM: ${sessionId}`, error);
+      this.logger.error(
+        `Failed to analyze session with LLM: ${sessionId}`,
+        error,
+      );
       return {
         isResolved: false,
         resolutionTurn: null,
@@ -243,7 +251,9 @@ ${turns.map((t, i) => `[턴 ${i + 1}] 사용자: ${t.userInput}\n챗봇: ${t.llm
 
   // ==================== Private Helper Methods ====================
 
-  private async getSessionInfo(sessionId: string): Promise<{ tenantId: string; userId: string | null } | null> {
+  private async getSessionInfo(
+    sessionId: string,
+  ): Promise<{ tenantId: string; userId: string | null } | null> {
     const query = `
       SELECT
         tenant_id AS tenantId,
@@ -253,17 +263,25 @@ ${turns.map((t, i) => `[턴 ${i + 1}] 사용자: ${t.userInput}\n챗봇: ${t.llm
       LIMIT 1
     `;
 
-    const results = await this.executeQuery<{ tenantId: string; userId: string | null }>(query);
+    const results = await this.executeQuery<{
+      tenantId: string;
+      userId: string | null;
+    }>(query);
     return results[0] || null;
   }
 
-  private analyzeSessionHeuristic(turns: ConversationTurn[]): { isResolved: boolean; method: 'HEURISTIC' | 'LLM' | 'UNKNOWN'; turn: number | null } {
+  private analyzeSessionHeuristic(turns: ConversationTurn[]): {
+    isResolved: boolean;
+    method: 'HEURISTIC' | 'LLM' | 'UNKNOWN';
+    turn: number | null;
+  } {
     if (turns.length === 0) {
       return { isResolved: false, method: 'UNKNOWN', turn: null };
     }
 
     const lastTurn = turns[turns.length - 1];
-    const thankPatterns = /감사|고마워|thanks|thank you|got it|알겠|해결|완료|좋아|perfect|great/i;
+    const thankPatterns =
+      /감사|고마워|thanks|thank you|got it|알겠|해결|완료|좋아|perfect|great/i;
 
     // Pattern 1: Ends with thank expression
     if (thankPatterns.test(lastTurn.userInput || '')) {
@@ -283,7 +301,8 @@ ${turns.map((t, i) => `[턴 ${i + 1}] 사용자: ${t.userInput}\n챗봇: ${t.llm
   }
 
   private detectFrustration(turns: ConversationTurn[]): boolean {
-    const frustrationPatterns = /왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated/i;
+    const frustrationPatterns =
+      /왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated/i;
 
     return turns.some((t) => frustrationPatterns.test(t.userInput || ''));
   }
@@ -291,12 +310,12 @@ ${turns.map((t, i) => `[턴 ${i + 1}] 사용자: ${t.userInput}\n챗봇: ${t.llm
   private calculateDuration(start: Date, end: Date): number {
     const startTime = new Date(start).getTime();
     const endTime = new Date(end).getTime();
-    return Math.round((endTime - startTime) / 60000 * 100) / 100; // minutes with 2 decimal places
+    return Math.round(((endTime - startTime) / 60000) * 100) / 100; // minutes with 2 decimal places
   }
 
   private cleanJsonResponse(response: string): string {
     // Remove markdown code blocks if present
-    let cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    const cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '');
 
     // Find JSON object
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);

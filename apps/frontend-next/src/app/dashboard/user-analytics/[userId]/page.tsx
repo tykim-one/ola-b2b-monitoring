@@ -78,7 +78,7 @@ export default function UserDetailPage() {
       <div className="p-8 flex items-center justify-center h-full">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-          <span className="text-slate-400">프로필 로딩 중...</span>
+          <span className="text-gray-500">프로필 로딩 중...</span>
         </div>
       </div>
     );
@@ -104,11 +104,11 @@ export default function UserDetailPage() {
   if (!profile) {
     return (
       <div className="p-8">
-        <div className="bg-slate-800 rounded-lg p-6 text-center">
-          <p className="text-slate-400">유저 프로필을 찾을 수 없습니다.</p>
+        <div className="bg-white rounded-lg p-6 text-center">
+          <p className="text-gray-500">유저 프로필을 찾을 수 없습니다.</p>
           <button
             onClick={handleBack}
-            className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded text-white text-sm transition-colors"
+            className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded text-gray-900 text-sm transition-colors"
           >
             목록으로 돌아가기
           </button>
@@ -124,14 +124,14 @@ export default function UserDetailPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={handleBack}
-            className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             title="목록으로 돌아가기"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-400" />
+            <ArrowLeft className="w-5 h-5 text-gray-500" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-white">유저 프로필</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-gray-900">유저 프로필</h1>
+            <p className="text-gray-500 text-sm mt-1">
               ID: <span className="text-blue-400 font-mono">{userId}</span>
               {profile.tenantId && (
                 <span className="ml-2">
@@ -147,7 +147,7 @@ export default function UserDetailPage() {
           <select
             value={days}
             onChange={(e) => setDays(Number(e.target.value))}
-            className="bg-slate-700 text-white text-sm px-3 py-2 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-100 text-gray-900 text-sm px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value={7}>최근 7일</option>
             <option value={14}>최근 14일</option>
@@ -157,10 +157,10 @@ export default function UserDetailPage() {
           {/* 새로고침 */}
           <button
             onClick={fetchData}
-            className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             title="새로고침"
           >
-            <RefreshCw className="w-5 h-5 text-slate-400" />
+            <RefreshCw className="w-5 h-5 text-gray-500" />
           </button>
         </div>
       </div>
@@ -175,18 +175,18 @@ export default function UserDetailPage() {
       <CategoryDistribution topCategories={profile.topCategories} />
 
       {/* 대화 내역 섹션 */}
-      <div className="bg-slate-800 rounded-lg p-6">
+      <div className="bg-white rounded-lg p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">대화 내역</h2>
+          <h2 className="text-lg font-semibold text-gray-900">대화 내역</h2>
           <button
             onClick={handleOpenDialog}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-gray-900 rounded-lg text-sm transition-colors"
           >
             <MessageSquare className="w-4 h-4" />
             대화 보기
           </button>
         </div>
-        <p className="text-slate-400 text-sm mt-2">
+        <p className="text-gray-500 text-sm mt-2">
           클릭하여 해당 유저의 대화 내역을 확인할 수 있습니다.
         </p>
       </div>

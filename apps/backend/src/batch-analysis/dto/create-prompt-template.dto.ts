@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsBoolean, MinLength, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  MinLength,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
@@ -25,7 +31,8 @@ export class CreatePromptTemplateDto {
 
   @ApiProperty({
     description: '프롬프트 템플릿 ({{user_input}}, {{llm_response}} 변수 지원)',
-    example: '다음 대화를 분석하고 품질 점수(1-10)와 개선점을 JSON 형식으로 응답해주세요.\n\n사용자 질문: {{user_input}}\n\nLLM 응답: {{llm_response}}',
+    example:
+      '다음 대화를 분석하고 품질 점수(1-10)와 개선점을 JSON 형식으로 응답해주세요.\n\n사용자 질문: {{user_input}}\n\nLLM 응답: {{llm_response}}',
   })
   @IsString()
   @MinLength(10)

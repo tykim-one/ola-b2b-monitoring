@@ -114,14 +114,14 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Error */}
         {error && (
-          <div className="p-4 border-2 border-red-500/50 bg-red-950/30">
-            <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+          <div className="p-4 border border-red-200 bg-red-50">
+            <p className="text-red-400 text-sm">ERROR: {error}</p>
           </div>
         )}
 
         {/* Name */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-amber-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-medium text-gray-600">
             Role Name *
           </label>
           <input
@@ -129,9 +129,9 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-amber-500/50 focus:shadow-lg focus:shadow-amber-500/10
               transition-all
             "
@@ -141,7 +141,7 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
 
         {/* Description */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-amber-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-medium text-gray-600">
             Description
           </label>
           <textarea
@@ -149,9 +149,9 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={3}
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-amber-500/50 focus:shadow-lg focus:shadow-amber-500/10
               transition-all resize-none
             "
@@ -162,7 +162,7 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
         {/* Permissions */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="font-mono text-sm font-bold text-amber-400 uppercase tracking-wider">
+            <label className="text-sm font-medium text-gray-600">
               Permissions
             </label>
             <div className="flex gap-2">
@@ -170,8 +170,8 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
                 type="button"
                 onClick={handleSelectAll}
                 className="
-                  px-3 py-1 font-mono text-xs font-semibold uppercase tracking-wider
-                  bg-green-950/30 hover:bg-green-950/50 border border-green-500/30 hover:border-green-500/50
+                  px-3 py-1 text-xs font-semibold uppercase tracking-wider
+                  bg-green-50 hover:bg-green-950/50 border border-green-500/30 hover:border-green-500/50
                   text-green-400 transition-all
                 "
               >
@@ -181,9 +181,9 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
                 type="button"
                 onClick={handleDeselectAll}
                 className="
-                  px-3 py-1 font-mono text-xs font-semibold uppercase tracking-wider
-                  bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600
-                  text-slate-400 transition-all
+                  px-3 py-1 text-xs font-semibold uppercase tracking-wider
+                  bg-white hover:bg-gray-100 border border-gray-200 hover:border-gray-300
+                  text-gray-500 transition-all
                 "
               >
                 Deselect All
@@ -191,22 +191,22 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
             </div>
           </div>
 
-          <div className="border border-slate-800 bg-slate-900/50 max-h-96 overflow-y-auto">
+          <div className="border border-gray-200 bg-gray-50 max-h-96 overflow-y-auto">
             {loadingPermissions ? (
               <div className="p-8 text-center">
                 <div className="w-8 h-8 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mx-auto mb-2" />
-                <p className="text-slate-500 font-mono text-xs">LOADING PERMISSIONS...</p>
+                <p className="text-gray-400 text-xs">LOADING PERMISSIONS...</p>
               </div>
             ) : permissions.length === 0 ? (
               <div className="p-8 text-center">
-                <p className="text-slate-500 font-mono text-sm">NO PERMISSIONS AVAILABLE</p>
+                <p className="text-gray-400 text-sm">NO PERMISSIONS AVAILABLE</p>
               </div>
             ) : (
-              <div className="divide-y divide-slate-800">
+              <div className="divide-y divide-gray-200">
                 {permissions.map((permission) => (
                   <div
                     key={permission.id}
-                    className="p-4 hover:bg-slate-800/30 transition-colors"
+                    className="p-4 hover:bg-gray-50/50 transition-colors"
                   >
                     <div className="flex items-start gap-3">
                       <input
@@ -215,7 +215,7 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
                         checked={formData.permissionIds.includes(permission.id)}
                         onChange={() => handlePermissionToggle(permission.id)}
                         className="
-                          mt-1 w-5 h-5 bg-slate-900 border-2 border-slate-700
+                          mt-1 w-5 h-5 bg-white border border-gray-200
                           checked:bg-green-600 checked:border-green-500
                           focus:outline-none focus:ring-2 focus:ring-green-500/50
                           transition-all cursor-pointer
@@ -225,11 +225,11 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
                         htmlFor={`permission-${permission.id}`}
                         className="flex-1 cursor-pointer"
                       >
-                        <div className="font-mono text-sm text-green-400 font-semibold uppercase tracking-wider">
+                        <div className="text-sm text-emerald-600 font-medium">
                           {permission.name}
                         </div>
                         {permission.description && (
-                          <div className="text-slate-400 text-xs mt-1">
+                          <div className="text-gray-500 text-xs mt-1">
                             {permission.description}
                           </div>
                         )}
@@ -241,21 +241,21 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
             )}
           </div>
 
-          <p className="mt-2 text-slate-500 font-mono text-xs">
+          <p className="mt-2 text-gray-400 text-xs">
             {formData.permissionIds.length} of {permissions.length} permissions selected
           </p>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
-              bg-slate-800 hover:bg-slate-700 border border-slate-600
-              text-slate-300 transition-all
+              bg-white hover:bg-gray-100 border border-gray-300
+              text-gray-600 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
@@ -265,7 +265,7 @@ export default function RoleFormModal({ role, onClose, onSuccess }: RoleFormModa
             type="submit"
             disabled={loading || loadingPermissions}
             className="
-              px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
+              px-6 py-3 font-medium text-sm
               bg-amber-600 hover:bg-amber-700 border border-amber-500
               text-white transition-all
               disabled:opacity-50 disabled:cursor-not-allowed

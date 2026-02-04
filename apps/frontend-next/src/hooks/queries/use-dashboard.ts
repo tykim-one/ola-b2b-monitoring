@@ -6,6 +6,8 @@ import {
   useHourlyTraffic,
   useErrorAnalysis,
   useAnomalyStats,
+  useTokenEfficiency,
+  type TokenEfficiencyData,
 } from './use-metrics';
 import type {
   TenantUsage,
@@ -52,11 +54,16 @@ export interface OperationsDashboardData {
 
 export interface AIPerformanceDashboardData {
   anomalyStats: AnomalyStats[];
+  tokenEfficiency: TokenEfficiencyData[];
   tenantUsage: TenantUsage[];
   kpis: {
     tenantsWithAnomalies: number;
     avgTokenStdDev: number;
     highRiskTenants: number;
+    avgEfficiency: number;
+    avgTokens: number;
+    successRate: number;
+    totalP99: number;
   };
   isLoading: boolean;
   error: Error | null;
@@ -118,12 +125,15 @@ export function useBusinessDashboard(projectId: string, days = 30): BusinessDash
  * 운영 대시보드 통합 훅
  * - 실시간 KPI, 시간별 트래픽, 에러 분석 조회
  * - 운영 관련 KPI 자동 계산
+ * @param projectId - 프로젝트 ID
+ * @param days - 조회 기간 (기본: 서버 기본값)
  */
 export function useOperationsDashboard(
-  projectId: string
+  projectId: string,
+  days?: number
 ): OperationsDashboardData {
-  const realtimeQuery = useRealtimeKPI(projectId);
-  const hourlyQuery = useHourlyTraffic(projectId);
+  const realtimeQuery = useRealtimeKPI(projectId, days);
+  const hourlyQuery = useHourlyTraffic(projectId, days);
   const errorsQuery = useErrorAnalysis(projectId);
 
   const isLoading =
@@ -174,19 +184,28 @@ export function useOperationsDashboard(
 
 /**
  * AI 성능 대시보드 통합 훅
- * - 이상 탐지 통계, 테넌트 사용량 조회
+ * - 이상 탐지 통계, 토큰 효율성, 테넌트 사용량 조회
  * - AI 관련 KPI 자동 계산
+ * @param projectId - 프로젝트 ID
+ * @param days - 조회 기간 (기본: 7일)
  */
 export function useAIPerformanceDashboard(
-  projectId: string
+  projectId: string,
+  days = 7
 ): AIPerformanceDashboardData {
-  const anomalyQuery = useAnomalyStats(projectId);
+  const anomalyQuery = useAnomalyStats(projectId, days);
+  const tokenEfficiencyQuery = useTokenEfficiency(projectId, days);
   const tenantUsageQuery = useTenantUsage(projectId, 30);
 
-  const isLoading = anomalyQuery.isLoading || tenantUsageQuery.isLoading;
-  const error = anomalyQuery.error || tenantUsageQuery.error;
+  const isLoading =
+    anomalyQuery.isLoading ||
+    tokenEfficiencyQuery.isLoading ||
+    tenantUsageQuery.isLoading;
+  const error =
+    anomalyQuery.error || tokenEfficiencyQuery.error || tenantUsageQuery.error;
 
   const anomalyStats = anomalyQuery.data ?? [];
+  const tokenEfficiency = tokenEfficiencyQuery.data ?? [];
   const tenantUsage = tenantUsageQuery.data ?? [];
 
   // Calculate KPIs
@@ -205,19 +224,49 @@ export function useAIPerformanceDashboard(
     (s) => s.stddev_tokens > s.avg_tokens * 2
   ).length;
 
+  // Token efficiency KPIs
+  const avgEfficiency =
+    tokenEfficiency.length > 0
+      ? tokenEfficiency.reduce((sum, t) => sum + (t.efficiency_ratio || 0), 0) /
+        tokenEfficiency.length
+      : 0;
+
+  const avgTokens =
+    tokenEfficiency.length > 0
+      ? tokenEfficiency.reduce((sum, t) => sum + t.total_tokens, 0) /
+        tokenEfficiency.length
+      : 0;
+
+  const successCount = tokenEfficiency.filter((t) => t.success === true).length;
+  const successRate =
+    tokenEfficiency.length > 0
+      ? (successCount / tokenEfficiency.length) * 100
+      : 0;
+
+  const totalP99 = anomalyStats.reduce(
+    (max, s) => Math.max(max, s.p99_tokens || 0),
+    0
+  );
+
   const kpis = {
     tenantsWithAnomalies,
     avgTokenStdDev,
     highRiskTenants,
+    avgEfficiency,
+    avgTokens,
+    successRate,
+    totalP99,
   };
 
   const refetch = () => {
     anomalyQuery.refetch();
+    tokenEfficiencyQuery.refetch();
     tenantUsageQuery.refetch();
   };
 
   return {
     anomalyStats,
+    tokenEfficiency,
     tenantUsage,
     kpis,
     isLoading,

@@ -72,18 +72,18 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/80" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-lg mx-4 bg-slate-900 border-2 border-cyan-500/30 shadow-2xl shadow-cyan-500/10">
+      <div className="relative w-full max-w-lg mx-4 bg-white border border-gray-200 shadow-2xl shadow-cyan-500/10">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h2 className="text-xl font-mono font-bold text-cyan-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900">
             Create Analysis Job
           </h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-1 hover:bg-white text-gray-500 hover:text-gray-900 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -92,14 +92,14 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {error && (
-            <div className="p-3 border border-red-500/50 bg-red-950/30">
-              <p className="text-red-400 font-mono text-sm">{error}</p>
+            <div className="p-3 border border-red-500/50 bg-red-50">
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
 
           {/* Target Date */}
           <div>
-            <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <label className="block text-gray-600 text-xs mb-2">
               Target Date *
             </label>
             <div className="relative">
@@ -109,22 +109,22 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
                 onChange={(e) => setTargetDate(e.target.value)}
                 required
                 className="
-                  w-full px-4 py-3 bg-slate-800 border border-slate-700
-                  text-slate-100 font-mono text-sm
+                  w-full px-4 py-3 bg-white border border-gray-200
+                  text-gray-800 text-sm
                   focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500
                   transition-colors
                 "
               />
-              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             </div>
-            <p className="mt-1 text-slate-500 font-mono text-xs">
+            <p className="mt-1 text-gray-400 text-xs">
               Select the date to analyze (usually yesterday)
             </p>
           </div>
 
           {/* Tenant ID (Optional) */}
           <div>
-            <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <label className="block text-gray-600 text-xs mb-2">
               Tenant ID (Optional)
             </label>
             <input
@@ -133,8 +133,8 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
               onChange={(e) => setTenantId(e.target.value)}
               placeholder="Leave empty for all tenants"
               className="
-                w-full px-4 py-3 bg-slate-800 border border-slate-700
-                text-slate-100 font-mono text-sm placeholder-slate-500
+                w-full px-4 py-3 bg-white border border-gray-200
+                text-gray-800 text-sm placeholder-gray-400
                 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500
                 transition-colors
               "
@@ -143,7 +143,7 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
 
           {/* Sample Size */}
           <div>
-            <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <label className="block text-gray-600 text-xs mb-2">
               Sample Size per Tenant
             </label>
             <input
@@ -153,34 +153,34 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
               min={10}
               max={500}
               className="
-                w-full px-4 py-3 bg-slate-800 border border-slate-700
-                text-slate-100 font-mono text-sm
+                w-full px-4 py-3 bg-white border border-gray-200
+                text-gray-800 text-sm
                 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500
                 transition-colors
               "
             />
-            <p className="mt-1 text-slate-500 font-mono text-xs">
+            <p className="mt-1 text-gray-400 text-xs">
               Number of random samples per tenant (10-500)
             </p>
           </div>
 
           {/* Prompt Template */}
           <div>
-            <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <label className="block text-gray-600 text-xs mb-2">
               Prompt Template
             </label>
             {loading ? (
-              <div className="flex items-center gap-2 px-4 py-3 bg-slate-800 border border-slate-700">
-                <Loader2 className="w-4 h-4 text-slate-500 animate-spin" />
-                <span className="text-slate-500 font-mono text-sm">Loading templates...</span>
+              <div className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200">
+                <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+                <span className="text-gray-400 text-sm">Loading templates...</span>
               </div>
             ) : (
               <select
                 value={promptTemplateId}
                 onChange={(e) => setPromptTemplateId(e.target.value)}
                 className="
-                  w-full px-4 py-3 bg-slate-800 border border-slate-700
-                  text-slate-100 font-mono text-sm
+                  w-full px-4 py-3 bg-white border border-gray-200
+                  text-gray-800 text-sm
                   focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500
                   transition-colors
                 "
@@ -196,14 +196,14 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
               className="
-                px-6 py-3 bg-slate-800 border border-slate-700
-                text-slate-300 font-mono font-bold uppercase tracking-wider text-sm
-                hover:bg-slate-700 transition-colors
+                px-6 py-3 bg-white border border-gray-200
+                text-gray-600 font-medium text-sm
+                hover:bg-gray-100 transition-colors
               "
             >
               Cancel
@@ -213,8 +213,8 @@ export default function CreateJobModal({ onClose, onSuccess }: CreateJobModalPro
               disabled={submitting}
               className="
                 flex items-center gap-2 px-6 py-3
-                bg-cyan-600 hover:bg-cyan-700 border-2 border-cyan-500
-                text-white font-mono font-bold uppercase tracking-wider text-sm
+                bg-blue-600 hover:bg-blue-700 border border-blue-500
+                text-white font-medium text-sm
                 transition-all disabled:opacity-50
               "
             >

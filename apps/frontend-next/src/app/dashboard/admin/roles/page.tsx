@@ -1,45 +1,25 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, Pencil, Trash2, Shield, Users, Key } from 'lucide-react';
-import { Role, Permission, User } from '@ola/shared-types';
-import { rolesApi, usersApi } from '@/lib/api-client';
+import { Role } from '@ola/shared-types';
+import { useRoles, useUsers, useDeleteRole } from '@/hooks/queries';
 import SearchInput from '@/components/ui/SearchInput';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import RoleFormModal from './components/RoleFormModal';
+import { StatsFooter } from '@/components/ui/StatsFooter';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function RolesPage() {
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: roles = [], isLoading, error } = useRoles();
+  const { data: users = [] } = useUsers();
+  const deleteRole = useDeleteRole();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const [rolesData, usersData] = await Promise.all([
-        rolesApi.getAll(),
-        usersApi.getAll(),
-      ]);
-      setRoles(rolesData);
-      setUsers(usersData);
-      setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load roles');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const handleCreateRole = () => {
     setSelectedRole(null);
@@ -56,30 +36,20 @@ export default function RolesPage() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (!roleToDelete) return;
-
-    try {
-      setIsDeleting(true);
-      await rolesApi.delete(roleToDelete.id);
-      setRoles(roles.filter((r) => r.id !== roleToDelete.id));
-      setIsDeleteDialogOpen(false);
-      setRoleToDelete(null);
-    } catch (err: any) {
-      alert(err.message || 'Failed to delete role');
-    } finally {
-      setIsDeleting(false);
-    }
+    deleteRole.mutate(roleToDelete.id, {
+      onSuccess: () => {
+        setIsDeleteDialogOpen(false);
+        setRoleToDelete(null);
+      },
+      onError: (err: Error) => {
+        alert(err.message || 'Failed to delete role');
+      },
+    });
   };
 
-  const handleFormSuccess = (role: Role) => {
-    if (selectedRole) {
-      // Update
-      setRoles(roles.map((r) => (r.id === role.id ? role : r)));
-    } else {
-      // Create
-      setRoles([...roles, role]);
-    }
+  const handleFormSuccess = () => {
     setIsFormOpen(false);
     setSelectedRole(null);
   };
@@ -96,12 +66,12 @@ export default function RolesPage() {
     return users.filter((user) => user.roles?.some((r) => r.id === roleId)).length;
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono uppercase tracking-wider text-sm">
+          <p className="text-gray-500 text-sm">
             Loading System Data...
           </p>
         </div>
@@ -110,16 +80,16 @@ export default function RolesPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-950 p-8">
+    <div className="h-full overflow-y-auto bg-gray-50 p-8">
       {/* Header */}
-      <div className="mb-8 border-b border-slate-800 pb-6">
+      <div className="mb-8 border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-mono font-bold text-amber-400 uppercase tracking-wider mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Role Management
             </h1>
-            <p className="text-slate-400 font-mono text-sm">
-              SYSTEM.ADMIN.ROLES // {roles.length} CONFIGURED
+            <p className="text-gray-500 text-sm">
+              {roles.length}개의 역할이 설정되어 있습니다
             </p>
           </div>
           <button
@@ -127,8 +97,8 @@ export default function RolesPage() {
             className="
               flex items-center gap-2 px-6 py-3
               bg-amber-600 hover:bg-amber-700 border-2 border-amber-500
-              text-white font-mono font-bold uppercase tracking-wider text-sm
-              transition-all shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40
+              text-white font-medium text-sm
+              transition-all shadow-sm
             "
           >
             <Plus className="w-5 h-5" />
@@ -139,8 +109,8 @@ export default function RolesPage() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 border-2 border-red-500/50 bg-red-950/30">
-          <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+        <div className="mb-6 p-4 border border-red-200 bg-red-50">
+          <p className="text-red-400 text-sm">ERROR: {(error as Error).message}</p>
         </div>
       )}
 
@@ -157,12 +127,12 @@ export default function RolesPage() {
       {/* Roles Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredRoles.length === 0 ? (
-          <div className="col-span-2 p-12 border-2 border-dashed border-slate-800 bg-slate-900/30 text-center">
-            <Shield className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-            <p className="text-slate-500 font-mono text-sm">
-              {searchQuery ? 'NO RESULTS FOUND' : 'NO ROLES IN SYSTEM'}
-            </p>
-          </div>
+          <EmptyState
+            icon={<Shield className="w-12 h-12 text-gray-300" />}
+            description="NO ROLES IN SYSTEM"
+            searchQuery={searchQuery}
+            className="col-span-2"
+          />
         ) : (
           filteredRoles.map((role) => {
             const userCount = getUserCountForRole(role.id);
@@ -170,23 +140,23 @@ export default function RolesPage() {
               <div
                 key={role.id}
                 className="
-                  border-2 border-slate-800 bg-slate-900/50
-                  hover:border-amber-500/30 hover:bg-slate-900/70
+                  border border-gray-200 bg-gray-50
+                  hover:border-amber-500/30 hover:bg-gray-50
                   transition-all
                 "
               >
                 {/* Card Header */}
-                <div className="p-6 border-b border-slate-800 bg-slate-950/50">
+                <div className="p-6 border-b border-gray-200 bg-gray-50/50">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 bg-amber-600/20 border border-amber-500/30">
-                        <Shield className="w-6 h-6 text-amber-400" />
+                      <div className="p-3 bg-amber-50 border border-amber-200">
+                        <Shield className="w-6 h-6 text-amber-600" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-mono font-bold text-amber-400 uppercase tracking-wider">
+                        <h3 className="text-xl font-bold text-gray-900">
                           {role.name}
                         </h3>
-                        <p className="text-slate-400 text-sm mt-1">
+                        <p className="text-gray-500 text-sm mt-1">
                           {role.description || 'No description'}
                         </p>
                       </div>
@@ -195,8 +165,8 @@ export default function RolesPage() {
                       <button
                         onClick={() => handleEditRole(role)}
                         className="
-                          p-2 bg-slate-800 hover:bg-amber-600/20 border border-slate-700 hover:border-amber-500/50
-                          text-slate-400 hover:text-amber-400 transition-all
+                          p-2 bg-white hover:bg-amber-600/20 border border-gray-200 hover:border-amber-500/50
+                          text-gray-500 hover:text-amber-400 transition-all
                         "
                         title="Edit Role"
                       >
@@ -205,8 +175,8 @@ export default function RolesPage() {
                       <button
                         onClick={() => handleDeleteClick(role)}
                         className="
-                          p-2 bg-slate-800 hover:bg-red-600/20 border border-slate-700 hover:border-red-500/50
-                          text-slate-400 hover:text-red-400 transition-all
+                          p-2 bg-white hover:bg-red-600/20 border border-gray-200 hover:border-red-500/50
+                          text-gray-500 hover:text-red-400 transition-all
                         "
                         title="Delete Role"
                       >
@@ -219,9 +189,9 @@ export default function RolesPage() {
                 {/* Card Content */}
                 <div className="p-6">
                   {/* User Count */}
-                  <div className="flex items-center gap-2 mb-4 pb-4 border-b border-slate-800">
+                  <div className="flex items-center gap-2 mb-4 pb-4 border-b border-gray-200">
                     <Users className="w-4 h-4 text-cyan-400" />
-                    <span className="text-slate-300 font-mono text-sm">
+                    <span className="text-gray-600 text-sm">
                       {userCount} {userCount === 1 ? 'user' : 'users'} assigned
                     </span>
                   </div>
@@ -230,7 +200,7 @@ export default function RolesPage() {
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <Key className="w-4 h-4 text-green-400" />
-                      <span className="text-slate-300 font-mono text-xs font-bold uppercase tracking-wider">
+                      <span className="text-gray-600 text-xs font-medium">
                         Permissions ({role.permissions?.length || 0})
                       </span>
                     </div>
@@ -240,8 +210,8 @@ export default function RolesPage() {
                           <span
                             key={permission.id}
                             className="
-                              px-3 py-1 bg-green-950/30 border border-green-500/30
-                              text-green-400 font-mono text-xs uppercase tracking-wider
+                              px-3 py-1 bg-emerald-50 border border-emerald-200
+                              text-emerald-700 text-xs font-medium
                             "
                           >
                             {permission.name}
@@ -249,14 +219,14 @@ export default function RolesPage() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-slate-500 font-mono text-xs">NO PERMISSIONS</p>
+                      <p className="text-gray-400 text-xs">NO PERMISSIONS</p>
                     )}
                   </div>
                 </div>
 
                 {/* Card Footer */}
-                <div className="px-6 py-3 border-t border-slate-800 bg-slate-950/30">
-                  <div className="flex items-center justify-between text-xs font-mono text-slate-500">
+                <div className="px-6 py-3 border-t border-gray-200 bg-gray-50/30">
+                  <div className="flex items-center justify-between text-xs font-mono text-gray-400">
                     <span>ID: {role.id.slice(0, 8)}</span>
                     <span>
                       Created: {new Date(role.createdAt).toLocaleDateString('en-US')}
@@ -270,28 +240,14 @@ export default function RolesPage() {
       </div>
 
       {/* Stats Footer */}
-      <div className="mt-8 grid grid-cols-3 gap-4">
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Total Roles
-          </p>
-          <p className="text-amber-400 font-mono text-2xl font-bold">{roles.length}</p>
-        </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Total Users
-          </p>
-          <p className="text-cyan-400 font-mono text-2xl font-bold">{users.length}</p>
-        </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Avg Users/Role
-          </p>
-          <p className="text-slate-400 font-mono text-2xl font-bold">
-            {roles.length > 0 ? Math.round(users.length / roles.length) : 0}
-          </p>
-        </div>
-      </div>
+      <StatsFooter
+        className="mt-8"
+        items={[
+          { label: 'Total Roles', value: roles.length, color: 'text-amber-400' },
+          { label: 'Total Users', value: users.length, color: 'text-cyan-400' },
+          { label: 'Avg Users/Role', value: roles.length > 0 ? Math.round(users.length / roles.length) : 0, color: 'text-gray-500' },
+        ]}
+      />
 
       {/* Role Form Modal */}
       {isFormOpen && (
@@ -322,7 +278,7 @@ export default function RolesPage() {
         }
         confirmText="Delete"
         variant="danger"
-        isLoading={isDeleting}
+        isLoading={deleteRole.isPending}
       />
     </div>
   );

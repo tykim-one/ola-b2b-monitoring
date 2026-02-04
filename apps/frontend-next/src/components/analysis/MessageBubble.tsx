@@ -35,7 +35,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             px-4 py-3 rounded-2xl shadow-lg
             ${isUser
               ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-sm'
-              : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-100 rounded-bl-sm border border-slate-600'
+              : 'bg-gray-100 text-gray-900 rounded-bl-sm border border-gray-200'
             }
           `}
         >
@@ -48,17 +48,17 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Footer: Timestamp and Metadata */}
         <div className={`flex items-center gap-3 mt-1 px-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-          <span className="text-xs text-slate-500">{formatTime(message.createdAt)}</span>
+          <span className="text-xs text-gray-400">{formatTime(message.createdAt)}</span>
 
           {!isUser && message.metadata && (
             <>
               {message.metadata.totalTokens && (
-                <span className="text-xs text-slate-600">
+                <span className="text-xs text-gray-400">
                   {message.metadata.totalTokens.toLocaleString()} tokens
                 </span>
               )}
               {message.metadata.latencyMs && (
-                <span className="text-xs text-slate-600">
+                <span className="text-xs text-gray-400">
                   {message.metadata.latencyMs}ms
                 </span>
               )}
@@ -69,7 +69,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           {!isUser && (
             <button
               onClick={handleCopy}
-              className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-slate-500 hover:text-slate-300"
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-400 hover:text-gray-600"
             >
               {copied ? '✓ Copied' : 'Copy'}
             </button>

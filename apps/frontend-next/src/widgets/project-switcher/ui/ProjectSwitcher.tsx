@@ -43,7 +43,7 @@ export default function ProjectSwitcher({ currentProjectId }: { currentProjectId
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-md transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors"
       >
         <div className="w-6 h-6 bg-indigo-500/20 rounded flex items-center justify-center text-indigo-400">
             <Box size={14} />
@@ -53,9 +53,9 @@ export default function ProjectSwitcher({ currentProjectId }: { currentProjectId
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-56 bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-           <div className="p-2 border-b border-slate-800 bg-slate-900/50">
-             <div className="text-xs text-slate-500 font-semibold px-2 py-1 uppercase tracking-wider">Switch Project</div>
+        <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+           <div className="p-2 border-b border-gray-200 bg-gray-50">
+             <div className="text-xs text-gray-400 font-semibold px-2 py-1 uppercase tracking-wider">Switch Project</div>
            </div>
           <div className="p-1">
             {PROJECTS.map((project) => (
@@ -65,16 +65,16 @@ export default function ProjectSwitcher({ currentProjectId }: { currentProjectId
                 className={`w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-2 transition-colors ${
                   project.id === currentProjectId
                     ? 'bg-indigo-500/10 text-indigo-400'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    : 'text-gray-500 hover:bg-white hover:text-gray-900'
                 }`}
               >
-                <div className={`w-2 h-2 rounded-full ${project.id === currentProjectId ? 'bg-indigo-400' : 'bg-slate-600'}`} />
+                <div className={`w-2 h-2 rounded-full ${project.id === currentProjectId ? 'bg-indigo-400' : 'bg-gray-300'}`} />
                 {project.name}
               </button>
             ))}
-            <div className="h-px bg-slate-800 my-1" />
+            <div className="h-px bg-white my-1" />
              <button
-                className="w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-2 text-slate-500 hover:bg-slate-800 hover:text-slate-300 transition-colors"
+                className="w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-2 text-gray-400 hover:bg-white hover:text-gray-600 transition-colors"
               >
                 <Command size={14} />
                 <span>Manage Workspace...</span>

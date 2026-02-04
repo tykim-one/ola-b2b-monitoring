@@ -60,7 +60,12 @@ export class MinkabuETLService {
    * 일별 트렌드 (캐시 15분)
    */
   async getDailyTrend(days = 30): Promise<MinkabuETLTrend[]> {
-    const cacheKey = CacheService.generateKey('minkabu-etl', 'trend', 'daily', days);
+    const cacheKey = CacheService.generateKey(
+      'minkabu-etl',
+      'trend',
+      'daily',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -73,7 +78,12 @@ export class MinkabuETLService {
    * 시간별 트렌드 (캐시 5분)
    */
   async getHourlyTrend(hours = 24): Promise<MinkabuETLTrend[]> {
-    const cacheKey = CacheService.generateKey('minkabu-etl', 'trend', 'hourly', hours);
+    const cacheKey = CacheService.generateKey(
+      'minkabu-etl',
+      'trend',
+      'hourly',
+      hours,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -99,7 +109,12 @@ export class MinkabuETLService {
    * 헤드라인 수집 통계 (캐시 15분)
    */
   async getHeadlineStats(days = 30): Promise<MinkabuETLHeadlineStats[]> {
-    const cacheKey = CacheService.generateKey('minkabu-etl', 'stats', 'headlines', days);
+    const cacheKey = CacheService.generateKey(
+      'minkabu-etl',
+      'stats',
+      'headlines',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -112,7 +127,12 @@ export class MinkabuETLService {
    * 인덱스 통계 (캐시 15분)
    */
   async getIndexStats(days = 30): Promise<MinkabuETLIndexStats[]> {
-    const cacheKey = CacheService.generateKey('minkabu-etl', 'stats', 'index', days);
+    const cacheKey = CacheService.generateKey(
+      'minkabu-etl',
+      'stats',
+      'index',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,

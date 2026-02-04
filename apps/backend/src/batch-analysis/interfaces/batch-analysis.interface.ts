@@ -40,7 +40,12 @@ export interface ChatAnalysisResult {
 /**
  * Batch analysis job status
  */
-export type JobStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+export type JobStatus =
+  | 'PENDING'
+  | 'RUNNING'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'CANCELLED';
 
 /**
  * Job creation options

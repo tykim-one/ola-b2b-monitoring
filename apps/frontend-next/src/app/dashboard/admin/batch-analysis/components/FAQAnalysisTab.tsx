@@ -126,7 +126,7 @@ export default function FAQAnalysisTab() {
       case 'FAILED':
         return <XCircle className="w-4 h-4 text-red-400" />;
       default:
-        return <AlertCircle className="w-4 h-4 text-slate-400" />;
+        return <AlertCircle className="w-4 h-4 text-gray-500" />;
     }
   };
 
@@ -135,13 +135,13 @@ export default function FAQAnalysisTab() {
       case 'PENDING':
         return 'text-yellow-400 bg-yellow-950/30 border-yellow-500/30';
       case 'RUNNING':
-        return 'text-violet-400 bg-violet-950/30 border-violet-500/30';
+        return 'text-violet-400 bg-violet-50 border-violet-500/30';
       case 'COMPLETED':
-        return 'text-green-400 bg-green-950/30 border-green-500/30';
+        return 'text-green-400 bg-green-50 border-green-500/30';
       case 'FAILED':
-        return 'text-red-400 bg-red-950/30 border-red-500/30';
+        return 'text-red-400 bg-red-50 border-red-500/30';
       default:
-        return 'text-slate-400 bg-slate-950/30 border-slate-500/30';
+        return 'text-gray-500 bg-gray-50/30 border-gray-200';
     }
   };
 
@@ -159,7 +159,7 @@ export default function FAQAnalysisTab() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono text-sm">Loading...</p>
+          <p className="text-gray-500 text-sm">Loading...</p>
         </div>
       </div>
     );
@@ -169,7 +169,7 @@ export default function FAQAnalysisTab() {
     <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <p className="text-slate-400 font-mono text-sm">
+        <p className="text-gray-500 text-sm">
           FAQ Clustering & Reason Analysis Pipeline
         </p>
         <button
@@ -177,7 +177,7 @@ export default function FAQAnalysisTab() {
           className="
             flex items-center gap-2 px-4 py-2
             bg-violet-600 hover:bg-violet-700 border border-violet-500
-            text-white font-mono font-bold uppercase tracking-wider text-xs
+            text-white font-medium text-xs
             transition-all
           "
         >
@@ -188,78 +188,78 @@ export default function FAQAnalysisTab() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 border border-red-500/50 bg-red-950/30">
-          <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+        <div className="mb-6 p-4 border border-red-500/50 bg-red-50">
+          <p className="text-red-400 text-sm">ERROR: {error}</p>
         </div>
       )}
 
       {/* Statistics */}
       <div className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
+        <div className="p-4 border border-gray-200 bg-gray-50">
           <div className="flex items-center gap-2 mb-2">
             <FileQuestion className="w-4 h-4 text-violet-400" />
-            <p className="text-slate-500 font-mono text-xs uppercase">Total Jobs</p>
+            <p className="text-gray-400 text-xs uppercase">Total Jobs</p>
           </div>
-          <p className="text-violet-400 font-mono text-2xl font-bold">{stats.total}</p>
+          <p className="text-violet-400 text-2xl font-bold">{stats.total}</p>
         </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
+        <div className="p-4 border border-gray-200 bg-gray-50">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="w-4 h-4 text-yellow-400" />
-            <p className="text-slate-500 font-mono text-xs uppercase">Pending</p>
+            <p className="text-gray-400 text-xs uppercase">Pending</p>
           </div>
-          <p className="text-yellow-400 font-mono text-2xl font-bold">{stats.pending}</p>
+          <p className="text-yellow-400 text-2xl font-bold">{stats.pending}</p>
         </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
+        <div className="p-4 border border-gray-200 bg-gray-50">
           <div className="flex items-center gap-2 mb-2">
             <RefreshCw className="w-4 h-4 text-violet-400" />
-            <p className="text-slate-500 font-mono text-xs uppercase">Running</p>
+            <p className="text-gray-400 text-xs uppercase">Running</p>
           </div>
-          <p className="text-violet-400 font-mono text-2xl font-bold">{stats.running}</p>
+          <p className="text-violet-400 text-2xl font-bold">{stats.running}</p>
         </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
+        <div className="p-4 border border-gray-200 bg-gray-50">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle className="w-4 h-4 text-green-400" />
-            <p className="text-slate-500 font-mono text-xs uppercase">Completed</p>
+            <p className="text-gray-400 text-xs uppercase">Completed</p>
           </div>
-          <p className="text-green-400 font-mono text-2xl font-bold">{stats.completed}</p>
+          <p className="text-green-400 text-2xl font-bold">{stats.completed}</p>
         </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
+        <div className="p-4 border border-gray-200 bg-gray-50">
           <div className="flex items-center gap-2 mb-2">
             <Layers className="w-4 h-4 text-emerald-400" />
-            <p className="text-slate-500 font-mono text-xs uppercase">Clusters</p>
+            <p className="text-gray-400 text-xs uppercase">Clusters</p>
           </div>
-          <p className="text-emerald-400 font-mono text-2xl font-bold">{stats.totalClusters}</p>
+          <p className="text-emerald-400 text-2xl font-bold">{stats.totalClusters}</p>
         </div>
       </div>
 
       {/* Jobs Table */}
-      <div className="border border-slate-800 bg-slate-900/50">
+      <div className="border border-gray-200 bg-gray-50">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/50">
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+              <tr className="border-b border-gray-200 bg-gray-50/50">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Period
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Top N
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Tenant
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Questions
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Clusters
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Created
                 </th>
-                <th className="text-right px-4 py-3 font-mono text-xs font-bold text-violet-400 uppercase">
+                <th className="text-right px-4 py-3 text-xs font-bold text-violet-400 uppercase">
                   Actions
                 </th>
               </tr>
@@ -268,34 +268,34 @@ export default function FAQAnalysisTab() {
               {jobs.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-8 text-center">
-                    <p className="text-slate-500 font-mono text-sm">NO JOBS FOUND</p>
+                    <p className="text-gray-400 text-sm">NO JOBS FOUND</p>
                   </td>
                 </tr>
               ) : (
                 jobs.map((job) => (
                   <tr
                     key={job.id}
-                    className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors"
+                    className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="px-4 py-3">
                       <div className={`inline-flex items-center gap-2 px-2 py-1 border ${getStatusColor(job.status)}`}>
                         {getStatusIcon(job.status)}
-                        <span className="font-mono text-xs uppercase">{job.status}</span>
+                        <span className="text-xs uppercase">{job.status}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-slate-300 font-mono text-sm">{job.periodDays}일</span>
+                      <span className="text-gray-600 text-sm">{job.periodDays}일</span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-slate-300 font-mono text-sm">{job.topN}</span>
+                      <span className="text-gray-600 text-sm">{job.topN}</span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-slate-400 font-mono text-sm">
+                      <span className="text-gray-500 text-sm">
                         {job.tenantId || 'ALL'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-slate-300 font-mono text-sm">
+                      <span className="text-gray-600 text-sm">
                         {job.totalQuestions?.toLocaleString() || '-'}
                       </span>
                     </td>
@@ -312,7 +312,7 @@ export default function FAQAnalysisTab() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-slate-500 font-mono text-xs">
+                      <span className="text-gray-400 text-xs">
                         {new Date(job.createdAt).toLocaleString('en-US', {
                           month: 'short',
                           day: '2-digit',
@@ -339,7 +339,7 @@ export default function FAQAnalysisTab() {
                         )}
                         <button
                           onClick={() => router.push(`/dashboard/admin/batch-analysis/faq/${job.id}`)}
-                          className="p-2 bg-slate-800 hover:bg-violet-600/20 border border-slate-700 text-slate-400 hover:text-violet-400 transition-all"
+                          className="p-2 bg-white hover:bg-violet-600/20 border border-gray-200 text-gray-500 hover:text-violet-400 transition-all"
                           title="View Results"
                         >
                           <Eye className="w-4 h-4" />
@@ -347,7 +347,7 @@ export default function FAQAnalysisTab() {
                         <button
                           onClick={() => handleDeleteClick(job)}
                           disabled={job.status === 'RUNNING'}
-                          className="p-2 bg-slate-800 hover:bg-red-600/20 border border-slate-700 text-slate-400 hover:text-red-400 transition-all disabled:opacity-50"
+                          className="p-2 bg-white hover:bg-red-600/20 border border-gray-200 text-gray-500 hover:text-red-400 transition-all disabled:opacity-50"
                           title="Delete Job"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -367,7 +367,7 @@ export default function FAQAnalysisTab() {
         <button
           onClick={fetchData}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 font-mono text-xs uppercase transition-all disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 text-xs uppercase transition-all disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -376,15 +376,15 @@ export default function FAQAnalysisTab() {
 
       {/* Create Job Modal */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-900 border border-slate-700 p-6 w-full max-w-md">
-            <h3 className="text-lg font-mono font-bold text-violet-400 mb-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white border border-gray-200 p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">
               Create FAQ Analysis Job
             </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-slate-400 font-mono text-xs uppercase mb-2">
+                <label className="block text-gray-500 text-xs uppercase mb-2">
                   Period (Days)
                 </label>
                 <select
@@ -392,7 +392,7 @@ export default function FAQAnalysisTab() {
                   onChange={(e) =>
                     setCreateForm({ ...createForm, periodDays: Number(e.target.value) as 7 | 14 | 30 })
                   }
-                  className="w-full bg-slate-800 border border-slate-700 text-slate-300 px-3 py-2 font-mono"
+                  className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
                 >
                   <option value={7}>7 Days</option>
                   <option value={14}>14 Days</option>
@@ -401,7 +401,7 @@ export default function FAQAnalysisTab() {
               </div>
 
               <div>
-                <label className="block text-slate-400 font-mono text-xs uppercase mb-2">
+                <label className="block text-gray-500 text-xs uppercase mb-2">
                   Top N
                 </label>
                 <select
@@ -409,7 +409,7 @@ export default function FAQAnalysisTab() {
                   onChange={(e) =>
                     setCreateForm({ ...createForm, topN: Number(e.target.value) as 10 | 20 | 50 })
                   }
-                  className="w-full bg-slate-800 border border-slate-700 text-slate-300 px-3 py-2 font-mono"
+                  className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
                 >
                   <option value={10}>Top 10</option>
                   <option value={20}>Top 20</option>
@@ -418,7 +418,7 @@ export default function FAQAnalysisTab() {
               </div>
 
               <div>
-                <label className="block text-slate-400 font-mono text-xs uppercase mb-2">
+                <label className="block text-gray-500 text-xs uppercase mb-2">
                   Tenant (Optional)
                 </label>
                 <select
@@ -429,7 +429,7 @@ export default function FAQAnalysisTab() {
                       tenantId: e.target.value || undefined,
                     })
                   }
-                  className="w-full bg-slate-800 border border-slate-700 text-slate-300 px-3 py-2 font-mono"
+                  className="w-full bg-white border border-gray-200 text-gray-600 px-3 py-2 font-mono"
                 >
                   <option value="">All Tenants</option>
                   {tenants.map((t) => (
@@ -444,14 +444,14 @@ export default function FAQAnalysisTab() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="px-4 py-2 bg-slate-800 border border-slate-700 text-slate-400 font-mono text-sm uppercase"
+                className="px-4 py-2 bg-white border border-gray-200 text-gray-500 text-sm uppercase"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateJob}
                 disabled={isCreating}
-                className="px-4 py-2 bg-violet-600 hover:bg-violet-700 border border-violet-500 text-white font-mono text-sm uppercase disabled:opacity-50"
+                className="px-4 py-2 bg-violet-600 hover:bg-violet-700 border border-violet-500 text-white text-sm font-medium disabled:opacity-50"
               >
                 {isCreating ? 'Creating...' : 'Create'}
               </button>

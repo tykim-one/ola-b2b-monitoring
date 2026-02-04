@@ -1,4 +1,11 @@
-import { IsString, IsBoolean, IsInt, IsOptional, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  Min,
+  Max,
+} from 'class-validator';
 
 export class CreateScheduleDto {
   @IsString()

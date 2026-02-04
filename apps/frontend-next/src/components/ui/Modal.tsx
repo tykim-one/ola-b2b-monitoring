@@ -31,7 +31,7 @@ export default function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -39,21 +39,21 @@ export default function Modal({
       <div
         className={`
           relative z-10 w-full ${sizeClasses[size]}
-          bg-slate-900 border-2 border-cyan-500/30
-          shadow-2xl shadow-cyan-500/10
+          bg-white border border-gray-200 rounded-2xl
+          shadow-xl
           max-h-[90vh] flex flex-col
         `}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-700 bg-slate-950/50">
-          <h2 className="font-mono text-xl font-bold text-cyan-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50 rounded-t-2xl">
+          <h2 className="text-xl font-bold text-gray-900">
             {title}
           </h2>
           <button
             onClick={onClose}
             className="
-              text-slate-400 hover:text-slate-100 transition-colors
-              p-2 hover:bg-slate-800 rounded
+              text-gray-500 hover:text-gray-800 transition-colors
+              p-2 hover:bg-gray-100 rounded
             "
           >
             <X className="w-5 h-5" />

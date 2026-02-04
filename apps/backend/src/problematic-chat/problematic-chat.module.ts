@@ -7,8 +7,8 @@ import { DataSourceModule } from '../datasource/datasource.module';
 
 @Module({
   imports: [
-    AdminModule,      // PrismaService
-    CacheModule,      // CacheService
+    AdminModule, // PrismaService
+    CacheModule, // CacheService
     DataSourceModule, // MetricsDataSource
   ],
   controllers: [ProblematicChatController],

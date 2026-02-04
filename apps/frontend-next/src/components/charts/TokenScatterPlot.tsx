@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   ZAxis,
 } from 'recharts';
+import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface TokenData {
   tenant_id: string;
@@ -55,11 +56,11 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
       : 0;
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         <div className="text-right">
-          <div className="text-slate-400 text-xs">평균 효율성 비율</div>
+          <div className="text-gray-500 text-xs">평균 효율성 비율</div>
           <div className="text-blue-400 font-bold">{avgEfficiency.toFixed(3)}</div>
         </div>
       </div>
@@ -67,12 +68,12 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
             <XAxis
               type="number"
               dataKey="input_tokens"
               name="입력 토큰"
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={12}
               tickLine={false}
               tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
@@ -80,7 +81,7 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
                 value: '입력 토큰',
                 position: 'insideBottom',
                 offset: -10,
-                fill: '#64748b',
+                fill: CHART_COLORS.axisText,
                 fontSize: 11,
               }}
             />
@@ -88,7 +89,7 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
               type="number"
               dataKey="output_tokens"
               name="출력 토큰"
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={12}
               tickLine={false}
               tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
@@ -96,19 +97,16 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
                 value: '출력 토큰',
                 angle: -90,
                 position: 'insideLeft',
-                fill: '#64748b',
+                fill: CHART_COLORS.axisText,
                 fontSize: 11,
               }}
             />
             <ZAxis type="number" dataKey="total_tokens" range={[20, 200]} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
+                ...TOOLTIP_STYLE,
                 borderRadius: '8px',
-                color: '#fff',
               }}
-              itemStyle={{ color: '#fff' }}
               formatter={(value, name) => {
                 const numValue = typeof value === 'number' ? value : 0;
                 return [numValue.toLocaleString(), String(name)];
@@ -129,7 +127,7 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="flex gap-4 mt-4 pt-4 border-t border-slate-700">
+      <div className="flex gap-4 mt-4 pt-4 border-t border-gray-200">
         {tenants.map((tenant) => (
           <div key={tenant} className="flex items-center gap-2">
             <div
@@ -138,8 +136,8 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
                 backgroundColor: TENANT_COLORS[tenant] || TENANT_COLORS.default,
               }}
             />
-            <span className="text-slate-400 text-sm">{tenant}</span>
-            <span className="text-slate-500 text-xs">({tenantGroups[tenant].length}건)</span>
+            <span className="text-gray-500 text-sm">{tenant}</span>
+            <span className="text-gray-400 text-xs">({tenantGroups[tenant].length}건)</span>
           </div>
         ))}
       </div>

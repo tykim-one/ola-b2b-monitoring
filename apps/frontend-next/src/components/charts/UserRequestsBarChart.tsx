@@ -12,6 +12,7 @@ import {
   Cell,
 } from 'recharts';
 import { UserRequestCount } from '@ola/shared-types';
+import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface UserRequestsBarChartProps {
   data: UserRequestCount[];
@@ -52,16 +53,16 @@ const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = ({
   const totalUsers = data.length;
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         <div className="flex gap-4 text-sm">
           <div className="text-right">
-            <div className="text-slate-400 text-xs">총 유저</div>
+            <div className="text-gray-500 text-xs">총 유저</div>
             <div className="text-blue-400 font-bold">{totalUsers}명</div>
           </div>
           <div className="text-right">
-            <div className="text-slate-400 text-xs">총 요청</div>
+            <div className="text-gray-500 text-xs">총 요청</div>
             <div className="text-emerald-400 font-bold">{totalRequests.toLocaleString()}</div>
           </div>
         </div>
@@ -74,25 +75,21 @@ const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = ({
             layout="vertical"
             margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
             <XAxis
               type="number"
-              tick={{ fill: '#94a3b8', fontSize: 12 }}
-              axisLine={{ stroke: '#475569' }}
+              tick={{ fill: CHART_COLORS.axisText, fontSize: 12 }}
+              axisLine={{ stroke: '#e5e7eb' }}
             />
             <YAxis
               type="category"
               dataKey="displayId"
-              tick={{ fill: '#94a3b8', fontSize: 11 }}
-              axisLine={{ stroke: '#475569' }}
+              tick={{ fill: CHART_COLORS.axisText, fontSize: 11 }}
+              axisLine={{ stroke: '#e5e7eb' }}
               width={75}
             />
             <Tooltip
-              contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
-                borderRadius: '8px',
-              }}
+              contentStyle={TOOLTIP_STYLE}
               formatter={(value, name) => {
                 if (name === 'requestCount') return [value, '요청 수'];
                 return [value, name];
@@ -114,18 +111,18 @@ const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 pt-4 border-t border-slate-700 flex justify-center gap-6 text-xs">
+      <div className="mt-4 pt-4 border-t border-gray-200 flex justify-center gap-6 text-xs">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.high }} />
-          <span className="text-slate-400">성공률 95%+</span>
+          <span className="text-gray-500">성공률 95%+</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.medium }} />
-          <span className="text-slate-400">성공률 80-95%</span>
+          <span className="text-gray-500">성공률 80-95%</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.low }} />
-          <span className="text-slate-400">성공률 80% 미만</span>
+          <span className="text-gray-500">성공률 80% 미만</span>
         </div>
       </div>
     </div>

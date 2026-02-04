@@ -1,45 +1,25 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, Search, UserCheck, UserX, Shield } from 'lucide-react';
-import { User, Role } from '@ola/shared-types';
-import { usersApi, rolesApi } from '@/lib/api-client';
+import React, { useState, useMemo } from 'react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { User } from '@ola/shared-types';
+import { useUsers, useRoles, useDeleteUser } from '@/hooks/queries';
 import SearchInput from '@/components/ui/SearchInput';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import UserFormModal from './components/UserFormModal';
+import { StatsFooter } from '@/components/ui/StatsFooter';
+import { DataTable, Column } from '@/components/compound/DataTable';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: users = [], isLoading, error } = useUsers();
+  const { data: roles = [] } = useRoles();
+  const deleteUser = useDeleteUser();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const [usersData, rolesData] = await Promise.all([
-        usersApi.getAll(),
-        rolesApi.getAll(),
-      ]);
-      setUsers(usersData);
-      setRoles(rolesData);
-      setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load users');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const handleCreateUser = () => {
     setSelectedUser(null);
@@ -56,49 +36,143 @@ export default function UsersPage() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (!userToDelete) return;
-
-    try {
-      setIsDeleting(true);
-      await usersApi.delete(userToDelete.id);
-      setUsers(users.filter((u) => u.id !== userToDelete.id));
-      setIsDeleteDialogOpen(false);
-      setUserToDelete(null);
-    } catch (err: any) {
-      alert(err.message || 'Failed to delete user');
-    } finally {
-      setIsDeleting(false);
-    }
+    deleteUser.mutate(userToDelete.id, {
+      onSuccess: () => {
+        setIsDeleteDialogOpen(false);
+        setUserToDelete(null);
+      },
+      onError: (err: Error) => {
+        alert(err.message || 'Failed to delete user');
+      },
+    });
   };
 
-  const handleFormSuccess = (user: User) => {
-    if (selectedUser) {
-      // Update
-      setUsers(users.map((u) => (u.id === user.id ? user : u)));
-    } else {
-      // Create
-      setUsers([...users, user]);
-    }
+  const handleFormSuccess = () => {
     setIsFormOpen(false);
     setSelectedUser(null);
   };
 
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = useMemo(() => {
+    if (!searchQuery) return users;
     const query = searchQuery.toLowerCase();
-    return (
+    return users.filter((user) =>
       user.name.toLowerCase().includes(query) ||
       user.email.toLowerCase().includes(query) ||
       user.roles?.some((role) => role.name.toLowerCase().includes(query))
     );
-  });
+  }, [users, searchQuery]);
 
-  if (loading) {
+  const userColumns: Column<User>[] = useMemo(() => [
+    {
+      key: 'isActive',
+      header: 'Status',
+      render: (_value, row) => (
+        <div className="flex items-center gap-2">
+          {row.isActive ? (
+            <>
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-emerald-600 text-xs">Active</span>
+            </>
+          ) : (
+            <>
+              <div className="w-2 h-2 rounded-full bg-gray-300" />
+              <span className="text-gray-500 text-xs">Inactive</span>
+            </>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'name',
+      header: 'User',
+      render: (_value, row) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded bg-blue-50 border border-blue-200 flex items-center justify-center">
+            <span className="text-blue-600 font-medium text-sm">
+              {row.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <span className="text-gray-800 font-medium">{row.name}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'email',
+      header: 'Email',
+      render: (_value, row) => (
+        <span className="text-gray-600 text-sm">{row.email}</span>
+      ),
+    },
+    {
+      key: 'roles',
+      header: 'Roles',
+      render: (_value, row) => (
+        <div className="flex flex-wrap gap-2">
+          {row.roles && row.roles.length > 0 ? (
+            row.roles.map((role) => (
+              <span
+                key={role.id}
+                className="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium"
+              >
+                {role.name}
+              </span>
+            ))
+          ) : (
+            <span className="text-gray-400 text-xs">NO ROLES</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'lastLoginAt',
+      header: 'Last Login',
+      render: (_value, row) => (
+        <span className="text-gray-500 text-xs">
+          {row.lastLoginAt
+            ? new Date(row.lastLoginAt).toLocaleString('en-US', {
+                month: 'short',
+                day: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : 'NEVER'}
+        </span>
+      ),
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      align: 'right' as const,
+      render: (_value, row) => (
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); handleEditUser(row); }}
+            className="p-2 bg-white hover:bg-cyan-600/20 border border-gray-200 hover:border-cyan-500/50 text-gray-500 hover:text-cyan-400 transition-all"
+            title="Edit User"
+          >
+            <Pencil className="w-4 h-4" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); handleDeleteClick(row); }}
+            className="p-2 bg-white hover:bg-red-600/20 border border-gray-200 hover:border-red-500/50 text-gray-500 hover:text-red-400 transition-all"
+            title="Delete User"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
+  ], []);
+
+  if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono uppercase tracking-wider text-sm">
+          <p className="text-gray-500 text-sm">
             Loading System Data...
           </p>
         </div>
@@ -107,25 +181,25 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-950 p-8">
+    <div className="h-full overflow-y-auto bg-gray-50 p-8">
       {/* Header */}
-      <div className="mb-8 border-b border-slate-800 pb-6">
+      <div className="mb-8 border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-mono font-bold text-cyan-400 uppercase tracking-wider mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               User Management
             </h1>
-            <p className="text-slate-400 font-mono text-sm">
-              SYSTEM.ADMIN.USERS // {users.length} ACTIVE
+            <p className="text-gray-500 text-sm">
+              {users.length}명의 사용자가 등록되어 있습니다
             </p>
           </div>
           <button
             onClick={handleCreateUser}
             className="
               flex items-center gap-2 px-6 py-3
-              bg-cyan-600 hover:bg-cyan-700 border-2 border-cyan-500
-              text-white font-mono font-bold uppercase tracking-wider text-sm
-              transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40
+              bg-blue-600 hover:bg-blue-700 border border-blue-500
+              text-white font-medium text-sm
+              transition-all shadow-sm
             "
           >
             <Plus className="w-5 h-5" />
@@ -136,8 +210,8 @@ export default function UsersPage() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 border-2 border-red-500/50 bg-red-950/30">
-          <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+        <div className="mb-6 p-4 border border-red-200 bg-red-50">
+          <p className="text-red-400 text-sm">ERROR: {(error as Error).message}</p>
         </div>
       )}
 
@@ -152,178 +226,22 @@ export default function UsersPage() {
       </div>
 
       {/* Users Table */}
-      <div className="border-2 border-slate-800 bg-slate-900/50">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b-2 border-slate-800 bg-slate-950/50">
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                  User
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                  Roles
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                  Last Login
-                </th>
-                <th className="text-right px-6 py-4 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <p className="text-slate-500 font-mono text-sm">
-                      {searchQuery ? 'NO RESULTS FOUND' : 'NO USERS IN SYSTEM'}
-                    </p>
-                  </td>
-                </tr>
-              ) : (
-                filteredUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors"
-                  >
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        {user.isActive ? (
-                          <>
-                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                            <span className="text-green-400 font-mono text-xs uppercase tracking-wider">
-                              Active
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <div className="w-2 h-2 rounded-full bg-slate-600" />
-                            <span className="text-slate-500 font-mono text-xs uppercase tracking-wider">
-                              Inactive
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* User */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center">
-                          <span className="text-cyan-400 font-mono font-bold text-sm">
-                            {user.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <span className="text-slate-100 font-medium">{user.name}</span>
-                      </div>
-                    </td>
-
-                    {/* Email */}
-                    <td className="px-6 py-4">
-                      <span className="text-slate-300 font-mono text-sm">{user.email}</span>
-                    </td>
-
-                    {/* Roles */}
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-2">
-                        {user.roles && user.roles.length > 0 ? (
-                          user.roles.map((role) => (
-                            <span
-                              key={role.id}
-                              className="
-                                px-3 py-1 bg-amber-950/30 border border-amber-500/30
-                                text-amber-400 font-mono text-xs uppercase tracking-wider
-                              "
-                            >
-                              {role.name}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-slate-500 font-mono text-xs">NO ROLES</span>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* Last Login */}
-                    <td className="px-6 py-4">
-                      <span className="text-slate-400 font-mono text-xs">
-                        {user.lastLoginAt
-                          ? new Date(user.lastLoginAt).toLocaleString('en-US', {
-                              month: 'short',
-                              day: '2-digit',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })
-                          : 'NEVER'}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-6 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => handleEditUser(user)}
-                          className="
-                            p-2 bg-slate-800 hover:bg-cyan-600/20 border border-slate-700 hover:border-cyan-500/50
-                            text-slate-400 hover:text-cyan-400 transition-all
-                          "
-                          title="Edit User"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteClick(user)}
-                          className="
-                            p-2 bg-slate-800 hover:bg-red-600/20 border border-slate-700 hover:border-red-500/50
-                            text-slate-400 hover:text-red-400 transition-all
-                          "
-                          title="Delete User"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataTable data={filteredUsers} columns={userColumns} variant="flat" rowKey="id">
+        <DataTable.Content>
+          <DataTable.Header />
+          <DataTable.Body emptyMessage={searchQuery ? 'NO RESULTS FOUND' : 'NO USERS IN SYSTEM'} />
+        </DataTable.Content>
+      </DataTable>
 
       {/* Stats Footer */}
-      <div className="mt-6 grid grid-cols-3 gap-4">
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Total Users
-          </p>
-          <p className="text-cyan-400 font-mono text-2xl font-bold">{users.length}</p>
-        </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Active
-          </p>
-          <p className="text-green-400 font-mono text-2xl font-bold">
-            {users.filter((u) => u.isActive).length}
-          </p>
-        </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Inactive
-          </p>
-          <p className="text-slate-500 font-mono text-2xl font-bold">
-            {users.filter((u) => !u.isActive).length}
-          </p>
-        </div>
-      </div>
+      <StatsFooter
+        className="mt-6"
+        items={[
+          { label: 'Total Users', value: users.length, color: 'text-cyan-400' },
+          { label: 'Active', value: users.filter((u) => u.isActive).length, color: 'text-green-400' },
+          { label: 'Inactive', value: users.filter((u) => !u.isActive).length, color: 'text-gray-400' },
+        ]}
+      />
 
       {/* User Form Modal */}
       {isFormOpen && (
@@ -347,7 +265,7 @@ export default function UsersPage() {
         message={`Are you sure you want to delete user "${userToDelete?.name}"? This action cannot be undone.`}
         confirmText="Delete"
         variant="danger"
-        isLoading={isDeleting}
+        isLoading={deleteUser.isPending}
       />
     </div>
   );

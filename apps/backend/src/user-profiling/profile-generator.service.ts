@@ -118,7 +118,8 @@ ${conversationSamples}
 
     // 실패한 메시지 수
     const failedCount = messages.filter((m) => !m.success).length;
-    const failRate = messages.length > 0 ? (failedCount / messages.length) * 100 : 0;
+    const failRate =
+      messages.length > 0 ? (failedCount / messages.length) * 100 : 0;
 
     const behaviorSummary =
       topCategories.length > 0

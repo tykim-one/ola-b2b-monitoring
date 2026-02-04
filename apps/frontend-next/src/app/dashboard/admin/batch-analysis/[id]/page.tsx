@@ -130,7 +130,7 @@ export default function JobDetailPage() {
       case 'FAILED':
         return <XCircle className="w-5 h-5 text-red-400" />;
       default:
-        return <AlertCircle className="w-5 h-5 text-slate-400" />;
+        return <AlertCircle className="w-5 h-5 text-gray-500" />;
     }
   };
 
@@ -174,10 +174,10 @@ export default function JobDetailPage() {
 
   if (loading && !job) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono uppercase tracking-wider text-sm">
+          <p className="text-gray-500 text-sm">
             Loading Job Data...
           </p>
         </div>
@@ -187,13 +187,13 @@ export default function JobDetailPage() {
 
   if (error && !job) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <XCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <p className="text-red-400 font-mono text-sm">{error}</p>
+          <p className="text-red-400 text-sm">{error}</p>
           <button
             onClick={() => router.back()}
-            className="mt-4 px-4 py-2 bg-slate-800 border border-slate-700 text-slate-300 font-mono text-sm"
+            className="mt-4 px-4 py-2 bg-white border border-gray-200 text-gray-600 text-sm"
           >
             Go Back
           </button>
@@ -203,12 +203,12 @@ export default function JobDetailPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-950 p-8">
+    <div className="h-full overflow-y-auto bg-gray-50 p-8">
       {/* Header */}
-      <div className="mb-8 border-b border-slate-800 pb-6">
+      <div className="mb-8 border-b border-gray-200 pb-6">
         <button
           onClick={() => router.push('/dashboard/admin/batch-analysis')}
-          className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 font-mono text-sm mb-4 transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-cyan-400 text-sm mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Jobs
@@ -218,11 +218,11 @@ export default function JobDetailPage() {
           <div>
             <div className="flex items-center gap-3 mb-2">
               {job && getStatusIcon(job.status)}
-              <h1 className="text-2xl font-mono font-bold text-cyan-400 uppercase tracking-wider">
+              <h1 className="text-2xl font-bold text-gray-900">
                 Job Details
               </h1>
             </div>
-            <p className="text-slate-400 font-mono text-sm">
+            <p className="text-gray-500 text-sm">
               ID: {jobId.slice(0, 8)}...
             </p>
           </div>
@@ -234,7 +234,7 @@ export default function JobDetailPage() {
                 className="
                   flex items-center gap-2 px-6 py-3
                   bg-green-600 hover:bg-green-700 border-2 border-green-500
-                  text-white font-mono font-bold uppercase tracking-wider text-sm
+                  text-white font-medium text-sm
                   transition-all disabled:opacity-50
                 "
               >
@@ -251,8 +251,8 @@ export default function JobDetailPage() {
               disabled={loading}
               className="
                 flex items-center gap-2 px-4 py-3
-                bg-slate-800 hover:bg-slate-700 border border-slate-700
-                text-slate-300 font-mono text-sm uppercase tracking-wider
+                bg-white hover:bg-gray-100 border border-gray-200
+                text-gray-600 text-sm
                 transition-all disabled:opacity-50
               "
             >
@@ -266,8 +266,8 @@ export default function JobDetailPage() {
       {/* Job Info */}
       {job && (
         <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
-            <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
+          <div className="p-4 border border-gray-200 bg-gray-50">
+            <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
               Status
             </p>
             <p className={`font-mono font-bold ${
@@ -279,19 +279,19 @@ export default function JobDetailPage() {
               {job.status}
             </p>
           </div>
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
-            <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
+          <div className="p-4 border border-gray-200 bg-gray-50">
+            <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
               Target Date
             </p>
-            <p className="text-slate-200 font-mono">
+            <p className="text-gray-700 font-mono">
               {new Date(job.targetDate).toLocaleDateString()}
             </p>
           </div>
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
-            <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
+          <div className="p-4 border border-gray-200 bg-gray-50">
+            <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
               Progress
             </p>
-            <p className="text-slate-200 font-mono">
+            <p className="text-gray-700 font-mono">
               {job.processedItems}/{job.totalItems}
               {job.failedItems > 0 && (
                 <span className="text-red-400 text-sm ml-1">
@@ -300,11 +300,11 @@ export default function JobDetailPage() {
               )}
             </p>
           </div>
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
-            <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
+          <div className="p-4 border border-gray-200 bg-gray-50">
+            <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
               Tenant
             </p>
-            <p className="text-slate-200 font-mono">
+            <p className="text-gray-700 font-mono">
               {job.tenantId || 'All Tenants'}
             </p>
           </div>
@@ -313,21 +313,21 @@ export default function JobDetailPage() {
 
       {/* Score Summary */}
       {scoreStats && (
-        <div className="mb-8 border-2 border-slate-800 bg-slate-900/50 p-6">
+        <div className="mb-8 border border-gray-200 bg-gray-50 p-6">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-lg font-mono font-bold text-cyan-400 uppercase tracking-wider">
+            <h3 className="text-lg font-bold text-gray-900">
               Score Summary
             </h3>
-            <span className="text-slate-500 font-mono text-xs ml-2">
+            <span className="text-gray-400 text-xs ml-2">
               ({scoreStats.scoredCount} analyzed)
             </span>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
             {/* Overall Avg Score */}
-            <div className="p-4 bg-slate-800/50 border border-slate-700 rounded">
-              <p className="text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <div className="p-4 bg-gray-50/50 border border-gray-200 rounded">
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">
                 Overall Avg
               </p>
               <p className={`text-3xl font-mono font-bold ${
@@ -340,8 +340,8 @@ export default function JobDetailPage() {
             </div>
 
             {/* Quality */}
-            <div className="p-4 bg-slate-800/50 border border-slate-700 rounded">
-              <p className="text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <div className="p-4 bg-gray-50/50 border border-gray-200 rounded">
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">
                 Quality
               </p>
               <p className={`text-2xl font-mono font-bold ${
@@ -354,8 +354,8 @@ export default function JobDetailPage() {
             </div>
 
             {/* Relevance */}
-            <div className="p-4 bg-slate-800/50 border border-slate-700 rounded">
-              <p className="text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <div className="p-4 bg-gray-50/50 border border-gray-200 rounded">
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">
                 Relevance
               </p>
               <p className={`text-2xl font-mono font-bold ${
@@ -368,8 +368,8 @@ export default function JobDetailPage() {
             </div>
 
             {/* Completeness */}
-            <div className="p-4 bg-slate-800/50 border border-slate-700 rounded">
-              <p className="text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <div className="p-4 bg-gray-50/50 border border-gray-200 rounded">
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">
                 Completeness
               </p>
               <p className={`text-2xl font-mono font-bold ${
@@ -382,8 +382,8 @@ export default function JobDetailPage() {
             </div>
 
             {/* Clarity */}
-            <div className="p-4 bg-slate-800/50 border border-slate-700 rounded">
-              <p className="text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+            <div className="p-4 bg-gray-50/50 border border-gray-200 rounded">
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">
                 Clarity
               </p>
               <p className={`text-2xl font-mono font-bold ${
@@ -400,20 +400,20 @@ export default function JobDetailPage() {
           <div className="flex flex-wrap gap-6">
             {/* Sentiment Distribution */}
             <div className="flex items-center gap-3">
-              <span className="text-slate-400 font-mono text-xs uppercase">Sentiment:</span>
+              <span className="text-gray-500 text-xs uppercase">Sentiment:</span>
               <div className="flex items-center gap-2">
                 {scoreStats.sentimentCounts.positive && (
                   <div className="flex items-center gap-1 px-2 py-1 bg-green-500/20 rounded">
                     <TrendingUp className="w-3 h-3 text-green-400" />
-                    <span className="text-green-400 font-mono text-xs">
+                    <span className="text-green-400 text-xs">
                       {scoreStats.sentimentCounts.positive}
                     </span>
                   </div>
                 )}
                 {scoreStats.sentimentCounts.neutral && (
-                  <div className="flex items-center gap-1 px-2 py-1 bg-slate-500/20 rounded">
-                    <Minus className="w-3 h-3 text-slate-400" />
-                    <span className="text-slate-400 font-mono text-xs">
+                  <div className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded">
+                    <Minus className="w-3 h-3 text-gray-500" />
+                    <span className="text-gray-500 text-xs">
                       {scoreStats.sentimentCounts.neutral}
                     </span>
                   </div>
@@ -421,7 +421,7 @@ export default function JobDetailPage() {
                 {scoreStats.sentimentCounts.negative && (
                   <div className="flex items-center gap-1 px-2 py-1 bg-red-500/20 rounded">
                     <TrendingDown className="w-3 h-3 text-red-400" />
-                    <span className="text-red-400 font-mono text-xs">
+                    <span className="text-red-400 text-xs">
                       {scoreStats.sentimentCounts.negative}
                     </span>
                   </div>
@@ -431,7 +431,7 @@ export default function JobDetailPage() {
 
             {/* Total Issues */}
             <div className="flex items-center gap-2">
-              <span className="text-slate-400 font-mono text-xs uppercase">Total Issues:</span>
+              <span className="text-gray-500 text-xs uppercase">Total Issues:</span>
               <span className={`font-mono font-bold ${
                 scoreStats.totalIssues === 0 ? 'text-green-400' :
                 scoreStats.totalIssues <= 5 ? 'text-yellow-400' :
@@ -447,7 +447,7 @@ export default function JobDetailPage() {
       {/* Progress Bar */}
       {job && job.totalItems > 0 && (
         <div className="mb-8">
-          <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-3 bg-white rounded-full overflow-hidden">
             <div
               className={`h-full transition-all duration-500 ${
                 job.status === 'COMPLETED' ? 'bg-green-500' :
@@ -463,21 +463,21 @@ export default function JobDetailPage() {
       )}
 
       {/* Results */}
-      <div className="border-2 border-slate-800 bg-slate-900/50">
-        <div className="px-6 py-4 border-b border-slate-800">
+      <div className="border border-gray-200 bg-gray-50">
+        <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-mono font-bold text-cyan-400 uppercase tracking-wider">
+            <h2 className="text-lg font-bold text-gray-900">
               Analysis Results ({results.length})
             </h2>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`
                 flex items-center gap-2 px-3 py-2
-                border font-mono text-sm uppercase tracking-wider
+                border text-sm font-medium
                 transition-all
                 ${hasActiveFilters
-                  ? 'bg-cyan-600 border-cyan-500 text-white'
-                  : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'}
+                  ? 'bg-cyan-600 border-cyan-500 text-gray-900'
+                  : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-100'}
               `}
             >
               <Filter className="w-4 h-4" />
@@ -490,11 +490,11 @@ export default function JobDetailPage() {
 
           {/* Filter Panel */}
           {showFilters && (
-            <div className="mt-4 p-4 bg-slate-800/50 border border-slate-700 rounded">
+            <div className="mt-4 p-4 bg-gray-50/50 border border-gray-200 rounded">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Min Avg Score */}
                 <div>
-                  <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+                  <label className="block text-gray-600 text-xs mb-2">
                     Min Avg Score
                   </label>
                   <input
@@ -506,8 +506,8 @@ export default function JobDetailPage() {
                     onChange={(e) => setFilters({ ...filters, minAvgScore: e.target.value })}
                     placeholder="0"
                     className="
-                      w-full px-3 py-2 bg-slate-900 border border-slate-600
-                      text-slate-200 font-mono text-sm
+                      w-full px-3 py-2 bg-white border border-gray-300
+                      text-gray-700 text-sm
                       focus:border-cyan-500 focus:outline-none
                     "
                   />
@@ -515,7 +515,7 @@ export default function JobDetailPage() {
 
                 {/* Max Avg Score */}
                 <div>
-                  <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+                  <label className="block text-gray-600 text-xs mb-2">
                     Max Avg Score
                   </label>
                   <input
@@ -527,8 +527,8 @@ export default function JobDetailPage() {
                     onChange={(e) => setFilters({ ...filters, maxAvgScore: e.target.value })}
                     placeholder="10"
                     className="
-                      w-full px-3 py-2 bg-slate-900 border border-slate-600
-                      text-slate-200 font-mono text-sm
+                      w-full px-3 py-2 bg-white border border-gray-300
+                      text-gray-700 text-sm
                       focus:border-cyan-500 focus:outline-none
                     "
                   />
@@ -536,15 +536,15 @@ export default function JobDetailPage() {
 
                 {/* Sentiment */}
                 <div>
-                  <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+                  <label className="block text-gray-600 text-xs mb-2">
                     Sentiment
                   </label>
                   <select
                     value={filters.sentiment}
                     onChange={(e) => setFilters({ ...filters, sentiment: e.target.value })}
                     className="
-                      w-full px-3 py-2 bg-slate-900 border border-slate-600
-                      text-slate-200 font-mono text-sm
+                      w-full px-3 py-2 bg-white border border-gray-300
+                      text-gray-700 text-sm
                       focus:border-cyan-500 focus:outline-none
                     "
                   >
@@ -557,15 +557,15 @@ export default function JobDetailPage() {
 
                 {/* Has Issues */}
                 <div>
-                  <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+                  <label className="block text-gray-600 text-xs mb-2">
                     Has Issues
                   </label>
                   <select
                     value={filters.hasIssues}
                     onChange={(e) => setFilters({ ...filters, hasIssues: e.target.value })}
                     className="
-                      w-full px-3 py-2 bg-slate-900 border border-slate-600
-                      text-slate-200 font-mono text-sm
+                      w-full px-3 py-2 bg-white border border-gray-300
+                      text-gray-700 text-sm
                       focus:border-cyan-500 focus:outline-none
                     "
                   >
@@ -577,13 +577,13 @@ export default function JobDetailPage() {
               </div>
 
               {/* Filter Actions */}
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700">
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
                 <button
                   onClick={handleResetFilters}
                   disabled={!hasActiveFilters}
                   className="
                     flex items-center gap-2 px-3 py-2
-                    text-slate-400 hover:text-slate-200 font-mono text-xs uppercase
+                    text-gray-500 hover:text-gray-700 text-xs
                     disabled:opacity-50 disabled:cursor-not-allowed
                     transition-colors
                   "
@@ -595,8 +595,8 @@ export default function JobDetailPage() {
                   onClick={fetchData}
                   className="
                     flex items-center gap-2 px-4 py-2
-                    bg-cyan-600 hover:bg-cyan-700 border border-cyan-500
-                    text-white font-mono text-sm uppercase tracking-wider
+                    bg-blue-600 hover:bg-blue-700 border border-blue-500
+                    text-white text-sm font-medium
                     transition-all
                   "
                 >
@@ -609,20 +609,20 @@ export default function JobDetailPage() {
 
         {results.length === 0 ? (
           <div className="px-6 py-12 text-center">
-            <p className="text-slate-500 font-mono text-sm">
+            <p className="text-gray-400 text-sm">
               {job?.status === 'PENDING' ? 'Run the job to generate results' :
                job?.status === 'RUNNING' ? 'Processing... Results will appear here' :
                'No results found'}
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-gray-200">
             {results.map((result) => {
               const analysis = parseAnalysisResult(result.analysisResult);
               const isExpanded = expandedResult === result.id;
 
               return (
-                <div key={result.id} className="hover:bg-slate-800/30 transition-colors">
+                <div key={result.id} className="hover:bg-gray-50/50 transition-colors">
                   {/* Summary Row */}
                   <div
                     className="px-6 py-4 cursor-pointer flex items-center gap-4"
@@ -640,15 +640,15 @@ export default function JobDetailPage() {
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-4 mb-1">
-                        <span className="text-slate-400 font-mono text-xs">
+                        <span className="text-gray-500 text-xs">
                           {result.tenantId}
                         </span>
-                        <span className="text-slate-600">|</span>
-                        <span className="text-slate-500 font-mono text-xs">
+                        <span className="text-gray-400">|</span>
+                        <span className="text-gray-400 text-xs">
                           {new Date(result.originalTimestamp).toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-slate-200 font-mono text-sm truncate">
+                      <p className="text-gray-700 text-sm truncate">
                         {result.userInput.slice(0, 100)}
                         {result.userInput.length > 100 && '...'}
                       </p>
@@ -664,7 +664,7 @@ export default function JobDetailPage() {
                         }`}>
                           {result.qualityScore}/10
                         </p>
-                        <p className="text-slate-500 font-mono text-xs">
+                        <p className="text-gray-400 text-xs">
                           {result.latencyMs}ms
                         </p>
                       </div>
@@ -673,9 +673,9 @@ export default function JobDetailPage() {
                     {/* Expand Icon */}
                     <div className="flex-shrink-0">
                       {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-slate-400" />
+                        <ChevronUp className="w-5 h-5 text-gray-500" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                        <ChevronDown className="w-5 h-5 text-gray-500" />
                       )}
                     </div>
                   </div>
@@ -685,11 +685,11 @@ export default function JobDetailPage() {
                     <div className="px-6 pb-6 space-y-4">
                       {/* User Input */}
                       <div>
-                        <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-2">
+                        <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">
                           User Input
                         </p>
-                        <div className="p-3 bg-slate-800 border border-slate-700 max-h-32 overflow-y-auto">
-                          <p className="text-slate-200 font-mono text-sm whitespace-pre-wrap">
+                        <div className="p-3 bg-white border border-gray-200 max-h-32 overflow-y-auto">
+                          <p className="text-gray-700 text-sm whitespace-pre-wrap">
                             {result.userInput}
                           </p>
                         </div>
@@ -697,22 +697,22 @@ export default function JobDetailPage() {
 
                       {/* LLM Response */}
                       <div>
-                        <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-2">
+                        <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">
                           LLM Response
                         </p>
-                        <div className="p-3 bg-slate-800 border border-slate-700 max-h-48 overflow-y-auto">
+                        <div className="p-3 bg-white border border-gray-200 max-h-48 overflow-y-auto">
                           <MarkdownViewer content={result.llmResponse} size="sm" />
                         </div>
                       </div>
 
                       {/* Analysis Result - 파싱된 컬럼 구조화 표시 */}
                       <div>
-                        <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-2">
+                        <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">
                           Analysis Result
                         </p>
-                        <div className="p-3 bg-slate-800 border border-slate-700 max-h-64 overflow-y-auto">
+                        <div className="p-3 bg-white border border-gray-200 max-h-64 overflow-y-auto">
                           {result.status === 'FAILED' ? (
-                            <p className="text-red-400 font-mono text-sm">
+                            <p className="text-red-400 text-sm">
                               Error: {result.errorMessage || 'Unknown error'}
                             </p>
                           ) : (
@@ -720,32 +720,32 @@ export default function JobDetailPage() {
                               {/* Scores Grid */}
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                                 {result.qualityScore !== null && (
-                                  <div className="p-2 bg-slate-700/50 rounded">
-                                    <p className="text-slate-400 text-xs">Quality</p>
+                                  <div className="p-2 bg-gray-100 rounded">
+                                    <p className="text-gray-500 text-xs">Quality</p>
                                     <p className={`font-mono font-bold ${result.qualityScore >= 8 ? 'text-green-400' : result.qualityScore >= 6 ? 'text-yellow-400' : 'text-red-400'}`}>
                                       {result.qualityScore}/10
                                     </p>
                                   </div>
                                 )}
                                 {result.relevance !== null && (
-                                  <div className="p-2 bg-slate-700/50 rounded">
-                                    <p className="text-slate-400 text-xs">Relevance</p>
+                                  <div className="p-2 bg-gray-100 rounded">
+                                    <p className="text-gray-500 text-xs">Relevance</p>
                                     <p className={`font-mono font-bold ${result.relevance >= 8 ? 'text-green-400' : result.relevance >= 6 ? 'text-yellow-400' : 'text-red-400'}`}>
                                       {result.relevance}/10
                                     </p>
                                   </div>
                                 )}
                                 {result.completeness !== null && (
-                                  <div className="p-2 bg-slate-700/50 rounded">
-                                    <p className="text-slate-400 text-xs">Completeness</p>
+                                  <div className="p-2 bg-gray-100 rounded">
+                                    <p className="text-gray-500 text-xs">Completeness</p>
                                     <p className={`font-mono font-bold ${result.completeness >= 8 ? 'text-green-400' : result.completeness >= 6 ? 'text-yellow-400' : 'text-red-400'}`}>
                                       {result.completeness}/10
                                     </p>
                                   </div>
                                 )}
                                 {result.clarity !== null && (
-                                  <div className="p-2 bg-slate-700/50 rounded">
-                                    <p className="text-slate-400 text-xs">Clarity</p>
+                                  <div className="p-2 bg-gray-100 rounded">
+                                    <p className="text-gray-500 text-xs">Clarity</p>
                                     <p className={`font-mono font-bold ${result.clarity >= 8 ? 'text-green-400' : result.clarity >= 6 ? 'text-yellow-400' : 'text-red-400'}`}>
                                       {result.clarity}/10
                                     </p>
@@ -758,11 +758,11 @@ export default function JobDetailPage() {
                                 <div className="space-y-2">
                                   {result.sentiment && (
                                     <div className="flex items-center gap-2">
-                                      <span className="text-slate-400 text-xs">Sentiment:</span>
+                                      <span className="text-gray-500 text-xs">Sentiment:</span>
                                       <span className={`px-2 py-0.5 rounded text-xs font-mono ${
                                         result.sentiment === 'positive' ? 'bg-green-500/20 text-green-400' :
                                         result.sentiment === 'negative' ? 'bg-red-500/20 text-red-400' :
-                                        'bg-slate-500/20 text-slate-400'
+                                        'bg-gray-100 text-gray-500'
                                       }`}>
                                         {result.sentiment}
                                       </span>
@@ -770,8 +770,8 @@ export default function JobDetailPage() {
                                   )}
                                   {result.summaryText && (
                                     <div>
-                                      <span className="text-slate-400 text-xs">Summary:</span>
-                                      <p className="text-slate-200 text-sm mt-1">{result.summaryText}</p>
+                                      <span className="text-gray-500 text-xs">Summary:</span>
+                                      <p className="text-gray-700 text-sm mt-1">{result.summaryText}</p>
                                     </div>
                                   )}
                                 </div>
@@ -780,7 +780,7 @@ export default function JobDetailPage() {
                               {/* Issues */}
                               {result.issues && (
                                 <div>
-                                  <span className="text-slate-400 text-xs">Issues ({result.issueCount || 0}):</span>
+                                  <span className="text-gray-500 text-xs">Issues ({result.issueCount || 0}):</span>
                                   <ul className="mt-1 space-y-1">
                                     {JSON.parse(result.issues).map((issue: string, idx: number) => (
                                       <li key={idx} className="text-red-300 text-sm flex items-start gap-2">
@@ -795,7 +795,7 @@ export default function JobDetailPage() {
                               {/* Improvements */}
                               {result.improvements && (
                                 <div>
-                                  <span className="text-slate-400 text-xs">Improvements:</span>
+                                  <span className="text-gray-500 text-xs">Improvements:</span>
                                   <ul className="mt-1 space-y-1">
                                     {JSON.parse(result.improvements).map((improvement: string, idx: number) => (
                                       <li key={idx} className="text-cyan-300 text-sm flex items-start gap-2">
@@ -810,7 +810,7 @@ export default function JobDetailPage() {
                               {/* Missing Data */}
                               {result.missingData && (
                                 <div>
-                                  <span className="text-slate-400 text-xs">Missing Data:</span>
+                                  <span className="text-gray-500 text-xs">Missing Data:</span>
                                   <pre className="mt-1 text-yellow-300 text-sm whitespace-pre-wrap">
                                     {JSON.stringify(JSON.parse(result.missingData), null, 2)}
                                   </pre>
@@ -819,7 +819,7 @@ export default function JobDetailPage() {
 
                               {/* Raw JSON fallback */}
                               {!result.qualityScore && !result.relevance && analysis && (
-                                <pre className="text-slate-200 font-mono text-sm whitespace-pre-wrap">
+                                <pre className="text-gray-700 text-sm whitespace-pre-wrap">
                                   {JSON.stringify(analysis, null, 2)}
                                 </pre>
                               )}
@@ -829,18 +829,18 @@ export default function JobDetailPage() {
                       </div>
 
                       {/* Metadata */}
-                      <div className="flex flex-wrap gap-4 pt-2 border-t border-slate-800">
+                      <div className="flex flex-wrap gap-4 pt-2 border-t border-gray-200">
                         <div>
-                          <span className="text-slate-500 font-mono text-xs">Model:</span>
-                          <span className="text-slate-300 font-mono text-xs ml-2">{result.modelName}</span>
+                          <span className="text-gray-400 text-xs">Model:</span>
+                          <span className="text-gray-600 text-xs ml-2">{result.modelName}</span>
                         </div>
                         <div>
-                          <span className="text-slate-500 font-mono text-xs">Latency:</span>
-                          <span className="text-slate-300 font-mono text-xs ml-2">{result.latencyMs}ms</span>
+                          <span className="text-gray-400 text-xs">Latency:</span>
+                          <span className="text-gray-600 text-xs ml-2">{result.latencyMs}ms</span>
                         </div>
                         <div>
-                          <span className="text-slate-500 font-mono text-xs">Tokens:</span>
-                          <span className="text-slate-300 font-mono text-xs ml-2">
+                          <span className="text-gray-400 text-xs">Tokens:</span>
+                          <span className="text-gray-600 text-xs ml-2">
                             {result.inputTokens} in / {result.outputTokens} out
                           </span>
                         </div>

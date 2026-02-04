@@ -44,7 +44,7 @@ const getStatusColor = (status?: string): string => {
     case 'error':
       return 'text-rose-500';
     default:
-      return 'text-white';
+      return 'text-gray-900';
   }
 };
 
@@ -57,7 +57,7 @@ const getTrendIcon = (value: number) => {
 const getTrendColor = (value: number, isInverse?: boolean) => {
   const positive = isInverse ? value < 0 : value > 0;
   if (positive) return 'text-emerald-400';
-  if (value === 0) return 'text-slate-400';
+  if (value === 0) return 'text-gray-500';
   return 'text-rose-400';
 };
 
@@ -71,10 +71,10 @@ const KPICard: React.FC<KPICardProps> = ({
   format,
 }) => {
   return (
-    <div className="bg-slate-800 border border-slate-700 p-5 rounded-xl hover:border-slate-600 transition-colors">
+    <div className="bg-white border border-gray-200 p-5 rounded-2xl shadow-sm hover:border-gray-300 transition-colors">
       <div className="flex items-center justify-between mb-1">
-        <div className="text-slate-400 text-sm font-medium">{title}</div>
-        {icon && <div className="text-slate-500">{icon}</div>}
+        <div className="text-gray-500 text-sm font-medium">{title}</div>
+        {icon && <div className="text-gray-400">{icon}</div>}
       </div>
 
       <div className={`text-3xl font-bold ${getStatusColor(status)}`}>
@@ -87,11 +87,11 @@ const KPICard: React.FC<KPICardProps> = ({
             <div className={`flex items-center gap-1 text-xs ${getTrendColor(trend.value)}`}>
               {getTrendIcon(trend.value)}
               <span>{Math.abs(trend.value)}%</span>
-              <span className="text-slate-500">{trend.label}</span>
+              <span className="text-gray-400">{trend.label}</span>
             </div>
           )}
           {subtitle && !trend && (
-            <div className="text-slate-500 text-xs">{subtitle}</div>
+            <div className="text-gray-400 text-xs">{subtitle}</div>
           )}
         </div>
       )}

@@ -18,7 +18,10 @@ export class TargetLoaderService {
   /**
    * 특정 리포트 타입의 타겟 목록 로드
    */
-  async loadTargets(reportType: ReportType, forceReload = false): Promise<ReportTarget[]> {
+  async loadTargets(
+    reportType: ReportType,
+    forceReload = false,
+  ): Promise<ReportTarget[]> {
     // 캐시 확인
     if (!forceReload && this.cache.has(reportType)) {
       return this.cache.get(reportType)!;
@@ -41,7 +44,9 @@ export class TargetLoaderService {
 
       return targets;
     } catch (error) {
-      this.logger.error(`Failed to load targets for ${reportType}: ${error.message}`);
+      this.logger.error(
+        `Failed to load targets for ${reportType}: ${error.message}`,
+      );
       return [];
     }
   }
@@ -73,7 +78,9 @@ export class TargetLoaderService {
   /**
    * 사용 가능한 타겟 테이블 목록
    */
-  async listAvailableFiles(): Promise<Array<{ reportType: ReportType; filename: string }>> {
+  async listAvailableFiles(): Promise<
+    Array<{ reportType: ReportType; filename: string }>
+  > {
     const tables = await this.externalDb.listAvailableTargetTables();
     return tables.map((t) => ({
       reportType: t.reportType,

@@ -18,8 +18,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
           isUser
-            ? 'bg-blue-600 text-white rounded-br-md'
-            : 'bg-slate-700/50 text-slate-100 rounded-bl-md'
+            ? 'bg-blue-600 text-gray-900 rounded-br-md'
+            : 'bg-gray-100 text-gray-800 rounded-bl-md'
         }`}
       >
         {isUser ? (
@@ -30,7 +30,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           <MarkdownViewer content={message.content} size="sm" className="text-sm" />
         )}
         {message.metadata && !isUser && (
-          <div className="mt-2 pt-2 border-t border-slate-600/30 flex items-center gap-3 text-xs text-slate-400">
+          <div className="mt-2 pt-2 border-t border-gray-300/30 flex items-center gap-3 text-xs text-gray-500">
             {message.metadata.model && (
               <span className="flex items-center gap-1">
                 <svg

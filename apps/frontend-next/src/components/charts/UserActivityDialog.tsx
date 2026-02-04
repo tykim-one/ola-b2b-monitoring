@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   X,
   User,
@@ -16,7 +16,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { UserActivityDetail, UserListItem } from '@ola/shared-types';
-import { fetchUserActivity } from '@/services/userAnalyticsService';
+import { useUserActivity } from '@/hooks/queries';
 
 interface UserActivityDialogProps {
   isOpen: boolean;
@@ -60,40 +60,20 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
   userInfo,
   projectId,
 }) => {
-  const [activities, setActivities] = useState<UserActivityDetail[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [period, setPeriod] = useState<PeriodFilter>(7);
   const [page, setPage] = useState(0);
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const pageSize = 20;
 
-  // Fetch activities when dialog opens or filters change
-  useEffect(() => {
-    if (isOpen && userId) {
-      loadActivities();
-    }
-  }, [isOpen, userId, period, page]);
+  const {
+    data: activities = [],
+    isLoading: loading,
+    error: queryError,
+  } = useUserActivity(projectId, userId, period, page, pageSize, {
+    enabled: isOpen && !!userId,
+  });
 
-  const loadActivities = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchUserActivity(
-        projectId,
-        userId,
-        period,
-        pageSize,
-        page * pageSize
-      );
-      setActivities(data);
-    } catch (err) {
-      setError('활동 내역을 불러오는 데 실패했습니다.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error = queryError ? '활동 내역을 불러오는 데 실패했습니다.' : null;
 
   // Reset page when period changes
   const handlePeriodChange = (newPeriod: PeriodFilter) => {
@@ -108,43 +88,43 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 transition-opacity"
+        className="fixed inset-0 bg-black/40 transition-opacity"
         onClick={onClose}
       />
 
       {/* Dialog */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-slate-800 border border-slate-700 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden">
+        <div className="relative bg-white border border-gray-200 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/20 rounded-lg">
                 <User size={20} className="text-blue-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">유저 활동 상세</h2>
-                <p className="text-sm text-slate-400 font-mono">{truncateText(userId, 50)}</p>
+                <h2 className="text-lg font-semibold text-gray-900">유저 활동 상세</h2>
+                <p className="text-sm text-gray-500 font-mono">{truncateText(userId, 50)}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <X size={20} className="text-slate-400" />
+              <X size={20} className="text-gray-500" />
             </button>
           </div>
 
           {/* User Summary KPI Cards */}
           {userInfo && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 px-6 py-4 border-b border-slate-700 bg-slate-900/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 px-6 py-4 border-b border-gray-200 bg-gray-50">
               <div className="text-center">
-                <div className="text-slate-400 text-xs mb-1">총 질문</div>
-                <div className="text-xl font-bold text-white">
+                <div className="text-gray-500 text-xs mb-1">총 질문</div>
+                <div className="text-xl font-bold text-gray-900">
                   {formatNumber(userInfo.questionCount)}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-slate-400 text-xs mb-1">성공률</div>
+                <div className="text-gray-500 text-xs mb-1">성공률</div>
                 <div
                   className={`text-xl font-bold ${
                     userInfo.successRate >= 90
@@ -158,13 +138,13 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-slate-400 text-xs mb-1">총 토큰</div>
+                <div className="text-gray-500 text-xs mb-1">총 토큰</div>
                 <div className="text-xl font-bold text-purple-400">
                   {formatNumber(userInfo.totalTokens)}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-slate-400 text-xs mb-1">평균 토큰</div>
+                <div className="text-gray-500 text-xs mb-1">평균 토큰</div>
                 <div className="text-xl font-bold text-blue-400">
                   {userInfo.avgTokens.toFixed(0)}
                 </div>
@@ -173,9 +153,9 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
           )}
 
           {/* Period Filter */}
-          <div className="flex items-center justify-between px-6 py-3 border-b border-slate-700">
+          <div className="flex items-center justify-between px-6 py-3 border-b border-gray-200">
             <div className="flex items-center gap-2">
-              <span className="text-slate-400 text-sm">기간:</span>
+              <span className="text-gray-500 text-sm">기간:</span>
               <div className="flex gap-1">
                 {[
                   { value: 1, label: '1일' },
@@ -187,8 +167,8 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
                     onClick={() => handlePeriodChange(option.value as PeriodFilter)}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                       period === option.value
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                        ? 'bg-blue-500 text-gray-900'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
                     {option.label}
@@ -202,17 +182,17 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
               <button
                 onClick={() => setPage(Math.max(0, page - 1))}
                 disabled={page === 0 || loading}
-                className="p-1.5 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft size={18} />
               </button>
-              <span className="text-slate-400 text-sm">
+              <span className="text-gray-500 text-sm">
                 페이지 {page + 1}
               </span>
               <button
                 onClick={() => setPage(page + 1)}
                 disabled={activities.length < pageSize || loading}
-                className="p-1.5 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRightIcon size={18} />
               </button>
@@ -228,66 +208,66 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
             ) : error ? (
               <div className="text-center py-12 text-rose-400">{error}</div>
             ) : activities.length === 0 ? (
-              <div className="text-center py-12 text-slate-500">
+              <div className="text-center py-12 text-gray-400">
                 해당 기간에 활동 내역이 없습니다.
               </div>
             ) : (
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-slate-800">
-                  <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium w-8"></th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium w-36">
+                <thead className="sticky top-0 bg-white">
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-gray-500 font-medium w-8"></th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-medium w-36">
                       <div className="flex items-center gap-1">
                         <Clock size={14} />
                         시간
                       </div>
                     </th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">
+                    <th className="text-left py-3 px-4 text-gray-500 font-medium">
                       <div className="flex items-center gap-1">
                         <MessageSquare size={14} />
                         질문
                       </div>
                     </th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium w-32">응답</th>
-                    <th className="text-center py-3 px-4 text-slate-400 font-medium w-24">
+                    <th className="text-left py-3 px-4 text-gray-500 font-medium w-32">응답</th>
+                    <th className="text-center py-3 px-4 text-gray-500 font-medium w-24">
                       <div className="flex items-center justify-center gap-1">
                         <Coins size={14} />
                         토큰
                       </div>
                     </th>
-                    <th className="text-center py-3 px-4 text-slate-400 font-medium w-20">상태</th>
+                    <th className="text-center py-3 px-4 text-gray-500 font-medium w-20">상태</th>
                   </tr>
                 </thead>
                 <tbody>
                   {activities.map((activity, index) => (
                     <React.Fragment key={index}>
                       <tr
-                        className={`border-b border-slate-700/50 hover:bg-slate-700/30 cursor-pointer transition-colors ${
-                          expandedRow === index ? 'bg-slate-700/30' : ''
+                        className={`border-b border-gray-100 hover:bg-gray-100/50 cursor-pointer transition-colors ${
+                          expandedRow === index ? 'bg-gray-100/50' : ''
                         }`}
                         onClick={() => setExpandedRow(expandedRow === index ? null : index)}
                       >
-                        <td className="py-3 px-4 text-slate-500">
+                        <td className="py-3 px-4 text-gray-400">
                           {expandedRow === index ? (
                             <ChevronDown size={16} />
                           ) : (
                             <ChevronRight size={16} />
                           )}
                         </td>
-                        <td className="py-3 px-4 text-slate-400 text-xs whitespace-nowrap">
+                        <td className="py-3 px-4 text-gray-500 text-xs whitespace-nowrap">
                           {formatDateTime(activity.timestamp)}
                         </td>
                         <td className="py-3 px-4">
-                          <span className="text-white truncate block max-w-[300px]" title={activity.userInput}>
+                          <span className="text-gray-900 truncate block max-w-[300px]" title={activity.userInput}>
                             {truncateText(activity.userInput, 60)}
                           </span>
                         </td>
                         <td className="py-3 px-4">
-                          <span className="text-slate-400 truncate block max-w-[150px]" title={activity.llmResponse}>
+                          <span className="text-gray-500 truncate block max-w-[150px]" title={activity.llmResponse}>
                             {truncateText(activity.llmResponse, 30)}
                           </span>
                         </td>
-                        <td className="text-center py-3 px-4 text-slate-300">
+                        <td className="text-center py-3 px-4 text-gray-600">
                           {formatNumber(activity.totalTokens)}
                         </td>
                         <td className="text-center py-3 px-4">
@@ -299,31 +279,31 @@ const UserActivityDialog: React.FC<UserActivityDialogProps> = ({
                         </td>
                       </tr>
                       {expandedRow === index && (
-                        <tr className="bg-slate-900/50">
+                        <tr className="bg-gray-50">
                           <td colSpan={6} className="py-4 px-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
-                                <div className="text-slate-400 text-xs mb-2">질문 전체:</div>
-                                <div className="text-white bg-slate-800 p-3 rounded-lg text-sm break-all max-h-48 overflow-y-auto">
+                                <div className="text-gray-500 text-xs mb-2">질문 전체:</div>
+                                <div className="text-gray-900 bg-white p-3 rounded-lg text-sm break-all max-h-48 overflow-y-auto">
                                   {activity.userInput || '(내용 없음)'}
                                 </div>
                               </div>
                               <div>
-                                <div className="text-slate-400 text-xs mb-2">응답 전체:</div>
-                                <div className="text-slate-300 bg-slate-800 p-3 rounded-lg text-sm break-all max-h-48 overflow-y-auto">
+                                <div className="text-gray-500 text-xs mb-2">응답 전체:</div>
+                                <div className="text-gray-600 bg-white p-3 rounded-lg text-sm break-all max-h-48 overflow-y-auto">
                                   {activity.llmResponse || '(내용 없음)'}
                                 </div>
                               </div>
                             </div>
                             <div className="flex gap-4 mt-4 text-sm">
-                              <div className="text-slate-400">
+                              <div className="text-gray-500">
                                 입력 토큰: <span className="text-blue-400 font-medium">{formatNumber(activity.inputTokens)}</span>
                               </div>
-                              <div className="text-slate-400">
+                              <div className="text-gray-500">
                                 출력 토큰: <span className="text-purple-400 font-medium">{formatNumber(activity.outputTokens)}</span>
                               </div>
-                              <div className="text-slate-400">
-                                총 토큰: <span className="text-white font-medium">{formatNumber(activity.totalTokens)}</span>
+                              <div className="text-gray-500">
+                                총 토큰: <span className="text-gray-900 font-medium">{formatNumber(activity.totalTokens)}</span>
                               </div>
                             </div>
                           </td>

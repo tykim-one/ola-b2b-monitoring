@@ -60,7 +60,12 @@ export class WindETLService {
    * 일별 트렌드 (캐시 15분)
    */
   async getDailyTrend(days = 30): Promise<WindETLTrend[]> {
-    const cacheKey = CacheService.generateKey('wind-etl', 'trend', 'daily', days);
+    const cacheKey = CacheService.generateKey(
+      'wind-etl',
+      'trend',
+      'daily',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -73,7 +78,12 @@ export class WindETLService {
    * 시간별 트렌드 (캐시 5분)
    */
   async getHourlyTrend(hours = 24): Promise<WindETLTrend[]> {
-    const cacheKey = CacheService.generateKey('wind-etl', 'trend', 'hourly', hours);
+    const cacheKey = CacheService.generateKey(
+      'wind-etl',
+      'trend',
+      'hourly',
+      hours,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -99,7 +109,12 @@ export class WindETLService {
    * 파일 처리 통계 (캐시 15분)
    */
   async getFileProcessingStats(days = 30): Promise<WindETLFileStats[]> {
-    const cacheKey = CacheService.generateKey('wind-etl', 'stats', 'files', days);
+    const cacheKey = CacheService.generateKey(
+      'wind-etl',
+      'stats',
+      'files',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -112,7 +127,12 @@ export class WindETLService {
    * 레코드 처리 통계 (캐시 15분)
    */
   async getRecordStats(days = 30): Promise<WindETLRecordStats[]> {
-    const cacheKey = CacheService.generateKey('wind-etl', 'stats', 'records', days);
+    const cacheKey = CacheService.generateKey(
+      'wind-etl',
+      'stats',
+      'records',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,

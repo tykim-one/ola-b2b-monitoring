@@ -51,14 +51,14 @@ export default function NewSessionModal({ onClose, onSuccess }: NewSessionModalP
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Error */}
         {error && (
-          <div className="p-4 border-2 border-red-500/50 bg-red-950/30">
-            <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+          <div className="p-4 border border-red-200 bg-red-50">
+            <p className="text-red-400 text-sm">ERROR: {error}</p>
           </div>
         )}
 
         {/* Title */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-emerald-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-emerald-400 uppercase tracking-wider">
             Session Title *
           </label>
           <input
@@ -67,40 +67,40 @@ export default function NewSessionModal({ onClose, onSuccess }: NewSessionModalP
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-emerald-500/50 focus:shadow-lg focus:shadow-emerald-500/10
               transition-all
             "
             placeholder="e.g., Analyze Token Usage Patterns"
           />
-          <p className="mt-2 text-slate-500 text-xs">
+          <p className="mt-2 text-gray-400 text-xs">
             Give your session a descriptive title to easily identify it later.
           </p>
         </div>
 
         {/* Info */}
-        <div className="p-4 bg-emerald-950/30 border border-emerald-500/30">
-          <p className="text-emerald-400 font-mono text-xs uppercase tracking-wider mb-2">
+        <div className="p-4 bg-emerald-50 border border-emerald-500/30">
+          <p className="text-emerald-400 text-xs uppercase tracking-wider mb-2">
             What is AI Analysis?
           </p>
-          <p className="text-slate-300 text-sm leading-relaxed">
+          <p className="text-gray-600 text-sm leading-relaxed">
             Start a conversation with AI to analyze your metrics data. You can ask questions about usage patterns,
             identify anomalies, and get insights about your B2B monitoring data.
           </p>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
-              bg-slate-800 hover:bg-slate-700 border border-slate-600
-              text-slate-300 transition-all
+              bg-white hover:bg-gray-100 border border-gray-300
+              text-gray-600 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
@@ -112,7 +112,7 @@ export default function NewSessionModal({ onClose, onSuccess }: NewSessionModalP
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
               bg-emerald-600 hover:bg-emerald-700 border border-emerald-500
-              text-white transition-all
+              text-gray-900 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
               shadow-lg shadow-emerald-500/20
             "

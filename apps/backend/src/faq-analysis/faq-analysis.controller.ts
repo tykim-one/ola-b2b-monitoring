@@ -96,7 +96,11 @@ export class FAQAnalysisController {
     description: 'FAQ 분석 작업 목록을 조회합니다.',
   })
   @ApiQuery({ name: 'status', required: false, description: 'Job 상태 필터' })
-  @ApiQuery({ name: 'tenantId', required: false, description: '테넌트 ID 필터' })
+  @ApiQuery({
+    name: 'tenantId',
+    required: false,
+    description: '테넌트 ID 필터',
+  })
   @ApiResponse({
     status: 200,
     description: 'FAQ Job 목록',

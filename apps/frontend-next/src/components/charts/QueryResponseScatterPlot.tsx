@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import Modal from '../ui/Modal';
 import MarkdownViewer from '../markdown/MarkdownViewer';
+import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface CorrelationData {
   tenant_id: string;
@@ -80,14 +81,14 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
 
   return (
     <>
-      <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-white">{title}</h3>
-            <p className="text-xs text-slate-400 mt-1">클릭하여 상세 내용 보기</p>
+            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+            <p className="text-xs text-gray-500 mt-1">클릭하여 상세 내용 보기</p>
           </div>
           <div className="text-right">
-            <div className="text-slate-400 text-xs">상관계수</div>
+            <div className="text-gray-500 text-xs">상관계수</div>
             <div
               className={`font-bold ${
                 correlation > 0.5
@@ -105,12 +106,12 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
               <XAxis
                 type="number"
                 dataKey="query_length"
                 name="질문 길이"
-                stroke="#64748b"
+                stroke={CHART_COLORS.axis}
                 fontSize={12}
                 tickLine={false}
                 tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : v)}
@@ -118,7 +119,7 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
                   value: '질문 길이 (문자)',
                   position: 'insideBottom',
                   offset: -10,
-                  fill: '#64748b',
+                  fill: CHART_COLORS.axisText,
                   fontSize: 11,
                 }}
               />
@@ -126,7 +127,7 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
                 type="number"
                 dataKey="response_length"
                 name="응답 길이"
-                stroke="#64748b"
+                stroke={CHART_COLORS.axis}
                 fontSize={12}
                 tickLine={false}
                 tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : v)}
@@ -134,7 +135,7 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
                   value: '응답 길이 (문자)',
                   angle: -90,
                   position: 'insideLeft',
-                  fill: '#64748b',
+                  fill: CHART_COLORS.axisText,
                   fontSize: 11,
                 }}
               />
@@ -145,14 +146,7 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
                 name="효율성"
               />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: '#0f172a',
-                  borderColor: '#334155',
-                  borderRadius: '8px',
-                  color: 'white',
-                }}
-                labelStyle={{ color: 'white' }}
-                itemStyle={{ color: 'white' }}
+                contentStyle={TOOLTIP_STYLE}
                 cursor={{ strokeDasharray: '3 3' }}
                 formatter={(value, name) => {
                   const labels: Record<string, string> = {
@@ -177,7 +171,7 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
                     normal: '정상 (0.5-2x)',
                     low: '낮은 효율성 (<0.5x)',
                   };
-                  return <span className="text-slate-400 text-xs">{labels[value] || value}</span>;
+                  return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
                 }}
               />
               <Scatter
@@ -217,23 +211,23 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
           <div className="space-y-6">
             {/* 메타 정보 */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-800 p-3 rounded-lg">
-                <div className="text-xs text-slate-400">테넌트</div>
-                <div className="text-sm font-medium text-white">{selectedItem.tenant_id}</div>
+              <div className="bg-white p-3 rounded-lg">
+                <div className="text-xs text-gray-500">테넌트</div>
+                <div className="text-sm font-medium text-gray-900">{selectedItem.tenant_id}</div>
               </div>
-              <div className="bg-slate-800 p-3 rounded-lg">
-                <div className="text-xs text-slate-400">효율성</div>
+              <div className="bg-white p-3 rounded-lg">
+                <div className="text-xs text-gray-500">효율성</div>
                 <div className={`text-sm font-medium ${getEfficiencyLabel(selectedItem.efficiency_ratio).color}`}>
                   {selectedItem.efficiency_ratio.toFixed(2)}x ({getEfficiencyLabel(selectedItem.efficiency_ratio).text})
                 </div>
               </div>
-              <div className="bg-slate-800 p-3 rounded-lg">
-                <div className="text-xs text-slate-400">입력 토큰</div>
-                <div className="text-sm font-medium text-white">{selectedItem.input_tokens.toLocaleString()}</div>
+              <div className="bg-white p-3 rounded-lg">
+                <div className="text-xs text-gray-500">입력 토큰</div>
+                <div className="text-sm font-medium text-gray-900">{selectedItem.input_tokens.toLocaleString()}</div>
               </div>
-              <div className="bg-slate-800 p-3 rounded-lg">
-                <div className="text-xs text-slate-400">출력 토큰</div>
-                <div className="text-sm font-medium text-white">{selectedItem.output_tokens.toLocaleString()}</div>
+              <div className="bg-white p-3 rounded-lg">
+                <div className="text-xs text-gray-500">출력 토큰</div>
+                <div className="text-sm font-medium text-gray-900">{selectedItem.output_tokens.toLocaleString()}</div>
               </div>
             </div>
 
@@ -242,10 +236,10 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-blue-400 rounded-full" />
                 <h4 className="text-sm font-semibold text-blue-400">사용자 질문</h4>
-                <span className="text-xs text-slate-500">({selectedItem.query_length.toLocaleString()}자)</span>
+                <span className="text-xs text-gray-400">({selectedItem.query_length.toLocaleString()}자)</span>
               </div>
-              <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 max-h-48 overflow-y-auto">
-                <p className="text-sm text-slate-200 whitespace-pre-wrap">
+              <div className="bg-white p-4 rounded-lg border border-gray-200 max-h-48 overflow-y-auto">
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">
                   {selectedItem.user_input || '(데이터 없음)'}
                 </p>
               </div>
@@ -256,19 +250,19 @@ const QueryResponseScatterPlot: React.FC<QueryResponseScatterPlotProps> = ({
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full" />
                 <h4 className="text-sm font-semibold text-emerald-400">LLM 응답</h4>
-                <span className="text-xs text-slate-500">({selectedItem.response_length.toLocaleString()}자)</span>
+                <span className="text-xs text-gray-400">({selectedItem.response_length.toLocaleString()}자)</span>
               </div>
-              <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 max-h-80 overflow-y-auto">
+              <div className="bg-white p-4 rounded-lg border border-gray-200 max-h-80 overflow-y-auto">
                 {selectedItem.llm_response ? (
                   <MarkdownViewer content={selectedItem.llm_response} size="sm" />
                 ) : (
-                  <p className="text-sm text-slate-400">(데이터 없음)</p>
+                  <p className="text-sm text-gray-500">(데이터 없음)</p>
                 )}
               </div>
             </div>
 
             {/* 타임스탬프 */}
-            <div className="text-right text-xs text-slate-500">
+            <div className="text-right text-xs text-gray-400">
               {selectedItem.timestamp}
             </div>
           </div>

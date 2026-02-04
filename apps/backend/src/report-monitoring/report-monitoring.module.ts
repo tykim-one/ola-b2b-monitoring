@@ -9,11 +9,7 @@ import { ExternalDbService } from './external-db.service';
 import { TargetLoaderService } from './target-loader.service';
 
 @Module({
-  imports: [
-    ConfigModule,
-    ScheduleModule.forRoot(),
-    NotificationsModule,
-  ],
+  imports: [ConfigModule, ScheduleModule.forRoot(), NotificationsModule],
   controllers: [ReportMonitoringController],
   providers: [
     ExternalDbService,

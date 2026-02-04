@@ -127,15 +127,15 @@ export default function DateRangeFilter({
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       {/* 프리셋 버튼 그룹 */}
-      <div className="flex rounded-lg overflow-hidden border border-slate-700">
+      <div className="flex rounded-lg overflow-hidden border border-gray-200">
         {presets.map((preset) => (
           <button
             key={preset.key}
             onClick={() => handlePresetClick(preset.key)}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activePreset === preset.key
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                ? 'bg-blue-600 text-gray-900'
+                : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             }`}
           >
             {preset.label}
@@ -153,8 +153,8 @@ export default function DateRangeFilter({
         }}
         className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
           activePreset === 'custom'
-            ? 'bg-blue-600 text-white border-blue-600'
-            : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-white'
+            ? 'bg-blue-600 text-gray-900 border-blue-600'
+            : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-100 hover:text-gray-900'
         }`}
       >
         <Calendar className="w-4 h-4" />
@@ -164,19 +164,19 @@ export default function DateRangeFilter({
 
       {/* 커스텀 날짜 입력 */}
       {showCustom && (
-        <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-lg p-2">
+        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-2">
           <input
             type="date"
             value={customStartDate}
             onChange={(e) => handleCustomStartChange(e.target.value)}
-            className="bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:border-blue-500"
           />
-          <span className="text-slate-400">~</span>
+          <span className="text-gray-500">~</span>
           <input
             type="date"
             value={customEndDate}
             onChange={(e) => handleCustomEndChange(e.target.value)}
-            className="bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:border-blue-500"
           />
         </div>
       )}

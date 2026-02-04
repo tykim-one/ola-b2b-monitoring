@@ -149,18 +149,18 @@ export default function ScheduleFormModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-2xl mx-4 bg-slate-900 border-2 border-violet-500/50 shadow-2xl shadow-black/50 max-h-[90vh] overflow-y-auto">
+      <div className="relative z-10 w-full max-w-2xl mx-4 bg-white border-2 border-violet-500/50 shadow-2xl shadow-black/50 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-slate-700 bg-slate-900">
-          <h3 className="font-mono text-xl font-bold text-violet-400 uppercase tracking-wider">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-gray-200 bg-white">
+          <h3 className="text-xl font-bold text-gray-900">
             {schedule ? '스케줄 수정' : '새 스케줄 추가'}
           </h3>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-100 transition-colors"
+            className="text-gray-500 hover:text-gray-800 transition-colors"
             disabled={loading}
           >
             <X className="w-5 h-5" />
@@ -171,14 +171,14 @@ export default function ScheduleFormModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Error */}
           {error && (
-            <div className="p-4 border-2 border-red-500/50 bg-red-950/30">
-              <p className="text-red-400 font-mono text-sm">{error}</p>
+            <div className="p-4 border border-red-200 bg-red-50">
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
 
           {/* Schedule Name */}
           <div>
-            <label className="block text-sm font-mono font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
               스케줄 이름 <span className="text-red-400">*</span>
             </label>
             <input
@@ -187,10 +187,10 @@ export default function ScheduleFormModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="예: 오전 분석, 야간 분석"
               className="
-                w-full px-4 py-2.5 bg-slate-950 border border-slate-700
-                text-slate-100 placeholder-slate-500
+                w-full px-4 py-2.5 bg-gray-50 border border-gray-200
+                text-gray-800 placeholder-gray-400
                 focus:outline-none focus:border-violet-500 transition-colors
-                font-mono text-sm
+                text-sm
               "
               required
               disabled={loading}
@@ -211,7 +211,7 @@ export default function ScheduleFormModal({
                 <div
                   className={`
                     w-11 h-6 rounded-full transition-colors
-                    ${isEnabled ? 'bg-green-600' : 'bg-slate-700'}
+                    ${isEnabled ? 'bg-green-600' : 'bg-gray-100'}
                   `}
                 >
                   <div
@@ -222,7 +222,7 @@ export default function ScheduleFormModal({
                   />
                 </div>
               </div>
-              <span className="text-sm font-mono font-bold text-slate-300 uppercase tracking-wider">
+              <span className="text-sm font-medium text-gray-600">
                 활성화
               </span>
             </label>
@@ -231,16 +231,16 @@ export default function ScheduleFormModal({
           {/* Execution Time */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-mono font-bold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-sm font-medium text-gray-600 mb-2">
                 시 (Hour) <span className="text-red-400">*</span>
               </label>
               <select
                 value={hour}
                 onChange={(e) => setHour(parseInt(e.target.value))}
                 className="
-                  w-full px-4 py-2.5 bg-slate-950 border border-slate-700
-                  text-slate-100 focus:outline-none focus:border-violet-500 transition-colors
-                  font-mono text-sm
+                  w-full px-4 py-2.5 bg-gray-50 border border-gray-200
+                  text-gray-800 focus:outline-none focus:border-violet-500 transition-colors
+                  text-sm
                 "
                 required
                 disabled={loading}
@@ -254,16 +254,16 @@ export default function ScheduleFormModal({
             </div>
 
             <div>
-              <label className="block text-sm font-mono font-bold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-sm font-medium text-gray-600 mb-2">
                 분 (Minute) <span className="text-red-400">*</span>
               </label>
               <select
                 value={minute}
                 onChange={(e) => setMinute(parseInt(e.target.value))}
                 className="
-                  w-full px-4 py-2.5 bg-slate-950 border border-slate-700
-                  text-slate-100 focus:outline-none focus:border-violet-500 transition-colors
-                  font-mono text-sm
+                  w-full px-4 py-2.5 bg-gray-50 border border-gray-200
+                  text-gray-800 focus:outline-none focus:border-violet-500 transition-colors
+                  text-sm
                 "
                 required
                 disabled={loading}
@@ -279,7 +279,7 @@ export default function ScheduleFormModal({
 
           {/* Days of Week */}
           <div>
-            <label className="block text-sm font-mono font-bold text-slate-300 uppercase tracking-wider mb-3">
+            <label className="block text-sm font-mono font-bold text-gray-600 uppercase tracking-wider mb-3">
               요일 선택 <span className="text-red-400">*</span>
             </label>
             <div className="flex flex-wrap gap-2">
@@ -289,12 +289,12 @@ export default function ScheduleFormModal({
                   type="button"
                   onClick={() => handleDayToggle(day)}
                   className={`
-                    px-4 py-2 font-mono text-sm font-bold uppercase tracking-wider
+                    px-4 py-2 text-sm font-bold uppercase tracking-wider
                     border-2 transition-all
                     ${
                       daysSelection[day]
                         ? 'bg-violet-600 border-violet-500 text-white'
-                        : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
+                        : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
                     }
                   `}
                   disabled={loading}
@@ -307,16 +307,16 @@ export default function ScheduleFormModal({
 
           {/* Target Tenant */}
           <div>
-            <label className="block text-sm font-mono font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
               대상 Tenant
             </label>
             <select
               value={targetTenantId}
               onChange={(e) => setTargetTenantId(e.target.value)}
               className="
-                w-full px-4 py-2.5 bg-slate-950 border border-slate-700
-                text-slate-100 focus:outline-none focus:border-violet-500 transition-colors
-                font-mono text-sm
+                w-full px-4 py-2.5 bg-gray-50 border border-gray-200
+                text-gray-800 focus:outline-none focus:border-violet-500 transition-colors
+                text-sm
               "
               disabled={loading}
             >
@@ -327,14 +327,14 @@ export default function ScheduleFormModal({
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-xs text-slate-500 font-mono">
+            <p className="mt-1 text-xs text-gray-400 font-mono">
               비어있으면 전체 테넌트 대상으로 분석
             </p>
           </div>
 
           {/* Sample Size */}
           <div>
-            <label className="block text-sm font-mono font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
               샘플 수 <span className="text-red-400">*</span>
             </label>
             <input
@@ -344,29 +344,29 @@ export default function ScheduleFormModal({
               min={10}
               max={500}
               className="
-                w-full px-4 py-2.5 bg-slate-950 border border-slate-700
-                text-slate-100 placeholder-slate-500
+                w-full px-4 py-2.5 bg-gray-50 border border-gray-200
+                text-gray-800 placeholder-gray-400
                 focus:outline-none focus:border-violet-500 transition-colors
-                font-mono text-sm
+                text-sm
               "
               required
               disabled={loading}
             />
-            <p className="mt-1 text-xs text-slate-500 font-mono">10-500 사이의 값</p>
+            <p className="mt-1 text-xs text-gray-400 font-mono">10-500 사이의 값</p>
           </div>
 
           {/* Prompt Template */}
           <div>
-            <label className="block text-sm font-mono font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
               분석 프롬프트
             </label>
             <select
               value={promptTemplateId}
               onChange={(e) => setPromptTemplateId(e.target.value)}
               className="
-                w-full px-4 py-2.5 bg-slate-950 border border-slate-700
-                text-slate-100 focus:outline-none focus:border-violet-500 transition-colors
-                font-mono text-sm
+                w-full px-4 py-2.5 bg-gray-50 border border-gray-200
+                text-gray-800 focus:outline-none focus:border-violet-500 transition-colors
+                text-sm
               "
               disabled={loading}
             >
@@ -378,21 +378,21 @@ export default function ScheduleFormModal({
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-xs text-slate-500 font-mono">
+            <p className="mt-1 text-xs text-gray-400 font-mono">
               비어있으면 기본 템플릿 사용
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-700">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
               className="
                 px-6 py-2.5 font-mono font-semibold uppercase tracking-wider text-sm
-                bg-slate-800 hover:bg-slate-700 border border-slate-600
-                text-slate-300 transition-all
+                bg-white hover:bg-gray-100 border border-gray-300
+                text-gray-600 transition-all
                 disabled:opacity-50 disabled:cursor-not-allowed
               "
             >

@@ -38,7 +38,9 @@ export class ReportMonitoringService {
     const configs = new Map<ReportType, ReportTableConfig>();
 
     // 모든 타입이 gold.daily_item_info 테이블 사용
-    const dataTable = this.configService.get<string>('REPORT_DATA_TABLE') || 'gold.daily_item_info';
+    const dataTable =
+      this.configService.get<string>('REPORT_DATA_TABLE') ||
+      'gold.daily_item_info';
 
     for (const reportType of REPORT_TYPES) {
       configs.set(reportType, {
@@ -217,8 +219,14 @@ export class ReportMonitoringService {
         : 'warning';
 
     const missingText = this.formatSymbolList(result.missingSymbols, 10);
-    const incompleteText = this.formatIncompleteList(result.incompleteDetails, 5);
-    const suspiciousText = this.formatSuspiciousList(result.suspiciousDetails, 5);
+    const incompleteText = this.formatIncompleteList(
+      result.incompleteDetails,
+      5,
+    );
+    const suspiciousText = this.formatSuspiciousList(
+      result.suspiciousDetails,
+      5,
+    );
     const staleText = this.formatStaleList(result.staleDetails, 5);
 
     const reportTypeNames: Record<ReportType, string> = {
@@ -325,7 +333,9 @@ export class ReportMonitoringService {
     }
 
     if (result.suspiciousSymbols.length > 0) {
-      issues.push(`🟡 *${result.suspiciousSymbols.length}개* 전날과 값 동일 (확인 필요)`);
+      issues.push(
+        `🟡 *${result.suspiciousSymbols.length}개* 전날과 값 동일 (확인 필요)`,
+      );
     }
 
     if (result.staleSymbols.length > 0) {

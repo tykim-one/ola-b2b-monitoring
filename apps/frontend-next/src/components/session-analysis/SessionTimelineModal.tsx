@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   X,
   User,
@@ -12,11 +12,7 @@ import {
   Sparkles,
   Loader2,
 } from 'lucide-react';
-import {
-  sessionAnalysisApi,
-  SessionTimeline,
-  LLMSessionAnalysis,
-} from '@/services/sessionAnalysisService';
+import { useSessionTimeline, useAnalyzeSessionWithLLM } from '@/hooks/queries';
 
 interface SessionTimelineModalProps {
   sessionId: string;
@@ -29,42 +25,22 @@ export default function SessionTimelineModal({
   isOpen,
   onClose,
 }: SessionTimelineModalProps) {
-  const [timeline, setTimeline] = useState<SessionTimeline | null>(null);
-  const [llmAnalysis, setLlmAnalysis] = useState<LLMSessionAnalysis | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: timeline,
+    isLoading: loading,
+    error: timelineError,
+  } = useSessionTimeline(sessionId, { enabled: isOpen && !!sessionId });
 
-  useEffect(() => {
-    if (isOpen && sessionId) {
-      fetchTimeline();
-    }
-  }, [isOpen, sessionId]);
+  const {
+    mutate: analyzeWithLLM,
+    data: llmAnalysis,
+    isPending: analyzing,
+  } = useAnalyzeSessionWithLLM();
 
-  const fetchTimeline = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await sessionAnalysisApi.getTimeline(sessionId);
-      setTimeline(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load session timeline');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAnalyzeWithLLM = async () => {
-    try {
-      setAnalyzing(true);
-      const result = await sessionAnalysisApi.analyzeWithLLM(sessionId);
-      setLlmAnalysis(result);
-    } catch (err: any) {
-      alert(err.message || 'Failed to analyze with LLM');
-    } finally {
-      setAnalyzing(false);
-    }
-  };
+  const handleAnalyzeWithLLM = () => analyzeWithLLM(sessionId);
+  const error = timelineError
+    ? (timelineError instanceof Error ? timelineError.message : 'Failed to load session timeline')
+    : null;
 
   if (!isOpen) return null;
 
@@ -77,23 +53,23 @@ export default function SessionTimelineModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-      <div className="bg-slate-900 border border-slate-700 rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <div className="bg-white border border-gray-200 rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-700">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <div>
-            <h2 className="text-lg font-mono font-bold text-emerald-400 uppercase tracking-wider">
+            <h2 className="text-lg font-bold text-gray-900">
               Session Timeline
             </h2>
-            <p className="text-slate-400 font-mono text-xs mt-1">
+            <p className="text-gray-500 text-xs mt-1">
               ID: {sessionId.slice(0, 20)}...
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-800 rounded transition-colors"
+            className="p-2 hover:bg-white rounded transition-colors"
           >
-            <X className="w-5 h-5 text-slate-400" />
+            <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
@@ -103,27 +79,27 @@ export default function SessionTimelineModal({
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
                 <div className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-slate-400 font-mono text-sm">Loading timeline...</p>
+                <p className="text-gray-500 text-sm">Loading timeline...</p>
               </div>
             </div>
           ) : error ? (
-            <div className="bg-red-950/30 border border-red-500/30 p-4 rounded">
-              <p className="text-red-400 font-mono text-sm">{error}</p>
+            <div className="bg-red-50 border border-red-500/30 p-4 rounded">
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
           ) : timeline ? (
             <div className="space-y-6">
               {/* Session Info */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-800/50 border border-slate-700 p-3 rounded">
-                  <p className="text-slate-500 text-xs font-mono uppercase">Tenant</p>
-                  <p className="text-slate-200 font-mono mt-1">{timeline.tenantId}</p>
+                <div className="bg-gray-50/50 border border-gray-200 p-3 rounded">
+                  <p className="text-gray-400 text-xs font-mono uppercase">Tenant</p>
+                  <p className="text-gray-700 font-mono mt-1">{timeline.tenantId}</p>
                 </div>
-                <div className="bg-slate-800/50 border border-slate-700 p-3 rounded">
-                  <p className="text-slate-500 text-xs font-mono uppercase">Turns</p>
-                  <p className="text-slate-200 font-mono mt-1">{timeline.turns.length}</p>
+                <div className="bg-gray-50/50 border border-gray-200 p-3 rounded">
+                  <p className="text-gray-400 text-xs font-mono uppercase">Turns</p>
+                  <p className="text-gray-700 font-mono mt-1">{timeline.turns.length}</p>
                 </div>
-                <div className="bg-slate-800/50 border border-slate-700 p-3 rounded">
-                  <p className="text-slate-500 text-xs font-mono uppercase">Resolution</p>
+                <div className="bg-gray-50/50 border border-gray-200 p-3 rounded">
+                  <p className="text-gray-400 text-xs font-mono uppercase">Resolution</p>
                   <div className="flex items-center gap-2 mt-1">
                     {timeline.analysis?.isResolved ? (
                       <>
@@ -138,8 +114,8 @@ export default function SessionTimelineModal({
                     )}
                   </div>
                 </div>
-                <div className="bg-slate-800/50 border border-slate-700 p-3 rounded">
-                  <p className="text-slate-500 text-xs font-mono uppercase">Frustration</p>
+                <div className="bg-gray-50/50 border border-gray-200 p-3 rounded">
+                  <p className="text-gray-400 text-xs font-mono uppercase">Frustration</p>
                   <div className="flex items-center gap-2 mt-1">
                     {timeline.analysis?.hasFrustration ? (
                       <>
@@ -148,8 +124,8 @@ export default function SessionTimelineModal({
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-400 font-mono">None</span>
+                        <CheckCircle className="w-4 h-4 text-gray-500" />
+                        <span className="text-gray-500 font-mono">None</span>
                       </>
                     )}
                   </div>
@@ -157,7 +133,7 @@ export default function SessionTimelineModal({
               </div>
 
               {/* LLM Analysis Button & Results */}
-              <div className="bg-slate-800/30 border border-slate-700 p-4 rounded">
+              <div className="bg-gray-50/50 border border-gray-200 p-4 rounded">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-violet-400" />
@@ -171,7 +147,7 @@ export default function SessionTimelineModal({
                     className="
                       flex items-center gap-2 px-3 py-1.5
                       bg-violet-600 hover:bg-violet-500 disabled:bg-violet-800
-                      text-white font-mono text-sm font-bold uppercase
+                      text-gray-900 text-sm font-bold uppercase
                       rounded transition-colors
                     "
                   >
@@ -190,30 +166,30 @@ export default function SessionTimelineModal({
                 </div>
 
                 {llmAnalysis && (
-                  <div className="space-y-3 mt-4 pt-4 border-t border-slate-700">
+                  <div className="space-y-3 mt-4 pt-4 border-t border-gray-200">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-slate-500 text-xs font-mono">Resolution</p>
+                        <p className="text-gray-400 text-xs font-mono">Resolution</p>
                         <p className={`font-mono ${llmAnalysis.isResolved ? 'text-green-400' : 'text-red-400'}`}>
                           {llmAnalysis.isResolved ? 'Resolved' : 'Unresolved'}
                           {llmAnalysis.resolutionTurn && ` (Turn ${llmAnalysis.resolutionTurn})`}
                         </p>
                       </div>
                       <div>
-                        <p className="text-slate-500 text-xs font-mono">Quality Score</p>
+                        <p className="text-gray-400 text-xs font-mono">Quality Score</p>
                         <p className="font-mono text-cyan-400">{llmAnalysis.qualityScore}/10</p>
                       </div>
                     </div>
                     {llmAnalysis.abandonmentReason && (
                       <div>
-                        <p className="text-slate-500 text-xs font-mono">Abandonment Reason</p>
+                        <p className="text-gray-400 text-xs font-mono">Abandonment Reason</p>
                         <p className="font-mono text-amber-400">{llmAnalysis.abandonmentReason}</p>
                       </div>
                     )}
                     {llmAnalysis.summary && (
                       <div>
-                        <p className="text-slate-500 text-xs font-mono">Summary</p>
-                        <p className="font-mono text-slate-300">{llmAnalysis.summary}</p>
+                        <p className="text-gray-400 text-xs font-mono">Summary</p>
+                        <p className="font-mono text-gray-600">{llmAnalysis.summary}</p>
                       </div>
                     )}
                   </div>
@@ -222,7 +198,7 @@ export default function SessionTimelineModal({
 
               {/* Conversation Timeline */}
               <div>
-                <h3 className="text-slate-300 font-mono font-bold text-sm uppercase mb-4">
+                <h3 className="text-gray-600 font-mono font-bold text-sm uppercase mb-4">
                   Conversation
                 </h3>
                 <div className="space-y-4">
@@ -231,20 +207,20 @@ export default function SessionTimelineModal({
                       {/* User Message */}
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                          <User className="w-4 h-4 text-white" />
+                          <User className="w-4 h-4 text-gray-900" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-blue-400 font-mono text-xs font-bold">USER</span>
-                            <span className="text-slate-500 font-mono text-xs">
+                            <span className="text-blue-400 text-xs font-bold">USER</span>
+                            <span className="text-gray-400 text-xs">
                               {formatTime(turn.timestamp)}
                             </span>
-                            <span className="text-slate-600 font-mono text-xs">
+                            <span className="text-gray-400 text-xs">
                               Turn {index + 1}
                             </span>
                           </div>
                           <div className="bg-blue-950/30 border border-blue-500/20 p-3 rounded-lg">
-                            <p className="text-slate-200 text-sm whitespace-pre-wrap">
+                            <p className="text-gray-700 text-sm whitespace-pre-wrap">
                               {turn.userInput}
                             </p>
                           </div>
@@ -254,22 +230,22 @@ export default function SessionTimelineModal({
                       {/* Bot Response */}
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
-                          <Bot className="w-4 h-4 text-white" />
+                          <Bot className="w-4 h-4 text-gray-900" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-emerald-400 font-mono text-xs font-bold">BOT</span>
+                            <span className="text-emerald-400 text-xs font-bold">BOT</span>
                             {turn.success ? (
                               <CheckCircle className="w-3 h-3 text-green-400" />
                             ) : (
                               <XCircle className="w-3 h-3 text-red-400" />
                             )}
-                            <span className="text-slate-600 font-mono text-xs">
+                            <span className="text-gray-400 text-xs">
                               {turn.inputTokens + turn.outputTokens} tokens
                             </span>
                           </div>
-                          <div className="bg-emerald-950/30 border border-emerald-500/20 p-3 rounded-lg">
-                            <p className="text-slate-200 text-sm whitespace-pre-wrap">
+                          <div className="bg-emerald-50 border border-emerald-500/20 p-3 rounded-lg">
+                            <p className="text-gray-700 text-sm whitespace-pre-wrap">
                               {turn.llmResponse}
                             </p>
                           </div>
@@ -284,13 +260,13 @@ export default function SessionTimelineModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-700 flex justify-end">
+        <div className="p-4 border-t border-gray-200 flex justify-end">
           <button
             onClick={onClose}
             className="
-              px-4 py-2 bg-slate-800 hover:bg-slate-700
-              text-slate-300 font-mono text-sm font-bold uppercase
-              border border-slate-600 rounded transition-colors
+              px-4 py-2 bg-white hover:bg-gray-100
+              text-gray-600 text-sm font-bold uppercase
+              border border-gray-300 rounded transition-colors
             "
           >
             Close

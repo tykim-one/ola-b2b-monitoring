@@ -117,26 +117,20 @@ export class LLMService {
       const kpis = metrics.realtimeKPIs;
       const totalRequests = kpis.total_requests || 0;
       const successCount = kpis.success_count || 0;
-      const successRate = totalRequests > 0 ? (successCount / totalRequests) * 100 : 0;
+      const successRate =
+        totalRequests > 0 ? (successCount / totalRequests) * 100 : 0;
       const avgTokens = kpis.avg_tokens || 0;
       const totalTokens = kpis.total_tokens || 0;
       // Estimate cost: input $3/M tokens, output $15/M tokens (approximate)
       const inputTokens = kpis.total_input_tokens || 0;
       const outputTokens = kpis.total_output_tokens || 0;
-      const estimatedCost = (inputTokens * 3 / 1000000) + (outputTokens * 15 / 1000000);
+      const estimatedCost =
+        (inputTokens * 3) / 1000000 + (outputTokens * 15) / 1000000;
 
-      sections.push(
-        `- Total Requests: ${totalRequests.toLocaleString()}`,
-      );
-      sections.push(
-        `- Success Rate: ${successRate.toFixed(2)}%`,
-      );
-      sections.push(
-        `- Avg Tokens/Request: ${avgTokens.toFixed(2)}`,
-      );
-      sections.push(
-        `- Total Tokens: ${totalTokens.toLocaleString()}`,
-      );
+      sections.push(`- Total Requests: ${totalRequests.toLocaleString()}`);
+      sections.push(`- Success Rate: ${successRate.toFixed(2)}%`);
+      sections.push(`- Avg Tokens/Request: ${avgTokens.toFixed(2)}`);
+      sections.push(`- Total Tokens: ${totalTokens.toLocaleString()}`);
       sections.push(`- Estimated Cost: $${estimatedCost.toFixed(2)}`);
       sections.push(`- Active Tenants: ${kpis.active_tenants || 0}`);
     }
@@ -166,7 +160,9 @@ export class LLMService {
       sections.push('\n## Recent Cost Trend');
       const recent = metrics.costTrend.slice(-3);
       recent.forEach((point: any) => {
-        sections.push(`- ${point.date}: $${(point.total_cost || 0).toFixed(2)}`);
+        sections.push(
+          `- ${point.date}: $${(point.total_cost || 0).toFixed(2)}`,
+        );
       });
     }
 
@@ -182,8 +178,12 @@ export class LLMService {
 
     // Chatbot Quality - Sentiment Analysis
     if (metrics.sentimentAnalysis && metrics.sentimentAnalysis.length > 0) {
-      const frustrated = metrics.sentimentAnalysis.filter((s: any) => s.sentimentFlag === 'FRUSTRATED').length;
-      const urgent = metrics.sentimentAnalysis.filter((s: any) => s.sentimentFlag === 'URGENT').length;
+      const frustrated = metrics.sentimentAnalysis.filter(
+        (s: any) => s.sentimentFlag === 'FRUSTRATED',
+      ).length;
+      const urgent = metrics.sentimentAnalysis.filter(
+        (s: any) => s.sentimentFlag === 'URGENT',
+      ).length;
       sections.push('\n## Sentiment Analysis');
       sections.push(`- Frustrated queries: ${frustrated}`);
       sections.push(`- Urgent queries: ${urgent}`);
@@ -192,10 +192,18 @@ export class LLMService {
 
     // Chatbot Quality - Session Analytics
     if (metrics.sessionAnalytics && metrics.sessionAnalytics.length > 0) {
-      const avgTurns = metrics.sessionAnalytics.reduce((sum: number, s: any) => sum + (s.turnCount || 0), 0) / metrics.sessionAnalytics.length;
-      const frustratedSessions = metrics.sessionAnalytics.filter((s: any) => s.hasFrustration).length;
+      const avgTurns =
+        metrics.sessionAnalytics.reduce(
+          (sum: number, s: any) => sum + (s.turnCount || 0),
+          0,
+        ) / metrics.sessionAnalytics.length;
+      const frustratedSessions = metrics.sessionAnalytics.filter(
+        (s: any) => s.hasFrustration,
+      ).length;
       sections.push('\n## Session Analytics');
-      sections.push(`- Total sessions analyzed: ${metrics.sessionAnalytics.length}`);
+      sections.push(
+        `- Total sessions analyzed: ${metrics.sessionAnalytics.length}`,
+      );
       sections.push(`- Avg turns per session: ${avgTurns.toFixed(1)}`);
       sections.push(`- Sessions with frustration: ${frustratedSessions}`);
     }

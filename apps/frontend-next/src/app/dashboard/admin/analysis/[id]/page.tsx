@@ -98,10 +98,10 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono uppercase tracking-wider text-sm">
+          <p className="text-gray-500 font-mono uppercase tracking-wider text-sm">
             Loading Session...
           </p>
         </div>
@@ -111,17 +111,17 @@ export default function ChatPage() {
 
   if (error || !session) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <p className="text-red-400 font-mono text-lg mb-4">
+          <p className="text-red-400 text-lg mb-4">
             {error || 'Session not found'}
           </p>
           <button
             onClick={handleBack}
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
-              bg-slate-800 hover:bg-slate-700 border border-slate-600
-              text-slate-300 transition-all
+              bg-white hover:bg-gray-100 border border-gray-300
+              text-gray-600 transition-all
             "
           >
             Back to Sessions
@@ -134,25 +134,25 @@ export default function ChatPage() {
   const messages = session.messages || [];
 
   return (
-    <div className="h-full flex flex-col bg-slate-950">
+    <div className="h-full flex flex-col bg-gray-50">
       {/* Header */}
-      <div className="shrink-0 p-4 border-b border-slate-800 bg-slate-900/50">
+      <div className="shrink-0 p-4 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center gap-4">
           <button
             onClick={handleBack}
             className="
-              p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700
-              text-slate-400 hover:text-slate-200 transition-all
+              p-2 bg-white hover:bg-gray-100 border border-gray-200
+              text-gray-500 hover:text-gray-700 transition-all
             "
             title="Back to Sessions"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-mono font-bold text-emerald-400 truncate">
+            <h1 className="text-xl font-bold text-gray-900 truncate">
               {session.title}
             </h1>
-            <p className="text-slate-500 font-mono text-xs">
+            <p className="text-gray-400 text-xs">
               Session ID: {session.id.slice(0, 8)}... | {messages.length} messages
             </p>
           </div>
@@ -168,19 +168,19 @@ export default function ChatPage() {
               <h3 className="text-lg font-mono text-emerald-400 mb-2">
                 Start Your Analysis
               </h3>
-              <p className="text-slate-400 text-sm mb-4">
+              <p className="text-gray-500 text-sm mb-4">
                 Ask questions about your metrics data. The AI will help you analyze patterns, identify anomalies, and provide insights.
               </p>
               <div className="space-y-2 text-left">
-                <p className="text-slate-500 text-xs font-mono uppercase tracking-wider">
+                <p className="text-gray-400 text-xs font-mono uppercase tracking-wider">
                   Example questions:
                 </p>
                 <button
                   onClick={() => setMessage('What are the token usage trends for the past week?')}
                   className="
                     block w-full p-3 text-left
-                    bg-slate-800/50 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500/30
-                    text-slate-300 text-sm transition-all
+                    bg-gray-50/50 hover:bg-white border border-gray-200 hover:border-emerald-500/30
+                    text-gray-600 text-sm transition-all
                   "
                 >
                   "What are the token usage trends for the past week?"
@@ -189,8 +189,8 @@ export default function ChatPage() {
                   onClick={() => setMessage('Which tenants have the highest error rates?')}
                   className="
                     block w-full p-3 text-left
-                    bg-slate-800/50 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500/30
-                    text-slate-300 text-sm transition-all
+                    bg-gray-50/50 hover:bg-white border border-gray-200 hover:border-emerald-500/30
+                    text-gray-600 text-sm transition-all
                   "
                 >
                   "Which tenants have the highest error rates?"
@@ -199,8 +199,8 @@ export default function ChatPage() {
                   onClick={() => setMessage('Are there any anomalies in the recent data?')}
                   className="
                     block w-full p-3 text-left
-                    bg-slate-800/50 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500/30
-                    text-slate-300 text-sm transition-all
+                    bg-gray-50/50 hover:bg-white border border-gray-200 hover:border-emerald-500/30
+                    text-gray-600 text-sm transition-all
                   "
                 >
                   "Are there any anomalies in the recent data?"
@@ -222,8 +222,8 @@ export default function ChatPage() {
                   className={`
                     max-w-[80%] p-4
                     ${isUser
-                      ? 'bg-slate-800 border border-slate-700'
-                      : 'bg-emerald-950/30 border border-emerald-500/30'
+                      ? 'bg-white border border-gray-200'
+                      : 'bg-emerald-50 border border-emerald-500/30'
                     }
                   `}
                 >
@@ -231,21 +231,21 @@ export default function ChatPage() {
                   <div className="flex items-center gap-2 mb-2">
                     <div className={`
                       p-1 rounded
-                      ${isUser ? 'bg-slate-700' : 'bg-emerald-600/20'}
+                      ${isUser ? 'bg-gray-100' : 'bg-emerald-600/20'}
                     `}>
                       {isUser ? (
-                        <User className="w-4 h-4 text-slate-400" />
+                        <User className="w-4 h-4 text-gray-500" />
                       ) : (
                         <Bot className="w-4 h-4 text-emerald-400" />
                       )}
                     </div>
                     <span className={`
-                      font-mono text-xs uppercase tracking-wider
-                      ${isUser ? 'text-slate-400' : 'text-emerald-400'}
+                      text-xs uppercase tracking-wider
+                      ${isUser ? 'text-gray-500' : 'text-emerald-400'}
                     `}>
                       {isUser ? 'You' : 'AI Assistant'}
                     </span>
-                    <span className="text-slate-600 text-xs flex items-center gap-1">
+                    <span className="text-gray-400 text-xs flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {formatTime(msg.createdAt)}
                     </span>
@@ -253,17 +253,17 @@ export default function ChatPage() {
 
                   {/* Message Content */}
                   {isUser ? (
-                    <div className="text-slate-200 text-sm whitespace-pre-wrap leading-relaxed">
+                    <div className="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">
                       {msg.content}
                     </div>
                   ) : (
-                    <MarkdownViewer content={msg.content} size="sm" className="text-slate-200" />
+                    <MarkdownViewer content={msg.content} size="sm" className="text-gray-700" />
                   )}
 
                   {/* Metadata (for AI responses) */}
                   {!isUser && metadata && (
                     <div className="mt-3 pt-3 border-t border-emerald-500/20">
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
                         <Coins className="w-3 h-3" />
                         <span>{metadata}</span>
                       </div>
@@ -278,10 +278,10 @@ export default function ChatPage() {
         {/* Sending indicator */}
         {sending && (
           <div className="flex justify-start">
-            <div className="max-w-[80%] p-4 bg-emerald-950/30 border border-emerald-500/30">
+            <div className="max-w-[80%] p-4 bg-emerald-50 border border-emerald-500/30">
               <div className="flex items-center gap-2">
                 <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
-                <span className="text-emerald-400 font-mono text-sm">
+                <span className="text-emerald-400 text-sm">
                   AI is thinking...
                 </span>
               </div>
@@ -293,7 +293,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input Area */}
-      <div className="shrink-0 p-4 border-t border-slate-800 bg-slate-900/50">
+      <div className="shrink-0 p-4 border-t border-gray-200 bg-gray-50">
         <form onSubmit={handleSend} className="space-y-3">
           {/* Include Metrics Toggle */}
           <div className="flex items-center gap-3">
@@ -303,13 +303,13 @@ export default function ChatPage() {
                 checked={includeMetrics}
                 onChange={(e) => setIncludeMetrics(e.target.checked)}
                 className="
-                  w-4 h-4 bg-slate-900 border-2 border-slate-700
+                  w-4 h-4 bg-white border border-gray-200
                   checked:bg-cyan-600 checked:border-cyan-500
                   focus:outline-none focus:ring-2 focus:ring-cyan-500/50
                   transition-all cursor-pointer
                 "
               />
-              <span className="flex items-center gap-1 text-slate-400 text-sm">
+              <span className="flex items-center gap-1 text-gray-500 text-sm">
                 <ChartBar className="w-4 h-4 text-cyan-400" />
                 Include Current Metrics
               </span>
@@ -330,9 +330,9 @@ export default function ChatPage() {
               placeholder="Ask about your metrics data..."
               disabled={sending}
               className="
-                flex-1 px-4 py-3 font-mono text-sm
-                bg-slate-900 border border-slate-700
-                text-slate-100 placeholder-slate-500
+                flex-1 px-4 py-3 text-sm
+                bg-white border border-gray-200
+                text-gray-800 placeholder-gray-400
                 focus:outline-none focus:border-emerald-500/50 focus:shadow-lg focus:shadow-emerald-500/10
                 transition-all
                 disabled:opacity-50 disabled:cursor-not-allowed
@@ -344,7 +344,7 @@ export default function ChatPage() {
               className="
                 px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
                 bg-emerald-600 hover:bg-emerald-700 border border-emerald-500
-                text-white transition-all
+                text-gray-900 transition-all
                 disabled:opacity-50 disabled:cursor-not-allowed
                 shadow-lg shadow-emerald-500/20
                 flex items-center gap-2

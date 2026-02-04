@@ -1,12 +1,12 @@
 'use client';
 
-import { ReactNode, ReactElement } from 'react';
+import { ReactNode } from 'react';
 import { ResponsiveContainer } from 'recharts';
 
 // ==================== Root Component ====================
 
 interface ChartRootProps {
-  children: ReactElement;
+  children: ReactNode;
   title: string;
   subtitle?: string;
   height?: number;
@@ -23,12 +23,12 @@ function ChartRoot({
   headerRight,
 }: ChartRootProps) {
   return (
-    <div className={`bg-slate-800 border border-slate-700 rounded-xl p-6 ${className}`}>
+    <div className={`bg-white border border-gray-200 rounded-2xl shadow-sm p-6 ${className}`}>
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           {subtitle && (
-            <p className="text-slate-400 text-sm mt-0.5">{subtitle}</p>
+            <p className="text-gray-500 text-sm mt-0.5">{subtitle}</p>
           )}
         </div>
         {headerRight && <div>{headerRight}</div>}
@@ -79,9 +79,9 @@ function ChartLegend({
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: item.color }}
           />
-          <span className="text-slate-400 text-sm">{item.label}</span>
+          <span className="text-gray-500 text-sm">{item.label}</span>
           {item.value !== undefined && (
-            <span className="text-white text-sm font-medium">{item.value}</span>
+            <span className="text-gray-900 text-sm font-medium">{item.value}</span>
           )}
         </div>
       ))}
@@ -104,9 +104,9 @@ interface ChartMetricProps {
 function ChartMetric({ label, value, trend, className = '' }: ChartMetricProps) {
   return (
     <div className={`${className}`}>
-      <div className="text-slate-400 text-sm">{label}</div>
+      <div className="text-gray-500 text-sm">{label}</div>
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold text-white">{value}</span>
+        <span className="text-2xl font-bold text-gray-900">{value}</span>
         {trend && (
           <span
             className={`text-sm font-medium ${
@@ -131,12 +131,12 @@ interface ChartLoadingProps {
 function ChartLoading({ height = 256 }: ChartLoadingProps) {
   return (
     <div
-      className="bg-slate-800 border border-slate-700 rounded-xl p-6 animate-pulse"
+      className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 animate-pulse"
       style={{ height: height + 80 }}
     >
-      <div className="h-6 bg-slate-700 rounded w-1/3 mb-4" />
-      <div className="h-4 bg-slate-700 rounded w-1/4 mb-4" />
-      <div className="h-full bg-slate-700 rounded" style={{ height }} />
+      <div className="h-6 bg-gray-100 rounded w-1/3 mb-4" />
+      <div className="h-4 bg-gray-100 rounded w-1/4 mb-4" />
+      <div className="h-full bg-gray-100 rounded" style={{ height }} />
     </div>
   );
 }
@@ -155,10 +155,10 @@ function ChartNoData({
   height = 256,
 }: ChartNoDataProps) {
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-      <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
       <div
-        className="flex items-center justify-center text-slate-400"
+        className="flex items-center justify-center text-gray-500"
         style={{ height }}
       >
         {message}
@@ -183,11 +183,11 @@ function ChartWrapper({
   className = '',
 }: ChartWrapperProps) {
   return (
-    <div className={`bg-slate-800 border border-slate-700 rounded-xl p-6 ${className}`}>
+    <div className={`bg-white border border-gray-200 rounded-2xl shadow-sm p-6 ${className}`}>
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         {subtitle && (
-          <p className="text-slate-400 text-sm mt-0.5">{subtitle}</p>
+          <p className="text-gray-500 text-sm mt-0.5">{subtitle}</p>
         )}
       </div>
       {children}

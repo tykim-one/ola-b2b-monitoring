@@ -269,7 +269,9 @@ JSON만 반환하세요. 다른 설명은 필요 없습니다.`;
     const normalized = categoryStr.toLowerCase().replace(/[^a-z_]/g, '');
 
     // 직접 매핑
-    if (Object.values(QuestionCategory).includes(normalized as QuestionCategory)) {
+    if (
+      Object.values(QuestionCategory).includes(normalized as QuestionCategory)
+    ) {
       return normalized as QuestionCategory;
     }
 

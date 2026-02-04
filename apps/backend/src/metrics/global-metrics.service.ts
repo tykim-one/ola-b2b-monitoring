@@ -96,15 +96,14 @@ export class GlobalMetricsService {
       (sum, p) => sum + p.kpi.success_count,
       0,
     );
-    const successRate = totalRequests > 0
-      ? (successCount / totalRequests) * 100
-      : 0;
+    const successRate =
+      totalRequests > 0 ? (successCount / totalRequests) * 100 : 0;
 
     const avgTokens = totalRequests > 0 ? totalTokens / totalRequests : 0;
 
     this.logger.debug(
       `Global summary: ${domains.length} domains, ` +
-      `${allProjects.length} projects, ${totalRequests} total requests`,
+        `${allProjects.length} projects, ${totalRequests} total requests`,
     );
 
     return {

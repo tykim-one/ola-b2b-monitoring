@@ -126,7 +126,7 @@ export default function ChatWindow() {
 
   return (
     <div
-      className="fixed z-50 bg-slate-800/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden"
+      className="fixed z-50 bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
       style={{
         width: `${size.width}px`,
         height: `${size.height}px`,
@@ -140,26 +140,26 @@ export default function ChatWindow() {
         className="absolute top-0 left-0 w-4 h-4 cursor-nw-resize z-10"
         onMouseDown={handleResizeMouseDown}
       >
-        <div className="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-slate-500/50" />
+        <div className="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-gray-300" />
       </div>
 
       {/* Header */}
-      <div className="chat-header flex items-center justify-between px-4 py-3 bg-slate-900/50 border-b border-slate-700/50 cursor-move">
+      <div className="chat-header flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 cursor-move">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-slate-100">AI Assistant</h3>
-            <p className="text-xs text-slate-400">{pageName} 데이터 기반</p>
+            <h3 className="text-sm font-medium text-gray-800">AI Assistant</h3>
+            <p className="text-xs text-gray-500">{pageName} 데이터 기반</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={clearChat}
-            className="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded-lg transition-colors"
+            className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             title="Clear chat"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,7 +168,7 @@ export default function ChatWindow() {
           </button>
           <button
             onClick={closeChatbot}
-            className="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded-lg transition-colors"
+            className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -186,15 +186,15 @@ export default function ChatWindow() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <h4 className="text-slate-200 font-medium mb-2">무엇이든 물어보세요</h4>
-            <p className="text-slate-400 text-sm mb-4">현재 {pageName} 페이지의 데이터를 기반으로 답변합니다</p>
+            <h4 className="text-gray-700 font-medium mb-2">무엇이든 물어보세요</h4>
+            <p className="text-gray-500 text-sm mb-4">현재 {pageName} 페이지의 데이터를 기반으로 답변합니다</p>
             <div className="w-full space-y-2">
-              <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">예시 질문</p>
+              <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">예시 질문</p>
               {exampleQuestions.map((question, index) => (
                 <button
                   key={index}
                   onClick={() => handleExampleClick(question)}
-                  className="w-full text-left px-4 py-2.5 rounded-xl bg-slate-700/30 text-sm text-slate-300 hover:bg-slate-700/50 hover:text-slate-100 transition-colors"
+                  className="w-full text-left px-4 py-2.5 rounded-xl bg-gray-100/50 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-800 transition-colors"
                 >
                   {question}
                 </button>
@@ -208,14 +208,14 @@ export default function ChatWindow() {
             ))}
             {isLoading && (
               <div className="flex justify-start mb-4">
-                <div className="bg-slate-700/50 rounded-2xl rounded-bl-md px-4 py-3">
+                <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1">
                       <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }} />
                       <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '150ms' }} />
                       <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
-                    <span className="text-sm text-slate-400">분석 중...</span>
+                    <span className="text-sm text-gray-500">분석 중...</span>
                   </div>
                 </div>
               </div>
@@ -233,7 +233,7 @@ export default function ChatWindow() {
       )}
 
       {/* Input */}
-      <div className="p-4 border-t border-slate-700/50 bg-slate-900/30">
+      <div className="p-4 border-t border-gray-100 bg-gray-50">
         <ChatInput onSend={sendMessage} disabled={isLoading} placeholder="메시지를 입력하세요..." />
       </div>
     </div>

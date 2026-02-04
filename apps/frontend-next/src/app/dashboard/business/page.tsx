@@ -22,7 +22,7 @@ const tenantColumns: Column<TenantUsage>[] = [
     header: '테넌트',
     sortable: true,
     render: (value) => (
-      <span className="font-medium text-white">{String(value)}</span>
+      <span className="font-medium text-gray-900">{String(value)}</span>
     ),
   },
   {

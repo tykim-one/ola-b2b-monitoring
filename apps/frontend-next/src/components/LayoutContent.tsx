@@ -13,9 +13,9 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
   // Show sidebar on all pages except login page
   if (!isLoginPage) {
     return (
-      <div className="flex h-screen bg-slate-950 text-slate-100 font-sans">
+      <div className="flex h-screen bg-gray-50 text-gray-900 font-sans">
         <Sidebar />
-        <main className="flex-1 bg-slate-950 overflow-hidden relative">
+        <main className="flex-1 bg-gray-50 overflow-hidden relative">
           {children}
         </main>
         <FloatingChatbot />

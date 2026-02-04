@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { UserTokenUsage } from '@ola/shared-types';
+import { TOOLTIP_STYLE } from './chart-theme';
 
 interface UserTokensPieChartProps {
   data: UserTokenUsage[];
@@ -68,20 +69,20 @@ const UserTokensPieChart: React.FC<UserTokensPieChartProps> = ({
   ];
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
 
         {/* Token Type Selector */}
-        <div className="flex gap-1 bg-slate-900 rounded-lg p-1">
+        <div className="flex gap-1 bg-white rounded-lg p-1">
           {(Object.keys(tokenTypeLabels) as TokenType[]).map((type) => (
             <button
               key={type}
               onClick={() => setTokenType(type)}
               className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
                 tokenType === type
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-blue-600 text-gray-900'
+                  : 'text-gray-500 hover:text-gray-900'
               }`}
             >
               {tokenTypeLabels[type]}
@@ -107,11 +108,7 @@ const UserTokensPieChart: React.FC<UserTokensPieChartProps> = ({
               ))}
             </Pie>
             <Tooltip
-              contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
-                borderRadius: '8px',
-              }}
+              contentStyle={TOOLTIP_STYLE}
               formatter={(value, name, props) => {
                 const numValue = typeof value === 'number' ? value : 0;
                 const payload = props.payload;
@@ -132,7 +129,7 @@ const UserTokensPieChart: React.FC<UserTokensPieChartProps> = ({
               align="right"
               verticalAlign="middle"
               formatter={(value) => (
-                <span className="text-slate-300 text-sm">{value}</span>
+                <span className="text-gray-600 text-sm">{value}</span>
               )}
             />
           </PieChart>
@@ -140,13 +137,13 @@ const UserTokensPieChart: React.FC<UserTokensPieChartProps> = ({
       </div>
 
       {/* Summary */}
-      <div className="mt-4 pt-4 border-t border-slate-700 flex justify-between text-sm">
-        <div className="text-slate-400">
+      <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between text-sm">
+        <div className="text-gray-500">
           총 {tokenTypeLabels[tokenType]}:{' '}
-          <span className="text-white font-medium">{formatValue(total)}</span>
+          <span className="text-gray-900 font-medium">{formatValue(total)}</span>
         </div>
-        <div className="text-slate-400">
-          유저 수: <span className="text-white font-medium">{data.length}명</span>
+        <div className="text-gray-500">
+          유저 수: <span className="text-gray-900 font-medium">{data.length}명</span>
         </div>
       </div>
     </div>

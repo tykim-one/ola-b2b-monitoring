@@ -7,6 +7,7 @@ import KPICard from '@/components/kpi/KPICard';
 import { Dashboard } from '@/components/compound/Dashboard';
 import { DataTable, Column } from '@/components/compound/DataTable';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import {
   getEmergingPatterns,
   getSentimentAnalysis,
@@ -23,32 +24,6 @@ import type {
 const PROJECT_ID = 'ibks';
 const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
 
-// Badge component for pattern types and sentiment flags
-function Badge({
-  type,
-  label
-}: {
-  type: 'NEW' | 'EMERGING' | 'FRUSTRATED' | 'EMOTIONAL' | 'URGENT' | 'NEUTRAL';
-  label: string
-}) {
-  const colorMap = {
-    NEW: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-    EMERGING: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-    FRUSTRATED: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-    EMOTIONAL: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
-    URGENT: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
-    NEUTRAL: 'bg-slate-500/20 text-slate-300 border-slate-500/40',
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${colorMap[type]}`}
-    >
-      {label}
-    </span>
-  );
-}
-
 // Table column definitions
 const emergingPatternsColumns: Column<EmergingQueryPattern>[] = [
   {
@@ -56,7 +31,7 @@ const emergingPatternsColumns: Column<EmergingQueryPattern>[] = [
     header: '질문 패턴',
     sortable: true,
     render: (value) => (
-      <span className="text-white font-medium max-w-md block truncate" title={String(value)}>
+      <span className="text-gray-900 font-medium max-w-md block truncate" title={String(value)}>
         {String(value)}
       </span>
     ),
@@ -67,9 +42,10 @@ const emergingPatternsColumns: Column<EmergingQueryPattern>[] = [
     sortable: true,
     align: 'center',
     render: (value) => (
-      <Badge
-        type={value as 'NEW' | 'EMERGING'}
+      <StatusBadge
+        variant={value === 'NEW' ? 'success' : 'warning'}
         label={value === 'NEW' ? '신규' : '급증'}
+        shape="pill"
       />
     ),
   },
@@ -114,7 +90,7 @@ const sentimentColumns: Column<SentimentAnalysisResult>[] = [
     render: (value) => {
       const date = new Date(String(value));
       return (
-        <span className="text-slate-400 text-sm">
+        <span className="text-gray-500 text-sm">
           {date.toLocaleString('ko-KR', {
             month: 'short',
             day: 'numeric',
@@ -137,10 +113,17 @@ const sentimentColumns: Column<SentimentAnalysisResult>[] = [
         URGENT: '긴급',
         NEUTRAL: '중립',
       };
+      const variants = {
+        FRUSTRATED: 'error' as const,
+        EMOTIONAL: 'warning' as const,
+        URGENT: 'error' as const,
+        NEUTRAL: 'neutral' as const,
+      };
       return (
-        <Badge
-          type={value as 'FRUSTRATED' | 'EMOTIONAL' | 'URGENT' | 'NEUTRAL'}
+        <StatusBadge
+          variant={variants[value as keyof typeof variants]}
           label={labels[value as keyof typeof labels]}
+          shape="pill"
         />
       );
     },
@@ -150,7 +133,7 @@ const sentimentColumns: Column<SentimentAnalysisResult>[] = [
     header: '유저 질문',
     sortable: false,
     render: (value) => (
-      <span className="text-white max-w-lg block truncate" title={String(value)}>
+      <span className="text-gray-900 max-w-lg block truncate" title={String(value)}>
         {String(value)}
       </span>
     ),
@@ -180,7 +163,7 @@ const rephrasedQueriesColumns: Column<RephrasedQueryPattern>[] = [
     header: '세션 ID',
     sortable: true,
     render: (value) => (
-      <span className="text-slate-400 font-mono text-xs">{String(value).slice(0, 12)}...</span>
+      <span className="text-gray-500 text-xs">{String(value).slice(0, 12)}...</span>
     ),
   },
   {
@@ -229,12 +212,12 @@ const rephrasedQueriesColumns: Column<RephrasedQueryPattern>[] = [
       return (
         <div className="space-y-1 max-w-md">
           {queries.slice(0, 2).map((q, i) => (
-            <div key={i} className="text-xs text-slate-300 truncate" title={q}>
+            <div key={i} className="text-xs text-gray-600 truncate" title={q}>
               {i + 1}. {q}
             </div>
           ))}
           {queries.length > 2 && (
-            <span className="text-xs text-slate-500">+{queries.length - 2} more...</span>
+            <span className="text-xs text-gray-400">+{queries.length - 2} more...</span>
           )}
         </div>
       );
@@ -278,7 +261,7 @@ const tenantQualityColumns: Column<TenantQualitySummary>[] = [
     render: (value) => {
       const rate = Number(value);
       return (
-        <span className={rate > 20 ? 'text-rose-400 font-semibold' : rate > 10 ? 'text-amber-400' : 'text-slate-400'}>
+        <span className={rate > 20 ? 'text-rose-400 font-semibold' : rate > 10 ? 'text-amber-400' : 'text-gray-500'}>
           {rate.toFixed(1)}%
         </span>
       );

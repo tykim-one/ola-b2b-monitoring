@@ -13,6 +13,7 @@ import {
   Area,
   ComposedChart,
 } from 'recharts';
+import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface EfficiencyTrendData {
   date: string;
@@ -54,11 +55,11 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
       : 0;
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         <div className="text-right">
-          <div className="text-slate-400 text-xs">평균 효율성 (출력/입력)</div>
+          <div className="text-gray-500 text-xs">평균 효율성 (출력/입력)</div>
           <div className="text-emerald-400 font-bold">{avgEfficiency.toFixed(2)}x</div>
         </div>
       </div>
@@ -66,17 +67,17 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={sortedData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
             <XAxis
               dataKey="date"
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={11}
               tickLine={false}
               tickFormatter={formatDate}
               interval="preserveStartEnd"
             />
             <YAxis
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={12}
               tickLine={false}
               tickFormatter={(v) => `${v.toFixed(1)}x`}
@@ -84,8 +85,7 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
+                ...TOOLTIP_STYLE,
                 borderRadius: '8px',
               }}
               labelFormatter={formatDate}
@@ -106,7 +106,7 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
                   min_efficiency_ratio: '최소',
                   max_efficiency_ratio: '최대',
                 };
-                return <span className="text-slate-400 text-xs">{labels[value] || value}</span>;
+                return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
               }}
             />
             {/* 최소-최대 영역 */}
@@ -121,7 +121,7 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
               type="monotone"
               dataKey="min_efficiency_ratio"
               stroke="none"
-              fill="#0f172a"
+              fill={CHART_COLORS.bgFill}
               fillOpacity={1}
             />
             {/* 평균 라인 */}

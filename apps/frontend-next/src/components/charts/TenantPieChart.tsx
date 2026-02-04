@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { TOOLTIP_STYLE } from './chart-theme';
 
 interface TenantData {
   tenant_id: string;
@@ -40,8 +41,8 @@ const TenantPieChart: React.FC<TenantPieChartProps> = ({
   };
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
-      <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -60,8 +61,7 @@ const TenantPieChart: React.FC<TenantPieChartProps> = ({
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
+                ...TOOLTIP_STYLE,
                 borderRadius: '8px',
               }}
               formatter={(value) => {
@@ -74,7 +74,7 @@ const TenantPieChart: React.FC<TenantPieChartProps> = ({
               align="right"
               verticalAlign="middle"
               formatter={(value) => (
-                <span className="text-slate-300 text-sm">{value}</span>
+                <span className="text-gray-600 text-sm">{value}</span>
               )}
             />
           </PieChart>
@@ -82,10 +82,10 @@ const TenantPieChart: React.FC<TenantPieChartProps> = ({
       </div>
 
       {/* Summary */}
-      <div className="mt-4 pt-4 border-t border-slate-700">
-        <div className="text-slate-400 text-sm">
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="text-gray-500 text-sm">
           총 {dataKey === 'total_tokens' ? '토큰' : '요청'}:{' '}
-          <span className="text-white font-medium">{formatValue(total)}</span>
+          <span className="text-gray-900 font-medium">{formatValue(total)}</span>
         </div>
       </div>
     </div>

@@ -46,6 +46,20 @@ export class ProblematicChatController {
     };
   }
 
+  @Get('rules/:id/preview-query')
+  @Public()
+  async getRulePreviewQuery(
+    @Param('id') id: string,
+    @Query('days') days?: string,
+  ) {
+    const daysNum = days ? parseInt(days, 10) : 7;
+    const result = await this.service.generateRulePreviewQuery(id, daysNum);
+    return {
+      success: true,
+      data: result,
+    };
+  }
+
   @Post('rules')
   @HttpCode(HttpStatus.CREATED)
   async createRule(@Body() dto: CreateRuleDto) {
@@ -91,7 +105,9 @@ export class ProblematicChatController {
 
   @Get('stats')
   @Public()
-  async getProblematicChatStats(@Query() filter: ProblematicChatStatsFilterDto) {
+  async getProblematicChatStats(
+    @Query() filter: ProblematicChatStatsFilterDto,
+  ) {
     const stats = await this.service.getProblematicChatStats(filter);
     return {
       success: true,

@@ -95,14 +95,14 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Error */}
         {error && (
-          <div className="p-4 border-2 border-red-500/50 bg-red-950/30">
-            <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+          <div className="p-4 border border-red-200 bg-red-50">
+            <p className="text-red-400 text-sm">ERROR: {error}</p>
           </div>
         )}
 
         {/* Name */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-cyan-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-gray-600">
             Name *
           </label>
           <input
@@ -110,9 +110,9 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-cyan-500/50 focus:shadow-lg focus:shadow-cyan-500/10
               transition-all
             "
@@ -122,7 +122,7 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
 
         {/* Email */}
         <div>
-          <label className="block mb-2 font-mono text-sm font-bold text-cyan-400 uppercase tracking-wider">
+          <label className="block mb-2 text-sm font-bold text-gray-600">
             Email *
           </label>
           <input
@@ -131,9 +131,9 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             disabled={!!user}
             className="
-              w-full px-4 py-3 font-mono text-sm
-              bg-slate-900 border border-slate-700
-              text-slate-100 placeholder-slate-500
+              w-full px-4 py-3 text-sm
+              bg-white border border-gray-200
+              text-gray-800 placeholder-gray-400
               focus:outline-none focus:border-cyan-500/50 focus:shadow-lg focus:shadow-cyan-500/10
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-all
@@ -141,7 +141,7 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
             placeholder="user@example.com"
           />
           {user && (
-            <p className="mt-1 text-slate-500 font-mono text-xs">
+            <p className="mt-1 text-gray-400 text-xs">
               Email cannot be changed after creation
             </p>
           )}
@@ -151,7 +151,7 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
         {!user && (
           <>
             <div>
-              <label className="block mb-2 font-mono text-sm font-bold text-cyan-400 uppercase tracking-wider">
+              <label className="block mb-2 text-sm font-bold text-gray-600">
                 Password *
               </label>
               <input
@@ -159,9 +159,9 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="
-                  w-full px-4 py-3 font-mono text-sm
-                  bg-slate-900 border border-slate-700
-                  text-slate-100 placeholder-slate-500
+                  w-full px-4 py-3 text-sm
+                  bg-white border border-gray-200
+                  text-gray-800 placeholder-gray-400
                   focus:outline-none focus:border-cyan-500/50 focus:shadow-lg focus:shadow-cyan-500/10
                   transition-all
                 "
@@ -170,7 +170,7 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
             </div>
 
             <div>
-              <label className="block mb-2 font-mono text-sm font-bold text-cyan-400 uppercase tracking-wider">
+              <label className="block mb-2 text-sm font-bold text-gray-600">
                 Confirm Password *
               </label>
               <input
@@ -178,9 +178,9 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 className="
-                  w-full px-4 py-3 font-mono text-sm
-                  bg-slate-900 border border-slate-700
-                  text-slate-100 placeholder-slate-500
+                  w-full px-4 py-3 text-sm
+                  bg-white border border-gray-200
+                  text-gray-800 placeholder-gray-400
                   focus:outline-none focus:border-cyan-500/50 focus:shadow-lg focus:shadow-cyan-500/10
                   transition-all
                 "
@@ -198,25 +198,25 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
             checked={formData.isActive}
             onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
             className="
-              w-5 h-5 bg-slate-900 border-2 border-slate-700
+              w-5 h-5 bg-white border border-gray-200
               checked:bg-cyan-600 checked:border-cyan-500
               focus:outline-none focus:ring-2 focus:ring-cyan-500/50
               transition-all cursor-pointer
             "
           />
-          <label htmlFor="isActive" className="font-mono text-sm text-slate-300 cursor-pointer">
+          <label htmlFor="isActive" className="text-sm text-gray-600 cursor-pointer">
             Active user (can log in)
           </label>
         </div>
 
         {/* Roles */}
         <div>
-          <label className="block mb-3 font-mono text-sm font-bold text-cyan-400 uppercase tracking-wider">
+          <label className="block mb-3 text-sm font-bold text-gray-600">
             Assign Roles
           </label>
-          <div className="space-y-2 max-h-48 overflow-y-auto border border-slate-800 bg-slate-900/50 p-4">
+          <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 bg-gray-50 p-4">
             {roles.length === 0 ? (
-              <p className="text-slate-500 font-mono text-sm">No roles available</p>
+              <p className="text-gray-400 text-sm">No roles available</p>
             ) : (
               roles.map((role) => (
                 <div key={role.id} className="flex items-start gap-3">
@@ -226,18 +226,18 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
                     checked={formData.roleIds.includes(role.id)}
                     onChange={() => handleRoleToggle(role.id)}
                     className="
-                      mt-1 w-5 h-5 bg-slate-900 border-2 border-slate-700
+                      mt-1 w-5 h-5 bg-white border border-gray-200
                       checked:bg-amber-600 checked:border-amber-500
                       focus:outline-none focus:ring-2 focus:ring-amber-500/50
                       transition-all cursor-pointer
                     "
                   />
                   <label htmlFor={`role-${role.id}`} className="flex-1 cursor-pointer">
-                    <div className="font-mono text-sm text-slate-200 font-semibold">
+                    <div className="text-sm text-gray-700 font-semibold">
                       {role.name}
                     </div>
                     {role.description && (
-                      <div className="text-slate-400 text-xs mt-1">{role.description}</div>
+                      <div className="text-gray-500 text-xs mt-1">{role.description}</div>
                     )}
                   </label>
                 </div>
@@ -247,15 +247,15 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
-              bg-slate-800 hover:bg-slate-700 border border-slate-600
-              text-slate-300 transition-all
+              bg-white hover:bg-gray-100 border border-gray-300
+              text-gray-600 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
@@ -266,8 +266,8 @@ export default function UserFormModal({ user, roles, onClose, onSuccess }: UserF
             disabled={loading}
             className="
               px-6 py-3 font-mono font-semibold uppercase tracking-wider text-sm
-              bg-cyan-600 hover:bg-cyan-700 border border-cyan-500
-              text-white transition-all
+              bg-blue-600 hover:bg-blue-700 border border-blue-500
+              text-gray-900 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
               shadow-lg shadow-cyan-500/20
             "

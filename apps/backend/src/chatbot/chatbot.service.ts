@@ -339,7 +339,10 @@ export class ChatbotService {
   /**
    * Build LLM messages from session history
    */
-  private buildLLMMessages(session: ChatSession, pageContext: string): Message[] {
+  private buildLLMMessages(
+    session: ChatSession,
+    pageContext: string,
+  ): Message[] {
     const messages: Message[] = [];
 
     // Add system context about the current page

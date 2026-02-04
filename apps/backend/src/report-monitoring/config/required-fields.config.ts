@@ -39,7 +39,9 @@ export const REPORT_TYPE_REQUIRED_FIELDS: Partial<
 /**
  * 리포트 타입에 따른 전체 필수 필드 반환
  */
-export function getRequiredFields(reportType: ReportType): RequiredFieldsConfig {
+export function getRequiredFields(
+  reportType: ReportType,
+): RequiredFieldsConfig {
   const typeSpecific = REPORT_TYPE_REQUIRED_FIELDS[reportType];
 
   if (!typeSpecific) {
@@ -48,10 +50,7 @@ export function getRequiredFields(reportType: ReportType): RequiredFieldsConfig 
 
   // 공통 필드 + 타입별 추가 필드 병합
   return {
-    nullCheck: [
-      ...COMMON_REQUIRED_FIELDS.nullCheck,
-      ...typeSpecific.nullCheck,
-    ],
+    nullCheck: [...COMMON_REQUIRED_FIELDS.nullCheck, ...typeSpecific.nullCheck],
     compareYesterday: [
       ...COMMON_REQUIRED_FIELDS.compareYesterday,
       ...typeSpecific.compareYesterday,

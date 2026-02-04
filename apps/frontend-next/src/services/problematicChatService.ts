@@ -100,3 +100,18 @@ export async function fetchProblematicChatStats(
   const response = await apiClient.get<ApiResponse<ProblematicChatStats>>(`${BASE_URL}/stats?${params.toString()}`);
   return response.data.data;
 }
+
+/**
+ * 규칙 SQL 미리보기 쿼리 조회
+ */
+export async function fetchRulePreviewQuery(
+  ruleId: string,
+  days: number = 7
+): Promise<{ query: string; needsCTE: boolean }> {
+  const params = new URLSearchParams();
+  params.set('days', String(days));
+  const response = await apiClient.get<ApiResponse<{ query: string; needsCTE: boolean }>>(
+    `${BASE_URL}/rules/${ruleId}/preview-query?${params.toString()}`
+  );
+  return response.data.data;
+}

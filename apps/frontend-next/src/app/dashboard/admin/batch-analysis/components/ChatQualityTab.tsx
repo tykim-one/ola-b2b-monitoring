@@ -135,7 +135,7 @@ export default function ChatQualityTab() {
       case 'CANCELLED':
         return <Ban className="w-4 h-4 text-orange-400" />;
       default:
-        return <AlertCircle className="w-4 h-4 text-slate-400" />;
+        return <AlertCircle className="w-4 h-4 text-gray-500" />;
     }
   };
 
@@ -144,15 +144,15 @@ export default function ChatQualityTab() {
       case 'PENDING':
         return 'text-yellow-400 bg-yellow-950/30 border-yellow-500/30';
       case 'RUNNING':
-        return 'text-cyan-400 bg-cyan-950/30 border-cyan-500/30';
+        return 'text-cyan-400 bg-cyan-50 border-cyan-500/30';
       case 'COMPLETED':
-        return 'text-green-400 bg-green-950/30 border-green-500/30';
+        return 'text-green-400 bg-green-50 border-green-500/30';
       case 'FAILED':
-        return 'text-red-400 bg-red-950/30 border-red-500/30';
+        return 'text-red-400 bg-red-50 border-red-500/30';
       case 'CANCELLED':
         return 'text-orange-400 bg-orange-950/30 border-orange-500/30';
       default:
-        return 'text-slate-400 bg-slate-950/30 border-slate-500/30';
+        return 'text-gray-500 bg-gray-50/30 border-gray-200';
     }
   };
 
@@ -161,7 +161,7 @@ export default function ChatQualityTab() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono text-sm">Loading...</p>
+          <p className="text-gray-500 text-sm">Loading...</p>
         </div>
       </div>
     );
@@ -171,15 +171,15 @@ export default function ChatQualityTab() {
     <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <p className="text-slate-400 font-mono text-sm">
+        <p className="text-gray-500 text-sm">
           Daily Chat Quality Analysis Pipeline
         </p>
         <button
           onClick={() => setIsCreateModalOpen(true)}
           className="
             flex items-center gap-2 px-4 py-2
-            bg-cyan-600 hover:bg-cyan-700 border border-cyan-500
-            text-white font-mono font-bold uppercase tracking-wider text-xs
+            bg-blue-600 hover:bg-blue-700 border border-blue-500
+            text-white font-medium text-xs
             transition-all
           "
         >
@@ -190,48 +190,48 @@ export default function ChatQualityTab() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 border border-red-500/50 bg-red-950/30">
-          <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+        <div className="mb-6 p-4 border border-red-500/50 bg-red-50">
+          <p className="text-red-400 text-sm">ERROR: {error}</p>
         </div>
       )}
 
       {/* Statistics */}
       {stats && (
         <div className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
+          <div className="p-4 border border-gray-200 bg-gray-50">
             <div className="flex items-center gap-2 mb-2">
               <BarChart3 className="w-4 h-4 text-cyan-400" />
-              <p className="text-slate-500 font-mono text-xs uppercase">Total Jobs</p>
+              <p className="text-gray-400 text-xs uppercase">Total Jobs</p>
             </div>
-            <p className="text-cyan-400 font-mono text-2xl font-bold">{stats.jobs.total}</p>
+            <p className="text-cyan-400 text-2xl font-bold">{stats.jobs.total}</p>
           </div>
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
+          <div className="p-4 border border-gray-200 bg-gray-50">
             <div className="flex items-center gap-2 mb-2">
               <RefreshCw className="w-4 h-4 text-yellow-400" />
-              <p className="text-slate-500 font-mono text-xs uppercase">Running</p>
+              <p className="text-gray-400 text-xs uppercase">Running</p>
             </div>
-            <p className="text-yellow-400 font-mono text-2xl font-bold">{stats.jobs.running}</p>
+            <p className="text-yellow-400 text-2xl font-bold">{stats.jobs.running}</p>
           </div>
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
+          <div className="p-4 border border-gray-200 bg-gray-50">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="w-4 h-4 text-green-400" />
-              <p className="text-slate-500 font-mono text-xs uppercase">Completed</p>
+              <p className="text-gray-400 text-xs uppercase">Completed</p>
             </div>
-            <p className="text-green-400 font-mono text-2xl font-bold">{stats.jobs.completed}</p>
+            <p className="text-green-400 text-2xl font-bold">{stats.jobs.completed}</p>
           </div>
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
+          <div className="p-4 border border-gray-200 bg-gray-50">
             <div className="flex items-center gap-2 mb-2">
               <XCircle className="w-4 h-4 text-red-400" />
-              <p className="text-slate-500 font-mono text-xs uppercase">Failed</p>
+              <p className="text-gray-400 text-xs uppercase">Failed</p>
             </div>
-            <p className="text-red-400 font-mono text-2xl font-bold">{stats.jobs.failed}</p>
+            <p className="text-red-400 text-2xl font-bold">{stats.jobs.failed}</p>
           </div>
-          <div className="p-4 border border-slate-800 bg-slate-900/30">
+          <div className="p-4 border border-gray-200 bg-gray-50">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="w-4 h-4 text-emerald-400" />
-              <p className="text-slate-500 font-mono text-xs uppercase">Results</p>
+              <p className="text-gray-400 text-xs uppercase">Results</p>
             </div>
-            <p className="text-emerald-400 font-mono text-2xl font-bold">
+            <p className="text-emerald-400 text-2xl font-bold">
               {stats.results.success}/{stats.results.total}
             </p>
           </div>
@@ -239,30 +239,30 @@ export default function ChatQualityTab() {
       )}
 
       {/* Jobs Table */}
-      <div className="border border-slate-800 bg-slate-900/50">
+      <div className="border border-gray-200 bg-gray-50">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/50">
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-cyan-400 uppercase">
+              <tr className="border-b border-gray-200 bg-gray-50/50">
+                <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase">
                   Status
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-cyan-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase">
                   Target Date
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-cyan-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase">
                   Tenant
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-cyan-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase">
                   Progress
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-cyan-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase">
                   Avg Score
                 </th>
-                <th className="text-left px-4 py-3 font-mono text-xs font-bold text-cyan-400 uppercase">
+                <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase">
                   Created
                 </th>
-                <th className="text-right px-4 py-3 font-mono text-xs font-bold text-cyan-400 uppercase">
+                <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 uppercase">
                   Actions
                 </th>
               </tr>
@@ -271,7 +271,7 @@ export default function ChatQualityTab() {
               {jobs.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-8 text-center">
-                    <p className="text-slate-500 font-mono text-sm">NO JOBS FOUND</p>
+                    <p className="text-gray-400 text-sm">NO JOBS FOUND</p>
                   </td>
                 </tr>
               ) : (
@@ -283,7 +283,7 @@ export default function ChatQualityTab() {
                           setExpandedJobId(expandedJobId === job.id ? null : job.id);
                         }
                       }}
-                      className={`border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors ${
+                      className={`border-b border-gray-100 hover:bg-gray-50/50 transition-colors ${
                         job.status === 'FAILED' && job.errorMessage ? 'cursor-pointer' : ''
                       }`}
                     >
@@ -291,7 +291,7 @@ export default function ChatQualityTab() {
                         <div className="flex items-center gap-2">
                           <div className={`inline-flex items-center gap-2 px-2 py-1 border ${getStatusColor(job.status)}`}>
                             {getStatusIcon(job.status)}
-                            <span className="font-mono text-xs uppercase">{job.status}</span>
+                            <span className="text-xs uppercase">{job.status}</span>
                           </div>
                           {job.status === 'FAILED' && job.errorMessage && (
                             expandedJobId === job.id ? (
@@ -304,8 +304,8 @@ export default function ChatQualityTab() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-slate-500" />
-                          <span className="text-slate-300 font-mono text-sm">
+                          <Calendar className="w-4 h-4 text-gray-400" />
+                          <span className="text-gray-600 text-sm">
                             {new Date(job.targetDate).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'short',
@@ -315,18 +315,18 @@ export default function ChatQualityTab() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-slate-400 font-mono text-sm">
+                        <span className="text-gray-500 text-sm">
                           {job.tenantId || 'ALL'}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="flex-1 max-w-24 h-2 bg-slate-800 rounded-full overflow-hidden">
+                          <div className="flex-1 max-w-24 h-2 bg-white rounded-full overflow-hidden">
                             <div
                               className={`h-full ${
                                 job.status === 'COMPLETED' ? 'bg-green-500' :
                                 job.status === 'FAILED' ? 'bg-red-500' :
-                                job.status === 'RUNNING' ? 'bg-cyan-500' : 'bg-slate-600'
+                                job.status === 'RUNNING' ? 'bg-cyan-500' : 'bg-gray-300'
                               }`}
                               style={{
                                 width: job.totalItems > 0
@@ -335,7 +335,7 @@ export default function ChatQualityTab() {
                               }}
                             />
                           </div>
-                          <span className="text-slate-400 font-mono text-xs">
+                          <span className="text-gray-500 text-xs">
                             {job.processedItems}/{job.totalItems}
                           </span>
                         </div>
@@ -349,11 +349,11 @@ export default function ChatQualityTab() {
                             {job.scoreStats.avgScore.toFixed(1)}
                           </span>
                         ) : (
-                          <span className="text-slate-600 font-mono text-xs">-</span>
+                          <span className="text-gray-400 text-xs">-</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-slate-500 font-mono text-xs">
+                        <span className="text-gray-400 text-xs">
                           {new Date(job.createdAt).toLocaleString('en-US', {
                             month: 'short',
                             day: '2-digit',
@@ -411,7 +411,7 @@ export default function ChatQualityTab() {
                               e.stopPropagation();
                               router.push(`/dashboard/admin/batch-analysis/${job.id}`);
                             }}
-                            className="p-2 bg-slate-800 hover:bg-cyan-600/20 border border-slate-700 text-slate-400 hover:text-cyan-400 transition-all"
+                            className="p-2 bg-white hover:bg-cyan-600/20 border border-gray-200 text-gray-500 hover:text-cyan-400 transition-all"
                             title="View Results"
                           >
                             <Eye className="w-4 h-4" />
@@ -422,7 +422,7 @@ export default function ChatQualityTab() {
                               handleDeleteClick(job);
                             }}
                             disabled={job.status === 'RUNNING'}
-                            className="p-2 bg-slate-800 hover:bg-red-600/20 border border-slate-700 text-slate-400 hover:text-red-400 transition-all disabled:opacity-50"
+                            className="p-2 bg-white hover:bg-red-600/20 border border-gray-200 text-gray-500 hover:text-red-400 transition-all disabled:opacity-50"
                             title="Delete Job"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -433,17 +433,17 @@ export default function ChatQualityTab() {
                     {/* 에러 상세 패널 */}
                     {expandedJobId === job.id && job.errorMessage && (
                       <tr>
-                        <td colSpan={7} className="px-4 py-4 bg-red-950/20 border-b border-red-500/30">
+                        <td colSpan={7} className="px-4 py-4 bg-red-50/20 border-b border-red-500/30">
                           <div className="flex items-start gap-3">
                             <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                             <div className="flex-1">
-                              <p className="text-red-400 font-mono text-xs uppercase font-bold mb-2">
+                              <p className="text-red-400 text-xs uppercase font-bold mb-2">
                                 Error Details
                               </p>
-                              <pre className="text-slate-300 font-mono text-sm whitespace-pre-wrap bg-slate-900/50 p-3 rounded border border-slate-800">
+                              <pre className="text-gray-600 text-sm whitespace-pre-wrap bg-gray-50 p-3 rounded border border-gray-200">
                                 {job.errorMessage}
                               </pre>
-                              <p className="text-slate-500 font-mono text-xs mt-2">
+                              <p className="text-gray-400 text-xs mt-2">
                                 Click the retry button to run this job again. Previous results will be deleted.
                               </p>
                             </div>
@@ -464,7 +464,7 @@ export default function ChatQualityTab() {
         <button
           onClick={fetchData}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 font-mono text-xs uppercase transition-all disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 text-xs uppercase transition-all disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh

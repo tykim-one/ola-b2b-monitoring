@@ -15,10 +15,7 @@ import {
   ReportTarget,
   ReportType,
 } from './interfaces';
-import {
-  getRequiredFields,
-  getAllFieldsToFetch,
-} from './config';
+import { getRequiredFields, getAllFieldsToFetch } from './config';
 
 type DbType = 'mysql' | 'postgresql';
 
@@ -80,7 +77,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
 
         this.dbType = 'mysql';
         this.isEnabled = true;
-        this.logger.log(`Connected to MySQL: ${host}:${port || 3306}/${database}`);
+        this.logger.log(
+          `Connected to MySQL: ${host}:${port || 3306}/${database}`,
+        );
       } else if (dbType === 'postgresql') {
         this.pgPool = new PgPool({
           host,
@@ -102,7 +101,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
           `Connected to PostgreSQL: ${host}:${port || 5432}/${database}`,
         );
       } else {
-        this.logger.warn(`Unsupported DB type: ${dbType}. Use 'mysql' or 'postgresql'.`);
+        this.logger.warn(
+          `Unsupported DB type: ${dbType}. Use 'mysql' or 'postgresql'.`,
+        );
       }
     } catch (error) {
       this.logger.error(`Failed to connect to report DB: ${error.message}`);
@@ -259,8 +260,10 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
       const complete: string[] = [];
       const incomplete: string[] = [];
       const suspicious: string[] = [];
-      const incompleteDetails: CompletenessCheckResult['incompleteDetails'] = [];
-      const suspiciousDetails: CompletenessCheckResult['suspiciousDetails'] = [];
+      const incompleteDetails: CompletenessCheckResult['incompleteDetails'] =
+        [];
+      const suspiciousDetails: CompletenessCheckResult['suspiciousDetails'] =
+        [];
 
       for (const item of data) {
         const missingFields: string[] = [];
@@ -351,7 +354,12 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
     if (this.dbType === 'mysql' && this.mysqlPool) {
       return this.queryMySqlWithYesterday(table, symbols, symbolColumn, fields);
     } else if (this.dbType === 'postgresql' && this.pgPool) {
-      return this.queryPostgresWithYesterday(table, symbols, symbolColumn, fields);
+      return this.queryPostgresWithYesterday(
+        table,
+        symbols,
+        symbolColumn,
+        fields,
+      );
     }
     return [];
   }
@@ -373,7 +381,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
   > {
     const placeholders = symbols.map(() => '?').join(', ');
     const fieldList = fields.map((f) => `t.${f} as today_${f}`).join(', ');
-    const yesterdayFieldList = fields.map((f) => `y.${f} as yesterday_${f}`).join(', ');
+    const yesterdayFieldList = fields
+      .map((f) => `y.${f} as yesterday_${f}`)
+      .join(', ');
 
     const [rows] = await this.mysqlPool!.execute<mysql.RowDataPacket[]>(
       `SELECT t.${symbolColumn} as symbol, ${fieldList}, ${yesterdayFieldList}
@@ -425,7 +435,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
     const placeholders = symbols.map((_, i) => `$${i + 1}`).join(', ');
     const tableRef = table.includes('.') ? table : this.escapeIdentifier(table);
     const fieldList = fields.map((f) => `t.${f} as "today_${f}"`).join(', ');
-    const yesterdayFieldList = fields.map((f) => `y.${f} as "yesterday_${f}"`).join(', ');
+    const yesterdayFieldList = fields
+      .map((f) => `y.${f} as "yesterday_${f}"`)
+      .join(', ');
 
     const result = await this.pgPool!.query(
       `SELECT t.${symbolColumn} as symbol, ${fieldList}, ${yesterdayFieldList}
@@ -511,7 +523,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
     } else if (this.dbType === 'postgresql' && this.pgPool) {
       const placeholders = symbols.map((_, i) => `$${i + 1}`).join(', ');
       // 스키마 포함 테이블명 처리 (gold.daily_item_info)
-      const tableRef = table.includes('.') ? table : this.escapeIdentifier(table);
+      const tableRef = table.includes('.')
+        ? table
+        : this.escapeIdentifier(table);
       const result = await this.pgPool.query(
         `SELECT DISTINCT ${this.escapeIdentifier(symbolColumn)} as symbol
          FROM ${tableRef}
@@ -540,7 +554,14 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
          FROM ??
          WHERE ?? IN (${placeholders})
          GROUP BY ??`,
-        [symbolColumn, updatedAtColumn, table, symbolColumn, ...symbols, symbolColumn],
+        [
+          symbolColumn,
+          updatedAtColumn,
+          table,
+          symbolColumn,
+          ...symbols,
+          symbolColumn,
+        ],
       );
       return rows.map((r) => ({
         symbol: r.symbol as string,
@@ -549,7 +570,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
     } else if (this.dbType === 'postgresql' && this.pgPool) {
       const placeholders = symbols.map((_, i) => `$${i + 1}`).join(', ');
       // 스키마 포함 테이블명 처리 (gold.daily_item_info)
-      const tableRef = table.includes('.') ? table : this.escapeIdentifier(table);
+      const tableRef = table.includes('.')
+        ? table
+        : this.escapeIdentifier(table);
       const result = await this.pgPool.query(
         `SELECT ${this.escapeIdentifier(symbolColumn)} as symbol,
                 MAX(${this.escapeIdentifier(updatedAtColumn)}) as "updatedAt"
@@ -640,7 +663,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
       }
       return [];
     } catch (error) {
-      this.logger.error(`Failed to load targets for ${reportType}: ${error.message}`);
+      this.logger.error(
+        `Failed to load targets for ${reportType}: ${error.message}`,
+      );
       return [];
     }
   }
@@ -648,12 +673,19 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
   /**
    * 사용 가능한 타겟 테이블 목록 조회
    */
-  async listAvailableTargetTables(): Promise<Array<{ reportType: ReportType; tableName: string }>> {
+  async listAvailableTargetTables(): Promise<
+    Array<{ reportType: ReportType; tableName: string }>
+  > {
     if (!this.isEnabled) {
       return [];
     }
 
-    const reportTypes: ReportType[] = ['ai_stock', 'commodity', 'forex', 'dividend'];
+    const reportTypes: ReportType[] = [
+      'ai_stock',
+      'commodity',
+      'forex',
+      'dividend',
+    ];
     const result: Array<{ reportType: ReportType; tableName: string }> = [];
 
     for (const reportType of reportTypes) {
@@ -666,7 +698,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
           );
           result.push({ reportType, tableName });
         } else if (this.dbType === 'mysql' && this.mysqlPool) {
-          await this.mysqlPool.execute(`SELECT 1 FROM gold.?? LIMIT 1`, [`target_${reportType}`]);
+          await this.mysqlPool.execute(`SELECT 1 FROM gold.?? LIMIT 1`, [
+            `target_${reportType}`,
+          ]);
           result.push({ reportType, tableName });
         }
       } catch {

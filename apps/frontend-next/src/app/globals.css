@@ -3,8 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background: #020617;
-  --foreground: #f1f5f9;
+  /* TDS Light Mode — Surface */
+  --background: #f9fafb;          /* gray-50 */
+  --foreground: #111827;          /* gray-900 */
+  --surface: #ffffff;             /* white */
+  --surface-secondary: #f9fafb;   /* gray-50 */
+  --surface-hover: #f3f4f6;       /* gray-100 */
+
+  /* Border */
+  --border: #e5e7eb;              /* gray-200 */
+  --border-subtle: #f3f4f6;       /* gray-100 */
+
+  /* Text */
+  --text-primary: #111827;        /* gray-900 */
+  --text-secondary: #374151;      /* gray-700 */
+  --text-tertiary: #6b7280;       /* gray-500 */
+  --text-muted: #9ca3af;          /* gray-400 */
 }
 
 body {
@@ -29,22 +43,22 @@ body {
   animation: fade-in 0.3s ease-out;
 }
 
-/* Syntax Highlighting - Atom One Dark Theme (customized for slate) */
+/* Syntax Highlighting - Atom One Light Theme */
 .hljs {
   background: transparent !important;
-  color: #abb2bf;
+  color: #383a42;
 }
 
 .hljs-comment,
 .hljs-quote {
-  color: #5c6370;
+  color: #a0a1a7;
   font-style: italic;
 }
 
 .hljs-doctag,
 .hljs-keyword,
 .hljs-formula {
-  color: #c678dd;
+  color: #a626a4;
 }
 
 .hljs-section,
@@ -52,11 +66,11 @@ body {
 .hljs-selector-tag,
 .hljs-deletion,
 .hljs-subst {
-  color: #e06c75;
+  color: #e45649;
 }
 
 .hljs-literal {
-  color: #56b6c2;
+  color: #0184bc;
 }
 
 .hljs-string,
@@ -64,7 +78,7 @@ body {
 .hljs-addition,
 .hljs-attribute,
 .hljs-meta .hljs-string {
-  color: #98c379;
+  color: #50a14f;
 }
 
 .hljs-attr,
@@ -75,7 +89,7 @@ body {
 .hljs-selector-attr,
 .hljs-selector-pseudo,
 .hljs-number {
-  color: #d19a66;
+  color: #986801;
 }
 
 .hljs-symbol,
@@ -84,13 +98,13 @@ body {
 .hljs-meta,
 .hljs-selector-id,
 .hljs-title {
-  color: #61afef;
+  color: #4078f2;
 }
 
 .hljs-built_in,
 .hljs-title.class_,
 .hljs-class .hljs-title {
-  color: #e5c07b;
+  color: #c18401;
 }
 
 .hljs-emphasis {

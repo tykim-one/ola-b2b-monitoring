@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
+import { CHART_COLORS } from './chart-theme';
 
 interface ErrorGaugeProps {
   errorRate: number;
@@ -21,7 +22,7 @@ const ErrorGauge: React.FC<ErrorGaugeProps> = ({
     {
       name: 'background',
       value: 100,
-      fill: '#1e293b',
+      fill: CHART_COLORS.bgFill,
     },
     {
       name: 'success',
@@ -31,8 +32,8 @@ const ErrorGauge: React.FC<ErrorGaugeProps> = ({
   ];
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
-      <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
+      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
       <div className="h-[200px] w-full relative">
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart
@@ -48,7 +49,7 @@ const ErrorGauge: React.FC<ErrorGaugeProps> = ({
             <RadialBar
               dataKey="value"
               cornerRadius={10}
-              background={{ fill: '#1e293b' }}
+              background={{ fill: CHART_COLORS.bgFill }}
             />
           </RadialBarChart>
         </ResponsiveContainer>
@@ -58,15 +59,15 @@ const ErrorGauge: React.FC<ErrorGaugeProps> = ({
           <div className={`text-4xl font-bold ${isOverThreshold ? 'text-rose-500' : 'text-emerald-400'}`}>
             {successRate.toFixed(1)}%
           </div>
-          <div className="text-slate-400 text-sm">성공률</div>
+          <div className="text-gray-500 text-sm">성공률</div>
         </div>
       </div>
 
       <div className="flex justify-between text-sm mt-2">
-        <div className="text-slate-400">
-          에러율: <span className={isOverThreshold ? 'text-rose-400' : 'text-slate-300'}>{errorRate.toFixed(2)}%</span>
+        <div className="text-gray-500">
+          에러율: <span className={isOverThreshold ? 'text-rose-400' : 'text-gray-600'}>{errorRate.toFixed(2)}%</span>
         </div>
-        <div className="text-slate-500">
+        <div className="text-gray-400">
           임계값: {threshold}%
         </div>
       </div>

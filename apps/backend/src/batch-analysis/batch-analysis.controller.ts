@@ -234,7 +234,10 @@ export class BatchAnalysisController {
   @ApiOperation({ summary: '스케줄 수정' })
   @ApiResponse({ status: 200, description: '스케줄 수정 완료' })
   @ApiResponse({ status: 404, description: '스케줄을 찾을 수 없음' })
-  async updateSchedule(@Param('id') id: string, @Body() dto: UpdateScheduleDto) {
+  async updateSchedule(
+    @Param('id') id: string,
+    @Body() dto: UpdateScheduleDto,
+  ) {
     const schedule = await this.batchAnalysisService.updateSchedule(id, dto);
     // Reload scheduler with updated config
     await this.batchAnalysisScheduler.reloadSchedule(schedule.id);
@@ -269,7 +272,9 @@ export class BatchAnalysisController {
   @ApiOperation({ summary: '분석 가능한 테넌트 목록 조회' })
   @ApiResponse({ status: 200, description: '테넌트 목록 반환' })
   async getAvailableTenants(@Query('days') days?: number) {
-    const tenants = await this.batchAnalysisService.getAvailableTenants(days || 30);
+    const tenants = await this.batchAnalysisService.getAvailableTenants(
+      days || 30,
+    );
     return { tenants };
   }
 }

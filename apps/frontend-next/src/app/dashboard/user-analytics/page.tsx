@@ -1,180 +1,134 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
-import { Users, BarChart3, MessageSquare, Activity, AlertTriangle } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Users,
+  BarChart3,
+  MessageSquare,
+  Activity,
+  AlertTriangle,
+  User,
+  CheckCircle,
+  XCircle,
+  Coins,
+  Calendar,
+  ExternalLink,
+  Eye,
+  Clock,
+  Hash,
+  TrendingUp,
+  ChevronDown,
+  ChevronRight,
+} from 'lucide-react';
+import { Dashboard } from '@/components/compound/Dashboard';
+import { DataTable, type Column } from '@/components/compound/DataTable';
 import KPICard from '@/components/kpi/KPICard';
-import UserListTable from '@/components/charts/UserListTable';
 import UserActivityDialog from '@/components/charts/UserActivityDialog';
-import UserPatternsTable from '@/components/charts/UserPatternsTable';
-import ProblematicChatTable from '@/components/charts/ProblematicChatTable';
 import ProblematicChatDialog from '@/components/charts/ProblematicChatDialog';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
 import {
-  fetchUserList,
-  fetchUserQuestionPatterns,
-} from '@/services/userAnalyticsService';
+  useUserAnalyticsDashboard,
+  useProblematicRules,
+  useProblematicChats,
+  useProblematicStats,
+} from '@/hooks/queries/use-user-analytics';
 import {
-  fetchProblematicChats,
-  fetchRules,
-  fetchProblematicChatStats,
-} from '@/services/problematicChatService';
-import {
-  UserListItem,
-  UserQuestionPattern,
-  ProblematicChat,
-  ProblematicChatRule,
-  ProblematicChatStats,
+  type ProblematicChat,
+  type ProblematicChatRule,
   getFieldDefinition,
   getOperatorDefinition,
   isCompoundConfig,
 } from '@ola/shared-types';
+import type { UserListItem, UserQuestionPattern } from '@ola/shared-types';
 
 const PROJECT_ID = 'ibks';
 
 type TabType = 'users' | 'problematic';
 
 export default function UserAnalyticsPage() {
-  // 현재 탭
+  // Tab & date state
   const [activeTab, setActiveTab] = useState<TabType>('users');
-
-  // 유저 분석 데이터
-  const [userList, setUserList] = useState<UserListItem[]>([]);
-  const [userPatterns, setUserPatterns] = useState<UserQuestionPattern[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<DateRange>({ startDate: '', endDate: '', days: 7 });
 
-  // 유저 다이얼로그 상태
+  // Dialog state
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // 문제 채팅 데이터
-  const [problematicChats, setProblematicChats] = useState<ProblematicChat[]>([]);
-  const [rules, setRules] = useState<ProblematicChatRule[]>([]);
-  const [problematicStats, setProblematicStats] = useState<ProblematicChatStats | null>(null);
-  const [problematicLoading, setProblematicLoading] = useState(false);
-  const [problematicError, setProblematicError] = useState<string | null>(null);
-
-  // 유저가 선택한 규칙 필터 (활성화된 규칙 중 유저가 on/off 하는 것)
-  const [selectedRuleIds, setSelectedRuleIds] = useState<Set<string>>(new Set());
-  const [rulesInitialized, setRulesInitialized] = useState(false);
-
-  // 문제 채팅 다이얼로그 상태
   const [selectedChat, setSelectedChat] = useState<ProblematicChat | null>(null);
   const [isChatDialogOpen, setIsChatDialogOpen] = useState(false);
 
-  // AbortController를 사용한 요청 취소 관리
-  const abortControllerRef = useRef<AbortController | null>(null);
+  // Rule filter state
+  const [selectedRuleIds, setSelectedRuleIds] = useState<Set<string>>(new Set());
+  const [rulesInitialized, setRulesInitialized] = useState(false);
 
-  // 15분마다 자동 새로고침을 위한 트리거
-  const [refreshKey, setRefreshKey] = useState(0);
+  // ---- Data hooks ----
 
-  // 유저 데이터 로드
+  // Users tab data
+  const {
+    userList,
+    userPatterns,
+    kpis,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useUserAnalyticsDashboard(PROJECT_ID, dateRange.days, activeTab === 'users');
+
+  // Rules (loaded when problematic tab active)
+  const { data: rules = [] } = useProblematicRules({
+    enabled: activeTab === 'problematic',
+  });
+
+  // Initialize selected rules when first loaded
   useEffect(() => {
-    if (activeTab !== 'users') return;
-
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+    if (rules.length > 0 && !rulesInitialized) {
+      const enabledIds = new Set(rules.filter((r) => r.isEnabled).map((r) => r.id));
+      // Use a timeout to avoid setting state during render
+      setTimeout(() => {
+        setSelectedRuleIds(enabledIds);
+        setRulesInitialized(true);
+      }, 0);
     }
+  }, [rules, rulesInitialized]);
 
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
+  // Problematic chats & stats
+  const ruleIdsArray = useMemo(() => Array.from(selectedRuleIds), [selectedRuleIds]);
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [listData, patternsData] = await Promise.all([
-          fetchUserList(PROJECT_ID, dateRange.days, 9999),
-          fetchUserQuestionPatterns(PROJECT_ID, undefined, dateRange.days, 9999),
-        ]);
+  const {
+    data: problematicChats = [],
+    isLoading: problematicLoading,
+  } = useProblematicChats(
+    dateRange.days,
+    rulesInitialized ? ruleIdsArray : undefined,
+  );
 
-        if (!controller.signal.aborted) {
-          setUserList(listData);
-          setUserPatterns(patternsData);
-          setError(null);
-        }
-      } catch (err) {
-        if (!controller.signal.aborted) {
-          setError(err instanceof Error ? err.message : 'Unknown error');
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
+  const { data: problematicStats = null } = useProblematicStats(dateRange.days, {
+    enabled: activeTab === 'problematic' && rulesInitialized,
+  });
+
+  // ---- Derived data ----
+
+  const enabledRules = useMemo(() => rules.filter((r) => r.isEnabled), [rules]);
+
+  // Show empty array when no rules selected (matches original behavior)
+  const displayChats = ruleIdsArray.length > 0 ? problematicChats : [];
+
+  const filteredStats = useMemo(() => {
+    if (!problematicStats) return null;
+    const byRule = problematicStats.byRule.filter((r) => selectedRuleIds.has(r.ruleId));
+    return {
+      ...problematicStats,
+      byRule,
+      totalCount: byRule.reduce((sum, r) => sum + r.count, 0),
     };
+  }, [problematicStats, selectedRuleIds]);
 
-    fetchData();
+  const selectedUserInfo = selectedUserId
+    ? userList.find((u) => u.userId === selectedUserId)
+    : undefined;
 
-    return () => {
-      controller.abort();
-    };
-  }, [activeTab, dateRange.days, refreshKey]);
+  // Determine error based on active tab
+  const error = activeTab === 'users' ? usersError : null;
 
-  // 규칙 목록 로드 (탭 전환 시 한 번만)
-  useEffect(() => {
-    if (activeTab !== 'problematic') return;
-
-    const loadRules = async () => {
-      try {
-        const rulesData = await fetchRules();
-        setRules(rulesData);
-        // 최초 로드 시 활성화된 규칙 전체를 선택 상태로 설정
-        if (!rulesInitialized) {
-          const enabledIds = new Set(rulesData.filter((r) => r.isEnabled).map((r) => r.id));
-          setSelectedRuleIds(enabledIds);
-          setRulesInitialized(true);
-        }
-      } catch (err) {
-        setProblematicError(err instanceof Error ? err.message : 'Unknown error');
-      }
-    };
-
-    loadRules();
-  }, [activeTab, refreshKey, rulesInitialized]);
-
-  // 문제 채팅 데이터 로드 (선택된 규칙이 변경될 때마다 재조회)
-  useEffect(() => {
-    if (activeTab !== 'problematic' || !rulesInitialized) return;
-
-    const fetchProblematicData = async () => {
-      try {
-        setProblematicLoading(true);
-        setProblematicError(null);
-
-        const ruleIdsArray = Array.from(selectedRuleIds);
-
-        const [chatsData, statsData] = await Promise.all([
-          fetchProblematicChats({
-            days: dateRange.days,
-            limit: 200,
-            ruleIds: ruleIdsArray.length > 0 ? ruleIdsArray : undefined,
-          }),
-          fetchProblematicChatStats(dateRange.days),
-        ]);
-
-        setProblematicChats(ruleIdsArray.length > 0 ? chatsData : []);
-        setProblematicStats(statsData);
-      } catch (err) {
-        setProblematicError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setProblematicLoading(false);
-      }
-    };
-
-    fetchProblematicData();
-  }, [activeTab, dateRange.days, refreshKey, rulesInitialized, selectedRuleIds]);
-
-  // 15분마다 자동 새로고침
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRefreshKey((prev) => prev + 1);
-    }, 15 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // 활성화된 규칙 목록
-  const enabledRules = rules.filter((r) => r.isEnabled);
+  // ---- Handlers ----
 
   const handleToggleRule = (ruleId: string) => {
     setSelectedRuleIds((prev) => {
@@ -196,18 +150,6 @@ export default function UserAnalyticsPage() {
     setSelectedRuleIds(new Set());
   };
 
-  // 선택된 규칙 기준으로 필터링된 통계
-  const filteredStats = problematicStats
-    ? {
-        ...problematicStats,
-        byRule: problematicStats.byRule.filter((r) => selectedRuleIds.has(r.ruleId)),
-        totalCount: problematicStats.byRule
-          .filter((r) => selectedRuleIds.has(r.ruleId))
-          .reduce((sum, r) => sum + r.count, 0),
-      }
-    : null;
-
-  // 유저 클릭 핸들러
   const handleUserClick = (userId: string) => {
     setSelectedUserId(userId);
     setIsDialogOpen(true);
@@ -218,7 +160,6 @@ export default function UserAnalyticsPage() {
     setSelectedUserId(null);
   };
 
-  // 문제 채팅 상세 보기 핸들러
   const handleViewChatDetail = (chat: ProblematicChat) => {
     setSelectedChat(chat);
     setIsChatDialogOpen(true);
@@ -229,40 +170,217 @@ export default function UserAnalyticsPage() {
     setSelectedChat(null);
   };
 
-  // 선택된 유저 정보
-  const selectedUserInfo = selectedUserId
-    ? userList.find((u) => u.userId === selectedUserId)
-    : undefined;
+  const router = useRouter();
 
-  // KPI 계산
+  // ---- Helper functions for table rendering ----
+  const formatDate = (date: string): string => {
+    try {
+      const d = new Date(date);
+      return d.toLocaleDateString('ko-KR', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return date;
+    }
+  };
+
+  const truncateText = (text: string, maxLength: number = 50): string => {
+    if (!text) return '-';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
+  const truncateUserId = (userId: string, maxLen: number = 20): string => {
+    if (userId.length <= maxLen) return userId;
+    return `${userId.substring(0, maxLen)}...`;
+  };
+
+  const getRuleColor = (ruleName: string) => {
+    const rule = rules.find((r: ProblematicChatRule) => r.name === ruleName);
+    if (!rule) return 'bg-gray-300';
+    if (isCompoundConfig(rule.config)) return 'bg-purple-600';
+    const fieldDef = getFieldDefinition(rule.config.field);
+    if (!fieldDef) return 'bg-gray-300';
+    if (fieldDef.dataType === 'numeric') return 'bg-amber-600';
+    if (fieldDef.dataType === 'text') return 'bg-rose-600';
+    if (fieldDef.dataType === 'boolean') return 'bg-cyan-600';
+    return 'bg-gray-300';
+  };
+
+  const formatTimestamp = (ts: string) => {
+    const date = new Date(ts);
+    return date.toLocaleString('ko-KR', {
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // ---- Column definitions ----
+
+  const userListColumns: Column<UserListItem>[] = [
+    {
+      key: 'userId', header: '유저 ID',
+      render: (v) => (
+        <span className="text-blue-400 text-xs hover:underline" title={v as string}>
+          {truncateUserId(v as string)}
+        </span>
+      ),
+    },
+    { key: 'questionCount', header: '질문수', sortable: true, align: 'center',
+      render: (v) => <span className="font-medium">{(v as number).toLocaleString()}</span>,
+    },
+    { key: 'successRate', header: '성공률', sortable: true, align: 'center',
+      render: (v) => (
+        <span className={`font-medium ${(v as number) >= 90 ? 'text-emerald-400' : (v as number) >= 70 ? 'text-yellow-400' : 'text-rose-400'}`}>
+          {(v as number).toFixed(1)}%
+        </span>
+      ),
+    },
+    { key: 'totalTokens', header: '총 토큰', sortable: true, align: 'center',
+      render: (v) => <span className="text-gray-600">{(v as number).toLocaleString()}</span>,
+    },
+    { key: 'avgTokens', header: '평균 토큰', sortable: true, align: 'center',
+      render: (v) => <span className="text-gray-500">{(v as number).toFixed(0)}</span>,
+    },
+    { key: 'errorCount', header: '에러', sortable: true, align: 'center',
+      render: (v) => (
+        <span className={`font-medium ${(v as number) > 10 ? 'text-rose-400' : (v as number) > 0 ? 'text-yellow-400' : 'text-gray-400'}`}>
+          {v as number}
+        </span>
+      ),
+    },
+    { key: 'firstActivity', header: '첫 활동', align: 'center',
+      render: (v) => <span className="text-gray-500 text-xs">{formatDate(v as string)}</span>,
+    },
+    { key: 'lastActivity', header: '마지막 활동', sortable: true, align: 'center',
+      render: (v) => <span className="text-gray-500 text-xs">{formatDate(v as string)}</span>,
+    },
+    { key: 'userId' as any, header: '프로필', align: 'center',
+      className: 'w-20',
+      render: (_, row) => (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/dashboard/user-analytics/${encodeURIComponent((row as UserListItem).userId)}`);
+          }}
+          className="p-1.5 rounded-lg bg-blue-500/20 hover:bg-blue-500/40 text-blue-400 transition-colors"
+          title="프로필 보기"
+        >
+          <ExternalLink size={14} />
+        </button>
+      ),
+    },
+  ];
+
+  const patternColumns: Column<UserQuestionPattern>[] = [
+    { key: 'userId', header: '유저 ID',
+      render: (v) => (
+        <span className="text-blue-400 text-xs" title={v as string}>
+          {truncateUserId(v as string, 16)}
+        </span>
+      ),
+    },
+    { key: 'question', header: '질문 패턴',
+      render: (v) => (
+        <span className="text-gray-900 truncate block max-w-[350px]" title={v as string}>
+          {v as string}
+        </span>
+      ),
+    },
+    { key: 'frequency', header: '빈도', align: 'center',
+      render: (v) => (
+        <span className={`font-medium ${(v as number) >= 10 ? 'text-rose-400' : (v as number) >= 5 ? 'text-yellow-400' : 'text-emerald-400'}`}>
+          {v as number}회
+        </span>
+      ),
+    },
+    { key: 'lastAsked', header: '최근 질문', align: 'center',
+      render: (v) => <span className="text-gray-500 text-xs">{formatDate(v as string)}</span>,
+    },
+  ];
+
+  const problematicColumns: Column<ProblematicChat>[] = [
+    { key: 'timestamp', header: '시간', sortable: true,
+      render: (v) => <span className="text-gray-600 whitespace-nowrap">{formatTimestamp(v as string)}</span>,
+    },
+    { key: 'userId', header: '유저',
+      render: (v) => <span className="text-gray-600 text-xs truncate max-w-[180px]" title={v as string}>{(v as string) || '-'}</span>,
+    },
+    { key: 'userInput', header: '입력',
+      render: (v) => <span title={v as string}>{truncateText(v as string)}</span>,
+    },
+    { key: 'llmResponse', header: '응답',
+      render: (v) => <span className="text-gray-500" title={v as string}>{truncateText(v as string)}</span>,
+    },
+    { key: 'outputTokens', header: '토큰', sortable: true, align: 'center',
+      render: (v) => (
+        <span className={(v as number) < 1500 ? 'text-amber-400' : ''}>
+          {(v as number).toLocaleString()}
+        </span>
+      ),
+    },
+    { key: 'matchedRules', header: '매칭 규칙',
+      render: (_, row) => (
+        <div className="flex flex-wrap gap-1">
+          {(row as ProblematicChat).matchedRules.map((name: string) => (
+            <span key={name} className={`px-2 py-0.5 text-xs rounded-full text-white ${getRuleColor(name)}`}>
+              {name}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    { key: 'id', header: '액션', align: 'center',
+      render: (_, row) => (
+        <button
+          onClick={(e) => { e.stopPropagation(); handleViewChatDetail(row as ProblematicChat); }}
+          className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition-colors"
+          title="상세 보기"
+        >
+          <Eye className="w-4 h-4" />
+        </button>
+      ),
+    },
+  ];
+
+  // Summary stats for userList
   const totalUsers = userList.length;
-  const totalRequests = userList.reduce((sum, u) => sum + u.questionCount, 0);
-  const totalTokens = userList.reduce((sum, u) => sum + u.totalTokens, 0);
-  const avgRequestsPerUser = totalUsers > 0 ? Math.round(totalRequests / totalUsers) : 0;
+  const totalQuestions = userList.reduce((sum: number, d: UserListItem) => sum + d.questionCount, 0);
+  const avgSuccessRate = totalUsers > 0 ? userList.reduce((sum: number, d: UserListItem) => sum + d.successRate, 0) / totalUsers : 0;
+
+  // Summary stats for userPatterns
+  const uniquePatternUsers = new Set(userPatterns.map((p: UserQuestionPattern) => p.userId)).size;
+  const totalPatterns = userPatterns.length;
+  const totalFrequency = userPatterns.reduce((sum: number, d: UserQuestionPattern) => sum + d.frequency, 0);
 
   return (
-    <div className="p-8 h-full overflow-y-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div>
-          <h2 className="text-3xl font-bold text-white">유저 분석</h2>
-          <p className="text-slate-400 mt-1">x_enc_data 기준 유저별 활동 분석</p>
-        </div>
+    <Dashboard isLoading={false} error={error as Error | null}>
+      <Dashboard.Header
+        title="유저 분석"
+        description="x_enc_data 기준 유저별 활동 분석"
+        rightContent={
+          <DateRangeFilter
+            defaultPreset="week"
+            onChange={(range) => setDateRange(range)}
+          />
+        }
+      />
 
-        <DateRangeFilter
-          defaultPreset="week"
-          onChange={(range) => setDateRange(range)}
-        />
-      </div>
+      <Dashboard.Error />
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-700 mb-6">
+      <div className="flex border-b border-gray-200 mb-6">
         <button
           onClick={() => setActiveTab('users')}
           className={`px-6 py-3 text-sm font-medium transition-colors relative ${
             activeTab === 'users'
               ? 'text-blue-400'
-              : 'text-slate-400 hover:text-white'
+              : 'text-gray-500 hover:text-gray-900'
           }`}
         >
           <div className="flex items-center gap-2">
@@ -278,14 +396,14 @@ export default function UserAnalyticsPage() {
           className={`px-6 py-3 text-sm font-medium transition-colors relative ${
             activeTab === 'problematic'
               ? 'text-amber-400'
-              : 'text-slate-400 hover:text-white'
+              : 'text-gray-500 hover:text-gray-900'
           }`}
         >
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             문제 채팅
             {filteredStats && filteredStats.totalCount > 0 && (
-              <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-amber-600 text-white">
+              <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-amber-600 text-gray-900">
                 {filteredStats.totalCount}
               </span>
             )}
@@ -296,107 +414,142 @@ export default function UserAnalyticsPage() {
         </button>
       </div>
 
-      {/* 유저 목록 탭 */}
+      {/* Users Tab */}
       {activeTab === 'users' && (
         <>
-          {loading && (
+          {usersLoading && (
             <div className="flex items-center justify-center py-20">
               <div className="flex flex-col items-center gap-4">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-                <div className="text-slate-400">데이터 로딩 중...</div>
+                <div className="text-gray-500">데이터 로딩 중...</div>
               </div>
             </div>
           )}
 
-          {error && !loading && (
+          {usersError && !usersLoading && (
             <div className="py-8">
-              <div className="bg-rose-900/20 border border-rose-800 rounded-lg p-4 text-rose-400">
-                오류: {error}
+              <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-rose-400">
+                오류: {usersError instanceof Error ? usersError.message : String(usersError)}
               </div>
             </div>
           )}
 
-          {!loading && !error && (
+          {!usersLoading && !usersError && (
             <>
               {/* KPI Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Dashboard.KPISection columns={4}>
                 <KPICard
                   title="총 유저 수"
-                  value={totalUsers}
+                  value={kpis.totalUsers}
                   format="number"
                   icon={<Users className="w-5 h-5" />}
                   status="neutral"
                 />
                 <KPICard
                   title="총 질문 수"
-                  value={totalRequests}
+                  value={kpis.totalRequests}
                   format="number"
                   icon={<Activity className="w-5 h-5" />}
                   status="neutral"
                 />
                 <KPICard
                   title="총 토큰 사용량"
-                  value={totalTokens}
+                  value={kpis.totalTokens}
                   format="tokens"
                   icon={<BarChart3 className="w-5 h-5" />}
                   status="neutral"
                 />
                 <KPICard
                   title="유저당 평균 질문"
-                  value={avgRequestsPerUser}
+                  value={kpis.avgRequestsPerUser}
                   format="number"
                   icon={<MessageSquare className="w-5 h-5" />}
                   status="neutral"
                 />
-              </div>
+              </Dashboard.KPISection>
 
               {/* User List Table */}
               <div className="mb-8">
-                <UserListTable
-                  data={userList}
-                  title={`유저 목록 (최근 ${dateRange.days}일)`}
-                  onUserClick={handleUserClick}
-                />
+                <DataTable data={userList} columns={userListColumns} searchFields={['userId'] as (keyof UserListItem)[]} rowKey={(row: UserListItem) => row.userId}>
+                  <DataTable.Toolbar>
+                    <DataTable.Search placeholder="유저 ID 검색..." />
+                    <DataTable.Stats>
+                      <DataTable.StatItem label="총 유저" value={`${totalUsers.toLocaleString()}명`} colorClass="text-blue-400" />
+                      <DataTable.StatItem label="총 질문" value={`${totalQuestions.toLocaleString()}개`} colorClass="text-purple-400" />
+                      <DataTable.StatItem label="평균 성공률" value={`${avgSuccessRate.toFixed(1)}%`} colorClass="text-emerald-400" />
+                    </DataTable.Stats>
+                  </DataTable.Toolbar>
+                  <DataTable.Content>
+                    <DataTable.Header />
+                    <DataTable.Body
+                      onRowClick={(row: UserListItem) => handleUserClick(row.userId)}
+                      emptyMessage="데이터가 없습니다"
+                    />
+                  </DataTable.Content>
+                  <DataTable.Pagination pageSize={20} />
+                </DataTable>
               </div>
 
               {/* User Patterns Table */}
               <div className="mb-8">
-                <UserPatternsTable
-                  data={userPatterns}
-                  title={`유저별 자주 묻는 질문 패턴 (최근 ${dateRange.days}일)`}
-                  maxDisplay={30}
-                />
+                <DataTable data={userPatterns.slice(0, 30)} columns={patternColumns} searchFields={['userId'] as (keyof UserQuestionPattern)[]}>
+                  <DataTable.Toolbar>
+                    <DataTable.Search placeholder="유저 ID 검색..." />
+                    <DataTable.Stats>
+                      <DataTable.StatItem label="유저 수" value={`${uniquePatternUsers}명`} colorClass="text-blue-400" />
+                      <DataTable.StatItem label="총 패턴" value={`${totalPatterns}개`} colorClass="text-purple-400" />
+                      <DataTable.StatItem label="총 빈도" value={`${totalFrequency.toLocaleString()}회`} colorClass="text-emerald-400" />
+                    </DataTable.Stats>
+                  </DataTable.Toolbar>
+                  <DataTable.Content>
+                    <DataTable.Header />
+                    <DataTable.Body
+                      expandable
+                      renderExpandedRow={(row: UserQuestionPattern) => (
+                        <div className="space-y-3">
+                          <div>
+                            <div className="text-gray-500 text-xs mb-1">전체 유저 ID:</div>
+                            <div className="text-blue-400 bg-white p-2 rounded text-xs break-all">{row.userId}</div>
+                          </div>
+                          <div>
+                            <div className="text-gray-500 text-xs mb-1">전체 질문:</div>
+                            <div className="text-gray-900 bg-white p-3 rounded-lg text-sm break-all">{row.question}</div>
+                          </div>
+                        </div>
+                      )}
+                      emptyMessage="데이터가 없습니다"
+                    />
+                  </DataTable.Content>
+                  <DataTable.Footer />
+                </DataTable>
+                {userPatterns.length > 30 && (
+                  <p className="text-xs text-gray-400 mt-2 text-center">
+                    상위 30개 패턴 표시 중 (전체 {userPatterns.length}개)
+                  </p>
+                )}
               </div>
             </>
           )}
         </>
       )}
 
-      {/* 문제 채팅 탭 */}
+      {/* Problematic Tab */}
       {activeTab === 'problematic' && (
         <>
           {problematicLoading && (
             <div className="flex items-center justify-center py-20">
               <div className="flex flex-col items-center gap-4">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500" />
-                <div className="text-slate-400">문제 채팅 분석 중...</div>
+                <div className="text-gray-500">문제 채팅 분석 중...</div>
               </div>
             </div>
           )}
 
-          {problematicError && !problematicLoading && (
-            <div className="py-8">
-              <div className="bg-rose-900/20 border border-rose-800 rounded-lg p-4 text-rose-400">
-                오류: {problematicError}
-              </div>
-            </div>
-          )}
-
-          {!problematicLoading && !problematicError && (
+          {!problematicLoading && (
             <>
-              {/* 통계 KPI (선택된 규칙 기준) */}
+              {/* Stats KPI (filtered by selected rules) */}
               {filteredStats && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <Dashboard.KPISection columns={4}>
                   <KPICard
                     title="문제 채팅 수"
                     value={filteredStats.totalCount}
@@ -415,29 +568,29 @@ export default function UserAnalyticsPage() {
                       status="warning"
                     />
                   ))}
-                </div>
+                </Dashboard.KPISection>
               )}
 
-              {/* 규칙 필터 토글 칩 */}
+              {/* Rule filter toggle chips */}
               {enabledRules.length > 0 && (
-                <div className="bg-slate-800 rounded-xl p-4 mb-6">
+                <div className="bg-white rounded-xl p-4 mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-medium text-slate-400">
+                    <h4 className="text-sm font-medium text-gray-500">
                       필터링 규칙 선택
-                      <span className="ml-2 text-xs text-slate-500">
+                      <span className="ml-2 text-xs text-gray-400">
                         ({selectedRuleIds.size}/{enabledRules.length}개 선택)
                       </span>
                     </h4>
                     <div className="flex gap-2">
                       <button
                         onClick={handleSelectAllRules}
-                        className="px-2 py-1 text-xs rounded bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-colors"
+                        className="px-2 py-1 text-xs rounded bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                       >
                         전체 선택
                       </button>
                       <button
                         onClick={handleDeselectAllRules}
-                        className="px-2 py-1 text-xs rounded bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-colors"
+                        className="px-2 py-1 text-xs rounded bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                       >
                         전체 해제
                       </button>
@@ -471,7 +624,7 @@ export default function UserAnalyticsPage() {
                           className={`px-3 py-1.5 rounded-lg text-sm transition-all cursor-pointer select-none ${
                             isSelected
                               ? `${typeColor} text-white shadow-lg`
-                              : 'bg-slate-700 text-slate-500 opacity-60 hover:opacity-80'
+                              : 'bg-gray-100 text-gray-400 opacity-60 hover:opacity-80'
                           }`}
                         >
                           <span className="font-medium">{rule.name}</span>
@@ -483,14 +636,24 @@ export default function UserAnalyticsPage() {
                 </div>
               )}
 
-              {/* 문제 채팅 테이블 */}
-              <ProblematicChatTable
-                data={problematicChats}
-                rules={rules}
-                title={`문제 채팅 목록 (최근 ${dateRange.days}일)`}
-                onViewDetail={handleViewChatDetail}
-                loading={problematicLoading}
-              />
+              {/* Problematic Chat Table */}
+              <DataTable data={displayChats} columns={problematicColumns} rowKey="id">
+                <DataTable.Toolbar>
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-amber-500" />
+                    {`문제 채팅 목록 (최근 ${dateRange.days}일)`}
+                  </h3>
+                  <span className="text-sm text-gray-500">{displayChats.length}건</span>
+                </DataTable.Toolbar>
+                <DataTable.Content>
+                  <DataTable.Header />
+                  <DataTable.Body
+                    emptyMessage="필터링 조건에 맞는 문제 채팅이 없습니다."
+                    emptyIcon={<AlertTriangle className="w-12 h-12 text-gray-300" />}
+                  />
+                </DataTable.Content>
+                <DataTable.Footer />
+              </DataTable>
             </>
           )}
         </>
@@ -514,6 +677,6 @@ export default function UserAnalyticsPage() {
         chat={selectedChat}
         rules={rules}
       />
-    </div>
+    </Dashboard>
   );
 }

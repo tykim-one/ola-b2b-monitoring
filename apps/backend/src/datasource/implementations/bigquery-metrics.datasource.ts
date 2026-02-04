@@ -510,7 +510,9 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
    * @param query The raw query string
    * @returns Array of result rows
    */
-  async executeRawQuery<T = Record<string, unknown>>(query: string): Promise<T[]> {
+  async executeRawQuery<T = Record<string, unknown>>(
+    query: string,
+  ): Promise<T[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
     const tableReference = `${projectId}.${datasetId}.${tableName}`;
     const processedQuery = query.replace(/\{\{TABLE\}\}/g, tableReference);

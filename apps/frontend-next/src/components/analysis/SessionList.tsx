@@ -50,14 +50,14 @@ export default function SessionList({
   };
 
   return (
-    <div className="w-80 bg-slate-900 border-r border-slate-700 flex flex-col h-screen">
+    <div className="w-80 bg-white border-r border-gray-200 flex flex-col h-screen">
       {/* Header */}
-      <div className="p-4 border-b border-slate-700">
-        <h1 className="text-xl font-bold text-white mb-4">AI Analysis</h1>
+      <div className="p-4 border-b border-gray-200">
+        <h1 className="text-xl font-bold text-gray-900 mb-4">AI Analysis</h1>
         <button
           onClick={onCreateSession}
           disabled={loading}
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-slate-700 disabled:to-slate-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] disabled:scale-100"
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-300 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] disabled:scale-100"
         >
           + New Analysis Session
         </button>
@@ -72,8 +72,8 @@ export default function SessionList({
         ) : sessions.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center p-6">
             <div className="text-4xl mb-4">💬</div>
-            <p className="text-slate-400 text-sm">No sessions yet</p>
-            <p className="text-slate-600 text-xs mt-2">Create a new session to start chatting</p>
+            <p className="text-gray-500 text-sm">No sessions yet</p>
+            <p className="text-gray-400 text-xs mt-2">Create a new session to start chatting</p>
           </div>
         ) : (
           <div className="p-2 space-y-1">
@@ -89,7 +89,7 @@ export default function SessionList({
                     group relative p-3 rounded-lg cursor-pointer transition-all
                     ${isActive
                       ? 'bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg'
-                      : 'bg-slate-800 hover:bg-slate-700'
+                      : 'bg-white hover:bg-gray-100'
                     }
                   `}
                 >
@@ -98,7 +98,7 @@ export default function SessionList({
                       <h3
                         className={`
                           text-sm font-semibold truncate
-                          ${isActive ? 'text-white' : 'text-slate-200'}
+                          ${isActive ? 'text-gray-900' : 'text-gray-700'}
                         `}
                       >
                         {session.title}
@@ -106,7 +106,7 @@ export default function SessionList({
                       <p
                         className={`
                           text-xs mt-1
-                          ${isActive ? 'text-blue-100' : 'text-slate-500'}
+                          ${isActive ? 'text-blue-100' : 'text-gray-400'}
                         `}
                       >
                         {formatDate(session.createdAt)}
@@ -120,10 +120,10 @@ export default function SessionList({
                         opacity-0 group-hover:opacity-100 transition-opacity
                         px-2 py-1 rounded text-xs
                         ${isDeleting
-                          ? 'bg-red-600 text-white'
+                          ? 'bg-red-600 text-gray-900'
                           : isActive
-                          ? 'bg-white/20 hover:bg-white/30 text-white'
-                          : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                          ? 'bg-white/20 hover:bg-white/30 text-gray-900'
+                          : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
                         }
                       `}
                     >
@@ -136,7 +136,7 @@ export default function SessionList({
                     <div
                       className={`
                         text-xs mt-2
-                        ${isActive ? 'text-blue-100' : 'text-slate-600'}
+                        ${isActive ? 'text-blue-100' : 'text-gray-400'}
                       `}
                     >
                       {session.messages.length} messages

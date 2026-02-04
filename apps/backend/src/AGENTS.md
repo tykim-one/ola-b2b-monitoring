@@ -11,23 +11,23 @@ NestJS 백엔드 애플리케이션의 소스 코드입니다. 모듈화된 구�
 - `app.service.ts` - 기본 서비스
 
 ## Subdirectories
-- `metrics/` - 메트릭 API 모듈 (핵심 비즈니스 로직, 데이터소스 중립적)
+- `metrics/` - [메트릭 API 모듈](metrics/AGENTS.md) (핵심 비즈니스 로직, 데이터소스 중립적)
 - `cache/` - node-cache 기반 인메모리 캐싱 서비스
-- `datasource/` - 데이터 소스 추상화 레이어 (BigQuery/PostgreSQL/MySQL 지원)
+- `datasource/` - [데이터 소스 추상화 레이어](datasource/AGENTS.md) (BigQuery/PostgreSQL/MySQL 지원)
 - `ml/` - 머신러닝/이상 탐지 모듈
 - `common/` - 공통 유틸리티, 전략 패턴
-- `admin/` - 어드민 서비스 레이어 (인증, 사용자 관리, LLM 분석)
-- `batch-analysis/` - 배치 분석 파이프라인 모듈 (일별 채팅 품질 분석, 스케줄링)
-- `quality/` - 챗봇 품질 분석 모듈 (감정 분석 서비스)
+- `admin/` - [어드민 서비스 레이어](admin/AGENTS.md) (인증, 사용자 관리, LLM 분석)
+- `batch-analysis/` - [배치 분석 파이프라인 모듈](batch-analysis/AGENTS.md) (일별 채팅 품질 분석, 스케줄링)
+- `quality/` - [챗봇 품질 분석 모듈](quality/AGENTS.md) (감정 분석 서비스)
 - `notifications/` - 알림 서비스 모듈 (Slack 알림)
-- `chatbot/` - 글로벌 플로팅 AI 챗봇 모듈 (페이지 컨텍스트 기반 대화)
-- `faq-analysis/` - FAQ 분석 모듈 (자주 묻는 질문 클러스터링, LLM 사유 분석)
-- `session-analysis/` - 세션 분석 모듈 (해결률, 효율성, 이탈률 분석, 하이브리드 휴리스틱+LLM)
-- `minkabu-etl/` - Minkabu 뉴스 ETL 모니터링 모듈 (PostgreSQL 기반)
-- `wind-etl/` - Wind 금융 데이터 ETL 모니터링 모듈 (PostgreSQL 기반)
-- `user-profiling/` - 사용자 프로파일링 모듈 (카테고리 분류, 감정 분석, 행동 패턴)
+- `chatbot/` - [글로벌 플로팅 AI 챗봇 모듈](chatbot/AGENTS.md) (페이지 컨텍스트 기반 대화)
+- `faq-analysis/` - [FAQ 분석 모듈](faq-analysis/AGENTS.md) (자주 묻는 질문 클러스터링, LLM 사유 분석)
+- `session-analysis/` - [세션 분석 모듈](session-analysis/AGENTS.md) (해결률, 효율성, 이탈률 분석, 하이브리드 휴리스틱+LLM)
+- `user-profiling/` - [사용자 프로파일링 모듈](user-profiling/AGENTS.md) (카테고리 분류, 감정 분석, 행동 패턴)
 - `problematic-chat/` - 문제 채팅 탐지 모듈 (동적 규칙 엔진, BigQuery 기반 필터링)
 - `report-monitoring/` - 리포트 모니터링 모듈 (리포트 생성 품질 검증, 필드 유효성 검사)
+- `minkabu-etl/` - Minkabu 뉴스 ETL 모니터링 모듈 (PostgreSQL 기반)
+- `wind-etl/` - Wind 금융 데이터 ETL 모니터링 모듈 (PostgreSQL 기반)
 - `generated/` - 자동 생성 코드 (Prisma 클라이언트 런타임)
 
 ## For AI Agents

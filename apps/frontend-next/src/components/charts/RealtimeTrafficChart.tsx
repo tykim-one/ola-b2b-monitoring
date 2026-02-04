@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 
 interface TrafficData {
   hour: string;
@@ -44,8 +45,8 @@ const RealtimeTrafficChart: React.FC<RealtimeTrafficChartProps> = ({
   );
 
   return (
-    <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
-      <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={sortedData}>
@@ -59,21 +60,19 @@ const RealtimeTrafficChart: React.FC<RealtimeTrafficChartProps> = ({
                 <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
             <XAxis
               dataKey="hour"
-              stroke="#64748b"
+              stroke={CHART_COLORS.axis}
               fontSize={11}
               tickLine={false}
               tickFormatter={formatHour}
               interval="preserveStartEnd"
             />
-            <YAxis stroke="#64748b" fontSize={12} tickLine={false} />
+            <YAxis stroke={CHART_COLORS.axis} fontSize={12} tickLine={false} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
-                color: '#f1f5f9',
+                ...TOOLTIP_STYLE,
                 borderRadius: '8px',
               }}
               labelFormatter={formatHour}

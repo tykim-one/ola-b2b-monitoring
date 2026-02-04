@@ -3,7 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { BigQuery } from '@google-cloud/bigquery';
 import { FAQClusteringService } from './services/faq-clustering.service';
 import { ReasonAnalysisService } from './services/reason-analysis.service';
-import { FAQAnalysisRequestDto, FAQAnalysisResponseDto, CreateFAQJobDto, FAQJobDto, FAQJobResultDto } from './dto/faq-analysis.dto';
+import {
+  FAQAnalysisRequestDto,
+  FAQAnalysisResponseDto,
+  CreateFAQJobDto,
+  FAQJobDto,
+  FAQJobResultDto,
+} from './dto/faq-analysis.dto';
 import { RawQuestion, FAQCluster } from './interfaces/faq-cluster.interface';
 import { PrismaService } from '../admin/database/prisma.service';
 
@@ -58,7 +64,9 @@ export class FAQAnalysisService {
   /**
    * FAQ 분석 실행 (메인 진입점)
    */
-  async analyze(request: FAQAnalysisRequestDto): Promise<FAQAnalysisResponseDto> {
+  async analyze(
+    request: FAQAnalysisRequestDto,
+  ): Promise<FAQAnalysisResponseDto> {
     const startTime = Date.now();
     this.logger.log(
       `FAQ 분석 시작: period=${request.periodDays}일, topN=${request.topN}, tenant=${request.tenantId || '전체'}`,
@@ -81,7 +89,10 @@ export class FAQAnalysisService {
 
       // 3. LLM 기반 유사 그룹 병합
       const { clusters: mergedClusters, llmApplied } =
-        await this.clusteringService.mergeWithLLM(normalizedGroups, request.topN);
+        await this.clusteringService.mergeWithLLM(
+          normalizedGroups,
+          request.topN,
+        );
 
       // 4. 각 클러스터별 사유 분석
       const faqClusters =
@@ -93,7 +104,12 @@ export class FAQAnalysisService {
         `FAQ 분석 완료: ${faqClusters.length}개 클러스터, ${endTime - startTime}ms`,
       );
 
-      return this.createResponse(request, rawQuestions.length, faqClusters, llmApplied);
+      return this.createResponse(
+        request,
+        rawQuestions.length,
+        faqClusters,
+        llmApplied,
+      );
     } catch (error) {
       this.logger.error(`FAQ 분석 실패: ${error.message}`, error.stack);
       throw error;
@@ -111,9 +127,7 @@ export class FAQAnalysisService {
       throw new Error('BigQuery client not initialized');
     }
 
-    const tenantFilter = tenantId
-      ? `AND tenant_id = '${tenantId}'`
-      : '';
+    const tenantFilter = tenantId ? `AND tenant_id = '${tenantId}'` : '';
 
     const query = `
       SELECT
@@ -131,7 +145,9 @@ export class FAQAnalysisService {
       LIMIT 1000
     `;
 
-    this.logger.debug(`FAQ 쿼리 실행: period=${periodDays}, tenant=${tenantId}`);
+    this.logger.debug(
+      `FAQ 쿼리 실행: period=${periodDays}, tenant=${tenantId}`,
+    );
 
     try {
       const [rows] = await this.bigQueryClient.query({
@@ -153,7 +169,9 @@ export class FAQAnalysisService {
   /**
    * 빈 응답 생성
    */
-  private createEmptyResponse(request: FAQAnalysisRequestDto): FAQAnalysisResponseDto {
+  private createEmptyResponse(
+    request: FAQAnalysisRequestDto,
+  ): FAQAnalysisResponseDto {
     const now = new Date();
     const startDate = new Date(now);
     startDate.setDate(startDate.getDate() - request.periodDays);

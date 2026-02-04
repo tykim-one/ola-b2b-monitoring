@@ -134,10 +134,10 @@ export default function PromptsPage() {
 
   if (loading && templates.length === 0) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono uppercase tracking-wider text-sm">
+          <p className="text-gray-500 text-sm">
             Loading Templates...
           </p>
         </div>
@@ -146,12 +146,12 @@ export default function PromptsPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-950 p-8">
+    <div className="h-full overflow-y-auto bg-gray-50 p-8">
       {/* Header */}
-      <div className="mb-8 border-b border-slate-800 pb-6">
+      <div className="mb-8 border-b border-gray-200 pb-6">
         <button
           onClick={() => router.push('/dashboard/admin/batch-analysis')}
-          className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 font-mono text-sm mb-4 transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-cyan-400 text-sm mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Batch Analysis
@@ -159,10 +159,10 @@ export default function PromptsPage() {
 
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-mono font-bold text-cyan-400 uppercase tracking-wider mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Prompt Templates
             </h1>
-            <p className="text-slate-400 font-mono text-sm">
+            <p className="text-gray-500 text-sm">
               Manage analysis prompt templates for batch jobs
             </p>
           </div>
@@ -171,9 +171,9 @@ export default function PromptsPage() {
             disabled={isCreating || editingId !== null}
             className="
               flex items-center gap-2 px-6 py-3
-              bg-cyan-600 hover:bg-cyan-700 border-2 border-cyan-500
-              text-white font-mono font-bold uppercase tracking-wider text-sm
-              transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40
+              bg-blue-600 hover:bg-blue-700 border border-blue-500
+              text-white font-medium text-sm
+              transition-all shadow-sm
               disabled:opacity-50
             "
           >
@@ -185,21 +185,21 @@ export default function PromptsPage() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 border-2 border-red-500/50 bg-red-950/30">
-          <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+        <div className="mb-6 p-4 border border-red-200 bg-red-50">
+          <p className="text-red-400 text-sm">ERROR: {error}</p>
         </div>
       )}
 
       {/* Create/Edit Form */}
       {(isCreating || editingId) && (
-        <div className="mb-8 border-2 border-cyan-500/30 bg-slate-900/50 p-6">
-          <h2 className="text-lg font-mono font-bold text-cyan-400 uppercase tracking-wider mb-4">
+        <div className="mb-8 border border-gray-200 bg-gray-50 p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">
             {isCreating ? 'Create Template' : 'Edit Template'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+                <label className="block text-gray-600 text-xs mb-2">
                   Name *
                 </label>
                 <input
@@ -208,15 +208,15 @@ export default function PromptsPage() {
                   onChange={(e) => setFormName(e.target.value)}
                   required
                   className="
-                    w-full px-4 py-3 bg-slate-800 border border-slate-700
-                    text-slate-100 font-mono text-sm
+                    w-full px-4 py-3 bg-white border border-gray-200
+                    text-gray-800 text-sm
                     focus:outline-none focus:border-cyan-500 transition-colors
                   "
                   placeholder="Template name"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+                <label className="block text-gray-600 text-xs mb-2">
                   Description
                 </label>
                 <input
@@ -224,8 +224,8 @@ export default function PromptsPage() {
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   className="
-                    w-full px-4 py-3 bg-slate-800 border border-slate-700
-                    text-slate-100 font-mono text-sm
+                    w-full px-4 py-3 bg-white border border-gray-200
+                    text-gray-800 text-sm
                     focus:outline-none focus:border-cyan-500 transition-colors
                   "
                   placeholder="Optional description"
@@ -234,17 +234,17 @@ export default function PromptsPage() {
             </div>
 
             {/* Required Output Format Guide */}
-            <div className="p-4 bg-amber-950/20 border-2 border-amber-500/30">
+            <div className="p-4 bg-amber-50 border border-gray-200">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <h4 className="text-amber-400 font-mono font-bold text-sm uppercase tracking-wider mb-2">
+                  <h4 className="text-amber-600 font-medium text-sm mb-2">
                     필수 출력 형식
                   </h4>
-                  <p className="text-slate-400 font-mono text-xs mb-3">
+                  <p className="text-gray-500 text-xs mb-3">
                     모든 프롬프트는 아래 JSON 필드를 포함하는 응답을 반환해야 합니다. 이 형식을 따라야 점수 집계 및 분석이 가능합니다.
                   </p>
-                  <pre className="text-slate-300 font-mono text-xs bg-slate-900/50 p-3 border border-slate-700 overflow-x-auto">
+                  <pre className="text-gray-600 text-xs bg-gray-50 p-3 border border-gray-200 overflow-x-auto">
 {`{
   "quality_score": (1-10),
   "relevance": (1-10),
@@ -263,8 +263,8 @@ export default function PromptsPage() {
                     }}
                     className="
                       mt-3 flex items-center gap-2 px-3 py-1.5
-                      bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/50
-                      text-amber-300 font-mono text-xs uppercase tracking-wider
+                      bg-amber-50 hover:bg-amber-100 border border-amber-200
+                      text-amber-700 text-xs font-medium
                       transition-colors
                     "
                   >
@@ -276,9 +276,9 @@ export default function PromptsPage() {
             </div>
 
             <div>
-              <label className="block text-slate-400 font-mono text-xs uppercase tracking-wider mb-2">
+              <label className="block text-gray-600 text-xs mb-2">
                 Prompt Template *
-                <span className="text-slate-500 ml-2 normal-case">
+                <span className="text-gray-400 ml-2">
                   (Use &#123;&#123;user_input&#125;&#125; and &#123;&#123;llm_response&#125;&#125; as variables)
                 </span>
               </label>
@@ -288,8 +288,8 @@ export default function PromptsPage() {
                 required
                 rows={12}
                 className="
-                  w-full px-4 py-3 bg-slate-800 border border-slate-700
-                  text-slate-100 font-mono text-sm
+                  w-full px-4 py-3 bg-white border border-gray-200
+                  text-gray-800 text-sm
                   focus:outline-none focus:border-cyan-500 transition-colors resize-y
                 "
                 placeholder="Enter your prompt template..."
@@ -302,21 +302,21 @@ export default function PromptsPage() {
                 id="isDefault"
                 checked={formIsDefault}
                 onChange={(e) => setFormIsDefault(e.target.checked)}
-                className="w-4 h-4 bg-slate-800 border-slate-700 text-cyan-500 focus:ring-cyan-500"
+                className="w-4 h-4 bg-white border-gray-200 text-cyan-500 focus:ring-cyan-500"
               />
-              <label htmlFor="isDefault" className="text-slate-300 font-mono text-sm">
+              <label htmlFor="isDefault" className="text-gray-600 text-sm">
                 Set as default template
               </label>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <button
                 type="button"
                 onClick={handleCancel}
                 className="
-                  px-6 py-3 bg-slate-800 border border-slate-700
-                  text-slate-300 font-mono font-bold uppercase tracking-wider text-sm
-                  hover:bg-slate-700 transition-colors
+                  px-6 py-3 bg-white border border-gray-200
+                  text-gray-600 font-medium text-sm
+                  hover:bg-gray-100 transition-colors
                 "
               >
                 Cancel
@@ -326,8 +326,8 @@ export default function PromptsPage() {
                 disabled={formSubmitting}
                 className="
                   flex items-center gap-2 px-6 py-3
-                  bg-cyan-600 hover:bg-cyan-700 border-2 border-cyan-500
-                  text-white font-mono font-bold uppercase tracking-wider text-sm
+                  bg-blue-600 hover:bg-blue-700 border border-blue-500
+                  text-gray-900 font-mono font-bold uppercase tracking-wider text-sm
                   transition-all disabled:opacity-50
                 "
               >
@@ -342,9 +342,9 @@ export default function PromptsPage() {
       {/* Templates List */}
       <div className="space-y-4">
         {templates.length === 0 ? (
-          <div className="border-2 border-slate-800 bg-slate-900/50 p-12 text-center">
-            <p className="text-slate-500 font-mono text-sm">NO TEMPLATES FOUND</p>
-            <p className="text-slate-600 font-mono text-xs mt-2">
+          <div className="border border-gray-200 bg-gray-50 p-12 text-center">
+            <p className="text-gray-400 text-sm">NO TEMPLATES FOUND</p>
+            <p className="text-gray-400 text-xs mt-2">
               Create a template to customize analysis prompts
             </p>
           </div>
@@ -352,32 +352,32 @@ export default function PromptsPage() {
           templates.map((template) => (
             <div
               key={template.id}
-              className="border-2 border-slate-800 bg-slate-900/50 hover:bg-slate-900/70 transition-colors"
+              className="border border-gray-200 bg-gray-50 hover:bg-gray-50 transition-colors"
             >
               <div className="p-4 flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-mono font-bold text-slate-200">
+                    <h3 className="text-lg font-bold text-gray-600">
                       {template.name}
                     </h3>
                     {template.isDefault && (
-                      <span className="flex items-center gap-1 px-2 py-1 bg-amber-950/30 border border-amber-500/30 text-amber-400 font-mono text-xs uppercase tracking-wider">
+                      <span className="flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">
                         <Star className="w-3 h-3" />
                         Default
                       </span>
                     )}
                     {!template.isActive && (
-                      <span className="px-2 py-1 bg-slate-800 border border-slate-700 text-slate-500 font-mono text-xs uppercase tracking-wider">
+                      <span className="px-2 py-1 bg-white border border-gray-200 text-gray-500 text-xs">
                         Inactive
                       </span>
                     )}
                   </div>
                   {template.description && (
-                    <p className="text-slate-400 font-mono text-sm mb-2">
+                    <p className="text-gray-500 text-sm mb-2">
                       {template.description}
                     </p>
                   )}
-                  <p className="text-slate-500 font-mono text-xs">
+                  <p className="text-gray-400 text-xs">
                     Created: {new Date(template.createdAt).toLocaleDateString()}
                     {template.updatedAt !== template.createdAt && (
                       <span className="ml-4">
@@ -391,8 +391,8 @@ export default function PromptsPage() {
                     onClick={() => handleEdit(template)}
                     disabled={isCreating || editingId !== null}
                     className="
-                      p-2 bg-slate-800 hover:bg-cyan-600/20 border border-slate-700 hover:border-cyan-500/50
-                      text-slate-400 hover:text-cyan-400 transition-all disabled:opacity-50
+                      p-2 bg-white hover:bg-cyan-600/20 border border-gray-200 hover:border-cyan-500/50
+                      text-gray-500 hover:text-cyan-400 transition-all disabled:opacity-50
                     "
                     title="Edit Template"
                   >
@@ -402,8 +402,8 @@ export default function PromptsPage() {
                     onClick={() => handleDeleteClick(template)}
                     disabled={isCreating || editingId !== null}
                     className="
-                      p-2 bg-slate-800 hover:bg-red-600/20 border border-slate-700 hover:border-red-500/50
-                      text-slate-400 hover:text-red-400 transition-all disabled:opacity-50
+                      p-2 bg-white hover:bg-red-600/20 border border-gray-200 hover:border-red-500/50
+                      text-gray-500 hover:text-red-400 transition-all disabled:opacity-50
                     "
                     title="Delete Template"
                   >
@@ -412,8 +412,8 @@ export default function PromptsPage() {
                 </div>
               </div>
               <div className="px-4 pb-4">
-                <div className="p-3 bg-slate-950 border border-slate-800 max-h-32 overflow-y-auto">
-                  <pre className="text-slate-400 font-mono text-xs whitespace-pre-wrap">
+                <div className="p-3 bg-gray-50 border border-gray-200 max-h-32 overflow-y-auto">
+                  <pre className="text-gray-500 text-xs whitespace-pre-wrap">
                     {template.prompt.slice(0, 500)}
                     {template.prompt.length > 500 && '...'}
                   </pre>

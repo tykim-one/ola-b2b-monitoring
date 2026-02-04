@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { AnalysisSession, SendMessageRequest } from '@ola/shared-types';
 import SessionList from '@/components/analysis/SessionList';
 import ChatInterface from '@/components/analysis/ChatInterface';
-import MetricsContext from '@/components/analysis/MetricsContext';
+import MetricsSidePanel from '@/components/analysis/MetricsSidePanel';
 import {
   fetchSessions,
   createSession,
@@ -114,7 +114,7 @@ export default function AnalysisPage() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-900">
+    <div className="flex h-screen overflow-hidden bg-white">
       {/* Left Sidebar: Session List */}
       <SessionList
         sessions={sessions}
@@ -132,7 +132,7 @@ export default function AnalysisPage() {
       />
 
       {/* Right Sidebar: Metrics Context (Optional) */}
-      <MetricsContext
+      <MetricsSidePanel
         isVisible={showMetrics}
         onToggle={() => setShowMetrics(!showMetrics)}
       />

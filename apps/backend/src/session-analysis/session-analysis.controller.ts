@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Query, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  Post,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { SessionAnalysisService } from './session-analysis.service';
 import {
   SessionFilterDto,
@@ -14,14 +22,18 @@ import {
 
 @Controller('api/admin/session-analysis')
 export class SessionAnalysisController {
-  constructor(private readonly sessionAnalysisService: SessionAnalysisService) {}
+  constructor(
+    private readonly sessionAnalysisService: SessionAnalysisService,
+  ) {}
 
   /**
    * Get session statistics (real-time)
    * GET /api/admin/session-analysis/stats
    */
   @Get('stats')
-  async getSessionStats(@Query() filter: SessionFilterDto): Promise<SessionStats> {
+  async getSessionStats(
+    @Query() filter: SessionFilterDto,
+  ): Promise<SessionStats> {
     return this.sessionAnalysisService.getSessionStats(filter);
   }
 
@@ -30,7 +42,9 @@ export class SessionAnalysisController {
    * GET /api/admin/session-analysis/sessions
    */
   @Get('sessions')
-  async getSessions(@Query() filter: SessionFilterDto): Promise<PaginatedSessions> {
+  async getSessions(
+    @Query() filter: SessionFilterDto,
+  ): Promise<PaginatedSessions> {
     return this.sessionAnalysisService.getSessions(filter);
   }
 
@@ -39,7 +53,9 @@ export class SessionAnalysisController {
    * GET /api/admin/session-analysis/sessions/:sessionId/timeline
    */
   @Get('sessions/:sessionId/timeline')
-  async getSessionTimeline(@Param('sessionId') sessionId: string): Promise<SessionTimeline> {
+  async getSessionTimeline(
+    @Param('sessionId') sessionId: string,
+  ): Promise<SessionTimeline> {
     return this.sessionAnalysisService.getSessionTimeline(sessionId);
   }
 
@@ -48,7 +64,9 @@ export class SessionAnalysisController {
    * POST /api/admin/session-analysis/sessions/:sessionId/analyze
    */
   @Post('sessions/:sessionId/analyze')
-  async analyzeSession(@Param('sessionId') sessionId: string): Promise<LLMSessionAnalysis> {
+  async analyzeSession(
+    @Param('sessionId') sessionId: string,
+  ): Promise<LLMSessionAnalysis> {
     return this.sessionAnalysisService.analyzeSessionWithLLM(sessionId);
   }
 

@@ -36,14 +36,14 @@ export default async function ProjectLogsPage({ params }: PageProps) {
   const logs = await getLogs(projectId);
   
   return (
-    <div className="flex flex-col h-screen bg-slate-950 text-white overflow-hidden font-sans selection:bg-purple-500/30">
+    <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden font-sans selection:bg-purple-500/30">
         {/* Top Navigation / Header could go here or be part of Layout */}
-        <div className="border-b border-slate-800 p-4 bg-slate-900/50 backdrop-blur flex items-center justify-between">
+        <div className="border-b border-gray-200 p-4 bg-gray-50 backdrop-blur flex items-center justify-between">
             <div className="flex items-center gap-4">
                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                   OLA B2B Monitor
                </h1>
-               <div className="h-6 w-px bg-slate-700"></div>
+               <div className="h-6 w-px bg-gray-100"></div>
                <ProjectSwitcher currentProjectId={projectId} />
             </div>
             {/* User Profile or other global actions */}

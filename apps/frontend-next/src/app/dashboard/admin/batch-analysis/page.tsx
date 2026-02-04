@@ -44,32 +44,32 @@ export default function BatchAnalysisPage() {
   ];
 
   const getTabStyles = (tab: typeof tabs[0], isActive: boolean) => {
-    const baseStyles = 'flex items-center gap-2 px-6 py-3 font-mono font-bold uppercase tracking-wider text-sm transition-all border-b-2';
+    const baseStyles = 'flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2';
 
     if (isActive) {
       if (tab.color === 'cyan') {
-        return `${baseStyles} text-cyan-400 border-cyan-400 bg-cyan-950/30`;
+        return `${baseStyles} text-blue-600 border-blue-600 bg-blue-50`;
       }
       if (tab.color === 'emerald') {
-        return `${baseStyles} text-emerald-400 border-emerald-400 bg-emerald-950/30`;
+        return `${baseStyles} text-emerald-600 border-emerald-600 bg-emerald-50`;
       }
-      return `${baseStyles} text-violet-400 border-violet-400 bg-violet-950/30`;
+      return `${baseStyles} text-violet-600 border-violet-600 bg-violet-50`;
     }
 
-    return `${baseStyles} text-slate-500 border-transparent hover:text-slate-300 hover:bg-slate-800/50`;
+    return `${baseStyles} text-gray-500 border-transparent hover:text-gray-700 hover:bg-gray-50/50`;
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-950 p-8">
+    <div className="h-full overflow-y-auto bg-gray-50 p-8">
       {/* Header */}
-      <div className="mb-8 border-b border-slate-800 pb-6">
+      <div className="mb-8 border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-mono font-bold text-cyan-400 uppercase tracking-wider mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Batch Analysis
             </h1>
-            <p className="text-slate-400 font-mono text-sm">
-              SYSTEM.ADMIN.BATCH_ANALYSIS // Data Analysis Pipeline
+            <p className="text-gray-500 text-sm">
+              데이터 분석 파이프라인 관리
             </p>
           </div>
           <div className="flex gap-3">
@@ -77,8 +77,8 @@ export default function BatchAnalysisPage() {
               onClick={() => router.push('/dashboard/admin/batch-analysis/prompts')}
               className="
                 flex items-center gap-2 px-4 py-3
-                bg-slate-800 hover:bg-slate-700 border border-slate-700
-                text-slate-300 font-mono font-bold uppercase tracking-wider text-sm
+                bg-white hover:bg-gray-100 border border-gray-200
+                text-gray-600 font-medium text-sm
                 transition-all
               "
             >
@@ -89,8 +89,8 @@ export default function BatchAnalysisPage() {
               onClick={() => router.push('/dashboard/admin/batch-analysis/schedules')}
               className="
                 flex items-center gap-2 px-4 py-3
-                bg-slate-800 hover:bg-slate-700 border border-violet-500/50
-                text-violet-300 font-mono font-bold uppercase tracking-wider text-sm
+                bg-white hover:bg-gray-100 border border-violet-500/50
+                text-violet-600 font-medium text-sm
                 transition-all
               "
             >
@@ -102,7 +102,7 @@ export default function BatchAnalysisPage() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 border-b border-slate-800">
+      <div className="mb-6 border-b border-gray-200">
         <div className="flex">
           {tabs.map((tab) => {
             const Icon = tab.icon;

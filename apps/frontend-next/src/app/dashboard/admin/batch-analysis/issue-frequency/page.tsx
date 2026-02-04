@@ -96,13 +96,13 @@ export default function IssueFrequencyPage() {
   })) || [];
 
   return (
-    <div className="p-6 bg-slate-900 min-h-screen text-white">
+    <div className="p-6 bg-white min-h-screen text-gray-900">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard/admin/batch-analysis"
-            className="text-slate-400 hover:text-white transition"
+            className="text-gray-500 hover:text-gray-900 transition"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -120,14 +120,14 @@ export default function IssueFrequencyPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-slate-800 rounded-lg p-4 mb-6">
+      <div className="bg-white rounded-lg p-4 mb-6">
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm text-slate-400 mb-1">테넌트</label>
+            <label className="block text-sm text-gray-500 mb-1">테넌트</label>
             <select
               value={tenantId}
               onChange={(e) => setTenantId(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+              className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-900"
             >
               <option value="">전체 테넌트</option>
               {tenants.map((t) => (
@@ -139,31 +139,31 @@ export default function IssueFrequencyPage() {
           </div>
 
           <div className="flex-1 min-w-[150px]">
-            <label className="block text-sm text-slate-400 mb-1">시작 날짜</label>
+            <label className="block text-sm text-gray-500 mb-1">시작 날짜</label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+              className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-900"
             />
           </div>
 
           <div className="flex-1 min-w-[150px]">
-            <label className="block text-sm text-slate-400 mb-1">종료 날짜</label>
+            <label className="block text-sm text-gray-500 mb-1">종료 날짜</label>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+              className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-900"
             />
           </div>
 
           <div className="w-[100px]">
-            <label className="block text-sm text-slate-400 mb-1">표시 개수</label>
+            <label className="block text-sm text-gray-500 mb-1">표시 개수</label>
             <select
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+              className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-900"
             >
               <option value={5}>5개</option>
               <option value={10}>10개</option>
@@ -174,7 +174,7 @@ export default function IssueFrequencyPage() {
 
           <button
             onClick={handleResetFilters}
-            className="px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition"
+            className="px-4 py-2 bg-gray-300 hover:bg-gray-300 rounded-lg transition"
           >
             초기화
           </button>
@@ -191,16 +191,16 @@ export default function IssueFrequencyPage() {
       {/* Summary Stats */}
       {data && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-slate-800 rounded-lg p-4">
-            <div className="text-slate-400 text-sm">총 이슈 수</div>
+          <div className="bg-white rounded-lg p-4">
+            <div className="text-gray-500 text-sm">총 이슈 수</div>
             <div className="text-2xl font-bold text-red-400">{data.totalIssues.toLocaleString()}</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4">
-            <div className="text-slate-400 text-sm">분석된 결과 수</div>
+          <div className="bg-white rounded-lg p-4">
+            <div className="text-gray-500 text-sm">분석된 결과 수</div>
             <div className="text-2xl font-bold text-blue-400">{data.totalResults.toLocaleString()}</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4">
-            <div className="text-slate-400 text-sm">고유 이슈 유형</div>
+          <div className="bg-white rounded-lg p-4">
+            <div className="text-gray-500 text-sm">고유 이슈 유형</div>
             <div className="text-2xl font-bold text-yellow-400">{data.issues.length}</div>
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function IssueFrequencyPage() {
 
       {/* Chart */}
       {data && data.issues.length > 0 && (
-        <div className="bg-slate-800 rounded-lg p-4 mb-6">
+        <div className="bg-white rounded-lg p-4 mb-6">
           <h2 className="text-lg font-semibold mb-4">이슈 빈도 차트</h2>
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -217,7 +217,7 @@ export default function IssueFrequencyPage() {
                 layout="vertical"
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis type="number" stroke="#9ca3af" />
                 <YAxis
                   type="category"
@@ -228,8 +228,8 @@ export default function IssueFrequencyPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #475569',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
                     borderRadius: '8px',
                   }}
                   formatter={(value, _name, props) => [
@@ -250,17 +250,17 @@ export default function IssueFrequencyPage() {
 
       {/* Issue List */}
       {data && (
-        <div className="bg-slate-800 rounded-lg overflow-hidden">
-          <div className="p-4 border-b border-slate-700">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold">이슈 상세 목록</h2>
           </div>
 
           {data.issues.length === 0 ? (
-            <div className="p-8 text-center text-slate-400">
+            <div className="p-8 text-center text-gray-500">
               분석된 이슈가 없습니다.
             </div>
           ) : (
-            <div className="divide-y divide-slate-700">
+            <div className="divide-y divide-gray-200">
               {data.issues.map((item, index) => (
                 <IssueRow
                   key={item.issue}
@@ -303,27 +303,27 @@ function IssueRow({
   onToggle: () => void;
 }) {
   return (
-    <div className="bg-slate-800">
+    <div className="bg-white">
       {/* Issue Header */}
       <button
         onClick={onToggle}
-        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-slate-700 transition text-left"
+        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-gray-100 transition text-left"
       >
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-gray-900 font-bold text-sm flex-shrink-0"
           style={{ backgroundColor: color }}
         >
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-white font-medium truncate">{item.issue}</div>
-          <div className="text-slate-400 text-sm">
+          <div className="text-gray-900 font-medium truncate">{item.issue}</div>
+          <div className="text-gray-500 text-sm">
             {item.count}회 발생 ({item.percentage}%)
           </div>
         </div>
         <div className="flex-shrink-0">
           <svg
-            className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -336,19 +336,19 @@ function IssueRow({
       {/* Issue Details (Expanded) */}
       {isExpanded && item.sampleResults.length > 0 && (
         <div className="px-4 pb-4">
-          <div className="bg-slate-900 rounded-lg p-3">
-            <div className="text-sm text-slate-400 mb-2">샘플 결과 ({item.sampleResults.length}개)</div>
+          <div className="bg-white rounded-lg p-3">
+            <div className="text-sm text-gray-500 mb-2">샘플 결과 ({item.sampleResults.length}개)</div>
             <div className="space-y-2">
               {item.sampleResults.map((sample) => (
                 <Link
                   key={sample.id}
                   href={`/dashboard/admin/batch-analysis/results/${sample.id}`}
-                  className="block p-2 bg-slate-800 rounded hover:bg-slate-700 transition"
+                  className="block p-2 bg-white rounded hover:bg-gray-100 transition"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm text-white truncate">{sample.userInput}</div>
-                      <div className="text-xs text-slate-400">
+                      <div className="text-sm text-gray-900 truncate">{sample.userInput}</div>
+                      <div className="text-xs text-gray-500">
                         테넌트: {sample.tenantId}
                         {sample.avgScore !== null && (
                           <span className="ml-2">
@@ -368,7 +368,7 @@ function IssueRow({
                         )}
                       </div>
                     </div>
-                    <svg className="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>

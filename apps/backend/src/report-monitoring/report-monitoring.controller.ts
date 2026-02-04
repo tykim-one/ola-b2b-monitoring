@@ -1,9 +1,21 @@
-import { Controller, Get, Post, Param, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { Public } from '../admin/auth/decorators/public.decorator';
 import { ReportMonitoringService } from './report-monitoring.service';
 import { ReportMonitoringScheduler } from './report-monitoring.scheduler';
-import { ReportType, REPORT_TYPES, MonitoringResult, ReportCheckResult } from './interfaces';
+import {
+  ReportType,
+  REPORT_TYPES,
+  MonitoringResult,
+  ReportCheckResult,
+} from './interfaces';
 import { MonitoringResultDto, ReportCheckResultDto } from './dto';
 
 @ApiTags('Report Monitoring')
@@ -20,7 +32,11 @@ export class ReportMonitoringController {
    */
   @Post('check')
   @ApiOperation({ summary: '전체 리포트 데이터 체크 실행' })
-  @ApiResponse({ status: 200, description: '체크 결과', type: MonitoringResultDto })
+  @ApiResponse({
+    status: 200,
+    description: '체크 결과',
+    type: MonitoringResultDto,
+  })
   async runFullCheck(): Promise<MonitoringResult> {
     return this.monitoringService.runFullCheck();
   }
@@ -35,7 +51,11 @@ export class ReportMonitoringController {
     enum: ['ai_stock', 'commodity', 'forex', 'dividend'],
     description: '리포트 타입',
   })
-  @ApiResponse({ status: 200, description: '체크 결과', type: ReportCheckResultDto })
+  @ApiResponse({
+    status: 200,
+    description: '체크 결과',
+    type: ReportCheckResultDto,
+  })
   async checkReport(
     @Param('reportType') reportType: string,
   ): Promise<ReportCheckResult> {
@@ -55,7 +75,11 @@ export class ReportMonitoringController {
    */
   @Get('status')
   @ApiOperation({ summary: '마지막 체크 결과 조회' })
-  @ApiResponse({ status: 200, description: '마지막 체크 결과', type: MonitoringResultDto })
+  @ApiResponse({
+    status: 200,
+    description: '마지막 체크 결과',
+    type: MonitoringResultDto,
+  })
   async getLastResult(): Promise<MonitoringResult | { message: string }> {
     const result = this.monitoringService.getLastResult();
 

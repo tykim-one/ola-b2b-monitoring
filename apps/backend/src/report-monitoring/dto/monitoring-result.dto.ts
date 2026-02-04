@@ -33,7 +33,10 @@ export class SuspiciousDetailDto {
 }
 
 export class ReportCheckResultDto implements ReportCheckResult {
-  @ApiProperty({ description: '리포트 타입', enum: ['ai_stock', 'commodity', 'forex', 'dividend'] })
+  @ApiProperty({
+    description: '리포트 타입',
+    enum: ['ai_stock', 'commodity', 'forex', 'dividend'],
+  })
   reportType: ReportType;
 
   @ApiProperty({ description: '전체 타겟 수' })
@@ -50,16 +53,28 @@ export class ReportCheckResultDto implements ReportCheckResult {
   @ApiProperty({ description: '완전한 데이터 수' })
   completeCount: number;
 
-  @ApiProperty({ description: '불완전한 심볼 목록 (필수 필드 NULL)', type: [String] })
+  @ApiProperty({
+    description: '불완전한 심볼 목록 (필수 필드 NULL)',
+    type: [String],
+  })
   incompleteSymbols: string[];
 
-  @ApiProperty({ description: '불완전 데이터 상세', type: [IncompleteDetailDto] })
+  @ApiProperty({
+    description: '불완전 데이터 상세',
+    type: [IncompleteDetailDto],
+  })
   incompleteDetails: IncompleteDetailDto[];
 
-  @ApiProperty({ description: '확인필요 심볼 목록 (전날과 값 동일)', type: [String] })
+  @ApiProperty({
+    description: '확인필요 심볼 목록 (전날과 값 동일)',
+    type: [String],
+  })
   suspiciousSymbols: string[];
 
-  @ApiProperty({ description: '확인필요 데이터 상세', type: [SuspiciousDetailDto] })
+  @ApiProperty({
+    description: '확인필요 데이터 상세',
+    type: [SuspiciousDetailDto],
+  })
   suspiciousDetails: SuspiciousDetailDto[];
 
   // 신선도
@@ -103,7 +118,10 @@ export class MonitoringSummaryDto {
 }
 
 export class MonitoringResultDto implements MonitoringResult {
-  @ApiProperty({ description: '리포트별 체크 결과', type: [ReportCheckResultDto] })
+  @ApiProperty({
+    description: '리포트별 체크 결과',
+    type: [ReportCheckResultDto],
+  })
   results: ReportCheckResultDto[];
 
   @ApiProperty({ description: '요약', type: MonitoringSummaryDto })

@@ -70,7 +70,10 @@ export class ReportMonitoringScheduler implements OnModuleInit {
           `${summary.totalMissing} missing, ${summary.totalStale} stale`,
       );
     } catch (error) {
-      this.logger.error(`Scheduled check failed: ${error.message}`, error.stack);
+      this.logger.error(
+        `Scheduled check failed: ${error.message}`,
+        error.stack,
+      );
     }
   }
 

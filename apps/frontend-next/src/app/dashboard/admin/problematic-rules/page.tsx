@@ -12,6 +12,11 @@ import {
   X,
   CopyPlus,
   Minus,
+  Eye,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Check,
 } from 'lucide-react';
 import {
   ProblematicChatRule,
@@ -34,6 +39,7 @@ import {
   updateRule,
   deleteRule,
   toggleRuleEnabled,
+  fetchRulePreviewQuery,
 } from '@/services/problematicChatService';
 
 interface ConditionFormData {
@@ -87,12 +93,12 @@ const defaultFormData: RuleFormData = {
 /** 필드의 dataType에 따른 뱃지 색상 */
 function getFieldColor(fieldKey: string): string {
   const def = getFieldDefinition(fieldKey);
-  if (!def) return 'bg-slate-600/20 text-slate-400';
+  if (!def) return 'bg-gray-100 text-gray-500';
   switch (def.dataType) {
     case 'numeric': return 'bg-amber-600/20 text-amber-400';
     case 'text': return 'bg-rose-600/20 text-rose-400';
     case 'boolean': return 'bg-cyan-600/20 text-cyan-400';
-    default: return 'bg-slate-600/20 text-slate-400';
+    default: return 'bg-gray-100 text-gray-500';
   }
 }
 
@@ -128,6 +134,12 @@ export default function ProblematicRulesPage() {
   const [availableOperators, setAvailableOperators] = useState<RuleOperatorDefinition[]>([]);
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  const [detailRule, setDetailRule] = useState<ProblematicChatRule | null>(null);
+  const [sqlQuery, setSqlQuery] = useState<string | null>(null);
+  const [sqlLoading, setSqlLoading] = useState(false);
+  const [showSQL, setShowSQL] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     loadRules();
@@ -332,6 +344,43 @@ export default function ProblematicRulesPage() {
     }
   };
 
+  const handleOpenDetail = (rule: ProblematicChatRule) => {
+    setDetailRule(rule);
+    setSqlQuery(null);
+    setShowSQL(false);
+    setCopied(false);
+  };
+
+  const handleCloseDetail = () => {
+    setDetailRule(null);
+    setSqlQuery(null);
+    setShowSQL(false);
+    setCopied(false);
+  };
+
+  const handleToggleSQL = async () => {
+    if (!showSQL && !sqlQuery && detailRule) {
+      setSqlLoading(true);
+      try {
+        const result = await fetchRulePreviewQuery(detailRule.id);
+        setSqlQuery(result.query);
+      } catch {
+        setSqlQuery('-- SQL 쿼리를 불러올 수 없습니다');
+      } finally {
+        setSqlLoading(false);
+      }
+    }
+    setShowSQL(!showSQL);
+  };
+
+  const handleCopySQL = async () => {
+    if (sqlQuery) {
+      await navigator.clipboard.writeText(sqlQuery);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center">
@@ -345,11 +394,11 @@ export default function ProblematicRulesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+          <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
             <AlertTriangle className="w-8 h-8 text-amber-500" />
             문제 채팅 필터링 규칙
           </h2>
-          <p className="text-slate-400 mt-1">
+          <p className="text-gray-500 mt-1">
             BigQuery 필드와 연산자를 조합하여 문제 채팅을 필터링합니다
           </p>
         </div>
@@ -365,16 +414,16 @@ export default function ProblematicRulesPage() {
 
       {/* Error */}
       {error && (
-        <div className="bg-rose-900/20 border border-rose-800 rounded-lg p-4 text-rose-400 mb-6">
+        <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-rose-400 mb-6">
           오류: {error}
         </div>
       )}
 
       {/* Rules Table */}
-      <div className="bg-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-white rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="text-left text-slate-400 border-b border-slate-700">
+            <tr className="text-left text-gray-500 border-b border-gray-200">
               <th className="px-6 py-4">상태</th>
               <th className="px-6 py-4">이름</th>
               <th className="px-6 py-4">필드</th>
@@ -386,7 +435,7 @@ export default function ProblematicRulesPage() {
           <tbody>
             {rules.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-slate-400">
+                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                   등록된 규칙이 없습니다. 새 규칙을 추가하세요.
                 </td>
               </tr>
@@ -394,13 +443,13 @@ export default function ProblematicRulesPage() {
               rules.map((rule) => (
                 <tr
                   key={rule.id}
-                  className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
+                  className="border-b border-gray-100 hover:bg-gray-100/50 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <button
                       onClick={() => handleToggle(rule)}
                       className={`transition-colors ${
-                        rule.isEnabled ? 'text-green-400' : 'text-slate-500'
+                        rule.isEnabled ? 'text-green-400' : 'text-gray-400'
                       }`}
                       title={rule.isEnabled ? '활성화됨 (클릭하여 비활성화)' : '비활성화됨 (클릭하여 활성화)'}
                     >
@@ -411,7 +460,7 @@ export default function ProblematicRulesPage() {
                       )}
                     </button>
                   </td>
-                  <td className="px-6 py-4 text-white font-medium">{rule.name}</td>
+                  <td className="px-6 py-4 text-gray-900 font-medium">{rule.name}</td>
                   <td className="px-6 py-4">
                     {isCompoundConfig(rule.config) ? (
                       <div className="flex flex-wrap gap-1">
@@ -433,7 +482,7 @@ export default function ProblematicRulesPage() {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-slate-300 text-sm">
+                  <td className="px-6 py-4 text-gray-600 text-sm">
                     {isCompoundConfig(rule.config) ? (
                       <span>{formatRuleSummary(rule.config)}</span>
                     ) : (
@@ -441,12 +490,12 @@ export default function ProblematicRulesPage() {
                         {Array.isArray(rule.config.value) ? (
                           <span className="flex flex-wrap gap-1">
                             {(rule.config.value as string[]).slice(0, 3).map((v, i) => (
-                              <span key={i} className="px-1.5 py-0.5 bg-slate-700 rounded text-xs">
+                              <span key={i} className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">
                                 {v}
                               </span>
                             ))}
                             {(rule.config.value as string[]).length > 3 && (
-                              <span className="text-slate-400">
+                              <span className="text-gray-500">
                                 +{(rule.config.value as string[]).length - 3}개
                               </span>
                             )}
@@ -457,14 +506,21 @@ export default function ProblematicRulesPage() {
                       </>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-slate-400 text-sm max-w-[200px] truncate">
+                  <td className="px-6 py-4 text-gray-500 text-sm max-w-[200px] truncate">
                     {rule.description || '-'}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <button
+                        onClick={() => handleOpenDetail(rule)}
+                        className="p-2 rounded-lg bg-gray-100 hover:bg-blue-600 text-gray-600 hover:text-gray-900 transition-colors"
+                        title="상세 보기"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
                         onClick={() => handleOpenEdit(rule)}
-                        className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition-colors"
+                        className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition-colors"
                         title="수정"
                       >
                         <Pencil className="w-4 h-4" />
@@ -479,7 +535,7 @@ export default function ProblematicRulesPage() {
                           </button>
                           <button
                             onClick={() => setDeleteConfirmId(null)}
-                            className="px-2 py-1 rounded bg-slate-600 hover:bg-slate-500 text-white text-xs"
+                            className="px-2 py-1 rounded bg-gray-300 hover:bg-gray-300 text-gray-900 text-xs"
                           >
                             취소
                           </button>
@@ -487,7 +543,7 @@ export default function ProblematicRulesPage() {
                       ) : (
                         <button
                           onClick={() => setDeleteConfirmId(rule.id)}
-                          className="p-2 rounded-lg bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white transition-colors"
+                          className="p-2 rounded-lg bg-gray-100 hover:bg-rose-600 text-gray-600 hover:text-gray-900 transition-colors"
                           title="삭제"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -502,19 +558,160 @@ export default function ProblematicRulesPage() {
         </table>
       </div>
 
+      {/* Detail Dialog */}
+      {detailRule && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleCloseDetail} />
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 shrink-0">
+              <div className="flex items-center gap-3">
+                <h3 className="text-lg font-semibold text-gray-900">규칙 상세</h3>
+                <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                  detailRule.isEnabled ? 'bg-green-600/20 text-green-400' : 'bg-gray-100 text-gray-500'
+                }`}>
+                  {detailRule.isEnabled ? '활성' : '비활성'}
+                </span>
+              </div>
+              <button
+                onClick={handleCloseDetail}
+                className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Body - scrollable */}
+            <div className="p-6 space-y-5 overflow-y-auto">
+              {/* Meta Info */}
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs text-gray-400 mb-1">규칙 이름</p>
+                  <p className="text-gray-900 font-medium text-lg">{detailRule.name}</p>
+                </div>
+                {detailRule.description && (
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">설명</p>
+                    <p className="text-gray-600">{detailRule.description}</p>
+                  </div>
+                )}
+                <div className="flex gap-6 text-sm">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">생성일</p>
+                    <p className="text-gray-600">{new Date(detailRule.createdAt).toLocaleString('ko-KR')}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">수정일</p>
+                    <p className="text-gray-600">{new Date(detailRule.updatedAt).toLocaleString('ko-KR')}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Conditions Summary */}
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <p className="text-xs text-gray-400 mb-2">조건 설정</p>
+                {isCompoundConfig(detailRule.config) ? (() => {
+                  const cc = detailRule.config;
+                  return (
+                  <div className="space-y-2">
+                    <span className="px-2 py-0.5 rounded text-xs font-bold bg-purple-600/20 text-purple-400">
+                      복합 규칙 ({cc.logic})
+                    </span>
+                    {cc.conditions.map((c, i) => {
+                      const fd = getFieldDefinition(c.field);
+                      const od = getOperatorDefinition(c.operator);
+                      const val = Array.isArray(c.value) ? (c.value as string[]).join(', ') : String(c.value);
+                      return (
+                        <div key={i} className="flex items-center gap-2 text-sm">
+                          {i > 0 && (
+                            <span className="text-purple-400 text-xs font-bold">{cc.logic}</span>
+                          )}
+                          <span className="text-blue-400">{fd?.label || c.field}</span>
+                          <span className="text-amber-400">{od?.label || c.operator}</span>
+                          <span className="text-green-400 break-all">{val}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  );
+                })() : (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${getFieldColor(detailRule.config.field)}`}>
+                      {getFieldDefinition(detailRule.config.field)?.label || detailRule.config.field}
+                    </span>
+                    <span className="text-amber-400">{getOperatorDefinition(detailRule.config.operator)?.label || detailRule.config.operator}</span>
+                    <span className="text-green-400">
+                      {Array.isArray(detailRule.config.value)
+                        ? (detailRule.config.value as string[]).join(', ')
+                        : String(detailRule.config.value)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* SQL Preview - Collapsible */}
+              <div className="border border-gray-100 rounded-lg overflow-hidden">
+                <button
+                  onClick={handleToggleSQL}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-white/80 transition-colors text-left"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-600">SQL 쿼리 미리보기</span>
+                    {sqlLoading && (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500" />
+                    )}
+                  </div>
+                  {showSQL ? (
+                    <ChevronUp className="w-4 h-4 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                  )}
+                </button>
+
+                {showSQL && sqlQuery && (
+                  <div className="relative">
+                    {/* Copy button */}
+                    <button
+                      onClick={handleCopySQL}
+                      className="absolute top-2 right-2 p-1.5 rounded bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 transition-colors z-10"
+                      title="SQL 복사"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                    <pre className="p-4 bg-gray-50 text-sm text-gray-600 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
+                      {sqlQuery}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-3 p-4 border-t border-gray-200 shrink-0">
+              <button
+                onClick={handleCloseDetail}
+                className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 transition-colors"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleCloseModal} />
-          <div className="relative bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleCloseModal} />
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-2xl">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-700">
-              <h3 className="text-lg font-semibold text-white">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">
                 {editingRule ? '규칙 수정' : '새 규칙 추가'}
               </h3>
               <button
                 onClick={handleCloseModal}
-                className="p-1 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+                className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -524,31 +721,31 @@ export default function ProblematicRulesPage() {
             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">규칙 이름 *</label>
+                <label className="block text-sm font-medium text-gray-500 mb-1">규칙 이름 *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                   placeholder="예: Output 토큰 부족"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">설명</label>
+                <label className="block text-sm font-medium text-gray-500 mb-1">설명</label>
                 <input
                   type="text"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                   placeholder="예: Output 토큰이 1500 미만인 응답"
                 />
               </div>
 
               {/* 규칙 모드 토글 */}
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50 border border-slate-700/50">
-                <span className="text-sm text-slate-400">규칙 유형:</span>
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
+                <span className="text-sm text-gray-500">규칙 유형:</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -564,7 +761,7 @@ export default function ProblematicRulesPage() {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     formData.isCompound
                       ? 'bg-purple-600 text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
                   {formData.isCompound ? '복합 규칙 (다중 조건)' : '단순 규칙'}
@@ -575,7 +772,7 @@ export default function ProblematicRulesPage() {
                 <div className="space-y-3">
                   {/* Logic selector */}
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-400">로직:</span>
+                    <span className="text-sm text-gray-500">로직:</span>
                     {(['AND', 'OR'] as const).map(l => (
                       <button
                         key={l}
@@ -584,7 +781,7 @@ export default function ProblematicRulesPage() {
                         className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                           formData.logic === l
                             ? 'bg-blue-600 text-white'
-                            : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
+                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                         }`}
                       >
                         {l}
@@ -597,9 +794,9 @@ export default function ProblematicRulesPage() {
                     const condOps = getOperatorsForField(cond.field);
                     const condOpDef = getOperatorDefinition(cond.operator);
                     return (
-                      <div key={idx} className="p-3 rounded-lg bg-slate-900/70 border border-slate-700/50 space-y-2">
+                      <div key={idx} className="p-3 rounded-lg bg-gray-50 border border-gray-100 space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium text-slate-500">조건 {idx + 1}</span>
+                          <span className="text-xs font-medium text-gray-400">조건 {idx + 1}</span>
                           {formData.conditions.length > 2 && (
                             <button
                               type="button"
@@ -609,7 +806,7 @@ export default function ProblematicRulesPage() {
                                   conditions: prev.conditions.filter((_, i) => i !== idx),
                                 }));
                               }}
-                              className="p-1 rounded hover:bg-slate-700 text-slate-500 hover:text-rose-400 transition-colors"
+                              className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-rose-400 transition-colors"
                               title="조건 삭제"
                             >
                               <Minus className="w-4 h-4" />
@@ -629,7 +826,7 @@ export default function ProblematicRulesPage() {
                                 : c),
                             }));
                           }}
-                          className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
                         >
                           {RULE_FIELDS.map(f => (
                             <option key={f.field} value={f.field}>{f.label} ({f.dataType})</option>
@@ -646,7 +843,7 @@ export default function ProblematicRulesPage() {
                                 : c),
                             }));
                           }}
-                          className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
                         >
                           {condOps.map(op => (
                             <option key={op.operator} value={op.operator}>{op.label}</option>
@@ -665,7 +862,7 @@ export default function ProblematicRulesPage() {
                                   : c),
                               }));
                             }}
-                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
                             step="any"
                           />
                         )}
@@ -681,7 +878,7 @@ export default function ProblematicRulesPage() {
                                   : c),
                               }));
                             }}
-                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
                             placeholder="검색할 텍스트"
                           />
                         )}
@@ -696,7 +893,7 @@ export default function ProblematicRulesPage() {
                                   : c),
                               }));
                             }}
-                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none resize-none"
+                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none resize-none"
                             rows={2}
                             placeholder="키워드1, 키워드2, ..."
                           />
@@ -712,7 +909,7 @@ export default function ProblematicRulesPage() {
                                   : c),
                               }));
                             }}
-                            className="w-full px-3 py-1.5 rounded bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
                           >
                             <option value="true">True</option>
                             <option value="false">False</option>
@@ -741,7 +938,7 @@ export default function ProblematicRulesPage() {
                         conditions: [...prev.conditions, createDefaultCondition()],
                       }));
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-500 transition-colors text-sm"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-dashed border-gray-300 text-gray-500 hover:text-gray-900 hover:border-gray-400 transition-colors text-sm"
                   >
                     <CopyPlus className="w-4 h-4" />
                     조건 추가
@@ -751,11 +948,11 @@ export default function ProblematicRulesPage() {
                 <>
                   {/* Field Selector (단순 규칙) */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-400 mb-1">대상 필드 *</label>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">대상 필드 *</label>
                     <select
                       value={formData.field}
                       onChange={(e) => setFormData({ ...formData, field: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                     >
                       {RULE_FIELDS.map((f) => (
                         <option key={f.field} value={f.field}>
@@ -766,18 +963,18 @@ export default function ProblematicRulesPage() {
                     {(() => {
                       const fd = getFieldDefinition(formData.field);
                       return fd?.description ? (
-                        <p className="mt-1 text-xs text-slate-500">{fd.description}</p>
+                        <p className="mt-1 text-xs text-gray-400">{fd.description}</p>
                       ) : null;
                     })()}
                   </div>
 
                   {/* Operator Selector (단순 규칙) */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-400 mb-1">연산자 *</label>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">연산자 *</label>
                     <select
                       value={formData.operator}
                       onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                     >
                       {availableOperators.map((op) => (
                         <option key={op.operator} value={op.operator}>
@@ -796,14 +993,14 @@ export default function ProblematicRulesPage() {
                       case 'number':
                         return (
                           <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">값 *</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
                             <input
                               type="number"
                               value={formData.numericValue}
                               onChange={(e) =>
                                 setFormData({ ...formData, numericValue: parseFloat(e.target.value) || 0 })
                               }
-                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                               step="any"
                             />
                           </div>
@@ -811,12 +1008,12 @@ export default function ProblematicRulesPage() {
                       case 'string':
                         return (
                           <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">값 *</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
                             <input
                               type="text"
                               value={formData.stringValue}
                               onChange={(e) => setFormData({ ...formData, stringValue: e.target.value })}
-                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                               placeholder="검색할 텍스트"
                             />
                           </div>
@@ -824,13 +1021,13 @@ export default function ProblematicRulesPage() {
                       case 'string_array':
                         return (
                           <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">
+                            <label className="block text-sm font-medium text-gray-500 mb-1">
                               키워드 (쉼표로 구분) *
                             </label>
                             <textarea
                               value={formData.stringArrayValue}
                               onChange={(e) => setFormData({ ...formData, stringArrayValue: e.target.value })}
-                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none resize-none"
+                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none resize-none"
                               rows={3}
                               placeholder="예: 죄송합니다, 데이터 없습니다, 찾을 수 없습니다"
                             />
@@ -839,13 +1036,13 @@ export default function ProblematicRulesPage() {
                       case 'boolean':
                         return (
                           <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">값 *</label>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
                             <select
                               value={formData.booleanValue ? 'true' : 'false'}
                               onChange={(e) =>
                                 setFormData({ ...formData, booleanValue: e.target.value === 'true' })
                               }
-                              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                             >
                               <option value="true">True (성공)</option>
                               <option value="false">False (실패)</option>
@@ -860,8 +1057,8 @@ export default function ProblematicRulesPage() {
               )}
 
               {/* Preview */}
-              <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700/50">
-                <p className="text-xs text-slate-500 mb-1">규칙 미리보기</p>
+              <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                <p className="text-xs text-gray-400 mb-1">규칙 미리보기</p>
                 {formData.isCompound ? (
                   <div className="space-y-1">
                     {formData.conditions.map((cond, idx) => {
@@ -870,7 +1067,7 @@ export default function ProblematicRulesPage() {
                       const val = getConditionValue(cond);
                       return (
                         <div key={idx}>
-                          <p className="text-sm text-slate-300">
+                          <p className="text-sm text-gray-600">
                             <span className="text-blue-400">{condFieldDef?.label}</span>
                             {' '}
                             <span className="text-amber-400">{condOpDef?.label}</span>
@@ -887,7 +1084,7 @@ export default function ProblematicRulesPage() {
                     })}
                   </div>
                 ) : (
-                  <p className="text-sm text-slate-300">
+                  <p className="text-sm text-gray-600">
                     <span className="text-blue-400">{getFieldDefinition(formData.field)?.label}</span>
                     {' '}
                     <span className="text-amber-400">{getOperatorDefinition(formData.operator)?.label}</span>
@@ -904,10 +1101,10 @@ export default function ProblematicRulesPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex justify-end gap-3 p-4 border-t border-slate-700">
+            <div className="flex justify-end gap-3 p-4 border-t border-gray-200">
               <button
                 onClick={handleCloseModal}
-                className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+                className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 transition-colors"
                 disabled={saving}
               >
                 취소

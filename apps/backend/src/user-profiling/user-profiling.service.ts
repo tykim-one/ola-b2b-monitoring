@@ -98,9 +98,7 @@ export class UserProfilingService implements OnModuleInit {
         label: CategoryLabels[category as QuestionCategory] || category,
         count,
         percentage:
-          totalCategories > 0
-            ? Math.round((count / totalCategories) * 100)
-            : 0,
+          totalCategories > 0 ? Math.round((count / totalCategories) * 100) : 0,
       }));
 
     // 테넌트 ID 가져오기
@@ -112,8 +110,10 @@ export class UserProfilingService implements OnModuleInit {
       totalMessages: messages.length,
       analyzedMessages: savedProfile?.analyzedMessages ?? 0,
       lastAnalyzedAt: savedProfile?.lastAnalyzedAt ?? null,
-      frustrationRate: savedProfile?.frustrationRate ?? sentiment.frustrationLevel,
-      aggressiveCount: savedProfile?.aggressiveCount ?? sentiment.aggressiveCount,
+      frustrationRate:
+        savedProfile?.frustrationRate ?? sentiment.frustrationLevel,
+      aggressiveCount:
+        savedProfile?.aggressiveCount ?? sentiment.aggressiveCount,
       sentiment,
       categoryDistribution,
       topCategories,
@@ -173,7 +173,8 @@ export class UserProfilingService implements OnModuleInit {
 
     const total = messages.length;
     const frustrationLevels = messages.map(
-      (m) => this.sentimentService.analyzeSentiment(m.userInput).frustrationLevel,
+      (m) =>
+        this.sentimentService.analyzeSentiment(m.userInput).frustrationLevel,
     );
 
     // 트렌드 감지
@@ -182,8 +183,7 @@ export class UserProfilingService implements OnModuleInit {
       const midpoint = Math.floor(frustrationLevels.length / 2);
       const firstHalf = frustrationLevels.slice(0, midpoint);
       const secondHalf = frustrationLevels.slice(midpoint);
-      const firstAvg =
-        firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+      const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
       const secondAvg =
         secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
       const diff = secondAvg - firstAvg;
@@ -383,7 +383,9 @@ export class UserProfilingService implements OnModuleInit {
         await this.analyzeAndSaveUserProfile(user.userId, user.tenantId);
         processedUsers++;
       } catch (error) {
-        this.logger.error(`Failed to analyze user ${user.userId}: ${error.message}`);
+        this.logger.error(
+          `Failed to analyze user ${user.userId}: ${error.message}`,
+        );
         failedUsers++;
       }
 

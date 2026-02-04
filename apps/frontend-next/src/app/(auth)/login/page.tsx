@@ -88,13 +88,13 @@ function LoginForm() {
   };
 
   return (
-    <div className="bg-slate-800 rounded-lg shadow-xl p-8">
+    <div className="bg-white rounded-lg shadow-xl p-8">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email Field */}
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-slate-300 mb-2"
+            className="block text-sm font-medium text-gray-600 mb-2"
           >
             Email Address
           </label>
@@ -104,7 +104,7 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
-            className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             placeholder="Enter your email"
             autoComplete="email"
           />
@@ -114,7 +114,7 @@ function LoginForm() {
         <div>
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-slate-300 mb-2"
+            className="block text-sm font-medium text-gray-600 mb-2"
           >
             Password
           </label>
@@ -124,7 +124,7 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
-            className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             placeholder="Enter your password"
             autoComplete="current-password"
           />
@@ -132,8 +132,8 @@ function LoginForm() {
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3">
-            <p className="text-sm text-red-400">{error}</p>
+          <div className="bg-rose-50 border border-rose-200 rounded-lg p-3">
+            <p className="text-sm text-rose-600">{error}</p>
           </div>
         )}
 
@@ -141,7 +141,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 disabled:cursor-not-allowed"
+          className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
@@ -175,7 +175,7 @@ function LoginForm() {
 
       {/* Additional Info */}
       <div className="mt-6 text-center">
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-gray-500">
           Contact your administrator if you need access
         </p>
       </div>
@@ -185,11 +185,11 @@ function LoginForm() {
 
 function LoginFormFallback() {
   return (
-    <div className="bg-slate-800 rounded-lg shadow-xl p-8">
+    <div className="bg-white rounded-lg shadow-xl p-8">
       <div className="space-y-6 animate-pulse">
-        <div className="h-12 bg-slate-700 rounded-lg"></div>
-        <div className="h-12 bg-slate-700 rounded-lg"></div>
-        <div className="h-12 bg-slate-700 rounded-lg"></div>
+        <div className="h-12 bg-gray-100 rounded-lg"></div>
+        <div className="h-12 bg-gray-100 rounded-lg"></div>
+        <div className="h-12 bg-gray-100 rounded-lg"></div>
       </div>
     </div>
   );
@@ -197,14 +197,14 @@ function LoginFormFallback() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo/Title */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-100 mb-2">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
             OLA B2B Monitoring
           </h1>
-          <p className="text-slate-400">Sign in to your account</p>
+          <p className="text-gray-500">Sign in to your account</p>
         </div>
 
         {/* Login Card */}
@@ -213,7 +213,7 @@ export default function LoginPage() {
         </Suspense>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-sm text-slate-500">
+        <div className="mt-8 text-center text-sm text-gray-400">
           <p>Powered by OLA B2B Monitoring System</p>
         </div>
       </div>

@@ -1,54 +1,35 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Pencil, Trash2, Clock, Calendar, ArrowLeft } from 'lucide-react';
 import {
-  batchAnalysisApi,
   BatchSchedulerConfig,
-  CreateScheduleRequest,
-  UpdateScheduleRequest,
-  AnalysisPromptTemplate,
-  TenantInfo,
 } from '@/services/batchAnalysisService';
+import {
+  useSchedules,
+  useScheduleTemplates,
+  useScheduleTenants,
+  useDeleteSchedule,
+  useToggleSchedule,
+} from '@/hooks/queries';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import ScheduleFormModal from './components/ScheduleFormModal';
+import { StatsFooter } from '@/components/ui/StatsFooter';
+import { DataTable, Column } from '@/components/compound/DataTable';
 
 export default function SchedulesPage() {
   const router = useRouter();
-  const [schedules, setSchedules] = useState<BatchSchedulerConfig[]>([]);
-  const [templates, setTemplates] = useState<AnalysisPromptTemplate[]>([]);
-  const [tenants, setTenants] = useState<TenantInfo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: schedules = [], isLoading, error } = useSchedules();
+  const { data: templates = [] } = useScheduleTemplates();
+  const { data: tenants = [] } = useScheduleTenants(30);
+  const deleteSchedule = useDeleteSchedule();
+  const toggleSchedule = useToggleSchedule();
+
   const [selectedSchedule, setSelectedSchedule] = useState<BatchSchedulerConfig | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [scheduleToDelete, setScheduleToDelete] = useState<BatchSchedulerConfig | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const [schedulesData, templatesData, tenantsData] = await Promise.all([
-        batchAnalysisApi.listSchedules(),
-        batchAnalysisApi.listPromptTemplates(),
-        batchAnalysisApi.getAvailableTenants(30),
-      ]);
-      setSchedules(schedulesData);
-      setTemplates(templatesData.filter((t) => t.isActive));
-      setTenants(tenantsData.tenants);
-      setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load schedules');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const handleCreateSchedule = () => {
     setSelectedSchedule(null);
@@ -65,65 +46,51 @@ export default function SchedulesPage() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (!scheduleToDelete) return;
-
-    try {
-      setIsDeleting(true);
-      await batchAnalysisApi.deleteSchedule(scheduleToDelete.id);
-      setSchedules(schedules.filter((s) => s.id !== scheduleToDelete.id));
-      setIsDeleteDialogOpen(false);
-      setScheduleToDelete(null);
-    } catch (err: any) {
-      alert(err.message || 'Failed to delete schedule');
-    } finally {
-      setIsDeleting(false);
-    }
+    deleteSchedule.mutate(scheduleToDelete.id, {
+      onSuccess: () => {
+        setIsDeleteDialogOpen(false);
+        setScheduleToDelete(null);
+      },
+      onError: (err: Error) => {
+        alert(err.message || 'Failed to delete schedule');
+      },
+    });
   };
 
-  const handleFormSuccess = (schedule: BatchSchedulerConfig) => {
-    if (selectedSchedule) {
-      // Update
-      setSchedules(schedules.map((s) => (s.id === schedule.id ? schedule : s)));
-    } else {
-      // Create
-      setSchedules([...schedules, schedule]);
-    }
+  const handleFormSuccess = () => {
     setIsFormOpen(false);
     setSelectedSchedule(null);
   };
 
-  const handleToggleEnabled = async (schedule: BatchSchedulerConfig) => {
-    try {
-      const updated = await batchAnalysisApi.toggleSchedule(schedule.id);
-      setSchedules(schedules.map((s) => (s.id === schedule.id ? updated : s)));
-    } catch (err: any) {
-      alert(err.message || 'Failed to toggle schedule');
-    }
+  const handleToggleEnabled = (schedule: BatchSchedulerConfig) => {
+    toggleSchedule.mutate(schedule.id, {
+      onError: (err: Error) => {
+        alert(err.message || 'Failed to toggle schedule');
+      },
+    });
   };
 
   const formatDaysOfWeek = (daysOfWeek: string): string => {
     const days = daysOfWeek.split(',').map((d) => parseInt(d.trim())).sort();
 
-    // Check for weekdays (Mon-Fri: 1,2,3,4,5)
     if (days.length === 5 && days.join(',') === '1,2,3,4,5') {
-      return '평일';
+      return '\uD3C9\uC77C';
     }
 
-    // Check for everyday (0,1,2,3,4,5,6)
     if (days.length === 7) {
-      return '매일';
+      return '\uB9E4\uC77C';
     }
 
-    // Map to Korean day names
     const dayNames: Record<number, string> = {
-      0: '일',
-      1: '월',
-      2: '화',
-      3: '수',
-      4: '목',
-      5: '금',
-      6: '토',
+      0: '\uC77C',
+      1: '\uC6D4',
+      2: '\uD654',
+      3: '\uC218',
+      4: '\uBAA9',
+      5: '\uAE08',
+      6: '\uD1A0',
     };
 
     return days.map((d) => dayNames[d]).join(', ');
@@ -135,12 +102,98 @@ export default function SchedulesPage() {
     return `${timeStr} (${daysStr})`;
   };
 
-  if (loading) {
+  const scheduleColumns: Column<BatchSchedulerConfig>[] = useMemo(() => [
+    {
+      key: 'isEnabled',
+      header: '\uC0C1\uD0DC',
+      render: (_value, row) => (
+        <button
+          onClick={(e) => { e.stopPropagation(); handleToggleEnabled(row); }}
+          className={`
+            relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+            ${row.isEnabled ? 'bg-green-600' : 'bg-gray-100'}
+          `}
+        >
+          <span
+            className={`
+              inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+              ${row.isEnabled ? 'translate-x-6' : 'translate-x-1'}
+            `}
+          />
+        </button>
+      ),
+    },
+    {
+      key: 'name',
+      header: '\uC774\uB984',
+      render: (_value, row) => (
+        <div className="flex items-center gap-2">
+          <Calendar className="w-4 h-4 text-violet-400" />
+          <span className="text-gray-800 font-medium">{row.name}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'hour',
+      header: '\uC2E4\uD589 \uC2DC\uAC04',
+      render: (_value, row) => (
+        <div className="flex items-center gap-2">
+          <Clock className="w-4 h-4 text-cyan-400" />
+          <span className="text-gray-600 text-sm">
+            {formatTime(row.hour, row.minute, row.daysOfWeek)}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'targetTenantId',
+      header: '\uB300\uC0C1 Tenant',
+      render: (_value, row) => (
+        <span className="text-gray-600 text-sm">
+          {row.targetTenantId || '\uC804\uCCB4'}
+        </span>
+      ),
+    },
+    {
+      key: 'sampleSize',
+      header: '\uC0D8\uD50C \uC218',
+      render: (_value, row) => (
+        <span className="text-gray-600 text-sm">
+          {row.sampleSize}
+        </span>
+      ),
+    },
+    {
+      key: 'actions',
+      header: '\uC561\uC158',
+      align: 'right' as const,
+      render: (_value, row) => (
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); handleEditSchedule(row); }}
+            className="p-2 bg-white hover:bg-violet-600/20 border border-gray-200 hover:border-violet-500/50 text-gray-500 hover:text-violet-400 transition-all"
+            title="Edit Schedule"
+          >
+            <Pencil className="w-4 h-4" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); handleDeleteClick(row); }}
+            className="p-2 bg-white hover:bg-red-600/20 border border-gray-200 hover:border-red-500/50 text-gray-500 hover:text-red-400 transition-all"
+            title="Delete Schedule"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
+  ], [handleToggleEnabled, handleEditSchedule, handleDeleteClick, formatTime]);
+
+  if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950">
+      <div className="h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono uppercase tracking-wider text-sm">
+          <p className="text-gray-500 text-sm">
             Loading System Data...
           </p>
         </div>
@@ -149,27 +202,27 @@ export default function SchedulesPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-950 p-8">
+    <div className="h-full overflow-y-auto bg-gray-50 p-8">
       {/* Header */}
-      <div className="mb-8 border-b border-slate-800 pb-6">
+      <div className="mb-8 border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/dashboard/admin/batch-analysis')}
               className="
-                p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700
-                text-slate-400 hover:text-slate-200 transition-all
+                p-2 bg-white hover:bg-gray-100 border border-gray-200
+                text-gray-500 hover:text-gray-700 transition-all
               "
               title="Back to Batch Analysis"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-3xl font-mono font-bold text-violet-400 uppercase tracking-wider mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 배치 분석 스케줄 관리
               </h1>
-              <p className="text-slate-400 font-mono text-sm">
-                SYSTEM.ADMIN.SCHEDULES // {schedules.length} CONFIGURED
+              <p className="text-gray-500 text-sm">
+                {schedules.length}개의 스케줄이 설정되어 있습니다
               </p>
             </div>
           </div>
@@ -178,8 +231,8 @@ export default function SchedulesPage() {
             className="
               flex items-center gap-2 px-6 py-3
               bg-violet-600 hover:bg-violet-700 border-2 border-violet-500
-              text-white font-mono font-bold uppercase tracking-wider text-sm
-              transition-all shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40
+              text-white font-medium text-sm
+              transition-all shadow-sm
             "
           >
             <Plus className="w-5 h-5" />
@@ -190,159 +243,31 @@ export default function SchedulesPage() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 border-2 border-red-500/50 bg-red-950/30">
-          <p className="text-red-400 font-mono text-sm">ERROR: {error}</p>
+        <div className="mb-6 p-4 border border-red-200 bg-red-50">
+          <p className="text-red-400 text-sm">ERROR: {(error as Error).message}</p>
         </div>
       )}
 
       {/* Schedules Table */}
-      <div className="border-2 border-slate-800 bg-slate-900/50">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b-2 border-slate-800 bg-slate-950/50">
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-violet-400 uppercase tracking-wider">
-                  상태
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-violet-400 uppercase tracking-wider">
-                  이름
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-violet-400 uppercase tracking-wider">
-                  실행 시간
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-violet-400 uppercase tracking-wider">
-                  대상 Tenant
-                </th>
-                <th className="text-left px-6 py-4 font-mono text-xs font-bold text-violet-400 uppercase tracking-wider">
-                  샘플 수
-                </th>
-                <th className="text-right px-6 py-4 font-mono text-xs font-bold text-violet-400 uppercase tracking-wider">
-                  액션
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {schedules.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <Clock className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-                    <p className="text-slate-500 font-mono text-sm">NO SCHEDULES CONFIGURED</p>
-                  </td>
-                </tr>
-              ) : (
-                schedules.map((schedule) => (
-                  <tr
-                    key={schedule.id}
-                    className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors"
-                  >
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleToggleEnabled(schedule)}
-                        className={`
-                          relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-                          ${schedule.isEnabled ? 'bg-green-600' : 'bg-slate-700'}
-                        `}
-                      >
-                        <span
-                          className={`
-                            inline-block h-4 w-4 transform rounded-full bg-white transition-transform
-                            ${schedule.isEnabled ? 'translate-x-6' : 'translate-x-1'}
-                          `}
-                        />
-                      </button>
-                    </td>
-
-                    {/* Name */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-violet-400" />
-                        <span className="text-slate-100 font-medium">{schedule.name}</span>
-                      </div>
-                    </td>
-
-                    {/* Schedule Time */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-cyan-400" />
-                        <span className="text-slate-300 font-mono text-sm">
-                          {formatTime(schedule.hour, schedule.minute, schedule.daysOfWeek)}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Target Tenant */}
-                    <td className="px-6 py-4">
-                      <span className="text-slate-300 font-mono text-sm">
-                        {schedule.targetTenantId || '전체'}
-                      </span>
-                    </td>
-
-                    {/* Sample Size */}
-                    <td className="px-6 py-4">
-                      <span className="text-slate-300 font-mono text-sm">
-                        {schedule.sampleSize}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-6 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => handleEditSchedule(schedule)}
-                          className="
-                            p-2 bg-slate-800 hover:bg-violet-600/20 border border-slate-700 hover:border-violet-500/50
-                            text-slate-400 hover:text-violet-400 transition-all
-                          "
-                          title="Edit Schedule"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteClick(schedule)}
-                          className="
-                            p-2 bg-slate-800 hover:bg-red-600/20 border border-slate-700 hover:border-red-500/50
-                            text-slate-400 hover:text-red-400 transition-all
-                          "
-                          title="Delete Schedule"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataTable data={schedules} columns={scheduleColumns} variant="flat" rowKey="id">
+        <DataTable.Content>
+          <DataTable.Header />
+          <DataTable.Body
+            emptyMessage="NO SCHEDULES CONFIGURED"
+            emptyIcon={<Clock className="w-12 h-12 text-gray-300" />}
+          />
+        </DataTable.Content>
+      </DataTable>
 
       {/* Stats Footer */}
-      <div className="mt-6 grid grid-cols-3 gap-4">
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Total Schedules
-          </p>
-          <p className="text-violet-400 font-mono text-2xl font-bold">{schedules.length}</p>
-        </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Active
-          </p>
-          <p className="text-green-400 font-mono text-2xl font-bold">
-            {schedules.filter((s) => s.isEnabled).length}
-          </p>
-        </div>
-        <div className="p-4 border border-slate-800 bg-slate-900/30">
-          <p className="text-slate-500 font-mono text-xs uppercase tracking-wider mb-1">
-            Inactive
-          </p>
-          <p className="text-slate-500 font-mono text-2xl font-bold">
-            {schedules.filter((s) => !s.isEnabled).length}
-          </p>
-        </div>
-      </div>
+      <StatsFooter
+        className="mt-6"
+        items={[
+          { label: 'Total Schedules', value: schedules.length, color: 'text-violet-400' },
+          { label: 'Active', value: schedules.filter((s) => s.isEnabled).length, color: 'text-green-400' },
+          { label: 'Inactive', value: schedules.filter((s) => !s.isEnabled).length, color: 'text-gray-400' },
+        ]}
+      />
 
       {/* Schedule Form Modal */}
       {isFormOpen && (
@@ -367,7 +292,7 @@ export default function SchedulesPage() {
         message={`Are you sure you want to delete schedule "${scheduleToDelete?.name}"? This action cannot be undone.`}
         confirmText="Delete"
         variant="danger"
-        isLoading={isDeleting}
+        isLoading={deleteSchedule.isPending}
       />
     </div>
   );

@@ -21,9 +21,9 @@ export default function FloatingChatbot() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleChatbot]);
 
-  const buttonBaseClasses = 'fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 focus:ring-offset-slate-900';
+  const buttonBaseClasses = 'fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 focus:ring-offset-white';
   const buttonStateClasses = isOpen
-    ? 'bg-slate-700 hover:bg-slate-600'
+    ? 'bg-gray-100 hover:bg-gray-200'
     : 'bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500';
 
   return (
@@ -37,7 +37,7 @@ export default function FloatingChatbot() {
       >
         {isOpen ? (
           <svg
-            className="w-6 h-6 text-white"
+            className="w-6 h-6 text-gray-900"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -76,9 +76,9 @@ export default function FloatingChatbot() {
       </button>
 
       {!isOpen && messages.length === 0 && (
-        <div className="fixed bottom-24 right-6 z-40 bg-slate-800/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg border border-slate-700/50 animate-pulse">
-          <p className="text-xs text-slate-400">
-            <kbd className="px-1.5 py-0.5 bg-slate-700 rounded text-slate-300 font-mono">
+        <div className="fixed bottom-24 right-6 z-40 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg border border-gray-100 animate-pulse">
+          <p className="text-xs text-gray-500">
+            <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600 font-mono">
               Ctrl+K
             </kbd>
             {' '}로 열기

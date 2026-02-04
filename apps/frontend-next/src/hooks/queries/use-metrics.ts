@@ -44,15 +44,18 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 /**
  * 실시간 KPI 조회 (5분 캐시, 자동 갱신)
+ * @param days - 조회 기간 (기본: 서버 기본값)
  */
 export function useRealtimeKPI(
   projectId: string,
+  days?: number,
   options?: Omit<UseQueryOptions<RealtimeKPI>, 'queryKey' | 'queryFn'>
 ) {
+  const daysParam = days ? `?days=${days}` : '';
   return useQuery({
-    queryKey: metricsKeys.realtime(projectId),
+    queryKey: [...metricsKeys.realtime(projectId), { days }],
     queryFn: () => fetchJson<RealtimeKPI>(
-      `${API_BASE}/projects/${projectId}/api/metrics/realtime`
+      `${API_BASE}/projects/${projectId}/api/metrics/realtime${daysParam}`
     ),
     staleTime: CACHE_TIME.SHORT,
     refetchInterval: CACHE_TIME.SHORT,
@@ -62,15 +65,18 @@ export function useRealtimeKPI(
 
 /**
  * 시간별 트래픽 조회 (15분 캐시)
+ * @param days - 조회 기간 (기본: 서버 기본값)
  */
 export function useHourlyTraffic(
   projectId: string,
+  days?: number,
   options?: Omit<UseQueryOptions<HourlyTraffic[]>, 'queryKey' | 'queryFn'>
 ) {
+  const daysParam = days ? `?days=${days}` : '';
   return useQuery({
-    queryKey: metricsKeys.hourly(projectId),
+    queryKey: [...metricsKeys.hourly(projectId), { days }],
     queryFn: () => fetchJson<HourlyTraffic[]>(
-      `${API_BASE}/projects/${projectId}/api/metrics/hourly`
+      `${API_BASE}/projects/${projectId}/api/metrics/hourly${daysParam}`
     ),
     staleTime: CACHE_TIME.MEDIUM,
     ...options,
@@ -171,15 +177,49 @@ export function useErrorAnalysis(
 
 /**
  * 이상 탐지 통계 조회 (5분 캐시)
+ * @param days - 조회 기간 (기본: 서버 기본값)
  */
 export function useAnomalyStats(
   projectId: string,
+  days?: number,
   options?: Omit<UseQueryOptions<AnomalyStats[]>, 'queryKey' | 'queryFn'>
 ) {
+  const daysParam = days ? `?days=${days}` : '';
   return useQuery({
-    queryKey: metricsKeys.anomaly(projectId),
+    queryKey: [...metricsKeys.anomaly(projectId), { days }],
     queryFn: () => fetchJson<AnomalyStats[]>(
-      `${API_BASE}/projects/${projectId}/api/ai/anomaly-stats`
+      `${API_BASE}/projects/${projectId}/api/ai/anomaly-stats${daysParam}`
+    ),
+    staleTime: CACHE_TIME.SHORT,
+    ...options,
+  });
+}
+
+// ==================== Token Efficiency ====================
+
+export interface TokenEfficiencyData {
+  tenant_id: string;
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  efficiency_ratio: number;
+  success: boolean;
+  timestamp: string;
+}
+
+/**
+ * 토큰 효율성 데이터 조회 (5분 캐시)
+ * @param days - 조회 기간 (기본: 7일)
+ */
+export function useTokenEfficiency(
+  projectId: string,
+  days = 7,
+  options?: Omit<UseQueryOptions<TokenEfficiencyData[]>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey: [...metricsKeys.all, 'token-efficiency', projectId, { days }],
+    queryFn: () => fetchJson<TokenEfficiencyData[]>(
+      `${API_BASE}/projects/${projectId}/api/ai/token-efficiency?days=${days}`
     ),
     staleTime: CACHE_TIME.SHORT,
     ...options,

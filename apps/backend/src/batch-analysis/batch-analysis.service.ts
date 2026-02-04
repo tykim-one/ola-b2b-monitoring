@@ -284,7 +284,9 @@ export class BatchAnalysisService {
         {
           name: 'User Query',
           value:
-            userInput.length > 100 ? userInput.slice(0, 100) + '...' : userInput,
+            userInput.length > 100
+              ? userInput.slice(0, 100) + '...'
+              : userInput,
         },
         { name: 'Issues', value: issuesPreview },
       ],
@@ -309,11 +311,10 @@ export class BatchAnalysisService {
       }
     } else {
       // Try to get default template
-      const defaultTemplate = await this.prisma.analysisPromptTemplate.findFirst(
-        {
+      const defaultTemplate =
+        await this.prisma.analysisPromptTemplate.findFirst({
           where: { isDefault: true, isActive: true },
-        },
-      );
+        });
       if (defaultTemplate) {
         promptTemplate = defaultTemplate.prompt;
       }
@@ -535,7 +536,10 @@ export class BatchAnalysisService {
     });
 
     // 이미 취소되었거나 완료된 경우
-    if (currentJob?.status === 'CANCELLED' || currentJob?.status === 'COMPLETED') {
+    if (
+      currentJob?.status === 'CANCELLED' ||
+      currentJob?.status === 'COMPLETED'
+    ) {
       return true;
     }
 
@@ -688,7 +692,9 @@ export class BatchAnalysisService {
                   result.sample.user_input,
                   parsed,
                 ).catch((err: Error) => {
-                  this.logger.warn(`Failed to send analysis result alert: ${err.message}`);
+                  this.logger.warn(
+                    `Failed to send analysis result alert: ${err.message}`,
+                  );
                 });
               }
             } else {
@@ -744,7 +750,9 @@ export class BatchAnalysisService {
           );
         }
       } catch (alertError) {
-        this.logger.warn(`Failed to send job completion alert: ${alertError.message}`);
+        this.logger.warn(
+          `Failed to send job completion alert: ${alertError.message}`,
+        );
       }
     } catch (error) {
       this.logger.error(`Job execution failed: ${error.message}`, error.stack);
@@ -805,7 +813,9 @@ export class BatchAnalysisService {
   /**
    * Get tenants for a specific date
    */
-  private async getTenantsForDate(targetDate: string): Promise<TenantForDate[]> {
+  private async getTenantsForDate(
+    targetDate: string,
+  ): Promise<TenantForDate[]> {
     if (!this.bigQueryClient) {
       throw new Error('BigQuery client not initialized');
     }
@@ -870,9 +880,7 @@ export class BatchAnalysisService {
           status: 'SUCCESS',
         });
       } catch (error) {
-        this.logger.warn(
-          `Analysis failed for sample: ${error.message}`,
-        );
+        this.logger.warn(`Analysis failed for sample: ${error.message}`);
 
         results.push({
           sample,
@@ -1114,7 +1122,12 @@ export class BatchAnalysisService {
       string,
       {
         count: number;
-        samples: { id: string; userInput: string; tenantId: string; avgScore: number | null }[];
+        samples: {
+          id: string;
+          userInput: string;
+          tenantId: string;
+          avgScore: number | null;
+        }[];
       }
     >();
 
@@ -1165,13 +1178,17 @@ export class BatchAnalysisService {
       .sort((a, b) => b[1].count - a[1].count)
       .slice(0, limit);
 
-    const issues: IssueFrequencyResult[] = sortedIssues.map(([issue, data]) => ({
-      issue,
-      count: data.count,
-      percentage:
-        totalIssues > 0 ? Math.round((data.count / totalIssues) * 10000) / 100 : 0,
-      sampleResults: data.samples,
-    }));
+    const issues: IssueFrequencyResult[] = sortedIssues.map(
+      ([issue, data]) => ({
+        issue,
+        count: data.count,
+        percentage:
+          totalIssues > 0
+            ? Math.round((data.count / totalIssues) * 10000) / 100
+            : 0,
+        sampleResults: data.samples,
+      }),
+    );
 
     return {
       issues,
@@ -1273,9 +1290,13 @@ export class BatchAnalysisService {
         ...(dto.minute !== undefined && { minute: dto.minute }),
         ...(dto.daysOfWeek !== undefined && { daysOfWeek: dto.daysOfWeek }),
         ...(dto.timeZone !== undefined && { timeZone: dto.timeZone }),
-        ...(dto.targetTenantId !== undefined && { targetTenantId: dto.targetTenantId || null }),
+        ...(dto.targetTenantId !== undefined && {
+          targetTenantId: dto.targetTenantId || null,
+        }),
         ...(dto.sampleSize !== undefined && { sampleSize: dto.sampleSize }),
-        ...(dto.promptTemplateId !== undefined && { promptTemplateId: dto.promptTemplateId || null }),
+        ...(dto.promptTemplateId !== undefined && {
+          promptTemplateId: dto.promptTemplateId || null,
+        }),
       },
     });
   }

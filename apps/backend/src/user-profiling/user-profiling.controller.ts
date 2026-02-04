@@ -84,10 +84,11 @@ export class UserProfilingController {
         userId,
         query.days,
       );
-      const categories = await this.userProfilingService.getCategoryDistribution(
-        userId,
-        messages,
-      );
+      const categories =
+        await this.userProfilingService.getCategoryDistribution(
+          userId,
+          messages,
+        );
       return categories;
     } catch (error) {
       throw new HttpException(

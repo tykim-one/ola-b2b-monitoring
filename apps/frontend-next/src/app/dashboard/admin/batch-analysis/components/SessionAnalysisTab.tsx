@@ -94,7 +94,7 @@ export default function SessionAnalysisTab() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 font-mono text-sm">Loading...</p>
+          <p className="text-gray-500 text-sm">Loading...</p>
         </div>
       </div>
     );
@@ -104,7 +104,7 @@ export default function SessionAnalysisTab() {
     <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <p className="text-slate-400 font-mono text-sm">
+        <p className="text-gray-500 text-sm">
           Session Resolution Analysis (Real-time + Heuristic)
         </p>
         <button
@@ -113,7 +113,7 @@ export default function SessionAnalysisTab() {
           className="
             flex items-center gap-2 px-4 py-2
             bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800
-            text-white font-mono text-sm font-bold uppercase
+            text-gray-900 text-sm font-bold uppercase
             transition-colors
           "
         >
@@ -123,74 +123,74 @@ export default function SessionAnalysisTab() {
       </div>
 
       {error && (
-        <div className="bg-red-950/30 border border-red-500/30 p-4 rounded mb-6">
-          <p className="text-red-400 font-mono text-sm">{error}</p>
+        <div className="bg-red-50 border border-red-500/30 p-4 rounded mb-6">
+          <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
 
       {/* KPI Cards */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-slate-800/50 border border-emerald-500/30 p-4 rounded">
+          <div className="bg-gray-50/50 border border-emerald-500/30 p-4 rounded">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-5 h-5 text-emerald-400" />
-              <span className="text-slate-400 font-mono text-xs uppercase">Resolution Rate</span>
+              <span className="text-gray-500 text-xs uppercase">Resolution Rate</span>
             </div>
-            <p className="text-3xl font-mono font-bold text-emerald-400">
+            <p className="text-3xl font-bold text-gray-900">
               {stats.resolutionRate}%
             </p>
-            <p className="text-slate-500 font-mono text-xs mt-1">
+            <p className="text-gray-400 text-xs mt-1">
               {stats.resolvedSessions} / {stats.totalSessions} sessions
             </p>
           </div>
 
-          <div className="bg-slate-800/50 border border-cyan-500/30 p-4 rounded">
+          <div className="bg-gray-50/50 border border-cyan-500/30 p-4 rounded">
             <div className="flex items-center gap-2 mb-2">
               <MessageSquare className="w-5 h-5 text-cyan-400" />
-              <span className="text-slate-400 font-mono text-xs uppercase">Avg Turns</span>
+              <span className="text-gray-500 text-xs uppercase">Avg Turns</span>
             </div>
-            <p className="text-3xl font-mono font-bold text-cyan-400">
+            <p className="text-3xl font-bold text-gray-900">
               {stats.avgTurnsToResolution || '-'}
             </p>
-            <p className="text-slate-500 font-mono text-xs mt-1">turns to resolution</p>
+            <p className="text-gray-400 text-xs mt-1">turns to resolution</p>
           </div>
 
-          <div className="bg-slate-800/50 border border-amber-500/30 p-4 rounded">
+          <div className="bg-gray-50/50 border border-amber-500/30 p-4 rounded">
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle className="w-5 h-5 text-amber-400" />
-              <span className="text-slate-400 font-mono text-xs uppercase">Abandonment</span>
+              <span className="text-gray-500 text-xs uppercase">Abandonment</span>
             </div>
-            <p className="text-3xl font-mono font-bold text-amber-400">
+            <p className="text-3xl font-bold text-gray-900">
               {stats.abandonmentRate}%
             </p>
-            <p className="text-slate-500 font-mono text-xs mt-1">
+            <p className="text-gray-400 text-xs mt-1">
               {stats.frustratedSessions} frustrated sessions
             </p>
           </div>
 
-          <div className="bg-slate-800/50 border border-violet-500/30 p-4 rounded">
+          <div className="bg-gray-50/50 border border-violet-500/30 p-4 rounded">
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-5 h-5 text-violet-400" />
-              <span className="text-slate-400 font-mono text-xs uppercase">Avg Duration</span>
+              <span className="text-gray-500 text-xs uppercase">Avg Duration</span>
             </div>
-            <p className="text-3xl font-mono font-bold text-violet-400">
+            <p className="text-3xl font-bold text-gray-900">
               {stats.avgSessionDuration || '-'}
             </p>
-            <p className="text-slate-500 font-mono text-xs mt-1">minutes per session</p>
+            <p className="text-gray-400 text-xs mt-1">minutes per session</p>
           </div>
         </div>
       )}
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-6 p-4 bg-slate-800/30 border border-slate-700 rounded">
+      <div className="flex flex-wrap gap-4 mb-6 p-4 bg-gray-50/50 border border-gray-200 rounded">
         <div>
-          <label className="block text-slate-500 font-mono text-xs uppercase mb-1">Period</label>
+          <label className="block text-gray-400 text-xs uppercase mb-1">Period</label>
           <select
             value={days}
             onChange={(e) => { setDays(Number(e.target.value)); setPage(0); }}
             className="
-              bg-slate-900 border border-slate-600 text-slate-200
-              px-3 py-2 font-mono text-sm rounded
+              bg-white border border-gray-300 text-gray-700
+              px-3 py-2 text-sm rounded
             "
           >
             <option value={7}>Last 7 days</option>
@@ -200,13 +200,13 @@ export default function SessionAnalysisTab() {
         </div>
 
         <div>
-          <label className="block text-slate-500 font-mono text-xs uppercase mb-1">Tenant</label>
+          <label className="block text-gray-400 text-xs uppercase mb-1">Tenant</label>
           <select
             value={tenantId}
             onChange={(e) => { setTenantId(e.target.value); setPage(0); }}
             className="
-              bg-slate-900 border border-slate-600 text-slate-200
-              px-3 py-2 font-mono text-sm rounded min-w-[150px]
+              bg-white border border-gray-300 text-gray-700
+              px-3 py-2 text-sm rounded min-w-[150px]
             "
           >
             <option value="">All Tenants</option>
@@ -217,13 +217,13 @@ export default function SessionAnalysisTab() {
         </div>
 
         <div>
-          <label className="block text-slate-500 font-mono text-xs uppercase mb-1">Resolution</label>
+          <label className="block text-gray-400 text-xs uppercase mb-1">Resolution</label>
           <select
             value={isResolved}
             onChange={(e) => { setIsResolved(e.target.value); setPage(0); }}
             className="
-              bg-slate-900 border border-slate-600 text-slate-200
-              px-3 py-2 font-mono text-sm rounded
+              bg-white border border-gray-300 text-gray-700
+              px-3 py-2 text-sm rounded
             "
           >
             <option value="">All</option>
@@ -233,13 +233,13 @@ export default function SessionAnalysisTab() {
         </div>
 
         <div>
-          <label className="block text-slate-500 font-mono text-xs uppercase mb-1">Frustration</label>
+          <label className="block text-gray-400 text-xs uppercase mb-1">Frustration</label>
           <select
             value={hasFrustration}
             onChange={(e) => { setHasFrustration(e.target.value); setPage(0); }}
             className="
-              bg-slate-900 border border-slate-600 text-slate-200
-              px-3 py-2 font-mono text-sm rounded
+              bg-white border border-gray-300 text-gray-700
+              px-3 py-2 text-sm rounded
             "
           >
             <option value="">All</option>
@@ -250,30 +250,30 @@ export default function SessionAnalysisTab() {
       </div>
 
       {/* Sessions Table */}
-      <div className="bg-slate-800/30 border border-slate-700 rounded overflow-hidden">
+      <div className="bg-gray-50/50 border border-gray-200 rounded overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-800/50 border-b border-slate-700">
+            <thead className="bg-gray-50/50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-4 py-3 text-slate-400 font-mono text-xs uppercase">
+                <th className="text-left px-4 py-3 text-gray-500 text-xs uppercase">
                   Session ID
                 </th>
-                <th className="text-left px-4 py-3 text-slate-400 font-mono text-xs uppercase">
+                <th className="text-left px-4 py-3 text-gray-500 text-xs uppercase">
                   Tenant
                 </th>
-                <th className="text-center px-4 py-3 text-slate-400 font-mono text-xs uppercase">
+                <th className="text-center px-4 py-3 text-gray-500 text-xs uppercase">
                   Turns
                 </th>
-                <th className="text-center px-4 py-3 text-slate-400 font-mono text-xs uppercase">
+                <th className="text-center px-4 py-3 text-gray-500 text-xs uppercase">
                   Status
                 </th>
-                <th className="text-center px-4 py-3 text-slate-400 font-mono text-xs uppercase">
+                <th className="text-center px-4 py-3 text-gray-500 text-xs uppercase">
                   Duration
                 </th>
-                <th className="text-left px-4 py-3 text-slate-400 font-mono text-xs uppercase">
+                <th className="text-left px-4 py-3 text-gray-500 text-xs uppercase">
                   Start Time
                 </th>
-                <th className="text-center px-4 py-3 text-slate-400 font-mono text-xs uppercase">
+                <th className="text-center px-4 py-3 text-gray-500 text-xs uppercase">
                   Actions
                 </th>
               </tr>
@@ -281,7 +281,7 @@ export default function SessionAnalysisTab() {
             <tbody>
               {sessions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-slate-500 font-mono">
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-400 font-mono">
                     No sessions found
                   </td>
                 </tr>
@@ -289,18 +289,18 @@ export default function SessionAnalysisTab() {
                 sessions.map((session) => (
                   <tr
                     key={session.sessionId}
-                    className="border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors"
+                    className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="px-4 py-3">
-                      <span className="text-slate-300 font-mono text-sm">
+                      <span className="text-gray-600 text-sm">
                         {session.sessionId.slice(0, 16)}...
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-cyan-400 font-mono text-sm">{session.tenantId}</span>
+                      <span className="text-cyan-400 text-sm">{session.tenantId}</span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className="text-slate-200 font-mono">{session.turnCount}</span>
+                      <span className="text-gray-700 font-mono">{session.turnCount}</span>
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
@@ -323,12 +323,12 @@ export default function SessionAnalysisTab() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className="text-slate-300 font-mono text-sm">
+                      <span className="text-gray-600 text-sm">
                         {session.durationMinutes}m
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-slate-400 font-mono text-xs">
+                      <span className="text-gray-500 text-xs">
                         {new Date(session.sessionStart).toLocaleString('ko-KR')}
                       </span>
                     </td>
@@ -336,8 +336,8 @@ export default function SessionAnalysisTab() {
                       <button
                         onClick={() => handleViewTimeline(session.sessionId)}
                         className="
-                          p-2 bg-slate-700 hover:bg-slate-600
-                          text-slate-300 rounded transition-colors
+                          p-2 bg-gray-100 hover:bg-gray-200
+                          text-gray-600 rounded transition-colors
                         "
                         title="View Timeline"
                       >
@@ -353,8 +353,8 @@ export default function SessionAnalysisTab() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-slate-700">
-            <p className="text-slate-500 font-mono text-sm">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
+            <p className="text-gray-400 text-sm">
               Showing {page * limit + 1}-{Math.min((page + 1) * limit, total)} of {total}
             </p>
             <div className="flex items-center gap-2">
@@ -362,21 +362,21 @@ export default function SessionAnalysisTab() {
                 onClick={() => setPage(Math.max(0, page - 1))}
                 disabled={page === 0}
                 className="
-                  p-2 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-600
-                  text-slate-300 rounded transition-colors
+                  p-2 bg-gray-100 hover:bg-gray-200 disabled:bg-white disabled:text-gray-400
+                  text-gray-600 rounded transition-colors
                 "
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="text-slate-400 font-mono text-sm">
+              <span className="text-gray-500 text-sm">
                 {page + 1} / {totalPages}
               </span>
               <button
                 onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
                 disabled={page >= totalPages - 1}
                 className="
-                  p-2 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-600
-                  text-slate-300 rounded transition-colors
+                  p-2 bg-gray-100 hover:bg-gray-200 disabled:bg-white disabled:text-gray-400
+                  text-gray-600 rounded transition-colors
                 "
               >
                 <ChevronRight className="w-4 h-4" />

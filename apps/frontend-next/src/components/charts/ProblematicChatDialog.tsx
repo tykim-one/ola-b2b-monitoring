@@ -37,14 +37,14 @@ export default function ProblematicChatDialog({
 
   const getRuleColor = (ruleName: string) => {
     const rule = getRuleDetails(ruleName);
-    if (!rule) return 'bg-slate-600';
+    if (!rule) return 'bg-gray-300';
     if (isCompoundConfig(rule.config)) return 'bg-purple-600';
     const fieldDef = getFieldDefinition(rule.config.field);
-    if (!fieldDef) return 'bg-slate-600';
+    if (!fieldDef) return 'bg-gray-300';
     if (fieldDef.dataType === 'numeric') return 'bg-amber-600';
     if (fieldDef.dataType === 'text') return 'bg-rose-600';
     if (fieldDef.dataType === 'boolean') return 'bg-cyan-600';
-    return 'bg-slate-600';
+    return 'bg-gray-300';
   };
 
   // 매칭된 text 규칙들에서 키워드 추출
@@ -107,18 +107,18 @@ export default function ProblematicChatDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Dialog */}
-      <div className="relative bg-slate-800 rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-700">
-          <h3 className="text-lg font-semibold text-white">문제 채팅 상세</h3>
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">문제 채팅 상세</h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -128,31 +128,31 @@ export default function ProblematicChatDialog({
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
           {/* Meta Info */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-slate-700/50 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+            <div className="bg-gray-100 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
                 <Clock className="w-4 h-4" />
                 시간
               </div>
-              <div className="text-white text-sm">{formatTimestamp(chat.timestamp)}</div>
+              <div className="text-gray-900 text-sm">{formatTimestamp(chat.timestamp)}</div>
             </div>
-            <div className="bg-slate-700/50 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+            <div className="bg-gray-100 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
                 <User className="w-4 h-4" />
                 유저 ID
               </div>
-              <div className="text-white text-sm font-mono truncate" title={chat.userId}>
+              <div className="text-gray-900 text-sm font-mono truncate" title={chat.userId}>
                 {chat.userId || '-'}
               </div>
             </div>
-            <div className="bg-slate-700/50 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+            <div className="bg-gray-100 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
                 <Tag className="w-4 h-4" />
                 테넌트
               </div>
-              <div className="text-white text-sm">{chat.tenantId}</div>
+              <div className="text-gray-900 text-sm">{chat.tenantId}</div>
             </div>
-            <div className="bg-slate-700/50 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+            <div className="bg-gray-100 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
                 {chat.success ? (
                   <CheckCircle className="w-4 h-4 text-green-400" />
                 ) : (
@@ -168,25 +168,25 @@ export default function ProblematicChatDialog({
 
           {/* Token Info */}
           <div className="flex gap-4 mb-6">
-            <div className="flex-1 bg-slate-700/50 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+            <div className="flex-1 bg-gray-100 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
                 <Hash className="w-4 h-4" />
                 토큰 정보
               </div>
               <div className="flex gap-4 text-sm">
                 <div>
-                  <span className="text-slate-400">Input: </span>
-                  <span className="text-white">{chat.inputTokens.toLocaleString()}</span>
+                  <span className="text-gray-500">Input: </span>
+                  <span className="text-gray-900">{chat.inputTokens.toLocaleString()}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400">Output: </span>
-                  <span className={chat.outputTokens < 1500 ? 'text-amber-400' : 'text-white'}>
+                  <span className="text-gray-500">Output: </span>
+                  <span className={chat.outputTokens < 1500 ? 'text-amber-400' : 'text-gray-900'}>
                     {chat.outputTokens.toLocaleString()}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400">Total: </span>
-                  <span className="text-white">{chat.totalTokens.toLocaleString()}</span>
+                  <span className="text-gray-500">Total: </span>
+                  <span className="text-gray-900">{chat.totalTokens.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -194,14 +194,14 @@ export default function ProblematicChatDialog({
 
           {/* Matched Rules */}
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-slate-400 mb-2">매칭된 규칙</h4>
+            <h4 className="text-sm font-medium text-gray-500 mb-2">매칭된 규칙</h4>
             <div className="flex flex-wrap gap-2">
               {chat.matchedRules.map((ruleName) => {
                 const rule = getRuleDetails(ruleName);
                 return (
                   <div
                     key={ruleName}
-                    className={`px-3 py-1.5 rounded-lg text-sm text-white ${getRuleColor(ruleName)}`}
+                    className={`px-3 py-1.5 rounded-lg text-sm text-gray-900 ${getRuleColor(ruleName)}`}
                   >
                     <div className="font-medium">{ruleName}</div>
                     {rule && (
@@ -232,8 +232,8 @@ export default function ProblematicChatDialog({
 
           {/* User Input */}
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-slate-400 mb-2">사용자 입력</h4>
-            <div className="bg-slate-900/50 rounded-lg p-4 text-white whitespace-pre-wrap text-sm max-h-[200px] overflow-y-auto">
+            <h4 className="text-sm font-medium text-gray-500 mb-2">사용자 입력</h4>
+            <div className="bg-gray-50 rounded-lg p-4 text-gray-900 whitespace-pre-wrap text-sm max-h-[200px] overflow-y-auto">
               {chat.userInput || '-'}
             </div>
           </div>
@@ -241,21 +241,21 @@ export default function ProblematicChatDialog({
           {/* LLM Response */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-medium text-slate-400">LLM 응답</h4>
+              <h4 className="text-sm font-medium text-gray-500">LLM 응답</h4>
               {matchedKeywords.length > 0 && (
                 <span className="text-xs text-yellow-400">
                   하이라이팅 키워드: {matchedKeywords.join(', ')}
                 </span>
               )}
             </div>
-            <div className="bg-slate-900/50 rounded-lg p-4 text-white whitespace-pre-wrap text-sm max-h-[300px] overflow-y-auto">
+            <div className="bg-gray-50 rounded-lg p-4 text-gray-900 whitespace-pre-wrap text-sm max-h-[300px] overflow-y-auto">
               {highlightKeywords(chat.llmResponse, matchedKeywords)}
             </div>
           </div>
 
           {/* Session ID if exists */}
           {chat.sessionId && (
-            <div className="mt-4 text-sm text-slate-400">
+            <div className="mt-4 text-sm text-gray-500">
               <span className="font-medium">세션 ID: </span>
               <span className="font-mono">{chat.sessionId}</span>
             </div>
@@ -263,10 +263,10 @@ export default function ProblematicChatDialog({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-700 flex justify-end">
+        <div className="p-4 border-t border-gray-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+            className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 transition-colors"
           >
             닫기
           </button>

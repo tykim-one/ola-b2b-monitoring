@@ -2,10 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { DataSourceFactory } from '../datasource/factory/datasource.factory';
 import { CacheService, CacheTTL } from '../cache/cache.service';
 import { ServiceDomain } from '../datasource/interfaces';
-import {
-  DomainSummaryKPI,
-  ProjectKPI,
-} from '@ola/shared-types';
+import { DomainSummaryKPI, ProjectKPI } from '@ola/shared-types';
 
 /**
  * Service for aggregating metrics across projects within a domain.
@@ -26,7 +23,12 @@ export class DomainMetricsService {
    * @returns DomainSummaryKPI with combined metrics from all projects in the domain
    */
   async getDomainSummary(domain: ServiceDomain): Promise<DomainSummaryKPI> {
-    const cacheKey = CacheService.generateKey('metrics', 'domain', domain, 'summary');
+    const cacheKey = CacheService.generateKey(
+      'metrics',
+      'domain',
+      domain,
+      'summary',
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
@@ -38,7 +40,9 @@ export class DomainMetricsService {
   /**
    * Fetch and aggregate KPI data from all projects in a domain.
    */
-  private async fetchDomainSummary(domain: ServiceDomain): Promise<DomainSummaryKPI> {
+  private async fetchDomainSummary(
+    domain: ServiceDomain,
+  ): Promise<DomainSummaryKPI> {
     const dataSources = await this.factory.getDataSourcesByDomain(domain);
 
     if (dataSources.length === 0) {
@@ -62,9 +66,7 @@ export class DomainMetricsService {
     );
 
     // Filter out failed fetches
-    const validResults = results.filter(
-      (r): r is ProjectKPI => r !== null,
-    );
+    const validResults = results.filter((r): r is ProjectKPI => r !== null);
 
     if (validResults.length === 0) {
       this.logger.warn(`All KPI fetches failed for domain: ${domain}`);
@@ -86,10 +88,7 @@ export class DomainMetricsService {
       0,
     );
 
-    const totalTokens = results.reduce(
-      (sum, r) => sum + r.kpi.total_tokens,
-      0,
-    );
+    const totalTokens = results.reduce((sum, r) => sum + r.kpi.total_tokens, 0);
 
     const totalInputTokens = results.reduce(
       (sum, r) => sum + r.kpi.total_input_tokens,
@@ -111,15 +110,14 @@ export class DomainMetricsService {
       (sum, r) => sum + r.kpi.success_count,
       0,
     );
-    const successRate = totalRequests > 0
-      ? (successCount / totalRequests) * 100
-      : 0;
+    const successRate =
+      totalRequests > 0 ? (successCount / totalRequests) * 100 : 0;
 
     const avgTokens = totalRequests > 0 ? totalTokens / totalRequests : 0;
 
     this.logger.debug(
       `Aggregated ${results.length} projects for domain ${domain}: ` +
-      `${totalRequests} requests, ${successRate.toFixed(1)}% success`,
+        `${totalRequests} requests, ${successRate.toFixed(1)}% success`,
     );
 
     return {
@@ -160,7 +158,12 @@ export class DomainMetricsService {
    */
   invalidateCache(domain?: ServiceDomain): void {
     if (domain) {
-      const cacheKey = CacheService.generateKey('metrics', 'domain', domain, 'summary');
+      const cacheKey = CacheService.generateKey(
+        'metrics',
+        'domain',
+        domain,
+        'summary',
+      );
       this.cacheService.del(cacheKey);
       this.logger.debug(`Invalidated cache for domain: ${domain}`);
     } else {

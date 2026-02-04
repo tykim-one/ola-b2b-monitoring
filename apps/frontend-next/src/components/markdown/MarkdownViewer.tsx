@@ -17,31 +17,31 @@ interface MarkdownViewerProps {
 
 const sizeClasses = {
   sm: {
-    h1: 'text-lg font-bold mt-3 mb-1.5 text-slate-100',
-    h2: 'text-base font-bold mt-2.5 mb-1 text-slate-100',
-    h3: 'text-sm font-semibold mt-2 mb-1 text-slate-100',
-    h4: 'text-sm font-semibold mt-2 mb-0.5 text-slate-200',
-    p: 'mb-2 text-slate-200',
-    ul: 'list-disc ml-4 mb-2 text-slate-200',
-    ol: 'list-decimal ml-4 mb-2 text-slate-200',
+    h1: 'text-lg font-bold mt-3 mb-1.5 text-gray-800',
+    h2: 'text-base font-bold mt-2.5 mb-1 text-gray-800',
+    h3: 'text-sm font-semibold mt-2 mb-1 text-gray-800',
+    h4: 'text-sm font-semibold mt-2 mb-0.5 text-gray-700',
+    p: 'mb-2 text-gray-700',
+    ul: 'list-disc ml-4 mb-2 text-gray-700',
+    ol: 'list-decimal ml-4 mb-2 text-gray-700',
     li: 'mb-0.5',
-    blockquote: 'border-l-4 border-slate-600 pl-3 my-2 italic text-slate-400',
-    pre: 'bg-slate-900/60 rounded-md p-2.5 my-2 overflow-x-auto text-xs',
+    blockquote: 'border-l-4 border-gray-300 pl-3 my-2 italic text-gray-500',
+    pre: 'bg-white/60 rounded-md p-2.5 my-2 overflow-x-auto text-xs',
     table: 'text-xs',
     th: 'px-2 py-1.5',
     td: 'px-2 py-1.5',
   },
   base: {
-    h1: 'text-2xl font-bold mt-5 mb-2 text-slate-100',
-    h2: 'text-xl font-bold mt-4 mb-2 text-slate-100',
-    h3: 'text-lg font-semibold mt-3 mb-1.5 text-slate-100',
-    h4: 'text-base font-semibold mt-3 mb-1 text-slate-200',
-    p: 'mb-3 text-slate-200',
-    ul: 'list-disc ml-5 mb-3 text-slate-200',
-    ol: 'list-decimal ml-5 mb-3 text-slate-200',
+    h1: 'text-2xl font-bold mt-5 mb-2 text-gray-800',
+    h2: 'text-xl font-bold mt-4 mb-2 text-gray-800',
+    h3: 'text-lg font-semibold mt-3 mb-1.5 text-gray-800',
+    h4: 'text-base font-semibold mt-3 mb-1 text-gray-700',
+    p: 'mb-3 text-gray-700',
+    ul: 'list-disc ml-5 mb-3 text-gray-700',
+    ol: 'list-decimal ml-5 mb-3 text-gray-700',
     li: 'mb-1',
-    blockquote: 'border-l-4 border-slate-600 pl-4 my-3 italic text-slate-400',
-    pre: 'bg-slate-900/60 rounded-md p-3 my-3 overflow-x-auto text-sm',
+    blockquote: 'border-l-4 border-gray-300 pl-4 my-3 italic text-gray-500',
+    pre: 'bg-white/60 rounded-md p-3 my-3 overflow-x-auto text-sm',
     table: 'text-sm',
     th: 'px-3 py-2',
     td: 'px-3 py-2',
@@ -60,7 +60,7 @@ function CopyButton({ text, className = '' }: { text: string; className?: string
   return (
     <button
       onClick={handleCopy}
-      className={`p-1.5 rounded bg-slate-700/50 hover:bg-slate-600/50 text-slate-400 hover:text-slate-200 transition-all ${className}`}
+      className={`p-1.5 rounded bg-gray-100 hover:bg-gray-200/50 text-gray-500 hover:text-gray-700 transition-all ${className}`}
       title="Copy code"
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -108,14 +108,14 @@ export default function MarkdownViewer({
 
       if (!isBlock) {
         return (
-          <code className="bg-slate-700/50 px-1.5 py-0.5 rounded text-blue-300 text-[0.9em]" {...props}>
+          <code className="bg-gray-100 px-1.5 py-0.5 rounded text-blue-300 text-[0.9em]" {...props}>
             {children}
           </code>
         );
       }
 
       return (
-        <code className={`${codeClassName} text-slate-300`} {...props}>
+        <code className={`${codeClassName} text-gray-600`} {...props}>
           {children}
         </code>
       );
@@ -150,28 +150,28 @@ export default function MarkdownViewer({
 
     table: ({ children }) => (
       <div className="overflow-x-auto my-3">
-        <table className={`border-collapse border border-slate-700 w-full ${styles.table}`}>
+        <table className={`border-collapse border border-gray-200 w-full ${styles.table}`}>
           {children}
         </table>
       </div>
     ),
-    thead: ({ children }) => <thead className="bg-slate-800">{children}</thead>,
+    thead: ({ children }) => <thead className="bg-white">{children}</thead>,
     th: ({ children }) => (
-      <th className={`border border-slate-700 font-semibold text-left text-slate-200 ${styles.th}`}>
+      <th className={`border border-gray-200 font-semibold text-left text-gray-700 ${styles.th}`}>
         {children}
       </th>
     ),
     td: ({ children }) => (
-      <td className={`border border-slate-700 text-slate-300 ${styles.td}`}>
+      <td className={`border border-gray-200 text-gray-600 ${styles.td}`}>
         {children}
       </td>
     ),
 
-    hr: () => <hr className="border-slate-700 my-4" />,
+    hr: () => <hr className="border-gray-200 my-4" />,
 
-    strong: ({ children }) => <strong className="font-semibold text-slate-100">{children}</strong>,
+    strong: ({ children }) => <strong className="font-semibold text-gray-800">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
-    del: ({ children }) => <del className="line-through text-slate-400">{children}</del>,
+    del: ({ children }) => <del className="line-through text-gray-500">{children}</del>,
 
     // GFM task list items
     input: ({ checked }) => (
@@ -179,7 +179,7 @@ export default function MarkdownViewer({
         type="checkbox"
         checked={checked}
         readOnly
-        className="mr-2 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
+        className="mr-2 rounded border-gray-300 bg-gray-100 text-blue-500 focus:ring-blue-500"
       />
     ),
   }), [styles, enableCodeCopy]);
