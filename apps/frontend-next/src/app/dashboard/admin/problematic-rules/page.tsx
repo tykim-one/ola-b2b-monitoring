@@ -41,6 +41,7 @@ import {
   toggleRuleEnabled,
   fetchRulePreviewQuery,
 } from '@/services/problematicChatService';
+import Modal from '@/components/ui/Modal';
 
 interface ConditionFormData {
   field: string;
@@ -560,548 +561,515 @@ export default function ProblematicRulesPage() {
 
       {/* Detail Dialog */}
       {detailRule && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleCloseDetail} />
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 shrink-0">
-              <div className="flex items-center gap-3">
-                <h3 className="text-lg font-semibold text-gray-900">규칙 상세</h3>
-                <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                  detailRule.isEnabled ? 'bg-green-600/20 text-green-400' : 'bg-gray-100 text-gray-500'
-                }`}>
-                  {detailRule.isEnabled ? '활성' : '비활성'}
-                </span>
-              </div>
-              <button
-                onClick={handleCloseDetail}
-                className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+        <Modal
+          isOpen={!!detailRule}
+          onClose={handleCloseDetail}
+          title="규칙 상세"
+          size="lg"
+        >
+          {/* Status badge */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+              detailRule.isEnabled ? 'bg-green-600/20 text-green-400' : 'bg-gray-100 text-gray-500'
+            }`}>
+              {detailRule.isEnabled ? '활성' : '비활성'}
+            </span>
+          </div>
+
+          {/* Meta Info */}
+          <div className="space-y-3 mb-5">
+            <div>
+              <p className="text-xs text-gray-400 mb-1">규칙 이름</p>
+              <p className="text-gray-900 font-medium text-lg">{detailRule.name}</p>
             </div>
-
-            {/* Body - scrollable */}
-            <div className="p-6 space-y-5 overflow-y-auto">
-              {/* Meta Info */}
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-400 mb-1">규칙 이름</p>
-                  <p className="text-gray-900 font-medium text-lg">{detailRule.name}</p>
-                </div>
-                {detailRule.description && (
-                  <div>
-                    <p className="text-xs text-gray-400 mb-1">설명</p>
-                    <p className="text-gray-600">{detailRule.description}</p>
-                  </div>
-                )}
-                <div className="flex gap-6 text-sm">
-                  <div>
-                    <p className="text-xs text-gray-400 mb-1">생성일</p>
-                    <p className="text-gray-600">{new Date(detailRule.createdAt).toLocaleString('ko-KR')}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 mb-1">수정일</p>
-                    <p className="text-gray-600">{new Date(detailRule.updatedAt).toLocaleString('ko-KR')}</p>
-                  </div>
-                </div>
+            {detailRule.description && (
+              <div>
+                <p className="text-xs text-gray-400 mb-1">설명</p>
+                <p className="text-gray-600">{detailRule.description}</p>
               </div>
-
-              {/* Conditions Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                <p className="text-xs text-gray-400 mb-2">조건 설정</p>
-                {isCompoundConfig(detailRule.config) ? (() => {
-                  const cc = detailRule.config;
-                  return (
-                  <div className="space-y-2">
-                    <span className="px-2 py-0.5 rounded text-xs font-bold bg-purple-600/20 text-purple-400">
-                      복합 규칙 ({cc.logic})
-                    </span>
-                    {cc.conditions.map((c, i) => {
-                      const fd = getFieldDefinition(c.field);
-                      const od = getOperatorDefinition(c.operator);
-                      const val = Array.isArray(c.value) ? (c.value as string[]).join(', ') : String(c.value);
-                      return (
-                        <div key={i} className="flex items-center gap-2 text-sm">
-                          {i > 0 && (
-                            <span className="text-purple-400 text-xs font-bold">{cc.logic}</span>
-                          )}
-                          <span className="text-blue-400">{fd?.label || c.field}</span>
-                          <span className="text-amber-400">{od?.label || c.operator}</span>
-                          <span className="text-green-400 break-all">{val}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  );
-                })() : (
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${getFieldColor(detailRule.config.field)}`}>
-                      {getFieldDefinition(detailRule.config.field)?.label || detailRule.config.field}
-                    </span>
-                    <span className="text-amber-400">{getOperatorDefinition(detailRule.config.operator)?.label || detailRule.config.operator}</span>
-                    <span className="text-green-400">
-                      {Array.isArray(detailRule.config.value)
-                        ? (detailRule.config.value as string[]).join(', ')
-                        : String(detailRule.config.value)}
-                    </span>
-                  </div>
-                )}
+            )}
+            <div className="flex gap-6 text-sm">
+              <div>
+                <p className="text-xs text-gray-400 mb-1">생성일</p>
+                <p className="text-gray-600">{new Date(detailRule.createdAt).toLocaleString('ko-KR')}</p>
               </div>
-
-              {/* SQL Preview - Collapsible */}
-              <div className="border border-gray-100 rounded-lg overflow-hidden">
-                <button
-                  onClick={handleToggleSQL}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-white/80 transition-colors text-left"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-600">SQL 쿼리 미리보기</span>
-                    {sqlLoading && (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500" />
-                    )}
-                  </div>
-                  {showSQL ? (
-                    <ChevronUp className="w-4 h-4 text-gray-500" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                  )}
-                </button>
-
-                {showSQL && sqlQuery && (
-                  <div className="relative">
-                    {/* Copy button */}
-                    <button
-                      onClick={handleCopySQL}
-                      className="absolute top-2 right-2 p-1.5 rounded bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 transition-colors z-10"
-                      title="SQL 복사"
-                    >
-                      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                    </button>
-                    <pre className="p-4 bg-gray-50 text-sm text-gray-600 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
-                      {sqlQuery}
-                    </pre>
-                  </div>
-                )}
+              <div>
+                <p className="text-xs text-gray-400 mb-1">수정일</p>
+                <p className="text-gray-600">{new Date(detailRule.updatedAt).toLocaleString('ko-KR')}</p>
               </div>
-            </div>
-
-            {/* Footer */}
-            <div className="flex justify-end gap-3 p-4 border-t border-gray-200 shrink-0">
-              <button
-                onClick={handleCloseDetail}
-                className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 transition-colors"
-              >
-                닫기
-              </button>
             </div>
           </div>
-        </div>
+
+          {/* Conditions Summary */}
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 mb-5">
+            <p className="text-xs text-gray-400 mb-2">조건 설정</p>
+            {isCompoundConfig(detailRule.config) ? (() => {
+              const cc = detailRule.config;
+              return (
+              <div className="space-y-2">
+                <span className="px-2 py-0.5 rounded text-xs font-bold bg-purple-600/20 text-purple-400">
+                  복합 규칙 ({cc.logic})
+                </span>
+                {cc.conditions.map((c, i) => {
+                  const fd = getFieldDefinition(c.field);
+                  const od = getOperatorDefinition(c.operator);
+                  const val = Array.isArray(c.value) ? (c.value as string[]).join(', ') : String(c.value);
+                  return (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      {i > 0 && (
+                        <span className="text-purple-400 text-xs font-bold">{cc.logic}</span>
+                      )}
+                      <span className="text-blue-400">{fd?.label || c.field}</span>
+                      <span className="text-amber-400">{od?.label || c.operator}</span>
+                      <span className="text-green-400 break-all">{val}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              );
+            })() : (
+              <div className="flex items-center gap-2 text-sm">
+                <span className={`px-2 py-0.5 rounded text-xs font-medium ${getFieldColor(detailRule.config.field)}`}>
+                  {getFieldDefinition(detailRule.config.field)?.label || detailRule.config.field}
+                </span>
+                <span className="text-amber-400">{getOperatorDefinition(detailRule.config.operator)?.label || detailRule.config.operator}</span>
+                <span className="text-green-400">
+                  {Array.isArray(detailRule.config.value)
+                    ? (detailRule.config.value as string[]).join(', ')
+                    : String(detailRule.config.value)}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* SQL Preview - Collapsible */}
+          <div className="border border-gray-100 rounded-lg overflow-hidden">
+            <button
+              onClick={handleToggleSQL}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-white/80 transition-colors text-left"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">SQL 쿼리 미리보기</span>
+                {sqlLoading && (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500" />
+                )}
+              </div>
+              {showSQL ? (
+                <ChevronUp className="w-4 h-4 text-gray-500" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              )}
+            </button>
+
+            {showSQL && sqlQuery && (
+              <div className="relative">
+                <button
+                  onClick={handleCopySQL}
+                  className="absolute top-2 right-2 p-1.5 rounded bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 transition-colors z-10"
+                  title="SQL 복사"
+                >
+                  {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                </button>
+                <pre className="p-4 bg-gray-50 text-sm text-gray-600 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
+                  {sqlQuery}
+                </pre>
+              </div>
+            )}
+          </div>
+        </Modal>
       )}
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleCloseModal} />
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-2xl">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
-                {editingRule ? '규칙 수정' : '새 규칙 추가'}
-              </h3>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          title={editingRule ? '규칙 수정' : '새 규칙 추가'}
+          size="md"
+        >
+          <div className="space-y-4">
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-500 mb-1">규칙 이름 *</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
+                placeholder="예: Output 토큰 부족"
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-medium text-gray-500 mb-1">설명</label>
+              <input
+                type="text"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
+                placeholder="예: Output 토큰이 1500 미만인 응답"
+              />
+            </div>
+
+            {/* 규칙 모드 토글 */}
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
+              <span className="text-sm text-gray-500">규칙 유형:</span>
               <button
-                onClick={handleCloseModal}
-                className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
+                type="button"
+                onClick={() => {
+                  const newIsCompound = !formData.isCompound;
+                  setFormData(prev => ({
+                    ...prev,
+                    isCompound: newIsCompound,
+                    conditions: newIsCompound && prev.conditions.length === 0
+                      ? [createDefaultCondition(), createDefaultCondition()]
+                      : prev.conditions,
+                  }));
+                }}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  formData.isCompound
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
               >
-                <X className="w-5 h-5" />
+                {formData.isCompound ? '복합 규칙 (다중 조건)' : '단순 규칙'}
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">규칙 이름 *</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
-                  placeholder="예: Output 토큰 부족"
-                />
-              </div>
+            {formData.isCompound ? (
+              <div className="space-y-3">
+                {/* Logic selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-500">로직:</span>
+                  {(['AND', 'OR'] as const).map(l => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, logic: l }))}
+                      className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                        formData.logic === l
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }`}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
 
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">설명</label>
-                <input
-                  type="text"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
-                  placeholder="예: Output 토큰이 1500 미만인 응답"
-                />
-              </div>
+                {/* Conditions */}
+                {formData.conditions.map((cond, idx) => {
+                  const condOps = getOperatorsForField(cond.field);
+                  const condOpDef = getOperatorDefinition(cond.operator);
+                  return (
+                    <div key={idx} className="p-3 rounded-lg bg-gray-50 border border-gray-100 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-gray-400">조건 {idx + 1}</span>
+                        {formData.conditions.length > 2 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFormData(prev => ({
+                                ...prev,
+                                conditions: prev.conditions.filter((_, i) => i !== idx),
+                              }));
+                            }}
+                            className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-rose-400 transition-colors"
+                            title="조건 삭제"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                      {/* Field selector */}
+                      <select
+                        value={cond.field}
+                        onChange={(e) => {
+                          const newField = e.target.value;
+                          const newOps = getOperatorsForField(newField);
+                          setFormData(prev => ({
+                            ...prev,
+                            conditions: prev.conditions.map((c, i) => i === idx
+                              ? { ...c, field: newField, operator: newOps[0]?.operator || '' }
+                              : c),
+                          }));
+                        }}
+                        className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                      >
+                        {RULE_FIELDS.map(f => (
+                          <option key={f.field} value={f.field}>{f.label} ({f.dataType})</option>
+                        ))}
+                      </select>
+                      {/* Operator selector */}
+                      <select
+                        value={cond.operator}
+                        onChange={(e) => {
+                          setFormData(prev => ({
+                            ...prev,
+                            conditions: prev.conditions.map((c, i) => i === idx
+                              ? { ...c, operator: e.target.value }
+                              : c),
+                          }));
+                        }}
+                        className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                      >
+                        {condOps.map(op => (
+                          <option key={op.operator} value={op.operator}>{op.label}</option>
+                        ))}
+                      </select>
+                      {/* Value input based on valueType */}
+                      {condOpDef?.valueType === 'number' && (
+                        <input
+                          type="number"
+                          value={cond.numericValue}
+                          onChange={(e) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              conditions: prev.conditions.map((c, i) => i === idx
+                                ? { ...c, numericValue: parseFloat(e.target.value) || 0 }
+                                : c),
+                            }));
+                          }}
+                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                          step="any"
+                        />
+                      )}
+                      {condOpDef?.valueType === 'string' && (
+                        <input
+                          type="text"
+                          value={cond.stringValue}
+                          onChange={(e) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              conditions: prev.conditions.map((c, i) => i === idx
+                                ? { ...c, stringValue: e.target.value }
+                                : c),
+                            }));
+                          }}
+                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                          placeholder="검색할 텍스트"
+                        />
+                      )}
+                      {condOpDef?.valueType === 'string_array' && (
+                        <textarea
+                          value={cond.stringArrayValue}
+                          onChange={(e) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              conditions: prev.conditions.map((c, i) => i === idx
+                                ? { ...c, stringArrayValue: e.target.value }
+                                : c),
+                            }));
+                          }}
+                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none resize-none"
+                          rows={2}
+                          placeholder="키워드1, 키워드2, ..."
+                        />
+                      )}
+                      {condOpDef?.valueType === 'boolean' && (
+                        <select
+                          value={cond.booleanValue ? 'true' : 'false'}
+                          onChange={(e) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              conditions: prev.conditions.map((c, i) => i === idx
+                                ? { ...c, booleanValue: e.target.value === 'true' }
+                                : c),
+                            }));
+                          }}
+                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                        >
+                          <option value="true">True</option>
+                          <option value="false">False</option>
+                        </select>
+                      )}
+                      {/* AND/OR separator between conditions */}
+                      {idx < formData.conditions.length - 1 && (
+                        <div className="flex items-center justify-center pt-1">
+                          <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                            formData.logic === 'AND' ? 'bg-blue-600/20 text-blue-400' : 'bg-amber-600/20 text-amber-400'
+                          }`}>
+                            {formData.logic}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
-              {/* 규칙 모드 토글 */}
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-                <span className="text-sm text-gray-500">규칙 유형:</span>
+                {/* Add condition button */}
                 <button
                   type="button"
                   onClick={() => {
-                    const newIsCompound = !formData.isCompound;
                     setFormData(prev => ({
                       ...prev,
-                      isCompound: newIsCompound,
-                      conditions: newIsCompound && prev.conditions.length === 0
-                        ? [createDefaultCondition(), createDefaultCondition()]
-                        : prev.conditions,
+                      conditions: [...prev.conditions, createDefaultCondition()],
                     }));
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    formData.isCompound
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-dashed border-gray-300 text-gray-500 hover:text-gray-900 hover:border-gray-400 transition-colors text-sm"
                 >
-                  {formData.isCompound ? '복합 규칙 (다중 조건)' : '단순 규칙'}
+                  <CopyPlus className="w-4 h-4" />
+                  조건 추가
                 </button>
               </div>
-
-              {formData.isCompound ? (
-                <div className="space-y-3">
-                  {/* Logic selector */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-500">로직:</span>
-                    {(['AND', 'OR'] as const).map(l => (
-                      <button
-                        key={l}
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, logic: l }))}
-                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                          formData.logic === l
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                        }`}
-                      >
-                        {l}
-                      </button>
+            ) : (
+              <>
+                {/* Field Selector (단순 규칙) */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">대상 필드 *</label>
+                  <select
+                    value={formData.field}
+                    onChange={(e) => setFormData({ ...formData, field: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
+                  >
+                    {RULE_FIELDS.map((f) => (
+                      <option key={f.field} value={f.field}>
+                        {f.label} ({f.dataType})
+                      </option>
                     ))}
-                  </div>
+                  </select>
+                  {(() => {
+                    const fd = getFieldDefinition(formData.field);
+                    return fd?.description ? (
+                      <p className="mt-1 text-xs text-gray-400">{fd.description}</p>
+                    ) : null;
+                  })()}
+                </div>
 
-                  {/* Conditions */}
-                  {formData.conditions.map((cond, idx) => {
-                    const condOps = getOperatorsForField(cond.field);
-                    const condOpDef = getOperatorDefinition(cond.operator);
-                    return (
-                      <div key={idx} className="p-3 rounded-lg bg-gray-50 border border-gray-100 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium text-gray-400">조건 {idx + 1}</span>
-                          {formData.conditions.length > 2 && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setFormData(prev => ({
-                                  ...prev,
-                                  conditions: prev.conditions.filter((_, i) => i !== idx),
-                                }));
-                              }}
-                              className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-rose-400 transition-colors"
-                              title="조건 삭제"
-                            >
-                              <Minus className="w-4 h-4" />
-                            </button>
-                          )}
-                        </div>
-                        {/* Field selector */}
-                        <select
-                          value={cond.field}
-                          onChange={(e) => {
-                            const newField = e.target.value;
-                            const newOps = getOperatorsForField(newField);
-                            setFormData(prev => ({
-                              ...prev,
-                              conditions: prev.conditions.map((c, i) => i === idx
-                                ? { ...c, field: newField, operator: newOps[0]?.operator || '' }
-                                : c),
-                            }));
-                          }}
-                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
-                        >
-                          {RULE_FIELDS.map(f => (
-                            <option key={f.field} value={f.field}>{f.label} ({f.dataType})</option>
-                          ))}
-                        </select>
-                        {/* Operator selector */}
-                        <select
-                          value={cond.operator}
-                          onChange={(e) => {
-                            setFormData(prev => ({
-                              ...prev,
-                              conditions: prev.conditions.map((c, i) => i === idx
-                                ? { ...c, operator: e.target.value }
-                                : c),
-                            }));
-                          }}
-                          className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
-                        >
-                          {condOps.map(op => (
-                            <option key={op.operator} value={op.operator}>{op.label}</option>
-                          ))}
-                        </select>
-                        {/* Value input based on valueType */}
-                        {condOpDef?.valueType === 'number' && (
+                {/* Operator Selector (단순 규칙) */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">연산자 *</label>
+                  <select
+                    value={formData.operator}
+                    onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
+                  >
+                    {availableOperators.map((op) => (
+                      <option key={op.operator} value={op.operator}>
+                        {op.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Value Input (단순 규칙) */}
+                {(() => {
+                  const opDef = getOperatorDefinition(formData.operator);
+                  if (!opDef) return null;
+
+                  switch (opDef.valueType) {
+                    case 'number':
+                      return (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
                           <input
                             type="number"
-                            value={cond.numericValue}
-                            onChange={(e) => {
-                              setFormData(prev => ({
-                                ...prev,
-                                conditions: prev.conditions.map((c, i) => i === idx
-                                  ? { ...c, numericValue: parseFloat(e.target.value) || 0 }
-                                  : c),
-                              }));
-                            }}
-                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                            value={formData.numericValue}
+                            onChange={(e) =>
+                              setFormData({ ...formData, numericValue: parseFloat(e.target.value) || 0 })
+                            }
+                            className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                             step="any"
                           />
-                        )}
-                        {condOpDef?.valueType === 'string' && (
+                        </div>
+                      );
+                    case 'string':
+                      return (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
                           <input
                             type="text"
-                            value={cond.stringValue}
-                            onChange={(e) => {
-                              setFormData(prev => ({
-                                ...prev,
-                                conditions: prev.conditions.map((c, i) => i === idx
-                                  ? { ...c, stringValue: e.target.value }
-                                  : c),
-                              }));
-                            }}
-                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                            value={formData.stringValue}
+                            onChange={(e) => setFormData({ ...formData, stringValue: e.target.value })}
+                            className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                             placeholder="검색할 텍스트"
                           />
-                        )}
-                        {condOpDef?.valueType === 'string_array' && (
+                        </div>
+                      );
+                    case 'string_array':
+                      return (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">
+                            키워드 (쉼표로 구분) *
+                          </label>
                           <textarea
-                            value={cond.stringArrayValue}
-                            onChange={(e) => {
-                              setFormData(prev => ({
-                                ...prev,
-                                conditions: prev.conditions.map((c, i) => i === idx
-                                  ? { ...c, stringArrayValue: e.target.value }
-                                  : c),
-                              }));
-                            }}
-                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none resize-none"
-                            rows={2}
-                            placeholder="키워드1, 키워드2, ..."
+                            value={formData.stringArrayValue}
+                            onChange={(e) => setFormData({ ...formData, stringArrayValue: e.target.value })}
+                            className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none resize-none"
+                            rows={3}
+                            placeholder="예: 죄송합니다, 데이터 없습니다, 찾을 수 없습니다"
                           />
-                        )}
-                        {condOpDef?.valueType === 'boolean' && (
+                        </div>
+                      );
+                    case 'boolean':
+                      return (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
                           <select
-                            value={cond.booleanValue ? 'true' : 'false'}
-                            onChange={(e) => {
-                              setFormData(prev => ({
-                                ...prev,
-                                conditions: prev.conditions.map((c, i) => i === idx
-                                  ? { ...c, booleanValue: e.target.value === 'true' }
-                                  : c),
-                              }));
-                            }}
-                            className="w-full px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                            value={formData.booleanValue ? 'true' : 'false'}
+                            onChange={(e) =>
+                              setFormData({ ...formData, booleanValue: e.target.value === 'true' })
+                            }
+                            className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
                           >
-                            <option value="true">True</option>
-                            <option value="false">False</option>
+                            <option value="true">True (성공)</option>
+                            <option value="false">False (실패)</option>
                           </select>
-                        )}
-                        {/* AND/OR separator between conditions */}
+                        </div>
+                      );
+                    default:
+                      return null;
+                  }
+                })()}
+              </>
+            )}
+
+            {/* Preview */}
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+              <p className="text-xs text-gray-400 mb-1">규칙 미리보기</p>
+              {formData.isCompound ? (
+                <div className="space-y-1">
+                  {formData.conditions.map((cond, idx) => {
+                    const condOpDef = getOperatorDefinition(cond.operator);
+                    const condFieldDef = getFieldDefinition(cond.field);
+                    const val = getConditionValue(cond);
+                    return (
+                      <div key={idx}>
+                        <p className="text-sm text-gray-600">
+                          <span className="text-blue-400">{condFieldDef?.label}</span>
+                          {' '}
+                          <span className="text-amber-400">{condOpDef?.label}</span>
+                          {' '}
+                          <span className="text-green-400">
+                            {Array.isArray(val) ? val.join(', ') : String(val)}
+                          </span>
+                        </p>
                         {idx < formData.conditions.length - 1 && (
-                          <div className="flex items-center justify-center pt-1">
-                            <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                              formData.logic === 'AND' ? 'bg-blue-600/20 text-blue-400' : 'bg-amber-600/20 text-amber-400'
-                            }`}>
-                              {formData.logic}
-                            </span>
-                          </div>
+                          <p className="text-xs text-center text-purple-400 font-bold">{formData.logic}</p>
                         )}
                       </div>
                     );
                   })}
-
-                  {/* Add condition button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData(prev => ({
-                        ...prev,
-                        conditions: [...prev.conditions, createDefaultCondition()],
-                      }));
-                    }}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-dashed border-gray-300 text-gray-500 hover:text-gray-900 hover:border-gray-400 transition-colors text-sm"
-                  >
-                    <CopyPlus className="w-4 h-4" />
-                    조건 추가
-                  </button>
                 </div>
               ) : (
-                <>
-                  {/* Field Selector (단순 규칙) */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">대상 필드 *</label>
-                    <select
-                      value={formData.field}
-                      onChange={(e) => setFormData({ ...formData, field: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
-                    >
-                      {RULE_FIELDS.map((f) => (
-                        <option key={f.field} value={f.field}>
-                          {f.label} ({f.dataType})
-                        </option>
-                      ))}
-                    </select>
+                <p className="text-sm text-gray-600">
+                  <span className="text-blue-400">{getFieldDefinition(formData.field)?.label}</span>
+                  {' '}
+                  <span className="text-amber-400">{getOperatorDefinition(formData.operator)?.label}</span>
+                  {' '}
+                  <span className="text-green-400">
                     {(() => {
-                      const fd = getFieldDefinition(formData.field);
-                      return fd?.description ? (
-                        <p className="mt-1 text-xs text-gray-400">{fd.description}</p>
-                      ) : null;
+                      const v = getConfigValue();
+                      return Array.isArray(v) ? v.join(', ') : String(v);
                     })()}
-                  </div>
-
-                  {/* Operator Selector (단순 규칙) */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">연산자 *</label>
-                    <select
-                      value={formData.operator}
-                      onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
-                    >
-                      {availableOperators.map((op) => (
-                        <option key={op.operator} value={op.operator}>
-                          {op.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Value Input (단순 규칙) */}
-                  {(() => {
-                    const opDef = getOperatorDefinition(formData.operator);
-                    if (!opDef) return null;
-
-                    switch (opDef.valueType) {
-                      case 'number':
-                        return (
-                          <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
-                            <input
-                              type="number"
-                              value={formData.numericValue}
-                              onChange={(e) =>
-                                setFormData({ ...formData, numericValue: parseFloat(e.target.value) || 0 })
-                              }
-                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
-                              step="any"
-                            />
-                          </div>
-                        );
-                      case 'string':
-                        return (
-                          <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
-                            <input
-                              type="text"
-                              value={formData.stringValue}
-                              onChange={(e) => setFormData({ ...formData, stringValue: e.target.value })}
-                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
-                              placeholder="검색할 텍스트"
-                            />
-                          </div>
-                        );
-                      case 'string_array':
-                        return (
-                          <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">
-                              키워드 (쉼표로 구분) *
-                            </label>
-                            <textarea
-                              value={formData.stringArrayValue}
-                              onChange={(e) => setFormData({ ...formData, stringArrayValue: e.target.value })}
-                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none resize-none"
-                              rows={3}
-                              placeholder="예: 죄송합니다, 데이터 없습니다, 찾을 수 없습니다"
-                            />
-                          </div>
-                        );
-                      case 'boolean':
-                        return (
-                          <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">값 *</label>
-                            <select
-                              value={formData.booleanValue ? 'true' : 'false'}
-                              onChange={(e) =>
-                                setFormData({ ...formData, booleanValue: e.target.value === 'true' })
-                              }
-                              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:border-blue-500 focus:outline-none"
-                            >
-                              <option value="true">True (성공)</option>
-                              <option value="false">False (실패)</option>
-                            </select>
-                          </div>
-                        );
-                      default:
-                        return null;
-                    }
-                  })()}
-                </>
+                  </span>
+                </p>
               )}
-
-              {/* Preview */}
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                <p className="text-xs text-gray-400 mb-1">규칙 미리보기</p>
-                {formData.isCompound ? (
-                  <div className="space-y-1">
-                    {formData.conditions.map((cond, idx) => {
-                      const condOpDef = getOperatorDefinition(cond.operator);
-                      const condFieldDef = getFieldDefinition(cond.field);
-                      const val = getConditionValue(cond);
-                      return (
-                        <div key={idx}>
-                          <p className="text-sm text-gray-600">
-                            <span className="text-blue-400">{condFieldDef?.label}</span>
-                            {' '}
-                            <span className="text-amber-400">{condOpDef?.label}</span>
-                            {' '}
-                            <span className="text-green-400">
-                              {Array.isArray(val) ? val.join(', ') : String(val)}
-                            </span>
-                          </p>
-                          {idx < formData.conditions.length - 1 && (
-                            <p className="text-xs text-center text-purple-400 font-bold">{formData.logic}</p>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-600">
-                    <span className="text-blue-400">{getFieldDefinition(formData.field)?.label}</span>
-                    {' '}
-                    <span className="text-amber-400">{getOperatorDefinition(formData.operator)?.label}</span>
-                    {' '}
-                    <span className="text-green-400">
-                      {(() => {
-                        const v = getConfigValue();
-                        return Array.isArray(v) ? v.join(', ') : String(v);
-                      })()}
-                    </span>
-                  </p>
-                )}
-              </div>
             </div>
 
-            {/* Modal Footer */}
-            <div className="flex justify-end gap-3 p-4 border-t border-gray-200">
+            {/* Footer */}
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
               <button
                 onClick={handleCloseModal}
                 className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 transition-colors"
@@ -1119,7 +1087,7 @@ export default function ProblematicRulesPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );
