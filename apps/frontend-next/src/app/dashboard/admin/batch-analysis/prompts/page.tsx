@@ -20,6 +20,7 @@ import {
 } from '@/services/batchAnalysisService';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 
 export default function PromptsPage() {
   const router = useRouter();
@@ -367,9 +368,7 @@ export default function PromptsPage() {
                       </span>
                     )}
                     {!template.isActive && (
-                      <span className="px-2 py-1 bg-white border border-gray-200 text-gray-500 text-xs">
-                        Inactive
-                      </span>
+                      <StatusBadge variant="neutral" label="Inactive" />
                     )}
                   </div>
                   {template.description && (

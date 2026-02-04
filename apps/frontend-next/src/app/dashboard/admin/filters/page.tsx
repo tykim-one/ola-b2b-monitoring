@@ -9,6 +9,7 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import FilterFormModal from './components/FilterFormModal';
 import { StatsFooter } from '@/components/ui/StatsFooter';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 
 export default function FiltersPage() {
   const { data: filters = [], isLoading, error } = useFilters();
@@ -183,10 +184,11 @@ export default function FiltersPage() {
                           {filter.name}
                         </h3>
                         {filter.isDefault && (
-                          <span className="flex items-center gap-1 px-2 py-0.5 bg-yellow-600/20 border border-yellow-500/30 text-yellow-400 text-xs font-mono uppercase">
-                            <Star className="w-3 h-3 fill-current" />
-                            Default
-                          </span>
+                          <StatusBadge
+                            variant="warning"
+                            icon={<Star className="w-3 h-3 fill-current" />}
+                            label="Default"
+                          />
                         )}
                       </div>
                       <p className="text-gray-500 text-sm mt-1">
