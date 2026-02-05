@@ -20,6 +20,7 @@ import {
 import { EmptyState } from '@/components/ui/EmptyState';
 import KPICard from '@/components/kpi/KPICard';
 import { Chart } from '@/components/compound/Chart';
+import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
 
 export default function IssueFrequencyPage() {
   const [data, setData] = useState<IssueFrequencyResponse | null>(null);
@@ -29,9 +30,9 @@ export default function IssueFrequencyPage() {
 
   // Filters
   const [tenantId, setTenantId] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [limit, setLimit] = useState<number>(10);
+  const [filterKey, setFilterKey] = useState(0); // DateRangeFilter 리셋용
 
   // Expanded issues
   const [expandedIssue, setExpandedIssue] = useState<string | null>(null);
@@ -42,8 +43,8 @@ export default function IssueFrequencyPage() {
     try {
       const params: any = { limit };
       if (tenantId) params.tenantId = tenantId;
-      if (startDate) params.startDate = startDate;
-      if (endDate) params.endDate = endDate;
+      if (dateRange?.startDate) params.startDate = dateRange.startDate;
+      if (dateRange?.endDate) params.endDate = dateRange.endDate;
 
       const response = await batchAnalysisApi.getIssueFrequency(params);
       setData(response);
@@ -52,7 +53,7 @@ export default function IssueFrequencyPage() {
     } finally {
       setLoading(false);
     }
-  }, [tenantId, startDate, endDate, limit]);
+  }, [tenantId, dateRange, limit]);
 
   const fetchTenants = async () => {
     try {
@@ -70,9 +71,9 @@ export default function IssueFrequencyPage() {
 
   const handleResetFilters = () => {
     setTenantId('');
-    setStartDate('');
-    setEndDate('');
+    setDateRange(null);
     setLimit(10);
+    setFilterKey((prev) => prev + 1); // DateRangeFilter 리마운트로 초기화
   };
 
   // Chart colors
@@ -140,23 +141,12 @@ export default function IssueFrequencyPage() {
             </select>
           </div>
 
-          <div className="flex-1 min-w-[150px]">
-            <label className="block text-sm text-gray-500 mb-1">시작 날짜</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-900"
-            />
-          </div>
-
-          <div className="flex-1 min-w-[150px]">
-            <label className="block text-sm text-gray-500 mb-1">종료 날짜</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-900"
+          <div className="flex-1 min-w-[300px]">
+            <label className="block text-sm text-gray-500 mb-1">기간</label>
+            <DateRangeFilter
+              key={filterKey}
+              defaultPreset="week"
+              onChange={setDateRange}
             />
           </div>
 

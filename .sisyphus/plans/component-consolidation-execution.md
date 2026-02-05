@@ -25,7 +25,7 @@
 | Phase 6 | ✅ 완료 | 인라인 StatusBadge 2곳 교체 (4곳 특수UI 유지) |
 | Phase 7 | ✅ 완료 | 인라인 KPI 카드 7개 교체 |
 | Phase 8 | ✅ 완료 | Chart compound 16개 차트 마이그레이션 |
-| Phase 9 | ⬜ 대기 | 기타 소규모 교체 (DateRangeFilter) |
+| Phase 9 | ✅ 완료 | 기타 소규모 교체 (DateRangeFilter) |
 
 > Phase 완료 시 ⬜를 ✅로 변경하세요.
 
