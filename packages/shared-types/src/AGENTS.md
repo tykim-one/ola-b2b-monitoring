@@ -14,39 +14,80 @@
 ## Type Categories
 ```typescript
 // 로그 타입
-B2BLog, LogLevel
+LogLevel, B2BLog
 
 // 메트릭 타입
-RealtimeKPI, HourlyTraffic, DailyTraffic
-
-// 분석 타입
-TenantUsage, CostTrend, ErrorAnalysis, UsageHeatmapCell
+RealtimeKPI, HourlyTraffic, DailyTraffic, TenantUsage
+UsageHeatmapCell, CostTrend, ErrorAnalysis, TokenEfficiency
+AnomalyStats, QueryPattern
 
 // 유저 분석 타입 (x_enc_data 기준)
-UserRequestCount, UserTokenUsage, UserQuestionPattern, UserAnalyticsSummary,
-UserListItem, UserActivityDetail
+UserRequestCount, UserTokenUsage, UserQuestionPattern
+UserAnalyticsSummary, UserListItem, UserActivityDetail
 
-// AI/ML 타입
-TokenEfficiency, AnomalyStats, QueryPattern
+// 품질 분석 타입
+TokenEfficiencyTrend, QueryResponseCorrelation, RepeatedQueryPattern
 
-// API 타입
-ApiResponse, ApiErrorResponse, CacheStats
+// 파생 지표
+DerivedMetrics
 
-// 설정 타입
-ChartConfig, DerivedMetrics
+// 캐시 통계
+CacheStats
 
-// 어드민/인증 타입
-LoginRequest, LoginResponse, UserInfo, TokenPayload, User, Role, Permission
-SavedFilter, FilterCriteria, AnalysisSession, AnalysisMessage
+// 차트 설정
+ChartConfig
+
+// API 응답 타입
+ApiResponse, ApiErrorResponse
+
+// 어드민 시스템 - 인증 타입
+LoginRequest, LoginResponse, UserInfo, TokenPayload, RefreshTokenResponse
+
+// 어드민 시스템 - 사용자 관리 타입
+User, CreateUserRequest, UpdateUserRequest, ChangePasswordRequest
+
+// 어드민 시스템 - 역할/권한 타입
+Role, Permission, CreateRoleRequest, UpdateRoleRequest
+
+// 어드민 시스템 - 필터 타입
+SavedFilter, FilterCriteria, CreateFilterRequest, UpdateFilterRequest
+
+// 어드민 시스템 - 분석 세션 타입
+AnalysisSession, AnalysisContext, AnalysisMessage, AnalysisMessageMetadata
+CreateSessionRequest, CreateAnalysisSessionRequest, SendMessageRequest, SendMessageResponse
+
+// 어드민 시스템 - 감사 로그 타입
+AuditLog
+
+// 어드민 시스템 - 페이지네이션/에러 타입
+PaginatedResponse, AdminApiError
+
+// 어드민 시스템 - 헬스 체크
+HealthCheckResponse
+
+// 챗봇 품질 분석 타입
+EmergingQueryPattern, SentimentAnalysisResult, RephrasedQueryPattern
+SessionAnalytics, TenantQualitySummary, FrustrationAlert, ResponseQualityMetrics
 
 // 글로벌 챗봇 타입
-ChatbotRequest, ChatbotMessage, ChatbotResponse, ChatbotSession
+ChatbotRequest, ChatbotMessage, ChatbotMessageMetadata
+ChatbotResponse, ChatbotSession
 
 // 도메인 집계 타입
 ServiceDomain, ProjectKPI, DomainSummaryKPI, GlobalSummaryKPI
 
-// 문제 채팅 모니터링 타입
-ProblematicChatRuleType, TokenOperator, KeywordMatchField
-ProblematicChatRuleConfig, ProblematicChatRule
-ProblematicChat, ProblematicChatFilter, ProblematicChatStats
+// 문제 채팅 모니터링 타입 - 필드/연산자 레지스트리
+RuleFieldDataType, RuleFieldDefinition
+RuleValueType, RuleOperatorDefinition
+RULE_FIELDS (상수), RULE_OPERATORS (상수)
+getOperatorsForField(), getFieldDefinition(), getOperatorDefinition()
+
+// 문제 채팅 모니터링 타입 - 규칙 config
+SingleCondition, CompoundRuleConfig, SimpleRuleConfig
+ProblematicChatRuleConfig, isCompoundConfig(), normalizeToCompound()
+
+// 문제 채팅 모니터링 타입 - 엔티티
+ProblematicChatRule, CreateProblematicChatRuleRequest, UpdateProblematicChatRuleRequest
+ProblematicChat, ProblematicChatFilter
+ProblematicChatRuleStats, ProblematicChatTenantStats, ProblematicChatStats
 ```

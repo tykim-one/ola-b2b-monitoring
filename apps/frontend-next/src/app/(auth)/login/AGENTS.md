@@ -1,20 +1,26 @@
 <!-- Parent: ../AGENTS.md -->
-# login
+# login/
 
 ## Purpose
-로그인 페이지입니다. JWT 인증으로 사용자 로그인 처리 및 redirect 관리를 수행합니다.
+JWT 기반 로그인 페이지. 이메일/비밀번호 인증 후 대시보드로 리다이렉트합니다.
 
 ## Key Files
-- `page.tsx` - 로그인 폼, 유효성 검사, 리다이렉트 처리
+- `page.tsx` - 로그인 폼 컴포넌트 (이메일/비밀백도 입력, 유효성 검사, 리다이렉트 보호)
+
+## Subdirectories
+없음
 
 ## For AI Agents
-- **인증 방식**: JWT (Access Token 15분, Refresh Token 7일)
-- **리다이렉트 보안**: `isValidRedirectPath()` 함수로 open redirect 취약점 방지
-- **허용 경로**: `/dashboard`, `/logs`, `/admin`으로 시작하는 내부 경로만 허용
-- **폼 검증**: 이메일 형식, 비밀번호 최소 6자
-- **에러 처리**: 백엔드 에러 메시지 표시
+- **URL 경로**: `/login` (Route Group `(auth)` 제외)
+- **주요 기능**:
+  - 이메일/비밀번호 폼 검증 (클라이언트 사이드)
+  - `useAuth()` 훅으로 로그인 API 호출
+  - 성공 시 `/dashboard` 또는 `?redirect` 쿼리 파라미터로 지정된 경로로 이동
+  - Open Redirect 취약점 방지 (`isValidRedirectPath` 함수)
+- **스타일**: 화이트 테마, 중앙 정렬 카드 레이아웃
+- **에러 처리**: 서버 응답 메시지를 에러 박스로 표시
+- **Suspense**: LoginForm을 Suspense로 감싸 로딩 스켈레톤 제공
 
 ## Dependencies
-- AuthContext: useAuth() 훅 (login 함수)
-- Backend: `/api/admin/auth/login`
-- Next.js: useRouter, useSearchParams (Suspense로 래핑)
+- `@/contexts/AuthContext` - useAuth 훅으로 login 함수 호출
+- `next/navigation` - useRouter, useSearchParams

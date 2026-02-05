@@ -1,19 +1,26 @@
 <!-- Parent: ../AGENTS.md -->
-# chatbot-quality
+# chatbot-quality/
 
 ## Purpose
-챗봇 품질 분석 페이지입니다. 신규 질문 패턴, 감정 분석, 재질문 패턴, 테넌트별 품질 요약을 제공합니다.
+챗봇 품질 분석 페이지. 일별 자동 채팅 품질 점수 및 LLM 분석 결과를 시각화합니다.
 
 ## Key Files
-- `page.tsx` - 품질 KPI, 4개 테이블 (신규 패턴, 감정, 재질문, 테넌트 요약)
+- `page.tsx` - 챗봇 품질 대시보드 (배치 분석 결과 조회)
+
+## Subdirectories
+없음
 
 ## For AI Agents
-- **신규 패턴**: NEW (완전 새로운 패턴), TRENDING (급증 패턴)
-- **감정 분석**: FRUSTRATED, EMOTIONAL, URGENT, NEUTRAL (사용자 감정 상태)
-- **재질문 패턴**: 같은 세션에서 유사한 질문을 반복하는 경우
-- **테넌트 요약**: 테넌트별 세션 성공률, 불만율, 평균 대화 턴, 평균 세션 길이
+- **URL 경로**: `/dashboard/chatbot-quality`
+- **주요 기능**:
+  - 배치 분석 결과 조회 (평균 점수, 감정 분석, 이슈 검출)
+  - 필터링: 점수 범위, 감정(긍정/부정/중립), 이슈 유무
+  - Markdown 렌더링: LLM 응답 내용 표시
+- **데이터 소스**: `/api/admin/batch-analysis/results` API
+- **연동**: batch-analysis 모듈과 밀접한 관계
 
 ## Dependencies
-- Backend: `/api/quality/chatbot/*` (NestJS)
-- Service: chatbotQualityService.ts
-- Shared types: `@ola/shared-types` (EmergingQueryPattern, SentimentAnalysisResult, etc.)
+- `@/hooks/queries` - useBatchAnalysisResults
+- `@/components/compound/Dashboard`
+- `@/components/markdown/MarkdownRenderer` - LLM 응답 렌더링
+- `@ola/shared-types` - BatchAnalysisResult

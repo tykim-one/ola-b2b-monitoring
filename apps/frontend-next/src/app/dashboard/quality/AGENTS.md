@@ -1,19 +1,27 @@
 <!-- Parent: ../AGENTS.md -->
-# quality
+# quality/
 
 ## Purpose
-품질 모니터링 페이지입니다. 토큰 효율성 트렌드, 질문-응답 상관관계, 반복 질문 패턴을 분석합니다.
+품질 분석 페이지. 토큰 효율성 트렌드, 메트릭 간 상관관계, 반복 패턴을 분석합니다.
 
 ## Key Files
-- `page.tsx` - 품질 KPI, 차트 (TokenEfficiencyTrendChart, QueryResponseScatterPlot), 반복 질문 테이블, FAQ 분석 섹션
+- `page.tsx` - 품질 분석 대시보드 (효율성 트렌드, 상관관계 히트맵, 패턴 테이블)
+
+## Subdirectories
+없음
 
 ## For AI Agents
-- **토큰 효율성**: output_tokens / input_tokens 비율
-- **상관관계**: 질문 길이 vs 응답 길이 산점도
-- **반복 패턴**: 동일 질문이 여러 번 발생하는 패턴 (FAQ 후보)
-- **FAQ 분석**: FAQAnalysisSection 컴포넌트로 클러스터링 결과 표시
+- **URL 경로**: `/dashboard/quality`
+- **주요 기능**:
+  - EfficiencyTrendChart: 일별 토큰 효율성 트렌드 (토큰당 요청 수)
+  - CorrelationHeatmap: 메트릭 간 상관관계 히트맵
+  - DataTable: 반복 패턴 목록 (빈도, 평균 토큰, 에러율)
+- **데이터 소스**: `useQualityDashboard` 훅
+- **메트릭**: 평균 효율성, 최고/최저 효율성 KPI
 
 ## Dependencies
-- Backend: `/api/quality/*` (NestJS)
-- Hooks: use-quality.ts
-- Components: TokenEfficiencyTrendChart, QueryResponseScatterPlot, FAQAnalysisSection
+- `@/hooks/queries/use-dashboard` - useQualityDashboard
+- `@/components/compound/Dashboard`
+- `@/components/kpi/KPICard`
+- `@/components/charts/*` - EfficiencyTrendChart, CorrelationHeatmap
+- `@ola/shared-types` - EfficiencyTrend, Correlation, RepeatPattern

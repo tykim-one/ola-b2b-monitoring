@@ -1,19 +1,24 @@
 <!-- Parent: ../AGENTS.md -->
-# etl
+# etl/
 
 ## Purpose
-ETL (Extract, Transform, Load) 작업 모니터링 페이지 그룹입니다. 외부 데이터 소스의 수집 작업을 추적합니다.
+ETL 모니터링 페이지. 외부 데이터 소스(minkabu, wind) 연동 상태 및 동기화 현황을 모니터링합니다.
+
+## Key Files
+없음 (하위 디렉토리만 존재)
 
 ## Subdirectories
 - `minkabu/` - Minkabu ETL 모니터링 (page.tsx)
 - `wind/` - Wind ETL 모니터링 (page.tsx)
 
 ## For AI Agents
-- **Minkabu**: PostgreSQL에서 실행 내역 조회, 일별 트렌드, 에러 분석
-- **Wind**: (향후 추가 예정)
-- **공통 패턴**: Dashboard 컴포넌트, KPICard, DataTable, 차트 (Recharts)
+- **URL 경로**: `/dashboard/etl/minkabu`, `/dashboard/etl/wind`
+- **주요 기능**:
+  - ETL 작업 실행 상태 (성공/실패/진행중)
+  - 최근 동기화 시간
+  - 데이터 소스별 레코드 수
+- **데이터 소스**: `/api/etl/{source}/status` API (예정)
 
 ## Dependencies
-- Backend: `/api/etl/minkabu/*`, `/api/etl/wind/*`
-- Shared types: `@ola/shared-types` (MinkabuETLRun, WindETLRun)
-- Hooks: use-etl.ts
+- `@/components/compound/Dashboard`
+- `@/components/kpi/KPICard`

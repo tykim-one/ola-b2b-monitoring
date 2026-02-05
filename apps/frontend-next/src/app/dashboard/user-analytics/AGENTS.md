@@ -1,20 +1,26 @@
 <!-- Parent: ../AGENTS.md -->
-# user-analytics
+# user-analytics/
 
 ## Purpose
-유저 분석 페이지입니다. x_enc_data 기준으로 유저별 활동을 추적하고 문제 채팅을 필터링합니다.
+유저별 활동 분석 페이지. x_enc_data 기준으로 사용자별 사용 패턴, 카테고리 분포, 감정 분석을 제공합니다.
 
 ## Key Files
-- `page.tsx` - 탭 인터페이스 (유저 목록 / 문제 채팅), KPI, 테이블, 다이얼로그
-- `[userId]/page.tsx` - 유저 프로파일 상세 페이지 (활동, 카테고리, 감정)
+- `page.tsx` - 유저 목록 페이지 (사용자 검색, 필터링)
+- `[userId]/page.tsx` - 유저 상세 분석 페이지 (프로필, 카테고리, 감정 분석)
+
+## Subdirectories
+- `[userId]/` - 동적 라우트 (특정 사용자 상세 페이지)
 
 ## For AI Agents
-- **유저 탭**: UserListItem, UserQuestionPattern 테이블, UserActivityDialog
-- **문제 채팅 탭**: 규칙 필터 선택, ProblematicChat 테이블, ProblematicChatDialog
-- **규칙 필터**: 활성화된 규칙 중에서 선택적으로 필터링 (체크박스 UI)
-- **프로파일**: 카테고리 분포, 감정 분석, 세션 통계
+- **URL 경로**: `/dashboard/user-analytics` (목록), `/dashboard/user-analytics/{userId}` (상세)
+- **주요 기능**:
+  - 사용자 목록: DataTable로 검색 및 필터링
+  - 사용자 상세: 프로필 카드, 카테고리 분포 차트, 감정 분석 트렌드
+- **데이터 소스**: `/api/admin/user-profiling/:userId` API
+- **카테고리**: LLM 기반 사용자 행동 분류 (쇼핑, 문의, 고객지원 등)
 
 ## Dependencies
-- Backend: `/api/admin/user-profiling/*`, `/api/admin/problematic-chats/*`
-- Hooks: use-user-analytics.ts
-- Dialogs: UserActivityDialog, ProblematicChatDialog
+- `@/hooks/queries` - useUserProfiling
+- `@/components/compound/Dashboard`
+- `@/components/charts/*` - CategoryPieChart, SentimentTrendChart
+- `@ola/shared-types` - UserProfile, CategoryDistribution

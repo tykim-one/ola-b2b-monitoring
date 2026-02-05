@@ -1,33 +1,27 @@
 <!-- Parent: ../AGENTS.md -->
-# app
+# app/
 
 ## Purpose
-Next.js App Router 페이지들입니다. 파일 기반 라우팅으로 URL 경로와 1:1 매핑됩니다.
+Next.js 16 App Router 루트 디렉토리. 모든 페이지와 레이아웃을 포함하며, 파일 시스템 기반 라우팅을 제공합니다.
 
 ## Key Files
-- `layout.tsx` - 루트 레이아웃, Providers 래핑, Sidebar 포함
-- `providers.tsx` - React Query, Auth, Zustand Provider 래퍼
-- `page.tsx` - 메인 페이지 (대시보드로 리다이렉트)
-- `globals.css` - 전역 Tailwind CSS 스타일
-- `favicon.ico` - 파비콘
+- `layout.tsx` - 전역 루트 레이아웃 (Geist 폰트, Providers, LayoutContent 래퍼)
+- `page.tsx` - 홈페이지 (자동으로 /dashboard로 리다이렉트)
+- `providers.tsx` - AuthContext, ChatbotContext 등 전역 Provider 래퍼
+- `globals.css` - Tailwind CSS 전역 스타일
 
 ## Subdirectories
-- `dashboard/` - 대시보드 관련 페이지 (메인 대시보드, 비즈니스/운영/품질 분석)
-- `(auth)/` - 인증 페이지 (로그인)
-- `dashboard/admin/` - 관리자 페이지 (사용자, 역할, 필터, 분석, 배치, 문제 채팅 규칙)
-- `dashboard/business/` - 비즈니스 메트릭 (테넌트 사용량, 비용 트렌드)
-- `dashboard/operations/` - 운영 메트릭 (실시간 트래픽, 에러율, 토큰 효율)
-- `dashboard/quality/` - 품질 분석 (상관관계, 반복 쿼리)
-- `dashboard/ai-performance/` - AI 성능 분석 (이상 탐지 포함)
-- `dashboard/chatbot-quality/` - 챗봇 품질 메트릭
-- `dashboard/user-analytics/` - 사용자 활동 분석 (x_enc_data 기준)
-- `dashboard/etl/` - ETL 모니터링 (minkabu, wind)
-- `dashboard/report-monitoring/` - 리포트 생성 모니터링
-- `[projectId]/` - 동적 프로젝트 라우트
-- `logs/` - 로그 뷰어 페이지
-- `architecture/` - 아키텍처 뷰 페이지
+- `(auth)/` - 인증 레이아웃 그룹 (로그인 페이지), see (auth)/AGENTS.md
+- `dashboard/` - 대시보드 메인 페이지들, see dashboard/AGENTS.md
 
 ## For AI Agents
-- **동적 라우트**: `[projectId]`는 URL 파라미터로 프로젝트 ID를 받음
-- **레이아웃 상속**: 하위 페이지는 layout.tsx의 Sidebar를 상속
-- **서버 컴포넌트**: 기본적으로 서버 컴포넌트, 'use client' 선언 시 클라이언트
+- Next.js App Router 구조를 따름 (page.tsx가 라우트 엔드포인트)
+- 괄호 `(auth)` 는 Route Group으로 URL에 포함되지 않음
+- 모든 페이지는 'use client' 지시어 사용 (클라이언트 컴포넌트)
+- `providers.tsx`에서 AuthContext, ChatbotContext 제공
+- 루트 레이아웃은 다크 모드를 지원하지 않음 (suppressHydrationWarning 사용)
+
+## Dependencies
+- `@/contexts/AuthContext` - JWT 인증 상태 관리
+- `@/contexts/ChatbotContext` - 플로팅 챗봇 상태 관리
+- `@/components/LayoutContent` - 사이드바, 헤더, 챗봇 래퍼
