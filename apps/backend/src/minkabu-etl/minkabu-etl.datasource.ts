@@ -131,7 +131,14 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
           AVG(articles_fetched) as avg_articles_fetched,
           AVG(today_headlines) as avg_today_headlines
         FROM ${this.schema}.${this.table}
-        WHERE started_at >= NOW() - INTERVAL '${days} days'
+        WHERE started_at AT TIME ZONE 'Asia/Tokyo' >= (NOW() AT TIME ZONE 'Asia/Tokyo') - INTERVAL '${days} days'
+      ),
+      today_stats AS (
+        SELECT
+          COALESCE(SUM(articles_fetched), 0) as today_total_articles,
+          COALESCE(SUM(today_headlines), 0) as today_total_headlines
+        FROM ${this.schema}.${this.table}
+        WHERE DATE(started_at AT TIME ZONE 'Asia/Tokyo') = (NOW() AT TIME ZONE 'Asia/Tokyo')::date
       ),
       last_run AS (
         SELECT started_at, status
@@ -151,9 +158,12 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
         COALESCE(ROUND(s.avg_duration_ms::numeric, 0), 0) as "avgDurationMs",
         COALESCE(ROUND(s.avg_articles_fetched::numeric, 0), 0) as "avgArticlesFetched",
         COALESCE(ROUND(s.avg_today_headlines::numeric, 0), 0) as "avgTodayHeadlines",
+        t.today_total_articles as "todayTotalArticles",
+        t.today_total_headlines as "todayTotalHeadlines",
         l.started_at as "lastRunAt",
         l.status as "lastRunStatus"
       FROM stats s
+      CROSS JOIN today_stats t
       LEFT JOIN last_run l ON true
     `;
 
@@ -167,7 +177,7 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
   async getDailyTrend(days = 30): Promise<MinkabuETLTrend[]> {
     const sql = `
       SELECT
-        DATE(started_at)::text as period,
+        DATE(started_at AT TIME ZONE 'Asia/Tokyo')::text as period,
         COUNT(*) as "runCount",
         COUNT(*) FILTER (WHERE status = 'success') as "successCount",
         COUNT(*) FILTER (WHERE status = 'failed') as "failureCount",
@@ -179,8 +189,8 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
         COALESCE(SUM(today_headlines), 0) as "totalTodayHeadlines",
         COALESCE(ROUND(AVG(duration_ms)::numeric, 0), 0) as "avgDurationMs"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${days} days'
-      GROUP BY DATE(started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Tokyo' >= (NOW() AT TIME ZONE 'Asia/Tokyo') - INTERVAL '${days} days'
+      GROUP BY DATE(started_at AT TIME ZONE 'Asia/Tokyo')
       ORDER BY period DESC
     `;
 
@@ -193,7 +203,7 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
   async getHourlyTrend(hours = 24): Promise<MinkabuETLTrend[]> {
     const sql = `
       SELECT
-        TO_CHAR(DATE_TRUNC('hour', started_at), 'YYYY-MM-DD HH24:00') as period,
+        TO_CHAR(DATE_TRUNC('hour', started_at AT TIME ZONE 'Asia/Tokyo'), 'YYYY-MM-DD HH24:00') as period,
         COUNT(*) as "runCount",
         COUNT(*) FILTER (WHERE status = 'success') as "successCount",
         COUNT(*) FILTER (WHERE status = 'failed') as "failureCount",
@@ -205,8 +215,8 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
         COALESCE(SUM(today_headlines), 0) as "totalTodayHeadlines",
         COALESCE(ROUND(AVG(duration_ms)::numeric, 0), 0) as "avgDurationMs"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${hours} hours'
-      GROUP BY DATE_TRUNC('hour', started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Tokyo' >= (NOW() AT TIME ZONE 'Asia/Tokyo') - INTERVAL '${hours} hours'
+      GROUP BY DATE_TRUNC('hour', started_at AT TIME ZONE 'Asia/Tokyo')
       ORDER BY period DESC
     `;
 
@@ -226,7 +236,7 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
         FROM ${this.schema}.${this.table}
         WHERE error_count > 0
           AND errors IS NOT NULL
-          AND started_at >= NOW() - INTERVAL '${days} days'
+          AND started_at AT TIME ZONE 'Asia/Tokyo' >= (NOW() AT TIME ZONE 'Asia/Tokyo') - INTERVAL '${days} days'
       )
       SELECT
         error_message as "errorMessage",
@@ -249,7 +259,7 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
   async getHeadlineStats(days = 30): Promise<MinkabuETLHeadlineStats[]> {
     const sql = `
       SELECT
-        DATE(started_at)::text as date,
+        DATE(started_at AT TIME ZONE 'Asia/Tokyo')::text as date,
         COALESCE(SUM(today_headlines), 0) as "totalTodayHeadlines",
         COALESCE(SUM(yesterday_headlines), 0) as "totalYesterdayHeadlines",
         COALESCE(SUM(articles_fetched), 0) as "totalArticlesFetched",
@@ -258,8 +268,8 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
           ELSE 0
         END as "avgHeadlinesPerRun"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${days} days'
-      GROUP BY DATE(started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Tokyo' >= (NOW() AT TIME ZONE 'Asia/Tokyo') - INTERVAL '${days} days'
+      GROUP BY DATE(started_at AT TIME ZONE 'Asia/Tokyo')
       ORDER BY date DESC
     `;
 
@@ -272,7 +282,7 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
   async getIndexStats(days = 30): Promise<MinkabuETLIndexStats[]> {
     const sql = `
       SELECT
-        DATE(started_at)::text as date,
+        DATE(started_at AT TIME ZONE 'Asia/Tokyo')::text as date,
         COALESCE(SUM(index_count), 0) as "totalIndexCount",
         CASE WHEN COUNT(*) > 0
           THEN ROUND(AVG(index_count)::numeric, 0)
@@ -280,8 +290,8 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
         END as "avgIndexPerRun",
         COUNT(*) as "runCount"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${days} days'
-      GROUP BY DATE(started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Tokyo' >= (NOW() AT TIME ZONE 'Asia/Tokyo') - INTERVAL '${days} days'
+      GROUP BY DATE(started_at AT TIME ZONE 'Asia/Tokyo')
       ORDER BY date DESC
     `;
 
@@ -301,6 +311,8 @@ export class MinkabuETLDataSource implements OnModuleDestroy {
       avgDurationMs: 0,
       avgArticlesFetched: 0,
       avgTodayHeadlines: 0,
+      todayTotalArticles: 0,
+      todayTotalHeadlines: 0,
       lastRunAt: null,
       lastRunStatus: null,
     };

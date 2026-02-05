@@ -134,7 +134,14 @@ export class WindETLDataSource implements OnModuleDestroy {
           AVG(files_processed) as avg_files_processed,
           AVG(records_inserted) as avg_records_inserted
         FROM ${this.schema}.${this.table}
-        WHERE started_at >= NOW() - INTERVAL '${days} days'
+        WHERE started_at AT TIME ZONE 'Asia/Seoul' >= (NOW() AT TIME ZONE 'Asia/Seoul') - INTERVAL '${days} days'
+      ),
+      today_stats AS (
+        SELECT
+          COALESCE(SUM(files_processed), 0) as today_total_files,
+          COALESCE(SUM(records_inserted), 0) as today_total_records
+        FROM ${this.schema}.${this.table}
+        WHERE DATE(started_at AT TIME ZONE 'Asia/Seoul') = (NOW() AT TIME ZONE 'Asia/Seoul')::date
       ),
       last_run AS (
         SELECT started_at, status
@@ -154,9 +161,12 @@ export class WindETLDataSource implements OnModuleDestroy {
         COALESCE(ROUND(s.avg_duration_ms::numeric, 0), 0) as "avgDurationMs",
         COALESCE(ROUND(s.avg_files_processed::numeric, 0), 0) as "avgFilesProcessed",
         COALESCE(ROUND(s.avg_records_inserted::numeric, 0), 0) as "avgRecordsInserted",
+        t.today_total_files as "todayTotalFiles",
+        t.today_total_records as "todayTotalRecords",
         l.started_at as "lastRunAt",
         l.status as "lastRunStatus"
       FROM stats s
+      CROSS JOIN today_stats t
       LEFT JOIN last_run l ON true
     `;
 
@@ -170,7 +180,7 @@ export class WindETLDataSource implements OnModuleDestroy {
   async getDailyTrend(days = 30): Promise<WindETLTrend[]> {
     const sql = `
       SELECT
-        DATE(started_at)::text as period,
+        DATE(started_at AT TIME ZONE 'Asia/Seoul')::text as period,
         COUNT(*) as "runCount",
         COUNT(*) FILTER (WHERE status = 'success') as "successCount",
         COUNT(*) FILTER (WHERE status = 'failed') as "failureCount",
@@ -182,8 +192,8 @@ export class WindETLDataSource implements OnModuleDestroy {
         COALESCE(SUM(records_inserted), 0) as "totalRecordsInserted",
         COALESCE(ROUND(AVG(duration_ms)::numeric, 0), 0) as "avgDurationMs"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${days} days'
-      GROUP BY DATE(started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Seoul' >= (NOW() AT TIME ZONE 'Asia/Seoul') - INTERVAL '${days} days'
+      GROUP BY DATE(started_at AT TIME ZONE 'Asia/Seoul')
       ORDER BY period DESC
     `;
 
@@ -196,7 +206,7 @@ export class WindETLDataSource implements OnModuleDestroy {
   async getHourlyTrend(hours = 24): Promise<WindETLTrend[]> {
     const sql = `
       SELECT
-        TO_CHAR(DATE_TRUNC('hour', started_at), 'YYYY-MM-DD HH24:00') as period,
+        TO_CHAR(DATE_TRUNC('hour', started_at AT TIME ZONE 'Asia/Seoul'), 'YYYY-MM-DD HH24:00') as period,
         COUNT(*) as "runCount",
         COUNT(*) FILTER (WHERE status = 'success') as "successCount",
         COUNT(*) FILTER (WHERE status = 'failed') as "failureCount",
@@ -208,8 +218,8 @@ export class WindETLDataSource implements OnModuleDestroy {
         COALESCE(SUM(records_inserted), 0) as "totalRecordsInserted",
         COALESCE(ROUND(AVG(duration_ms)::numeric, 0), 0) as "avgDurationMs"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${hours} hours'
-      GROUP BY DATE_TRUNC('hour', started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Seoul' >= (NOW() AT TIME ZONE 'Asia/Seoul') - INTERVAL '${hours} hours'
+      GROUP BY DATE_TRUNC('hour', started_at AT TIME ZONE 'Asia/Seoul')
       ORDER BY period DESC
     `;
 
@@ -229,7 +239,7 @@ export class WindETLDataSource implements OnModuleDestroy {
         FROM ${this.schema}.${this.table}
         WHERE error_count > 0
           AND errors IS NOT NULL
-          AND started_at >= NOW() - INTERVAL '${days} days'
+          AND started_at AT TIME ZONE 'Asia/Seoul' >= (NOW() AT TIME ZONE 'Asia/Seoul') - INTERVAL '${days} days'
       )
       SELECT
         error_message as "errorMessage",
@@ -252,7 +262,7 @@ export class WindETLDataSource implements OnModuleDestroy {
   async getFileProcessingStats(days = 30): Promise<WindETLFileStats[]> {
     const sql = `
       SELECT
-        DATE(started_at)::text as date,
+        DATE(started_at AT TIME ZONE 'Asia/Seoul')::text as date,
         COALESCE(SUM(files_found), 0) as "totalFilesFound",
         COALESCE(SUM(files_processed), 0) as "totalFilesProcessed",
         COALESCE(SUM(files_skipped), 0) as "totalFilesSkipped",
@@ -262,8 +272,8 @@ export class WindETLDataSource implements OnModuleDestroy {
           ELSE 0
         END as "processingRate"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${days} days'
-      GROUP BY DATE(started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Seoul' >= (NOW() AT TIME ZONE 'Asia/Seoul') - INTERVAL '${days} days'
+      GROUP BY DATE(started_at AT TIME ZONE 'Asia/Seoul')
       ORDER BY date DESC
     `;
 
@@ -276,7 +286,7 @@ export class WindETLDataSource implements OnModuleDestroy {
   async getRecordStats(days = 30): Promise<WindETLRecordStats[]> {
     const sql = `
       SELECT
-        DATE(started_at)::text as date,
+        DATE(started_at AT TIME ZONE 'Asia/Seoul')::text as date,
         COALESCE(SUM(records_inserted), 0) as "totalRecordsInserted",
         COALESCE(SUM(records_updated), 0) as "totalRecordsUpdated",
         COALESCE(SUM(total_records), 0) as "totalRecords",
@@ -285,8 +295,8 @@ export class WindETLDataSource implements OnModuleDestroy {
           ELSE 0
         END as "avgRecordsPerRun"
       FROM ${this.schema}.${this.table}
-      WHERE started_at >= NOW() - INTERVAL '${days} days'
-      GROUP BY DATE(started_at)
+      WHERE started_at AT TIME ZONE 'Asia/Seoul' >= (NOW() AT TIME ZONE 'Asia/Seoul') - INTERVAL '${days} days'
+      GROUP BY DATE(started_at AT TIME ZONE 'Asia/Seoul')
       ORDER BY date DESC
     `;
 
@@ -306,6 +316,8 @@ export class WindETLDataSource implements OnModuleDestroy {
       avgDurationMs: 0,
       avgFilesProcessed: 0,
       avgRecordsInserted: 0,
+      todayTotalFiles: 0,
+      todayTotalRecords: 0,
       lastRunAt: null,
       lastRunStatus: null,
     };

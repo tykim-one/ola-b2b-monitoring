@@ -6,6 +6,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **AGENTS.md 자동 갱신**: 새 디렉토리 생성, 디렉토리 삭제, 디렉토리 구조 변경 작업 완료 후 **반드시** `/deepinit --update` 명령을 실행하여 AGENTS.md 문서를 갱신할 것
 
+- **타임존 규칙 (CRITICAL)**: 날짜/시간 관련 SQL 쿼리 작성 시 **반드시** 아래 규칙을 따를 것:
+  - **한국 서비스 (Wind ETL, BigQuery 등)**: `'Asia/Seoul'` 타임존 사용
+  - **일본 서비스 (Minkabu ETL)**: `'Asia/Tokyo'` 타임존 사용
+  - **절대 금지**: `DATE(timestamp)`, `CURRENT_DATE`, `NOW()` 단독 사용 (타임존 미지정)
+
+  ```sql
+  -- ✅ 올바른 예시 (KST)
+  DATE(started_at AT TIME ZONE 'Asia/Seoul')
+  (NOW() AT TIME ZONE 'Asia/Seoul')::date
+  WHERE started_at AT TIME ZONE 'Asia/Seoul' >= (NOW() AT TIME ZONE 'Asia/Seoul') - INTERVAL '7 days'
+  GROUP BY DATE(started_at AT TIME ZONE 'Asia/Seoul')
+
+  -- ❌ 잘못된 예시 (UTC 기준으로 계산됨)
+  DATE(started_at)
+  CURRENT_DATE
+  NOW() - INTERVAL '7 days'
+  ```
+
+  **이유**: PostgreSQL/BigQuery 서버가 UTC를 사용하면 한국 시간과 9시간 차이가 발생하여 "오늘" 데이터가 불일치함
+
 ## Project Overview
 
 OLA B2B Monitoring - GCP BigQuery 기반 B2B LLM 로그 모니터링 대시보드 시스템입니다. 테넌트별 LLM 사용량, 토큰 효율성, 비용 트렌드, 이상 탐지 등을 시각화합니다.

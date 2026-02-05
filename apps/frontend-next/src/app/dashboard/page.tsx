@@ -1,16 +1,5 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import Dashboard from '@/components/Dashboard';
-import { MetricData } from '@/types';
-import { generateMetrics } from '@/lib/constants';
+import { redirect } from 'next/navigation';
 
 export default function DashboardPage() {
-  const [metrics, setMetrics] = useState<MetricData[]>([]);
-
-  useEffect(() => {
-    setMetrics(generateMetrics());
-  }, []);
-
-  return <Dashboard metrics={metrics} />;
+  redirect('/dashboard/home');
 }

@@ -18,6 +18,7 @@ import { WindETLModule } from './wind-etl/wind-etl.module';
 import { MinkabuETLModule } from './minkabu-etl/minkabu-etl.module';
 import { ReportMonitoringModule } from './report-monitoring/report-monitoring.module';
 import { ProblematicChatModule } from './problematic-chat/problematic-chat.module';
+import { ServiceHealthModule } from './service-health/service-health.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ProblematicChatModule } from './problematic-chat/problematic-chat.modul
     MinkabuETLModule,
     ReportMonitoringModule,
     ProblematicChatModule,
+    ServiceHealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

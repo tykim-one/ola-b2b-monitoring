@@ -31,6 +31,10 @@ export interface WindETLSummary {
   avgDurationMs: number;
   avgFilesProcessed: number;
   avgRecordsInserted: number;
+  /** 오늘 총 처리 파일 수 (SUM) */
+  todayTotalFiles: number;
+  /** 오늘 총 처리 레코드 수 (SUM) */
+  todayTotalRecords: number;
   lastRunAt: string | null;
   lastRunStatus: string | null;
 }

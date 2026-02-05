@@ -396,7 +396,7 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
       [table, table, ...symbols],
     );
 
-    return rows.map((row) => {
+    return rows.map((row: mysql.RowDataPacket) => {
       const today: Record<string, unknown> = {};
       const yesterday: Record<string, unknown> = {};
       let hasYesterday = false;
@@ -519,7 +519,7 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
         `SELECT DISTINCT ?? as symbol FROM ?? WHERE ?? IN (${placeholders})`,
         [symbolColumn, table, symbolColumn, ...symbols],
       );
-      return rows.map((r) => r.symbol as string);
+      return rows.map((r: mysql.RowDataPacket) => r.symbol as string);
     } else if (this.dbType === 'postgresql' && this.pgPool) {
       const placeholders = symbols.map((_, i) => `$${i + 1}`).join(', ');
       // 스키마 포함 테이블명 처리 (gold.daily_item_info)
@@ -563,7 +563,7 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
           symbolColumn,
         ],
       );
-      return rows.map((r) => ({
+      return rows.map((r: mysql.RowDataPacket) => ({
         symbol: r.symbol as string,
         updatedAt: new Date(r.updatedAt),
       }));
@@ -646,7 +646,7 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
           `SELECT ?? as symbol, display_name as displayName FROM ??.??`,
           [symbolColumn, schema, tableName],
         );
-        return rows.map((r) => ({
+        return rows.map((r: mysql.RowDataPacket) => ({
           symbol: r.symbol as string,
           displayName: (r.displayName as string) || '',
         }));

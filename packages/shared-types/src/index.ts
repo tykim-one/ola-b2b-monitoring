@@ -953,3 +953,7 @@ export interface ProblematicChatStats {
   byRule: ProblematicChatRuleStats[];
   byTenant: ProblematicChatTenantStats[];
 }
+
+// ==================== 서비스 구성 타입 ====================
+
+export * from './service.types';

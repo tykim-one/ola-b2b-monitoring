@@ -8,7 +8,7 @@ const Sidebar = () => {
 
   const navItems = [
     {
-      href: '/dashboard',
+      href: '/dashboard/home',
       label: '홈',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -18,6 +18,55 @@ const Sidebar = () => {
           <rect x="3" y="14" width="7" height="7"/>
         </svg>
       ),
+    },
+    {
+      section: '서비스',
+      items: [
+        {
+          href: '/dashboard/services/ibk-chat',
+          label: 'IBK 챗봇',
+          icon: (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          ),
+        },
+        {
+          href: '/dashboard/services/ibk',
+          label: 'IBK 리포트',
+          icon: (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          ),
+        },
+        {
+          href: '/dashboard/services/wind-etl',
+          label: 'Wind ETL',
+          icon: (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/>
+              <path d="M9.6 4.6A2 2 0 1 1 11 8H2"/>
+              <path d="M12.6 19.4A2 2 0 1 0 14 16H2"/>
+            </svg>
+          ),
+        },
+        {
+          href: '/dashboard/services/minkabu-etl',
+          label: 'Minkabu ETL',
+          icon: (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+              <path d="M18 14h-8"/>
+              <path d="M15 18h-5"/>
+              <path d="M10 6h8v4h-8V6Z"/>
+            </svg>
+          ),
+        },
+      ],
     },
     {
       section: '모니터링',
@@ -220,8 +269,8 @@ const Sidebar = () => {
 
   const isActive = (href: string) => {
     if (!pathname) return false;
-    if (href === '/dashboard') {
-      return pathname === '/dashboard';
+    if (href === '/dashboard/home') {
+      return pathname === '/dashboard/home' || pathname === '/dashboard';
     }
     return pathname.startsWith(href);
   };

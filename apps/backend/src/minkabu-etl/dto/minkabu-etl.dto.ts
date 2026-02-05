@@ -28,6 +28,10 @@ export interface MinkabuETLSummary {
   avgDurationMs: number;
   avgArticlesFetched: number;
   avgTodayHeadlines: number;
+  /** 오늘 총 처리 기사 수 (SUM) */
+  todayTotalArticles: number;
+  /** 오늘 총 헤드라인 수 (SUM) */
+  todayTotalHeadlines: number;
   lastRunAt: string | null;
   lastRunStatus: string | null;
 }
