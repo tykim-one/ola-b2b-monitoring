@@ -126,6 +126,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
         query,
         location: this.config.location,
         maxResults,
+        jobTimeoutMs: 30000,
       };
 
       const [job] = await this.bigQueryClient.createQueryJob(options);
@@ -140,7 +141,14 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
         `Query execution failed: ${error.message}`,
         error.stack,
       );
-      throw new Error(`BigQuery query failed: ${error.message}`);
+      const isTimeout =
+        error.message?.includes('timeout') ||
+        error.code === 'DEADLINE_EXCEEDED';
+      throw new Error(
+        isTimeout
+          ? `BigQuery query timed out after 30s: ${error.message}`
+          : `BigQuery query failed: ${error.message}`,
+      );
     }
   }
 
@@ -266,10 +274,20 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     return this.executeQuery<QueryPattern>(query, 500);
   }
 
-  async getSampleLogs(limit: number = 1000): Promise<B2BLog[]> {
+  async getSampleLogs(limit: number = 100): Promise<B2BLog[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
     const query = `
-      SELECT *
+      SELECT
+        timestamp,
+        tenant_id,
+        success,
+        CAST(COALESCE(SAFE_CAST(input_tokens AS FLOAT64), 0) AS INT64) as input_tokens,
+        CAST(COALESCE(SAFE_CAST(output_tokens AS FLOAT64), 0) AS INT64) as output_tokens,
+        CAST(COALESCE(SAFE_CAST(total_tokens AS FLOAT64), 0) AS INT64) as total_tokens,
+        SUBSTR(user_input, 1, 200) as user_input,
+        SUBSTR(llm_response, 1, 200) as llm_response,
+        severity,
+        request_metadata
       FROM \`${projectId}.${datasetId}.${tableName}\`
       ORDER BY timestamp DESC
       LIMIT ${limit}
@@ -279,12 +297,15 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   // ==================== Quality Analysis Methods ====================
 
-  async getTokenEfficiencyTrend(): Promise<TokenEfficiencyTrend[]> {
+  async getTokenEfficiencyTrend(
+    days: number = 30,
+  ): Promise<TokenEfficiencyTrend[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
     const query = MetricsQueries.tokenEfficiencyTrend(
       projectId,
       datasetId,
       tableName,
+      days,
     );
     const rows = await this.executeQuery<TokenEfficiencyTrend>(query, 100);
     return rows.map((row) => ({
@@ -293,26 +314,57 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     }));
   }
 
-  async getQueryResponseCorrelation(): Promise<QueryResponseCorrelation[]> {
+  async getQueryResponseCorrelation(
+    days: number = 7,
+  ): Promise<QueryResponseCorrelation[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
     const query = MetricsQueries.queryResponseCorrelation(
       projectId,
       datasetId,
       tableName,
+      days,
     );
-    const rows = await this.executeQuery<QueryResponseCorrelation>(query, 1000);
+    const rows = await this.executeQuery<QueryResponseCorrelation>(query, 300);
     return rows.map((row) => ({
       ...row,
       timestamp: this.normalizeDate(row.timestamp),
     }));
   }
 
-  async getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]> {
+  async getQueryResponseDetail(
+    timestamp: string,
+    tenantId: string,
+  ): Promise<{ user_input: string; llm_response: string } | null> {
+    const { projectId, datasetId, tableName } = this.tableRef;
+    // BigQuery TIMESTAMP()는 마이크로초(6자리)까지만 지원 — 나노초(9자리) 제거
+    const normalizedTs = timestamp.replace(/(\.\d{6})\d*Z$/, '$1Z');
+    const query = MetricsQueries.queryResponseDetail(
+      projectId,
+      datasetId,
+      tableName,
+      normalizedTs,
+      tenantId,
+    );
+    const rows = await this.executeQuery<{
+      user_input: string;
+      llm_response: string;
+      tenant_id: string;
+      timestamp: any;
+    }>(query, 1);
+    return rows.length > 0
+      ? { user_input: rows[0].user_input, llm_response: rows[0].llm_response }
+      : null;
+  }
+
+  async getRepeatedQueryPatterns(
+    days: number = 30,
+  ): Promise<RepeatedQueryPattern[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
     const query = MetricsQueries.repeatedQueryPatterns(
       projectId,
       datasetId,
       tableName,
+      days,
     );
     const rows = await this.executeQuery<RepeatedQueryPattern>(query, 100);
     return rows.map((row) => ({
@@ -445,7 +497,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
       tableName,
       days,
     );
-    return this.executeQuery<SentimentAnalysisResult>(query, 500);
+    return this.executeQuery<SentimentAnalysisResult>(query, 200);
   }
 
   async getRephrasedQueryPatterns(

@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Param,
+  Query,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -10,11 +11,14 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { Public } from '../admin/auth/decorators/public.decorator';
 import { ReportMonitoringService } from './report-monitoring.service';
 import { ReportMonitoringScheduler } from './report-monitoring.scheduler';
+import { UiCheckService } from './ui-check.service';
+import { UiCheckScheduler } from './ui-check.scheduler';
 import {
   ReportType,
   REPORT_TYPES,
   MonitoringResult,
   ReportCheckResult,
+  UiMonitoringResult,
 } from './interfaces';
 import { MonitoringResultDto, ReportCheckResultDto } from './dto';
 
@@ -25,6 +29,8 @@ export class ReportMonitoringController {
   constructor(
     private readonly monitoringService: ReportMonitoringService,
     private readonly scheduler: ReportMonitoringScheduler,
+    private readonly uiCheckService: UiCheckService,
+    private readonly uiCheckScheduler: UiCheckScheduler,
   ) {}
 
   /**
@@ -156,5 +162,106 @@ export class ReportMonitoringController {
     return {
       files: healthStatus.availableTargetFiles,
     };
+  }
+
+  /**
+   * 체크 이력 조회
+   */
+  @Get('history')
+  @ApiOperation({ summary: '체크 이력 조회 (페이지네이션)' })
+  @ApiResponse({ status: 200, description: '체크 이력 목록' })
+  async getHistory(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('hasIssues') hasIssues?: string,
+  ) {
+    return this.monitoringService.getHistory({
+      limit: limit ? parseInt(limit, 10) : 20,
+      offset: offset ? parseInt(offset, 10) : 0,
+      hasIssues: hasIssues !== undefined ? hasIssues === 'true' : undefined,
+    });
+  }
+
+  // ==================== UI Check Endpoints ====================
+
+  @Post('ui-check')
+  @ApiOperation({ summary: 'UI 렌더링 체크 실행' })
+  @ApiResponse({ status: 200, description: 'UI 체크 결과' })
+  async runUiCheck(): Promise<UiMonitoringResult> {
+    return this.uiCheckService.runFullUiCheck('manual');
+  }
+
+  @Get('ui-check/status')
+  @ApiOperation({ summary: 'UI 체크 마지막 결과 조회' })
+  @ApiResponse({ status: 200, description: 'UI 체크 마지막 결과' })
+  async getUiCheckStatus(): Promise<UiMonitoringResult | { message: string }> {
+    const result = this.uiCheckService.getLastResult();
+    if (!result) {
+      return { message: 'No UI check has been executed yet' };
+    }
+    return result;
+  }
+
+  @Get('ui-check/history')
+  @ApiOperation({ summary: 'UI 체크 이력 조회' })
+  @ApiResponse({ status: 200, description: 'UI 체크 이력 목록' })
+  async getUiCheckHistory(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('hasIssues') hasIssues?: string,
+  ) {
+    return this.uiCheckService.getHistory({
+      limit: limit ? parseInt(limit, 10) : 20,
+      offset: offset ? parseInt(offset, 10) : 0,
+      hasIssues: hasIssues !== undefined ? hasIssues === 'true' : undefined,
+    });
+  }
+
+  @Get('ui-check/health')
+  @ApiOperation({ summary: 'UI 체크 헬스 상태 조회' })
+  @ApiResponse({ status: 200, description: 'UI 체크 헬스 상태' })
+  async getUiCheckHealth() {
+    const uiSchedulerStatus = this.uiCheckScheduler.getSchedulerStatus();
+    const lastResult = this.uiCheckService.getLastResult();
+
+    return {
+      scheduler: uiSchedulerStatus,
+      lastCheck: lastResult
+        ? {
+            timestamp: lastResult.timestamp,
+            hasIssues:
+              lastResult.summary.brokenTargets > 0 ||
+              lastResult.summary.degradedTargets > 0,
+            summary: lastResult.summary,
+          }
+        : null,
+    };
+  }
+
+  @Post('ui-check/trigger')
+  @ApiOperation({ summary: 'UI 체크 스케줄러 수동 트리거' })
+  @ApiResponse({ status: 200, description: '트리거 결과' })
+  async triggerUiCheckScheduler(): Promise<{
+    message: string;
+    triggeredAt: Date;
+  }> {
+    await this.uiCheckScheduler.triggerManually();
+    return {
+      message: 'UI check scheduler triggered manually',
+      triggeredAt: new Date(),
+    };
+  }
+
+  @Get('ui-check/history/:id')
+  @ApiOperation({ summary: 'UI 체크 상세 이력 조회' })
+  @ApiResponse({ status: 200, description: 'UI 체크 상세 결과' })
+  async getUiCheckHistoryDetail(
+    @Param('id') id: string,
+  ): Promise<UiMonitoringResult | { message: string }> {
+    const result = await this.uiCheckService.getHistoryDetail(id);
+    if (!result) {
+      return { message: 'UI check history not found' };
+    }
+    return result;
   }
 }

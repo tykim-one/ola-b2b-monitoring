@@ -61,7 +61,7 @@ export class ReportMonitoringScheduler implements OnModuleInit {
     this.logger.log('Starting scheduled report monitoring...');
 
     try {
-      const result = await this.monitoringService.runFullCheck();
+      const result = await this.monitoringService.runFullCheck('scheduled');
 
       const { summary } = result;
       this.logger.log(
@@ -126,6 +126,6 @@ export class ReportMonitoringScheduler implements OnModuleInit {
    */
   async triggerManually(): Promise<void> {
     this.logger.log('Manual trigger requested');
-    await this.executeCheck();
+    await this.monitoringService.runFullCheck('manual');
   }
 }

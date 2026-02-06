@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, TrendingUp, CheckCircle2, Users } from 'lucide-react';
 import KPICard from '@/components/kpi/KPICard';
@@ -311,11 +311,8 @@ export default function ChatbotQualityPage() {
     staleTime: CACHE_TIME,
   });
 
-  const isLoading =
-    emergingQuery.isLoading ||
-    sentimentQuery.isLoading ||
-    rephrasedQuery.isLoading ||
-    tenantQualityQuery.isLoading;
+  // Progressive loading: KPI가 의존하는 쿼리만 기준
+  const isLoading = tenantQualityQuery.isLoading && sentimentQuery.isLoading && emergingQuery.isLoading;
 
   const error =
     emergingQuery.error ||
@@ -329,21 +326,18 @@ export default function ChatbotQualityPage() {
   const tenantQuality = tenantQualityQuery.data ?? [];
 
   // Calculate KPIs
-  const totalFrustrated = sentimentResults.filter(
-    (r) => r.sentimentFlag === 'FRUSTRATED' || r.sentimentFlag === 'EMOTIONAL'
-  ).length;
-
-  const newPatternsCount = emergingPatterns.filter((p) => p.patternType === 'NEW').length;
-
-  const avgSessionSuccessRate =
-    tenantQuality.length > 0
+  const { totalFrustrated, newPatternsCount, avgSessionSuccessRate, avgFrustrationRate } = useMemo(() => ({
+    totalFrustrated: sentimentResults.filter(
+      (r) => r.sentimentFlag === 'FRUSTRATED' || r.sentimentFlag === 'EMOTIONAL'
+    ).length,
+    newPatternsCount: emergingPatterns.filter((p) => p.patternType === 'NEW').length,
+    avgSessionSuccessRate: tenantQuality.length > 0
       ? tenantQuality.reduce((sum, t) => sum + t.sessionSuccessRate, 0) / tenantQuality.length
-      : 0;
-
-  const avgFrustrationRate =
-    tenantQuality.length > 0
+      : 0,
+    avgFrustrationRate: tenantQuality.length > 0
       ? tenantQuality.reduce((sum, t) => sum + t.frustrationRate, 0) / tenantQuality.length
-      : 0;
+      : 0,
+  }), [sentimentResults, emergingPatterns, tenantQuality]);
 
   return (
     <Dashboard isLoading={isLoading} error={error as Error | null}>
@@ -394,78 +388,96 @@ export default function ChatbotQualityPage() {
         </Dashboard.KPISection>
 
         {/* Emerging Patterns Table */}
-        <>
         <Dashboard.TableSection title="신규 질문 패턴 (Emerging Patterns)">
-          <DataTable
-            data={emergingPatterns}
-            columns={emergingPatternsColumns}
-            searchFields={['normalizedQuery']}
-          >
-            <DataTable.Toolbar>
-              <DataTable.Search placeholder="질문 패턴 검색..." />
-            </DataTable.Toolbar>
-            <DataTable.Content>
-              <DataTable.Header />
-              <DataTable.Body emptyMessage="신규 질문 패턴이 없습니다" />
-            </DataTable.Content>
-            <DataTable.Footer />
-          </DataTable>
+          {emergingQuery.isLoading ? (
+            <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse" />
+          ) : (
+            <DataTable
+              data={emergingPatterns}
+              columns={emergingPatternsColumns}
+              searchFields={['normalizedQuery']}
+            >
+              <DataTable.Toolbar>
+                <DataTable.Search placeholder="질문 패턴 검색..." />
+              </DataTable.Toolbar>
+              <DataTable.Content>
+                <DataTable.Header />
+                <DataTable.Body emptyMessage="신규 질문 패턴이 없습니다" />
+              </DataTable.Content>
+              <DataTable.Pagination pageSize={20} />
+              <DataTable.Footer />
+            </DataTable>
+          )}
         </Dashboard.TableSection>
 
         {/* Sentiment Analysis Table */}
         <Dashboard.TableSection title="감정 분석 (Sentiment Analysis)">
-          <DataTable
-            data={sentimentResults}
-            columns={sentimentColumns}
-            searchFields={['userInput', 'tenantId']}
-          >
-            <DataTable.Toolbar>
-              <DataTable.Search placeholder="질문 또는 테넌트 검색..." />
-            </DataTable.Toolbar>
-            <DataTable.Content>
-              <DataTable.Header />
-              <DataTable.Body emptyMessage="감정 분석 데이터가 없습니다" />
-            </DataTable.Content>
-            <DataTable.Footer />
-          </DataTable>
+          {sentimentQuery.isLoading ? (
+            <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse" />
+          ) : (
+            <DataTable
+              data={sentimentResults}
+              columns={sentimentColumns}
+              searchFields={['userInput', 'tenantId']}
+            >
+              <DataTable.Toolbar>
+                <DataTable.Search placeholder="질문 또는 테넌트 검색..." />
+              </DataTable.Toolbar>
+              <DataTable.Content>
+                <DataTable.Header />
+                <DataTable.Body emptyMessage="감정 분석 데이터가 없습니다" />
+              </DataTable.Content>
+              <DataTable.Pagination pageSize={20} />
+              <DataTable.Footer />
+            </DataTable>
+          )}
         </Dashboard.TableSection>
 
         {/* Rephrased Queries Table */}
         <Dashboard.TableSection title="재질문 패턴 (Rephrased Queries)">
-          <DataTable
-            data={rephrasedQueries}
-            columns={rephrasedQueriesColumns}
-            searchFields={['sessionId', 'tenantId']}
-          >
-            <DataTable.Toolbar>
-              <DataTable.Search placeholder="세션 ID 또는 테넌트 검색..." />
-            </DataTable.Toolbar>
-            <DataTable.Content>
-              <DataTable.Header />
-              <DataTable.Body emptyMessage="재질문 패턴이 없습니다" />
-            </DataTable.Content>
-            <DataTable.Footer />
-          </DataTable>
+          {rephrasedQuery.isLoading ? (
+            <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse" />
+          ) : (
+            <DataTable
+              data={rephrasedQueries}
+              columns={rephrasedQueriesColumns}
+              searchFields={['sessionId', 'tenantId']}
+            >
+              <DataTable.Toolbar>
+                <DataTable.Search placeholder="세션 ID 또는 테넌트 검색..." />
+              </DataTable.Toolbar>
+              <DataTable.Content>
+                <DataTable.Header />
+                <DataTable.Body emptyMessage="재질문 패턴이 없습니다" />
+              </DataTable.Content>
+              <DataTable.Pagination pageSize={20} />
+              <DataTable.Footer />
+            </DataTable>
+          )}
         </Dashboard.TableSection>
 
         {/* Tenant Quality Summary Table */}
         <Dashboard.TableSection title="테넌트 품질 요약 (Tenant Quality Summary)">
-          <DataTable
-            data={tenantQuality}
-            columns={tenantQualityColumns}
-            searchFields={['tenantId']}
-          >
-            <DataTable.Toolbar>
-              <DataTable.Search placeholder="테넌트 검색..." />
-            </DataTable.Toolbar>
-            <DataTable.Content>
-              <DataTable.Header />
-              <DataTable.Body emptyMessage="테넌트 품질 데이터가 없습니다" />
-            </DataTable.Content>
-            <DataTable.Footer />
-          </DataTable>
+          {tenantQualityQuery.isLoading ? (
+            <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse" />
+          ) : (
+            <DataTable
+              data={tenantQuality}
+              columns={tenantQualityColumns}
+              searchFields={['tenantId']}
+            >
+              <DataTable.Toolbar>
+                <DataTable.Search placeholder="테넌트 검색..." />
+              </DataTable.Toolbar>
+              <DataTable.Content>
+                <DataTable.Header />
+                <DataTable.Body emptyMessage="테넌트 품질 데이터가 없습니다" />
+              </DataTable.Content>
+              <DataTable.Pagination pageSize={20} />
+              <DataTable.Footer />
+            </DataTable>
+          )}
         </Dashboard.TableSection>
-        </>
       </Dashboard.Content>
     </Dashboard>
     

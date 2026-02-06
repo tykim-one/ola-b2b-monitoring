@@ -377,6 +377,38 @@ exports.Prisma.ProblematicChatRuleScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ReportMonitoringHistoryScalarFieldEnum = {
+  id: 'id',
+  trigger: 'trigger',
+  totalReports: 'totalReports',
+  healthyReports: 'healthyReports',
+  issueReports: 'issueReports',
+  totalMissing: 'totalMissing',
+  totalIncomplete: 'totalIncomplete',
+  totalSuspicious: 'totalSuspicious',
+  totalStale: 'totalStale',
+  hasIssues: 'hasIssues',
+  results: 'results',
+  checkedAt: 'checkedAt'
+};
+
+exports.Prisma.UiCheckHistoryScalarFieldEnum = {
+  id: 'id',
+  trigger: 'trigger',
+  totalTargets: 'totalTargets',
+  healthyTargets: 'healthyTargets',
+  degradedTargets: 'degradedTargets',
+  brokenTargets: 'brokenTargets',
+  totalChecks: 'totalChecks',
+  passedChecks: 'passedChecks',
+  failedChecks: 'failedChecks',
+  authSucceeded: 'authSucceeded',
+  totalDurationMs: 'totalDurationMs',
+  hasIssues: 'hasIssues',
+  results: 'results',
+  checkedAt: 'checkedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -409,7 +441,9 @@ exports.Prisma.ModelName = {
   UserProfile: 'UserProfile',
   MessageCategoryAnalysis: 'MessageCategoryAnalysis',
   UserProfilingJob: 'UserProfilingJob',
-  ProblematicChatRule: 'ProblematicChatRule'
+  ProblematicChatRule: 'ProblematicChatRule',
+  ReportMonitoringHistory: 'ReportMonitoringHistory',
+  UiCheckHistory: 'UiCheckHistory'
 };
 
 /**

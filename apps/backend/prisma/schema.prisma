@@ -433,3 +433,71 @@ model ProblematicChatRule {
 
   @@index([isEnabled])
 }
+
+// ==================== 리포트 모니터링 이력 테이블 ====================
+
+/// 리포트 모니터링 체크 이력
+model ReportMonitoringHistory {
+  id               String   @id @default(uuid())
+
+  // 트리거 소스
+  trigger          String   @default("manual")  // "manual" | "scheduled"
+
+  // 요약 필드 (필터링/정렬용 — 개별 컬럼)
+  totalReports     Int      @default(0)
+  healthyReports   Int      @default(0)
+  issueReports     Int      @default(0)
+  totalMissing     Int      @default(0)
+  totalIncomplete  Int      @default(0)
+  totalSuspicious  Int      @default(0)
+  totalStale       Int      @default(0)
+
+  // 전체 상태
+  hasIssues        Boolean  @default(false)  // issueReports > 0
+
+  // 상세 결과 (JSON 문자열)
+  results          String   // JSON: ReportCheckResult[]
+
+  // 타임스탬프
+  checkedAt        DateTime @default(now())
+
+  @@index([checkedAt])
+  @@index([hasIssues])
+}
+
+// ==================== UI 렌더링 모니터링 이력 테이블 ====================
+
+/// UI 렌더링 체크 이력
+model UiCheckHistory {
+  id               String   @id @default(uuid())
+
+  // 트리거 소스
+  trigger          String   @default("manual")  // "manual" | "scheduled"
+
+  // 요약 필드
+  totalTargets     Int      @default(0)
+  healthyTargets   Int      @default(0)
+  degradedTargets  Int      @default(0)
+  brokenTargets    Int      @default(0)
+  totalChecks      Int      @default(0)
+  passedChecks     Int      @default(0)
+  failedChecks     Int      @default(0)
+
+  // 인증 성공 여부
+  authSucceeded    Boolean  @default(true)
+
+  // 전체 소요 시간 (ms)
+  totalDurationMs  Int      @default(0)
+
+  // 전체 상태
+  hasIssues        Boolean  @default(false)
+
+  // 상세 결과 (JSON 문자열)
+  results          String   // JSON: UiPageCheckResult[]
+
+  // 타임스탬프
+  checkedAt        DateTime @default(now())
+
+  @@index([checkedAt])
+  @@index([hasIssues])
+}

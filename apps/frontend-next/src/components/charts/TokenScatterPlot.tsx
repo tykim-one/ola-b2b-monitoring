@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ScatterChart,
   Scatter,
@@ -33,28 +33,40 @@ const TENANT_COLORS: Record<string, string> = {
   default: '#10b981',
 };
 
-const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
+const xAxisTickFormatter = (v: number) => `${(v / 1000).toFixed(0)}K`;
+const yAxisTickFormatter = (v: number) => `${(v / 1000).toFixed(0)}K`;
+
+const tooltipFormatter = (value: unknown, name: unknown): [string, string] => {
+  const numValue = typeof value === 'number' ? value : 0;
+  return [numValue.toLocaleString(), String(name)];
+};
+
+const tooltipLabelFormatter = () => '';
+
+const TokenScatterPlot: React.FC<TokenScatterPlotProps> = React.memo(({
   data,
   title = '토큰 효율성 분석',
 }) => {
   // 테넌트별로 데이터 그룹화
-  const tenantGroups = data.reduce(
-    (acc, item) => {
-      const tenant = item.tenant_id || 'unknown';
-      if (!acc[tenant]) acc[tenant] = [];
-      acc[tenant].push(item);
-      return acc;
-    },
-    {} as Record<string, TokenData[]>
-  );
+  const tenantGroups = useMemo(() =>
+    data.reduce(
+      (acc, item) => {
+        const tenant = item.tenant_id || 'unknown';
+        if (!acc[tenant]) acc[tenant] = [];
+        acc[tenant].push(item);
+        return acc;
+      },
+      {} as Record<string, TokenData[]>
+    ), [data]);
 
-  const tenants = Object.keys(tenantGroups);
+  const tenants = useMemo(() => Object.keys(tenantGroups), [tenantGroups]);
 
   // 효율성 통계 계산
-  const avgEfficiency =
+  const avgEfficiency = useMemo(() =>
     data.length > 0
       ? data.reduce((sum, d) => sum + (d.efficiency_ratio || 0), 0) / data.length
-      : 0;
+      : 0,
+    [data]);
 
   return (
     <Chart.Wrapper title={title}>
@@ -76,7 +88,7 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
               stroke={CHART_COLORS.axis}
               fontSize={12}
               tickLine={false}
-              tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+              tickFormatter={xAxisTickFormatter}
               label={{
                 value: '입력 토큰',
                 position: 'insideBottom',
@@ -92,7 +104,7 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
               stroke={CHART_COLORS.axis}
               fontSize={12}
               tickLine={false}
-              tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+              tickFormatter={yAxisTickFormatter}
               label={{
                 value: '출력 토큰',
                 angle: -90,
@@ -107,11 +119,8 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
                 ...TOOLTIP_STYLE,
                 borderRadius: '8px',
               }}
-              formatter={(value, name) => {
-                const numValue = typeof value === 'number' ? value : 0;
-                return [numValue.toLocaleString(), String(name)];
-              }}
-              labelFormatter={() => ''}
+              formatter={tooltipFormatter}
+              labelFormatter={tooltipLabelFormatter}
             />
             {tenants.map((tenant) => (
               <Scatter
@@ -143,6 +152,6 @@ const TokenScatterPlot: React.FC<TokenScatterPlotProps> = ({
       </div>
     </Chart.Wrapper>
   );
-};
+});
 
 export default TokenScatterPlot;

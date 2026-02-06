@@ -10,8 +10,13 @@ import {
   isMonitoringResult,
   type HealthResponse,
   type MonitoringResult,
+  type MonitoringHistoryResponse,
   type NoCheckMessage,
 } from '@/services/reportMonitoringService';
+import type {
+  UiMonitoringResult,
+  UiCheckHistoryResponse,
+} from '@ola/shared-types';
 
 // ==================== Query Keys ====================
 
@@ -19,6 +24,10 @@ export const reportMonitoringKeys = {
   all: ['report-monitoring'] as const,
   health: () => [...reportMonitoringKeys.all, 'health'] as const,
   result: () => [...reportMonitoringKeys.all, 'result'] as const,
+  history: () => [...reportMonitoringKeys.all, 'history'] as const,
+  uiCheckResult: () => [...reportMonitoringKeys.all, 'ui-check', 'result'] as const,
+  uiCheckHistory: () => [...reportMonitoringKeys.all, 'ui-check', 'history'] as const,
+  uiCheckHealth: () => [...reportMonitoringKeys.all, 'ui-check', 'health'] as const,
 };
 
 // ==================== Query Hooks ====================
@@ -74,6 +83,84 @@ export function useRunReportCheck() {
       queryClient.setQueryData(reportMonitoringKeys.result(), data);
       // Also invalidate health in case DB status changed
       queryClient.invalidateQueries({ queryKey: reportMonitoringKeys.health() });
+      queryClient.invalidateQueries({ queryKey: reportMonitoringKeys.history() });
+    },
+  });
+}
+
+/**
+ * 모니터링 이력 조회 (100건 fetch, 클라이언트 페이징)
+ */
+export function useReportMonitoringHistory(dbConnected: boolean) {
+  return useQuery({
+    queryKey: reportMonitoringKeys.history(),
+    queryFn: () => reportMonitoringApi.getHistory({ limit: 100 }),
+    enabled: dbConnected,
+    staleTime: CACHE_TIME.SHORT,
+  });
+}
+
+// ==================== UI Check Query Hooks ====================
+
+/**
+ * UI check health status
+ */
+export function useUiCheckHealth(
+  options?: Omit<UseQueryOptions<Awaited<ReturnType<typeof reportMonitoringApi.getUiCheckHealth>>>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey: reportMonitoringKeys.uiCheckHealth(),
+    queryFn: () => reportMonitoringApi.getUiCheckHealth(),
+    staleTime: CACHE_TIME.SHORT,
+    refetchInterval: CACHE_TIME.SHORT,
+    ...options,
+  });
+}
+
+/**
+ * Latest UI check result (5min cache, auto-refresh)
+ */
+export function useUiCheckResult(
+  options?: Omit<UseQueryOptions<UiMonitoringResult | null>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey: reportMonitoringKeys.uiCheckResult(),
+    queryFn: async (): Promise<UiMonitoringResult | null> => {
+      const data = await reportMonitoringApi.getUiCheckStatus();
+      return 'message' in data ? null : data;
+    },
+    staleTime: CACHE_TIME.SHORT,
+    refetchInterval: CACHE_TIME.SHORT,
+    ...options,
+  });
+}
+
+/**
+ * UI check history (100건 fetch)
+ */
+export function useUiCheckHistory(
+  options?: Omit<UseQueryOptions<UiCheckHistoryResponse>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey: reportMonitoringKeys.uiCheckHistory(),
+    queryFn: () => reportMonitoringApi.getUiCheckHistory({ limit: 100 }),
+    staleTime: CACHE_TIME.SHORT,
+    ...options,
+  });
+}
+
+/**
+ * Mutation: run UI check
+ */
+export function useRunUiCheck() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => reportMonitoringApi.runUiCheck(),
+    onSuccess: (data: UiMonitoringResult) => {
+      queryClient.setQueryData(reportMonitoringKeys.uiCheckResult(), data);
+      queryClient.invalidateQueries({ queryKey: reportMonitoringKeys.uiCheckHealth() });
+      queryClient.invalidateQueries({ queryKey: reportMonitoringKeys.uiCheckHistory() });
     },
   });
 }

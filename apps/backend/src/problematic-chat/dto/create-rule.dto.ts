@@ -28,7 +28,9 @@ function IsValidRuleConfig(validationOptions?: ValidationOptions) {
           if ('version' in v && v.version === 2) {
             if (!v.logic || !['AND', 'OR'].includes(v.logic as string))
               return false;
-            const conditions = v.conditions as Record<string, unknown>[] | undefined;
+            const conditions = v.conditions as
+              | Record<string, unknown>[]
+              | undefined;
             if (!Array.isArray(conditions) || conditions.length === 0)
               return false;
 
@@ -77,8 +79,7 @@ function IsValidRuleConfig(validationOptions?: ValidationOptions) {
           }
 
           // Simple config (v1 - backward compatibility)
-          if (!v.field || !v.operator || v.value === undefined)
-            return false;
+          if (!v.field || !v.operator || v.value === undefined) return false;
 
           const fieldDef = RULE_FIELDS.find((f) => f.field === v.field);
           if (!fieldDef) return false;

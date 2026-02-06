@@ -1,4 +1,5 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { CACHE_TIME } from '@/lib/query-client';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -125,6 +126,11 @@ export function useRepeatedPatterns(
 
 // ==================== Combined Dashboard Hook ====================
 
+export interface CorrelationDetailData {
+  user_input: string;
+  llm_response: string;
+}
+
 export interface QualityDashboardData {
   efficiencyTrend: EfficiencyTrendData[];
   correlation: CorrelationData[];
@@ -137,6 +143,9 @@ export interface QualityDashboardData {
     highFrequencyPatterns: number;
   };
   isLoading: boolean;
+  isEfficiencyLoading: boolean;
+  isCorrelationLoading: boolean;
+  isPatternsLoading: boolean;
   error: Error | null;
   refetch: () => void;
 }
@@ -169,35 +178,18 @@ export function useQualityDashboard(
   const repeatedPatterns = patternsQuery.data ?? [];
 
   // KPI calculations
-  const avgEfficiency =
-    efficiencyTrend.length > 0
-      ? efficiencyTrend.reduce((sum, d) => sum + (d.avg_efficiency_ratio || 0), 0) /
-        efficiencyTrend.length
+  const kpis = useMemo(() => {
+    const avgEfficiency = efficiencyTrend.length > 0
+      ? efficiencyTrend.reduce((sum, d) => sum + (d.avg_efficiency_ratio || 0), 0) / efficiencyTrend.length
       : 0;
-
-  const totalRequests = efficiencyTrend.reduce(
-    (sum, d) => sum + d.total_requests,
-    0
-  );
-
-  const avgResponseLength =
-    correlation.length > 0
-      ? correlation.reduce((sum, d) => sum + d.response_length, 0) /
-        correlation.length
+    const totalRequests = efficiencyTrend.reduce((sum, d) => sum + d.total_requests, 0);
+    const avgResponseLength = correlation.length > 0
+      ? correlation.reduce((sum, d) => sum + d.response_length, 0) / correlation.length
       : 0;
-
-  const totalFAQCandidates = repeatedPatterns.length;
-  const highFrequencyPatterns = repeatedPatterns.filter(
-    (p) => p.occurrence_count >= 5
-  ).length;
-
-  const kpis = {
-    avgEfficiency,
-    totalRequests,
-    avgResponseLength,
-    totalFAQCandidates,
-    highFrequencyPatterns,
-  };
+    const totalFAQCandidates = repeatedPatterns.length;
+    const highFrequencyPatterns = repeatedPatterns.filter((p) => p.occurrence_count >= 5).length;
+    return { avgEfficiency, totalRequests, avgResponseLength, totalFAQCandidates, highFrequencyPatterns };
+  }, [efficiencyTrend, correlation, repeatedPatterns]);
 
   const refetch = () => {
     efficiencyQuery.refetch();
@@ -211,7 +203,27 @@ export function useQualityDashboard(
     repeatedPatterns,
     kpis,
     isLoading,
+    isEfficiencyLoading: efficiencyQuery.isLoading,
+    isCorrelationLoading: correlationQuery.isLoading,
+    isPatternsLoading: patternsQuery.isLoading,
     error: error as Error | null,
     refetch,
   };
+}
+
+// ==================== Detail Fetch ====================
+
+/**
+ * ScatterPlot 클릭 시 상세 질문/응답 조회
+ */
+export async function fetchCorrelationDetail(
+  projectId: string,
+  timestamp: string,
+  tenantId: string,
+): Promise<CorrelationDetailData | null> {
+  const url = `${API_BASE}/projects/${projectId}/api/quality/query-response-detail?timestamp=${encodeURIComponent(timestamp)}&tenantId=${encodeURIComponent(tenantId)}`;
+  const response = await fetch(url);
+  if (!response.ok) return null;
+  const json: ApiResponse<CorrelationDetailData | null> = await response.json();
+  return json.data;
 }

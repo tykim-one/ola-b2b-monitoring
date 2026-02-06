@@ -75,6 +75,25 @@ export interface HealthResponse {
   targetFiles: Array<{ reportType: ReportType; filename: string }>;
 }
 
+export interface MonitoringHistoryItem {
+  id: string;
+  trigger: 'manual' | 'scheduled';
+  totalReports: number;
+  healthyReports: number;
+  issueReports: number;
+  totalMissing: number;
+  totalIncomplete: number;
+  totalSuspicious: number;
+  totalStale: number;
+  hasIssues: boolean;
+  checkedAt: string;
+}
+
+export interface MonitoringHistoryResponse {
+  items: MonitoringHistoryItem[];
+  total: number;
+}
+
 // 타입 가드 함수 (Critical Issue #1)
 export function isMonitoringResult(
   data: MonitoringResult | NoCheckMessage
@@ -99,6 +118,75 @@ export const reportMonitoringApi = {
   async getHealth(): Promise<HealthResponse> {
     const response = await fetch(`${API_BASE}/health`);
     if (!response.ok) throw new Error('Failed to fetch health');
+    return response.json();
+  },
+
+  async getHistory(params?: {
+    limit?: number;
+    offset?: number;
+    hasIssues?: boolean;
+  }): Promise<MonitoringHistoryResponse> {
+    const searchParams = new URLSearchParams();
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    if (params?.offset) searchParams.set('offset', String(params.offset));
+    if (params?.hasIssues !== undefined) searchParams.set('hasIssues', String(params.hasIssues));
+
+    const qs = searchParams.toString();
+    const response = await fetch(`${API_BASE}/history${qs ? '?' + qs : ''}`);
+    if (!response.ok) throw new Error('Failed to fetch history');
+    return response.json();
+  },
+
+  // UI Check endpoints
+  async runUiCheck(): Promise<import('@ola/shared-types').UiMonitoringResult> {
+    const response = await fetch(`${API_BASE}/ui-check`, { method: 'POST' });
+    if (!response.ok) throw new Error('Failed to run UI check');
+    return response.json();
+  },
+
+  async getUiCheckStatus(): Promise<import('@ola/shared-types').UiMonitoringResult | NoCheckMessage> {
+    const response = await fetch(`${API_BASE}/ui-check/status`);
+    if (!response.ok) throw new Error('Failed to fetch UI check status');
+    return response.json();
+  },
+
+  async getUiCheckHistory(params?: {
+    limit?: number;
+    offset?: number;
+    hasIssues?: boolean;
+  }): Promise<import('@ola/shared-types').UiCheckHistoryResponse> {
+    const searchParams = new URLSearchParams();
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    if (params?.offset) searchParams.set('offset', String(params.offset));
+    if (params?.hasIssues !== undefined) searchParams.set('hasIssues', String(params.hasIssues));
+
+    const qs = searchParams.toString();
+    const response = await fetch(`${API_BASE}/ui-check/history${qs ? '?' + qs : ''}`);
+    if (!response.ok) throw new Error('Failed to fetch UI check history');
+    return response.json();
+  },
+
+  async getUiCheckHistoryDetail(id: string): Promise<import('@ola/shared-types').UiMonitoringResult | NoCheckMessage> {
+    const response = await fetch(`${API_BASE}/ui-check/history/${id}`);
+    if (!response.ok) throw new Error('Failed to fetch UI check history detail');
+    return response.json();
+  },
+
+  async getUiCheckHealth(): Promise<{
+    scheduler: {
+      isRunning: boolean;
+      cronExpression: string;
+      timezone: string;
+      nextExecution: string | null;
+    };
+    lastCheck: {
+      timestamp: string;
+      hasIssues: boolean;
+      summary: import('@ola/shared-types').UiMonitoringSummary;
+    } | null;
+  }> {
+    const response = await fetch(`${API_BASE}/ui-check/health`);
+    if (!response.ok) throw new Error('Failed to fetch UI check health');
     return response.json();
   },
 };

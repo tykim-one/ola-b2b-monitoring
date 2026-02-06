@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ComposedChart,
   Bar,
@@ -38,16 +38,46 @@ const formatDate = (date: string): string => {
   }
 };
 
-const CostTrendChart: React.FC<CostTrendChartProps> = ({
+const yAxisLeftTickFormatter = (v: number) => `$${v}`;
+const yAxisRightTickFormatter = (v: number) => `${(v / 1000).toFixed(0)}K`;
+
+const tooltipFormatter = (value: unknown, name: unknown): [string, string] => {
+  const labels: Record<string, string> = {
+    input_cost: '입력 비용',
+    output_cost: '출력 비용',
+    total_cost: '총 비용',
+    total_tokens: '총 토큰',
+  };
+  const numValue = typeof value === 'number' ? value : 0;
+  const strName = String(name);
+  if (strName.includes('cost')) {
+    return [`$${numValue.toFixed(4)}`, labels[strName] || strName];
+  }
+  return [numValue.toLocaleString(), labels[strName] || strName];
+};
+
+const legendFormatter = (value: string) => {
+  const labels: Record<string, string> = {
+    input_cost: '입력 비용',
+    output_cost: '출력 비용',
+    total_tokens: '총 토큰',
+  };
+  return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
+};
+
+const CostTrendChart: React.FC<CostTrendChartProps> = React.memo(({
   data,
   title = '일별 비용 트렌드',
 }) => {
   // 날짜순 정렬 (오래된 것부터)
-  const sortedData = [...data].sort((a, b) =>
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  const sortedData = useMemo(() =>
+    [...data].sort((a, b) =>
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    ), [data]);
 
-  const totalCost = data.reduce((sum, item) => sum + item.total_cost, 0);
+  const totalCost = useMemo(() =>
+    data.reduce((sum, item) => sum + item.total_cost, 0),
+    [data]);
 
   return (
     <Chart
@@ -75,7 +105,7 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
           stroke={CHART_COLORS.axis}
           fontSize={12}
           tickLine={false}
-          tickFormatter={(v) => `$${v}`}
+          tickFormatter={yAxisLeftTickFormatter}
         />
         <YAxis
           yAxisId="right"
@@ -83,36 +113,14 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
           stroke={CHART_COLORS.axis}
           fontSize={12}
           tickLine={false}
-          tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+          tickFormatter={yAxisRightTickFormatter}
         />
         <Tooltip
           contentStyle={TOOLTIP_STYLE}
           labelFormatter={formatDate}
-          formatter={(value, name) => {
-            const labels: Record<string, string> = {
-              input_cost: '입력 비용',
-              output_cost: '출력 비용',
-              total_cost: '총 비용',
-              total_tokens: '총 토큰',
-            };
-            const numValue = typeof value === 'number' ? value : 0;
-            const strName = String(name);
-            if (strName.includes('cost')) {
-              return [`$${numValue.toFixed(4)}`, labels[strName] || strName];
-            }
-            return [numValue.toLocaleString(), labels[strName] || strName];
-          }}
+          formatter={tooltipFormatter}
         />
-        <Legend
-          formatter={(value) => {
-            const labels: Record<string, string> = {
-              input_cost: '입력 비용',
-              output_cost: '출력 비용',
-              total_tokens: '총 토큰',
-            };
-            return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
-          }}
-        />
+        <Legend formatter={legendFormatter} />
         <Bar
           yAxisId="left"
           dataKey="input_cost"
@@ -138,6 +146,6 @@ const CostTrendChart: React.FC<CostTrendChartProps> = ({
       </ComposedChart>
     </Chart>
   );
-};
+});
 
 export default CostTrendChart;

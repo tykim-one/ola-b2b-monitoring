@@ -11,7 +11,7 @@ interface ErrorGaugeProps {
   title?: string;
 }
 
-const ErrorGauge: React.FC<ErrorGaugeProps> = ({
+const ErrorGauge: React.FC<ErrorGaugeProps> = React.memo(({
   errorRate,
   threshold = 1,
   title = '에러율',
@@ -73,6 +73,6 @@ const ErrorGauge: React.FC<ErrorGaugeProps> = ({
       </div>
     </Chart.Wrapper>
   );
-};
+});
 
 export default ErrorGauge;

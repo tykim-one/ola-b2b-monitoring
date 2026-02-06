@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -38,19 +38,23 @@ const truncateUserId = (userId: string, maxLen: number = 12): string => {
   return `${userId.substring(0, maxLen)}...`;
 };
 
-const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = ({
+const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = React.memo(({
   data,
   title = '유저별 요청 수',
   maxDisplay = 10,
 }) => {
   // Top N users by request count
-  const chartData = data.slice(0, maxDisplay).map((item) => ({
-    ...item,
-    displayId: truncateUserId(item.userId),
-    fullId: item.userId,
-  }));
+  const chartData = useMemo(() =>
+    data.slice(0, maxDisplay).map((item) => ({
+      ...item,
+      displayId: truncateUserId(item.userId),
+      fullId: item.userId,
+    })),
+    [data, maxDisplay]);
 
-  const totalRequests = data.reduce((sum, item) => sum + item.requestCount, 0);
+  const totalRequests = useMemo(() =>
+    data.reduce((sum, item) => sum + item.requestCount, 0),
+    [data]);
   const totalUsers = data.length;
 
   return (
@@ -127,6 +131,6 @@ const UserRequestsBarChart: React.FC<UserRequestsBarChartProps> = ({
       </div>
     </Chart.Wrapper>
   );
-};
+});
 
 export default UserRequestsBarChart;

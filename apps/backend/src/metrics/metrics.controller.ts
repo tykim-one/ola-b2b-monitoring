@@ -12,6 +12,24 @@ import { MetricsService } from './metrics.service';
 import { QueryDto } from './dto/query.dto';
 import { Public } from '../admin/auth/decorators/public.decorator';
 
+function clampLimit(
+  value: string | undefined,
+  defaultVal: number,
+  max: number,
+): number {
+  const parsed = value ? parseInt(value, 10) : NaN;
+  return Math.min(Math.max(1, Number.isNaN(parsed) ? defaultVal : parsed), max);
+}
+
+function clampDays(
+  value: string | undefined,
+  defaultVal: number,
+  max: number = 365,
+): number {
+  const parsed = value ? parseInt(value, 10) : NaN;
+  return Math.min(Math.max(1, Number.isNaN(parsed) ? defaultVal : parsed), max);
+}
+
 @ApiTags('metrics')
 @Controller('projects/:projectId/api')
 @Public() // Phase 1: Keep metrics API public for backward compatibility
@@ -86,7 +104,7 @@ export class MetricsController {
     @Param('projectId') projectId: string,
     @Query('limit') limit?: string,
   ) {
-    const limitNum = limit ? parseInt(limit, 10) : 100;
+    const limitNum = clampLimit(limit, 100, 200);
     const logs = await this.metricsService.getSampleLogs(projectId, limitNum);
     return {
       success: true,
@@ -165,7 +183,7 @@ export class MetricsController {
   @ApiResponse({ status: 200, description: 'Tenant usage data returned' })
   @Get('analytics/tenant-usage')
   async getTenantUsage(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 7;
+    const daysNum = clampDays(days, 7, 90);
     const data = await this.metricsService.getTenantUsage(daysNum);
     return {
       success: true,
@@ -245,7 +263,7 @@ export class MetricsController {
   @ApiResponse({ status: 200, description: 'Token efficiency data returned' })
   @Get('ai/token-efficiency')
   async getTokenEfficiency(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 7;
+    const daysNum = clampDays(days, 7, 90);
     const data = await this.metricsService.getTokenEfficiency(daysNum);
     return {
       success: true,
@@ -269,7 +287,7 @@ export class MetricsController {
   @ApiResponse({ status: 200, description: 'Anomaly stats returned' })
   @Get('ai/anomaly-stats')
   async getAnomalyStats(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 30;
+    const daysNum = clampDays(days, 30, 90);
     const data = await this.metricsService.getAnomalyStats(daysNum);
     return {
       success: true,
@@ -302,16 +320,22 @@ export class MetricsController {
 
   /**
    * GET /projects/:projectId/api/quality/efficiency-trend
-   * 일별 토큰 효율성 트렌드 (최근 30일)
+   * 일별 토큰 효율성 트렌드
    */
   @ApiOperation({ summary: 'Get daily token efficiency trend' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Token efficiency trend data returned',
   })
   @Get('quality/efficiency-trend')
-  async getTokenEfficiencyTrend() {
-    const data = await this.metricsService.getTokenEfficiencyTrend();
+  async getTokenEfficiencyTrend(@Query('days') days?: string) {
+    const daysNum = clampDays(days, 30, 90);
+    const data = await this.metricsService.getTokenEfficiencyTrend(daysNum);
     return {
       success: true,
       count: data.length,
@@ -326,10 +350,16 @@ export class MetricsController {
    * 질문-응답 길이 상관관계
    */
   @ApiOperation({ summary: 'Get query-response length correlation' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
   @ApiResponse({ status: 200, description: 'Correlation data returned' })
   @Get('quality/query-response-correlation')
-  async getQueryResponseCorrelation() {
-    const data = await this.metricsService.getQueryResponseCorrelation();
+  async getQueryResponseCorrelation(@Query('days') days?: string) {
+    const daysNum = clampDays(days, 7, 90);
+    const data = await this.metricsService.getQueryResponseCorrelation(daysNum);
     return {
       success: true,
       count: data.length,
@@ -340,14 +370,50 @@ export class MetricsController {
   }
 
   /**
+   * GET /projects/:projectId/api/quality/query-response-detail
+   * 질문-응답 상세 조회 (클릭 시 단건)
+   */
+  @ApiOperation({
+    summary: 'Get query-response detail for a specific data point',
+  })
+  @ApiQuery({
+    name: 'timestamp',
+    required: true,
+    description: 'Timestamp of the data point',
+  })
+  @ApiQuery({
+    name: 'tenantId',
+    required: true,
+    description: 'Tenant ID of the data point',
+  })
+  @ApiResponse({ status: 200, description: 'Query-response detail returned' })
+  @Get('quality/query-response-detail')
+  async getQueryResponseDetail(
+    @Query('timestamp') timestamp: string,
+    @Query('tenantId') tenantId: string,
+  ) {
+    const data = await this.metricsService.getQueryResponseDetail(
+      timestamp,
+      tenantId,
+    );
+    return { success: true, data };
+  }
+
+  /**
    * GET /projects/:projectId/api/quality/repeated-patterns
    * 반복 질문 패턴 (FAQ 후보)
    */
   @ApiOperation({ summary: 'Get repeated query patterns (FAQ candidates)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
   @ApiResponse({ status: 200, description: 'Repeated pattern data returned' })
   @Get('quality/repeated-patterns')
-  async getRepeatedQueryPatterns() {
-    const data = await this.metricsService.getRepeatedQueryPatterns();
+  async getRepeatedQueryPatterns(@Query('days') days?: string) {
+    const daysNum = clampDays(days, 30, 90);
+    const data = await this.metricsService.getRepeatedQueryPatterns(daysNum);
     return {
       success: true,
       count: data.length,
@@ -380,8 +446,8 @@ export class MetricsController {
     @Query('recentDays') recentDays?: string,
     @Query('historicalDays') historicalDays?: string,
   ) {
-    const recent = recentDays ? parseInt(recentDays, 10) : 7;
-    const historical = historicalDays ? parseInt(historicalDays, 10) : 90;
+    const recent = clampDays(recentDays, 7, 30);
+    const historical = clampDays(historicalDays, 90, 365);
     const data = await this.metricsService.getEmergingQueryPatterns(
       recent,
       historical,
@@ -410,7 +476,7 @@ export class MetricsController {
   @ApiResponse({ status: 200, description: 'Sentiment analysis data returned' })
   @Get('quality/sentiment')
   async getSentimentAnalysis(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 7;
+    const daysNum = clampDays(days, 7, 90);
     const data = await this.metricsService.getSentimentAnalysis(daysNum);
     return {
       success: true,
@@ -439,7 +505,7 @@ export class MetricsController {
   })
   @Get('quality/rephrased-queries')
   async getRephrasedQueryPatterns(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 7;
+    const daysNum = clampDays(days, 7, 90);
     const data = await this.metricsService.getRephrasedQueryPatterns(daysNum);
     return {
       success: true,
@@ -463,7 +529,7 @@ export class MetricsController {
   @ApiResponse({ status: 200, description: 'Session analytics returned' })
   @Get('quality/sessions')
   async getSessionAnalytics(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 7;
+    const daysNum = clampDays(days, 7, 90);
     const data = await this.metricsService.getSessionAnalytics(daysNum);
     return {
       success: true,
@@ -489,7 +555,7 @@ export class MetricsController {
   @ApiResponse({ status: 200, description: 'Tenant quality summary returned' })
   @Get('quality/tenant-summary')
   async getTenantQualitySummary(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 7;
+    const daysNum = clampDays(days, 7, 90);
     const data = await this.metricsService.getTenantQualitySummary(daysNum);
     return {
       success: true,
@@ -518,7 +584,7 @@ export class MetricsController {
   })
   @Get('quality/response-metrics')
   async getResponseQualityMetrics(@Query('days') days?: string) {
-    const daysNum = days ? parseInt(days, 10) : 30;
+    const daysNum = clampDays(days, 30, 90);
     const data = await this.metricsService.getResponseQualityMetrics(daysNum);
     return {
       success: true,
@@ -552,8 +618,8 @@ export class MetricsController {
     @Query('days') days?: string,
     @Query('limit') limit?: string,
   ) {
-    const daysNum = days ? parseInt(days, 10) : 7;
-    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const daysNum = clampDays(days, 7, 90);
+    const limitNum = clampLimit(limit, 50, 200);
     const data = await this.metricsService.getUserRequestCounts(
       daysNum,
       limitNum,
@@ -588,8 +654,8 @@ export class MetricsController {
     @Query('days') days?: string,
     @Query('limit') limit?: string,
   ) {
-    const daysNum = days ? parseInt(days, 10) : 7;
-    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const daysNum = clampDays(days, 7, 90);
+    const limitNum = clampLimit(limit, 50, 200);
     const data = await this.metricsService.getUserTokenUsage(daysNum, limitNum);
     return {
       success: true,
@@ -630,8 +696,8 @@ export class MetricsController {
     @Query('days') days?: string,
     @Query('limit') limit?: string,
   ) {
-    const daysNum = days ? parseInt(days, 10) : 7;
-    const limitNum = limit ? parseInt(limit, 10) : 100;
+    const daysNum = clampDays(days, 7, 90);
+    const limitNum = clampLimit(limit, 100, 200);
     const data = await this.metricsService.getUserQuestionPatterns(
       userId,
       daysNum,
@@ -667,8 +733,8 @@ export class MetricsController {
     @Query('days') days?: string,
     @Query('limit') limit?: string,
   ) {
-    const daysNum = days ? parseInt(days, 10) : 7;
-    const limitNum = limit ? parseInt(limit, 10) : 1000;
+    const daysNum = clampDays(days, 7, 90);
+    const limitNum = clampLimit(limit, 10000, 10000);
     const data = await this.metricsService.getUserList(daysNum, limitNum);
     return {
       success: true,
@@ -707,8 +773,8 @@ export class MetricsController {
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ) {
-    const daysNum = days ? parseInt(days, 10) : 7;
-    const limitNum = limit ? parseInt(limit, 10) : 20;
+    const daysNum = clampDays(days, 7, 90);
+    const limitNum = clampLimit(limit, 20, 50);
     const offsetNum = offset ? parseInt(offset, 10) : 0;
     const data = await this.metricsService.getUserActivityDetail(
       userId,

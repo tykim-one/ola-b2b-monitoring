@@ -47,7 +47,7 @@ export const MetricsQueries = {
    */
   dailyTraffic: (projectId: string, datasetId: string, tableName: string) => `
     SELECT
-      DATE(timestamp) as date,
+      DATE(timestamp, 'Asia/Seoul') as date,
       COUNT(*) as request_count,
       COUNTIF(success = TRUE) as success_count,
       COUNTIF(success = FALSE) as fail_count,
@@ -177,7 +177,7 @@ export const MetricsQueries = {
     outputPricePerMillion: number = 15,
   ) => `
     SELECT
-      DATE(timestamp) as date,
+      DATE(timestamp, 'Asia/Seoul') as date,
       CAST(COALESCE(SUM(CAST(input_tokens AS FLOAT64)), 0) AS INT64) as input_tokens,
       CAST(COALESCE(SUM(CAST(output_tokens AS FLOAT64)), 0) AS INT64) as output_tokens,
       CAST(COALESCE(SUM(CAST(total_tokens AS FLOAT64)), 0) AS INT64) as total_tokens,
@@ -218,9 +218,10 @@ export const MetricsQueries = {
     projectId: string,
     datasetId: string,
     tableName: string,
+    days: number = 30,
   ) => `
     SELECT
-      DATE(timestamp) as date,
+      DATE(timestamp, 'Asia/Seoul') as date,
       ROUND(AVG(
         SAFE_CAST(output_tokens AS FLOAT64) / NULLIF(SAFE_CAST(input_tokens AS FLOAT64), 0)
       ), 3) as avg_efficiency_ratio,
@@ -234,7 +235,7 @@ export const MetricsQueries = {
       ROUND(AVG(SAFE_CAST(input_tokens AS FLOAT64)), 0) as avg_input_tokens,
       ROUND(AVG(SAFE_CAST(output_tokens AS FLOAT64)), 0) as avg_output_tokens
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
       AND SAFE_CAST(input_tokens AS FLOAT64) > 0
       AND SAFE_CAST(output_tokens AS FLOAT64) > 0
     GROUP BY date
@@ -249,6 +250,7 @@ export const MetricsQueries = {
     projectId: string,
     datasetId: string,
     tableName: string,
+    days: number = 7,
   ) => `
     SELECT
       tenant_id,
@@ -260,17 +262,36 @@ export const MetricsQueries = {
         SAFE_CAST(output_tokens AS FLOAT64) / NULLIF(SAFE_CAST(input_tokens AS FLOAT64), 0),
         3
       ) as efficiency_ratio,
-      timestamp,
-      SUBSTR(user_input, 1, 2000) as user_input,
-      SUBSTR(llm_response, 1, 2000) as llm_response
+      timestamp
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
       AND user_input IS NOT NULL
       AND llm_response IS NOT NULL
       AND LENGTH(user_input) > 0
       AND LENGTH(llm_response) > 0
     ORDER BY timestamp DESC
-    LIMIT 1000
+    LIMIT 300
+  `,
+
+  /**
+   * 질문-응답 상세 조회 (클릭 시 단건)
+   */
+  queryResponseDetail: (
+    projectId: string,
+    datasetId: string,
+    tableName: string,
+    timestamp: string,
+    tenantId: string,
+  ) => `
+    SELECT
+      tenant_id,
+      SUBSTR(user_input, 1, 2000) as user_input,
+      SUBSTR(llm_response, 1, 2000) as llm_response,
+      timestamp
+    FROM \`${projectId}.${datasetId}.${tableName}\`
+    WHERE timestamp = TIMESTAMP('${timestamp}')
+      AND tenant_id = '${tenantId}'
+    LIMIT 1
   `,
 
   /**
@@ -282,6 +303,7 @@ export const MetricsQueries = {
     projectId: string,
     datasetId: string,
     tableName: string,
+    days: number = 30,
   ) => `
     WITH normalized_queries AS (
       SELECT
@@ -295,7 +317,7 @@ export const MetricsQueries = {
         tenant_id,
         timestamp
       FROM \`${projectId}.${datasetId}.${tableName}\`
-      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+      WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
         AND user_input IS NOT NULL
         AND LENGTH(user_input) > 10
     )
@@ -436,8 +458,8 @@ export const MetricsQueries = {
   ) => `
     SELECT
       timestamp,
-      user_input AS userInput,
-      llm_response AS llmResponse,
+      SUBSTR(user_input, 1, 500) AS userInput,
+      SUBSTR(llm_response, 1, 500) AS llmResponse,
       CAST(COALESCE(CAST(input_tokens AS FLOAT64), 0) AS INT64) AS inputTokens,
       CAST(COALESCE(CAST(output_tokens AS FLOAT64), 0) AS INT64) AS outputTokens,
       CAST(COALESCE(CAST(total_tokens AS FLOAT64), 0) AS INT64) AS totalTokens,
@@ -564,7 +586,7 @@ export const MetricsQueries = {
     FROM sentiment_data
     WHERE has_kr_frustration OR has_en_frustration OR has_emotional_pattern OR has_urgency
     ORDER BY timestamp DESC
-    LIMIT 500
+    LIMIT 200
   `,
 
   /**
@@ -587,7 +609,7 @@ export const MetricsQueries = {
           user_input AS query,
           FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%SZ', timestamp) AS ts,
           success
-        ) ORDER BY timestamp) AS queries_arr,
+        ) ORDER BY timestamp LIMIT 20) AS queries_arr,
         COUNT(*) AS query_count,
         COUNTIF(success = TRUE) AS success_count
       FROM \`${projectId}.${datasetId}.${tableName}\`
@@ -709,7 +731,7 @@ export const MetricsQueries = {
     days: number = 30,
   ) => `
     SELECT
-      DATE(timestamp) AS date,
+      DATE(timestamp, 'Asia/Seoul') AS date,
       tenant_id AS tenantId,
       ROUND(AVG(LENGTH(llm_response)), 0) AS avgResponseLength,
       COUNTIF(LENGTH(llm_response) < 50) AS tooShortCount,
@@ -745,7 +767,7 @@ export const MetricsQueries = {
       llm_response,
       success
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE DATE(timestamp) = '${targetDate}'
+    WHERE DATE(timestamp, 'Asia/Seoul') = '${targetDate}'
       ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
       AND user_input IS NOT NULL
       AND llm_response IS NOT NULL
@@ -769,7 +791,7 @@ export const MetricsQueries = {
       tenant_id,
       COUNT(*) AS chat_count
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE DATE(timestamp) = '${targetDate}'
+    WHERE DATE(timestamp, 'Asia/Seoul') = '${targetDate}'
       AND user_input IS NOT NULL
       AND llm_response IS NOT NULL
     GROUP BY tenant_id
@@ -993,7 +1015,7 @@ export const MetricsQueries = {
         MIN(timestamp) AS session_start,
         MAX(timestamp) AS session_end
       FROM \`${projectId}.${datasetId}.${tableName}\`
-      WHERE DATE(timestamp) = '${targetDate}'
+      WHERE DATE(timestamp, 'Asia/Seoul') = '${targetDate}'
         AND request_metadata.session_id IS NOT NULL
         ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
       GROUP BY session_id, tenant_id, user_id

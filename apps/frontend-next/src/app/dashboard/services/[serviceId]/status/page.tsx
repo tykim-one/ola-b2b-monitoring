@@ -1,13 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Play, CheckCircle, Clock, Calendar, RefreshCw, TrendingUp, FileText } from 'lucide-react';
+import { Play, CheckCircle, Clock, Calendar, RefreshCw, TrendingUp, FileText, AlertTriangle, AlertCircle, Database, HelpCircle } from 'lucide-react';
 import { useServiceContext } from '@/hooks/useServiceContext';
 import { Dashboard } from '@/components/compound/Dashboard';
 import KPICard from '@/components/kpi/KPICard';
 import { DataTable, type Column } from '@/components/compound/DataTable';
 import { Chart } from '@/components/compound/Chart';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
+import { StatusBadge } from '@/components/ui/StatusBadge';
+import { EmptyState } from '@/components/ui/EmptyState';
+import {
+  useReportMonitoringHealth,
+  useReportMonitoringResult,
+  useRunReportCheck,
+  useReportMonitoringHistory,
+} from '@/hooks/queries/use-report-monitoring';
+import type { ReportType, ReportCheckResult, MonitoringHistoryItem } from '@/services/reportMonitoringService';
 import apiClient from '@/lib/api-client';
 import {
   AreaChart,
@@ -18,31 +27,376 @@ import {
   Tooltip,
 } from 'recharts';
 
-// ======= Batch 타입용 인터페이스 =======
-interface BatchJob {
-  id: string;
-  name: string;
-  status: 'pending' | 'running' | 'completed' | 'failed';
-  createdAt: string;
-  completedAt?: string;
-  processedCount?: number;
-  errorCount?: number;
+// ======= Report Batch Status Component =======
+const REPORT_TYPE_LABELS: Record<ReportType, string> = {
+  ai_stock: 'AI Stock',
+  commodity: 'Commodity',
+  forex: 'Forex',
+  dividend: 'Dividend',
+};
+
+function formatDateTime(dateString: string) {
+  return new Date(dateString).toLocaleString('ko-KR', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
-interface BatchStats {
-  totalJobs: number;
-  runningJobs: number;
-  completedJobs: number;
-  failedJobs: number;
-  successRate: number;
-}
+function ReportBatchStatus({ serviceName }: { serviceName: string }) {
+  const { data: health, isLoading: healthLoading, error: healthError, refetch: refetchHealth } = useReportMonitoringHealth();
+  const dbConnected = health?.db.connected ?? false;
+  const { data: monitoringResult, isLoading: resultLoading, error: resultError } = useReportMonitoringResult(dbConnected);
+  const runCheckMutation = useRunReportCheck();
 
-interface Schedule {
-  id: string;
-  name: string;
-  cronExpression: string;
-  nextRun?: string;
-  isEnabled: boolean;
+  const isLoading = healthLoading || (dbConnected && resultLoading);
+  const error = healthError || resultError;
+  const summary = monitoringResult?.summary;
+  const checking = runCheckMutation.isPending;
+
+  const { data: historyData, isLoading: historyLoading } = useReportMonitoringHistory(dbConnected);
+
+  const handleRunCheck = () => {
+    runCheckMutation.mutate();
+  };
+
+  const reportColumns: Column<ReportCheckResult>[] = [
+    {
+      key: 'reportType',
+      header: '리포트',
+      render: (value) => (
+        <span className="text-gray-900 font-medium">
+          {REPORT_TYPE_LABELS[value as ReportType]}
+        </span>
+      ),
+    },
+    {
+      key: 'hasCriticalIssues',
+      header: '상태',
+      render: (value) => (
+        <StatusBadge
+          variant={value ? 'error' : 'success'}
+          label={value ? '이슈 발견' : '정상'}
+        />
+      ),
+    },
+    {
+      key: 'totalTargets',
+      header: '대상',
+      align: 'right',
+      render: (value) => <span className="text-gray-600">{String(value)}</span>,
+    },
+    {
+      key: 'missingSymbols',
+      header: '누락',
+      align: 'right',
+      render: (value) => {
+        const arr = value as string[];
+        return arr.length > 0 ? (
+          <span className="text-rose-400 font-medium">{arr.length}</span>
+        ) : (
+          <span className="text-gray-400">0</span>
+        );
+      },
+    },
+    {
+      key: 'incompleteSymbols',
+      header: '불완전',
+      align: 'right',
+      render: (value) => {
+        const arr = value as string[];
+        return arr.length > 0 ? (
+          <span className="text-orange-400 font-medium">{arr.length}</span>
+        ) : (
+          <span className="text-gray-400">0</span>
+        );
+      },
+    },
+    {
+      key: 'staleSymbols',
+      header: '오래됨',
+      align: 'right',
+      render: (value) => {
+        const arr = value as string[];
+        return arr.length > 0 ? (
+          <span className="text-amber-400 font-medium">{arr.length}</span>
+        ) : (
+          <span className="text-gray-400">0</span>
+        );
+      },
+    },
+    {
+      key: 'completeCount',
+      header: '정상',
+      align: 'right',
+      render: (value) => <span className="text-emerald-400">{String(value)}</span>,
+    },
+  ];
+
+  const historyColumns: Column<MonitoringHistoryItem>[] = [
+    {
+      key: 'checkedAt', header: '체크 시간',
+      render: (v) => (
+        <span className="text-gray-600 text-sm">
+          {new Date(v as string).toLocaleString('ko-KR', {
+            month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+          })}
+        </span>
+      ),
+    },
+    {
+      key: 'trigger', header: '트리거', align: 'center',
+      render: (v) => (
+        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+          v === 'scheduled' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
+        }`}>
+          {v === 'scheduled' ? '자동' : '수동'}
+        </span>
+      ),
+    },
+    {
+      key: 'hasIssues', header: '상태', align: 'center',
+      render: (v) => (
+        <StatusBadge variant={v ? 'error' : 'success'} label={v ? '이슈' : '정상'} />
+      ),
+    },
+    {
+      key: 'totalMissing', header: '누락', align: 'right',
+      render: (v) => (v as number) > 0
+        ? <span className="text-rose-400 font-medium">{v as number}</span>
+        : <span className="text-gray-400">0</span>,
+    },
+    {
+      key: 'totalIncomplete', header: '불완전', align: 'right',
+      render: (v) => (v as number) > 0
+        ? <span className="text-orange-400 font-medium">{v as number}</span>
+        : <span className="text-gray-400">0</span>,
+    },
+    {
+      key: 'totalStale', header: '오래됨', align: 'right',
+      render: (v) => (v as number) > 0
+        ? <span className="text-amber-400 font-medium">{v as number}</span>
+        : <span className="text-gray-400">0</span>,
+    },
+    {
+      key: 'healthyReports', header: '정상', align: 'right',
+      render: (_, row) => {
+        const item = row as MonitoringHistoryItem;
+        return <span className="text-emerald-400">{item.healthyReports}/{item.totalReports}</span>;
+      },
+    },
+  ];
+
+  return (
+    <Dashboard isLoading={isLoading} error={error as Error | null} refetch={refetchHealth}>
+      <Dashboard.Header
+        title={`${serviceName} 배치 현황`}
+        rightContent={
+          <div className="text-gray-500 text-sm">
+            {health && !isLoading && `마지막 갱신: ${new Date().toLocaleTimeString('ko-KR')}`}
+          </div>
+        }
+      />
+
+      <Dashboard.Skeleton layout="kpi-only" />
+      <Dashboard.Error />
+
+      <Dashboard.Content>
+        <div className="mb-6 flex items-center gap-4">
+          <button
+            onClick={handleRunCheck}
+            disabled={checking || !dbConnected}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+              checking || !dbConnected
+                ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            {checking ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                체크 실행 중...
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4" />
+                즉시 체크 실행
+              </>
+            )}
+          </button>
+          {!dbConnected && (
+            <span className="text-amber-400 text-sm flex items-center gap-1">
+              <AlertTriangle className="w-4 h-4" />
+              DB 연결 필요
+            </span>
+          )}
+        </div>
+
+        {!monitoringResult ? (
+          <EmptyState
+            variant="solid"
+            icon={<FileText className="w-16 h-16 text-gray-400" />}
+            title="아직 체크가 실행되지 않았습니다"
+            description="리포트 데이터 상태를 확인하려면 체크를 실행하세요."
+            action={{
+              label: '첫 체크 실행',
+              onClick: handleRunCheck,
+              icon: <Play className="w-4 h-4" />,
+              disabled: checking || !dbConnected,
+            }}
+          />
+        ) : (
+          <>
+            <Dashboard.KPISection columns={4}>
+              <KPICard
+                title="전체 리포트"
+                value={summary?.totalReports ?? 4}
+                format="number"
+                icon={<FileText className="w-5 h-5" />}
+                status="neutral"
+              />
+              <KPICard
+                title="정상"
+                value={summary?.healthyReports ?? 0}
+                format="number"
+                icon={<CheckCircle className="w-5 h-5" />}
+                status={summary?.healthyReports === summary?.totalReports ? 'success' : 'warning'}
+              />
+              <KPICard
+                title="이슈 리포트"
+                value={(summary?.totalReports ?? 0) - (summary?.healthyReports ?? 0)}
+                format="number"
+                icon={<AlertTriangle className="w-5 h-5" />}
+                status={(summary?.totalReports ?? 0) - (summary?.healthyReports ?? 0) > 0 ? 'error' : 'success'}
+              />
+              <KPICard
+                title="오래됨"
+                value={summary?.totalStale ?? 0}
+                format="number"
+                icon={<Clock className="w-5 h-5" />}
+                status={(summary?.totalStale ?? 0) > 0 ? 'warning' : 'success'}
+              />
+            </Dashboard.KPISection>
+
+            <Dashboard.TableSection title="리포트별 상태" className="mb-8">
+              <DataTable
+                data={monitoringResult.results}
+                columns={reportColumns}
+                variant="card"
+                rowKey="reportType"
+              >
+                <DataTable.Content>
+                  <DataTable.Header />
+                  <DataTable.Body
+                    emptyMessage="리포트 데이터가 없습니다"
+                    rowClassName={(row) =>
+                      (row as ReportCheckResult).hasCriticalIssues
+                        ? 'bg-rose-50 hover:bg-rose-50'
+                        : ''
+                    }
+                  />
+                </DataTable.Content>
+              </DataTable>
+            </Dashboard.TableSection>
+          </>
+        )}
+
+        {/* System Status Footer */}
+        <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Database className="w-5 h-5" />
+            시스템 상태
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* DB connection */}
+            <div className="space-y-2">
+              <div className="text-sm text-gray-500">데이터베이스</div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    dbConnected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                  }`}
+                />
+                <span className={dbConnected ? 'text-emerald-400' : 'text-rose-400'}>
+                  {dbConnected ? '연결됨' : '연결 안됨'}
+                </span>
+                {health?.db.type && (
+                  <span className="text-gray-400 text-sm">({health.db.type})</span>
+                )}
+              </div>
+            </div>
+
+            {/* Scheduler */}
+            <div className="space-y-2">
+              <div className="text-sm text-gray-500">스케줄러</div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    health?.scheduler.isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
+                  }`}
+                />
+                <span
+                  className={health?.scheduler.isRunning ? 'text-emerald-400' : 'text-gray-500'}
+                >
+                  {health?.scheduler.isRunning ? '실행 중' : '중지됨'}
+                </span>
+              </div>
+              {health?.scheduler && (
+                <div className="text-xs text-gray-400 space-y-1">
+                  <div>Cron: {health.scheduler.cronExpression}</div>
+                  <div>Timezone: {health.scheduler.timezone}</div>
+                  {health.scheduler.nextExecution && (
+                    <div>다음 실행: {formatDateTime(health.scheduler.nextExecution)}</div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Target files */}
+            <div className="space-y-2">
+              <div className="text-sm text-gray-500">타겟 파일</div>
+              <div className="space-y-1">
+                {health?.targetFiles.map((file) => (
+                  <div key={file.reportType} className="flex items-center gap-2 text-sm">
+                    <FileText className="w-3 h-3 text-gray-400" />
+                    <span className="text-gray-600">{file.filename}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 체크 이력 */}
+        <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm mt-8">
+          <DataTable
+            data={historyData?.items ?? []}
+            columns={historyColumns}
+            variant="card"
+            rowKey="id"
+          >
+            <DataTable.Toolbar>
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Clock className="w-5 h-5 text-blue-500" />
+                체크 이력
+              </h3>
+              {historyData && (
+                <DataTable.Stats>
+                  <DataTable.StatItem label="전체" value={`${historyData.total}건`} colorClass="text-gray-500" />
+                </DataTable.Stats>
+              )}
+            </DataTable.Toolbar>
+            <DataTable.Content>
+              <DataTable.Header />
+              <DataTable.Body emptyMessage={historyLoading ? '로딩 중...' : '체크 이력이 없습니다.'} />
+            </DataTable.Content>
+            <DataTable.Pagination pageSize={10} />
+          </DataTable>
+        </div>
+      </Dashboard.Content>
+    </Dashboard>
+  );
 }
 
 // ======= ETL 타입용 인터페이스 (프론트엔드 UI용) =======
@@ -227,11 +581,6 @@ export default function ServiceStatusPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Batch 타입 상태
-  const [jobs, setJobs] = useState<BatchJob[]>([]);
-  const [batchStats, setBatchStats] = useState<BatchStats | null>(null);
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-
   // ETL 타입 상태
   const [runs, setRuns] = useState<ETLRun[]>([]);
   const [etlSummary, setEtlSummary] = useState<ETLSummary | null>(null);
@@ -241,25 +590,6 @@ export default function ServiceStatusPage() {
   const serviceId = ctx?.serviceId;
   const etlApiPrefix = ctx?.etlApiPrefix || ctx?.apiPrefix || '';
   const etlLabels = getETLLabels(serviceId);
-
-  const fetchBatchData = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const [jobsRes, statsRes, schedulesRes] = await Promise.all([
-        apiClient.get('/api/admin/batch-analysis/jobs?limit=20'),
-        apiClient.get('/api/admin/batch-analysis/stats'),
-        apiClient.get('/api/admin/batch-analysis/schedules'),
-      ]);
-      setJobs(Array.isArray(jobsRes.data) ? jobsRes.data : []);
-      setBatchStats(statsRes.data || null);
-      setSchedules(Array.isArray(schedulesRes.data) ? schedulesRes.data : []);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('데이터 로드 실패'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const fetchETLData = async () => {
     if (!etlApiPrefix) return;
@@ -310,15 +640,13 @@ export default function ServiceStatusPage() {
   const fetchData = () => {
     if (serviceType === 'pipeline') {
       fetchETLData();
-    } else {
-      fetchBatchData();
     }
   };
 
   // ctx 객체 대신 원시값(etlApiPrefix, serviceType)을 의존성으로 사용
   // 이렇게 하면 객체 참조 변경으로 인한 불필요한 재실행 방지
   useEffect(() => {
-    if (ctx) {
+    if (ctx && serviceType === 'pipeline') {
       fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -347,6 +675,11 @@ export default function ServiceStatusPage() {
       return date;
     }
   };
+
+  // Batch 타입 렌더링 (IBK 리포트 배치)
+  if (serviceType === 'batch') {
+    return <ReportBatchStatus serviceName={ctx.config?.name || ctx.serviceId} />;
+  }
 
   // ETL 타입 렌더링
   if (serviceType === 'pipeline') {
@@ -506,155 +839,12 @@ export default function ServiceStatusPage() {
     );
   }
 
-  // Batch 타입 렌더링 (기본)
-  const getBatchStatusBadge = (status: BatchJob['status']) => {
-    const styles = {
-      pending: 'bg-gray-100 text-gray-600',
-      running: 'bg-blue-100 text-blue-600',
-      completed: 'bg-emerald-100 text-emerald-600',
-      failed: 'bg-rose-100 text-rose-600',
-    };
-    const labels = {
-      pending: '대기',
-      running: '실행 중',
-      completed: '완료',
-      failed: '실패',
-    };
-    return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status]}`}>
-        {labels[status]}
-      </span>
-    );
-  };
-
-  const jobColumns: Column<BatchJob>[] = [
-    { key: 'name', header: '작업명',
-      render: (v) => <span className="font-medium text-gray-900">{v as string}</span>,
-    },
-    { key: 'status', header: '상태', align: 'center',
-      render: (v) => getBatchStatusBadge(v as BatchJob['status']),
-    },
-    { key: 'createdAt', header: '시작 시간', align: 'center',
-      render: (v) => <span className="text-gray-500 text-xs">{formatDate(v as string)}</span>,
-    },
-    { key: 'completedAt', header: '완료 시간', align: 'center',
-      render: (v) => v ? <span className="text-gray-500 text-xs">{formatDate(v as string)}</span> : <span className="text-gray-300">-</span>,
-    },
-    { key: 'processedCount', header: '처리', align: 'center',
-      render: (v) => <span className="text-gray-600">{(v as number)?.toLocaleString() || '-'}</span>,
-    },
-    { key: 'errorCount', header: '에러', align: 'center',
-      render: (v) => (
-        <span className={(v as number) > 0 ? 'text-rose-500 font-medium' : 'text-gray-400'}>
-          {(v as number) || 0}
-        </span>
-      ),
-    },
-  ];
-
-  const scheduleColumns: Column<Schedule>[] = [
-    { key: 'name', header: '스케줄명',
-      render: (v) => <span className="font-medium text-gray-900">{v as string}</span>,
-    },
-    { key: 'cronExpression', header: 'Cron', align: 'center',
-      render: (v) => <code className="text-xs bg-gray-100 px-2 py-1 rounded">{v as string}</code>,
-    },
-    { key: 'nextRun', header: '다음 실행', align: 'center',
-      render: (v) => v ? <span className="text-gray-500 text-xs">{formatDate(v as string)}</span> : <span className="text-gray-300">-</span>,
-    },
-    { key: 'isEnabled', header: '상태', align: 'center',
-      render: (v) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${v ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-500'}`}>
-          {v ? '활성' : '비활성'}
-        </span>
-      ),
-    },
-  ];
-
+  // Fallback (no matching service type)
   return (
-    <Dashboard isLoading={isLoading} error={error} refetch={fetchData}>
-      <Dashboard.Header
-        title="배치 현황"
-        rightContent={
-          <button
-            onClick={fetchData}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" />
-            새로고침
-          </button>
-        }
-      />
-
-      <Dashboard.Skeleton layout="kpi-chart" />
-      <Dashboard.Error />
-
-      <Dashboard.Content>
-        <Dashboard.KPISection columns={4}>
-          <KPICard
-            title="실행 중"
-            value={batchStats?.runningJobs || 0}
-            format="number"
-            icon={<Play className="w-5 h-5" />}
-            status={batchStats?.runningJobs && batchStats.runningJobs > 0 ? 'warning' : 'neutral'}
-          />
-          <KPICard
-            title="대기 중"
-            value={Array.isArray(jobs) ? jobs.filter(j => j.status === 'pending').length : 0}
-            format="number"
-            icon={<Clock className="w-5 h-5" />}
-            status="neutral"
-          />
-          <KPICard
-            title="성공률"
-            value={batchStats?.successRate || 0}
-            format="percentage"
-            icon={<CheckCircle className="w-5 h-5" />}
-            status={(batchStats?.successRate || 0) >= 95 ? 'success' : (batchStats?.successRate || 0) >= 80 ? 'warning' : 'error'}
-          />
-          <KPICard
-            title="총 작업"
-            value={batchStats?.totalJobs || 0}
-            format="number"
-            icon={<Calendar className="w-5 h-5" />}
-            status="neutral"
-          />
-        </Dashboard.KPISection>
-
-        <div className="mb-6">
-          <DataTable data={Array.isArray(jobs) ? jobs : []} columns={jobColumns} rowKey="id">
-            <DataTable.Toolbar>
-              <h3 className="text-lg font-semibold text-gray-900">최근 작업</h3>
-              <DataTable.Stats>
-                <DataTable.StatItem label="완료" value={`${batchStats?.completedJobs || 0}개`} colorClass="text-emerald-400" />
-                <DataTable.StatItem label="실패" value={`${batchStats?.failedJobs || 0}개`} colorClass="text-rose-400" />
-              </DataTable.Stats>
-            </DataTable.Toolbar>
-            <DataTable.Content>
-              <DataTable.Header />
-              <DataTable.Body emptyMessage="작업 내역이 없습니다." />
-            </DataTable.Content>
-            <DataTable.Footer />
-          </DataTable>
-        </div>
-
-        {schedules.length > 0 && (
-          <div className="mb-6">
-            <DataTable data={Array.isArray(schedules) ? schedules : []} columns={scheduleColumns} rowKey="id">
-              <DataTable.Toolbar>
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-purple-500" />
-                  예정된 스케줄
-                </h3>
-              </DataTable.Toolbar>
-              <DataTable.Content>
-                <DataTable.Header />
-                <DataTable.Body emptyMessage="등록된 스케줄이 없습니다." />
-              </DataTable.Content>
-            </DataTable>
-          </div>
-        )}
-      </Dashboard.Content>
-    </Dashboard>
+    <div className="p-8 h-full overflow-y-auto bg-gray-50">
+      <div className="bg-rose-50 border border-rose-200 p-6 rounded-2xl">
+        <p className="text-rose-600">알 수 없는 서비스 타입입니다: {serviceType}</p>
+      </div>
+    </div>
   );
 }

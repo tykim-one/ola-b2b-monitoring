@@ -308,47 +308,70 @@ export class MetricsService implements OnModuleInit {
 
   /**
    * 일별 토큰 효율성 트렌드 (캐시 TTL: 15분)
+   * @param days Number of days to look back (default: 30)
    */
-  async getTokenEfficiencyTrend(): Promise<TokenEfficiencyTrend[]> {
-    const cacheKey = CacheService.generateKey('quality', 'efficiency', 'trend');
+  async getTokenEfficiencyTrend(
+    days: number = 30,
+  ): Promise<TokenEfficiencyTrend[]> {
+    const cacheKey = CacheService.generateKey(
+      'quality',
+      'efficiency',
+      'trend',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getTokenEfficiencyTrend(),
+      async () => this.metricsDataSource.getTokenEfficiencyTrend(days),
       CacheTTL.MEDIUM,
     );
   }
 
   /**
    * 질문-응답 길이 상관관계 (캐시 TTL: 15분)
+   * @param days Number of days to look back (default: 7)
    */
-  async getQueryResponseCorrelation(): Promise<QueryResponseCorrelation[]> {
+  async getQueryResponseCorrelation(
+    days: number = 7,
+  ): Promise<QueryResponseCorrelation[]> {
     const cacheKey = CacheService.generateKey(
       'quality',
       'query',
       'correlation',
+      days,
     );
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getQueryResponseCorrelation(),
+      async () => this.metricsDataSource.getQueryResponseCorrelation(days),
       CacheTTL.MEDIUM,
     );
   }
 
   /**
-   * 반복 질문 패턴 (캐시 TTL: 15분)
+   * 질문-응답 상세 조회 (캐시 없음 - 온디맨드)
    */
-  async getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]> {
+  async getQueryResponseDetail(timestamp: string, tenantId: string) {
+    return this.metricsDataSource.getQueryResponseDetail(timestamp, tenantId);
+  }
+
+  /**
+   * 반복 질문 패턴 (캐시 TTL: 15분)
+   * @param days Number of days to look back (default: 30)
+   */
+  async getRepeatedQueryPatterns(
+    days: number = 30,
+  ): Promise<RepeatedQueryPattern[]> {
     const cacheKey = CacheService.generateKey(
       'quality',
       'repeated',
       'patterns',
+      days,
     );
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getRepeatedQueryPatterns(),
+      async () => this.metricsDataSource.getRepeatedQueryPatterns(days),
       CacheTTL.MEDIUM,
     );
   }

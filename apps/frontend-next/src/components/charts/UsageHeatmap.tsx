@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface HeatmapData {
   day_of_week: number;
@@ -29,18 +29,23 @@ const getIntensityColor = (value: number, max: number): string => {
   return 'bg-blue-400/80';
 };
 
-const UsageHeatmap: React.FC<UsageHeatmapProps> = ({
+const UsageHeatmap: React.FC<UsageHeatmapProps> = React.memo(({
   data,
   title = '시간대별 사용량 히트맵',
 }) => {
   // 데이터를 2D 맵으로 변환
-  const heatmapMatrix: Record<string, HeatmapData> = {};
-  data.forEach((item) => {
-    const key = `${item.day_of_week}-${item.hour}`;
-    heatmapMatrix[key] = item;
-  });
+  const heatmapMatrix = useMemo(() => {
+    const matrix: Record<string, HeatmapData> = {};
+    data.forEach((item) => {
+      const key = `${item.day_of_week}-${item.hour}`;
+      matrix[key] = item;
+    });
+    return matrix;
+  }, [data]);
 
-  const maxRequests = Math.max(...data.map((d) => d.request_count), 1);
+  const maxRequests = useMemo(() =>
+    Math.max(...data.map((d) => d.request_count), 1),
+    [data]);
 
   return (
     <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-lg">
@@ -103,6 +108,6 @@ const UsageHeatmap: React.FC<UsageHeatmapProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default UsageHeatmap;

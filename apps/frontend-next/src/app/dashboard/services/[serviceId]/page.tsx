@@ -30,8 +30,6 @@ export default function ServiceOverviewPage() {
     );
   }
 
-  const Icon = (LucideIcons as Record<string, unknown>)[config.icon] as React.ComponentType<{ className?: string }> || LucideIcons.HelpCircle;
-
   return (
     <div className="p-8 h-full overflow-y-auto bg-gray-50 space-y-6">
       {/* 서비스 카드 */}
@@ -143,74 +141,7 @@ export default function ServiceOverviewPage() {
         </div>
       </div>
 
-      {/* 상세 메트릭 (선택사항) */}
-      {data && data.kpis && Object.keys(data.kpis).length > 0 && (
-        <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <Icon className="h-5 w-5 text-blue-500" />
-            <h3 className="text-lg font-semibold text-gray-900">실시간 메트릭</h3>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {config.card.kpis.map((kpi) => {
-              const value = data.kpis[kpi.key];
-              const formattedValue = formatKPIValue(value, kpi.format);
-              const status = getKPIStatus(value, kpi.thresholds);
-
-              return (
-                <div key={kpi.key} className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                  <p className="text-xs text-gray-500 mb-2">{kpi.label}</p>
-                  <p
-                    className={`text-2xl font-bold ${
-                      status === 'error'
-                        ? 'text-rose-500'
-                        : status === 'warning'
-                        ? 'text-amber-500'
-                        : 'text-gray-900'
-                    }`}
-                  >
-                    {formattedValue ?? '-'}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-function formatKPIValue(
-  value: number | string | undefined,
-  format: 'number' | 'percentage' | 'duration' | 'currency'
-): string | undefined {
-  if (value === undefined || value === null) return undefined;
-
-  switch (format) {
-    case 'number':
-      return typeof value === 'number' ? value.toLocaleString() : String(value);
-    case 'percentage':
-      return typeof value === 'number' ? `${value.toFixed(1)}%` : `${value}%`;
-    case 'duration':
-      return typeof value === 'number' ? `${value}ms` : String(value);
-    case 'currency':
-      return typeof value === 'number' ? `$${value.toFixed(2)}` : String(value);
-    default:
-      return String(value);
-  }
-}
-
-function getKPIStatus(
-  value: number | string | undefined,
-  thresholds?: { warning?: number; error?: number }
-): 'healthy' | 'warning' | 'error' {
-  if (!thresholds || typeof value !== 'number') return 'healthy';
-
-  if (thresholds.error !== undefined && value < thresholds.error) {
-    return 'error';
-  }
-  if (thresholds.warning !== undefined && value < thresholds.warning) {
-    return 'warning';
-  }
-  return 'healthy';
-}

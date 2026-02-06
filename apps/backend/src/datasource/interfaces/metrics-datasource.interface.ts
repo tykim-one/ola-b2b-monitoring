@@ -126,20 +126,36 @@ export interface MetricsDataSource {
   /**
    * Get daily token efficiency trend.
    * Returns efficiency ratios (output/input) aggregated by day.
+   * @param days Number of days to look back (default: 30)
    */
-  getTokenEfficiencyTrend(): Promise<TokenEfficiencyTrend[]>;
+  getTokenEfficiencyTrend(days?: number): Promise<TokenEfficiencyTrend[]>;
 
   /**
    * Get query-response length correlation data.
    * Returns query length, response length, and token usage per request.
+   * @param days Number of days to look back (default: 7)
    */
-  getQueryResponseCorrelation(): Promise<QueryResponseCorrelation[]>;
+  getQueryResponseCorrelation(
+    days?: number,
+  ): Promise<QueryResponseCorrelation[]>;
+
+  /**
+   * Get query-response detail for a specific data point.
+   * Returns full user_input and llm_response text for on-demand loading.
+   * @param timestamp Timestamp of the data point
+   * @param tenantId Tenant ID of the data point
+   */
+  getQueryResponseDetail(
+    timestamp: string,
+    tenantId: string,
+  ): Promise<{ user_input: string; llm_response: string } | null>;
 
   /**
    * Get repeated query patterns.
    * Returns frequently asked questions with occurrence counts.
+   * @param days Number of days to look back (default: 30)
    */
-  getRepeatedQueryPatterns(): Promise<RepeatedQueryPattern[]>;
+  getRepeatedQueryPatterns(days?: number): Promise<RepeatedQueryPattern[]>;
 
   // ==================== User Analytics Methods ====================
 

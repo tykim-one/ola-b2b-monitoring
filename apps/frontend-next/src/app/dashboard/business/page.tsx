@@ -1,16 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { DollarSign, TrendingUp, Users, BarChart3 } from 'lucide-react';
 import { useBusinessDashboard } from '@/hooks/queries/use-dashboard';
 import { Dashboard } from '@/components/compound/Dashboard';
 import { DataTable, Column } from '@/components/compound/DataTable';
 import KPICard from '@/components/kpi/KPICard';
-import TenantPieChart from '@/components/charts/TenantPieChart';
-import CostTrendChart from '@/components/charts/CostTrendChart';
-import UsageHeatmap from '@/components/charts/UsageHeatmap';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
 import type { TenantUsage } from '@ola/shared-types';
+
+const TenantPieChart = dynamic(
+  () => import('@/components/charts/TenantPieChart'),
+  { ssr: false, loading: () => <div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
+
+const CostTrendChart = dynamic(
+  () => import('@/components/charts/CostTrendChart'),
+  { ssr: false, loading: () => <div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
+
+const UsageHeatmap = dynamic(
+  () => import('@/components/charts/UsageHeatmap'),
+  { ssr: false, loading: () => <div className="h-64 bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
 
 // 현재 projectId - 추후 동적으로 변경 가능
 const PROJECT_ID = 'ibks';
@@ -123,25 +136,29 @@ export default function BusinessPage() {
         </Dashboard.KPISection>
 
         {/* Charts Row */}
-        <Dashboard.ChartsSection columns={2}>
-          <TenantPieChart
-            data={tenantUsage}
-            title="테넌트별 토큰 사용량"
-            dataKey="total_tokens"
-          />
-          <CostTrendChart
-            data={costTrend}
-            title="일별 비용 트렌드"
-          />
-        </Dashboard.ChartsSection>
+        <Suspense fallback={<div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" />}>
+          <Dashboard.ChartsSection columns={2}>
+            <TenantPieChart
+              data={tenantUsage}
+              title="테넌트별 토큰 사용량"
+              dataKey="total_tokens"
+            />
+            <CostTrendChart
+              data={costTrend}
+              title="일별 비용 트렌드"
+            />
+          </Dashboard.ChartsSection>
+        </Suspense>
 
         {/* Heatmap */}
-        <div className="mb-8">
-          <UsageHeatmap
-            data={heatmap}
-            title={`시간대별 사용량 히트맵 (최근 ${dateRange.days}일)`}
-          />
-        </div>
+        <Suspense fallback={<div className="h-64 bg-slate-800/50 rounded-lg animate-pulse" />}>
+          <div className="mb-8">
+            <UsageHeatmap
+              data={heatmap}
+              title={`시간대별 사용량 히트맵 (최근 ${dateRange.days}일)`}
+            />
+          </div>
+        </Suspense>
 
         {/* Tenant Table */}
         <Dashboard.TableSection title="테넌트별 상세 현황">

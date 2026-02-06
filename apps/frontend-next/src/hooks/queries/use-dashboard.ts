@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   useTenantUsage,
   useCostTrend,
@@ -97,12 +98,15 @@ export function useBusinessDashboard(projectId: string, days = 30): BusinessDash
   const heatmap = heatmapQuery.data ?? [];
 
   // Aggregated KPIs
-  const kpis = {
-    totalTokens: tenantUsage.reduce((sum, t) => sum + t.total_tokens, 0),
-    totalRequests: tenantUsage.reduce((sum, t) => sum + t.request_count, 0),
-    totalCost: costTrend.reduce((sum, c) => sum + c.total_cost, 0),
-    tenantCount: tenantUsage.length,
-  };
+  const kpis = useMemo(
+    () => ({
+      totalTokens: tenantUsage.reduce((sum, t) => sum + t.total_tokens, 0),
+      totalRequests: tenantUsage.reduce((sum, t) => sum + t.request_count, 0),
+      totalCost: costTrend.reduce((sum, c) => sum + c.total_cost, 0),
+      tenantCount: tenantUsage.length,
+    }),
+    [tenantUsage, costTrend]
+  );
 
   const refetch = () => {
     tenantUsageQuery.refetch();
@@ -146,24 +150,28 @@ export function useOperationsDashboard(
   const errors = errorsQuery.data ?? [];
 
   // Aggregated KPIs
-  const kpis = realtimeKPI
-    ? {
-        totalRequests: realtimeKPI.total_requests,
-        successRate:
-          realtimeKPI.total_requests > 0
-            ? (realtimeKPI.success_count / realtimeKPI.total_requests) * 100
-            : 0,
-        errorRate: realtimeKPI.error_rate,
-        avgTokens: realtimeKPI.avg_tokens,
-        activeTenants: realtimeKPI.active_tenants,
-      }
-    : {
-        totalRequests: 0,
-        successRate: 0,
-        errorRate: 0,
-        avgTokens: 0,
-        activeTenants: 0,
-      };
+  const kpis = useMemo(
+    () =>
+      realtimeKPI
+        ? {
+            totalRequests: realtimeKPI.total_requests,
+            successRate:
+              realtimeKPI.total_requests > 0
+                ? (realtimeKPI.success_count / realtimeKPI.total_requests) * 100
+                : 0,
+            errorRate: realtimeKPI.error_rate,
+            avgTokens: realtimeKPI.avg_tokens,
+            activeTenants: realtimeKPI.active_tenants,
+          }
+        : {
+            totalRequests: 0,
+            successRate: 0,
+            errorRate: 0,
+            avgTokens: 0,
+            activeTenants: 0,
+          },
+    [realtimeKPI]
+  );
 
   const refetch = () => {
     realtimeQuery.refetch();
@@ -209,54 +217,56 @@ export function useAIPerformanceDashboard(
   const tenantUsage = tenantUsageQuery.data ?? [];
 
   // Calculate KPIs
-  const tenantsWithAnomalies = anomalyStats.filter(
-    (s) => s.stddev_tokens > s.avg_tokens * 0.5
-  ).length;
+  const kpis = useMemo(() => {
+    const tenantsWithAnomalies = anomalyStats.filter(
+      (s) => s.stddev_tokens > s.avg_tokens * 0.5
+    ).length;
 
-  const avgTokenStdDev =
-    anomalyStats.length > 0
-      ? anomalyStats.reduce((sum, s) => sum + s.stddev_tokens, 0) /
-        anomalyStats.length
-      : 0;
+    const avgTokenStdDev =
+      anomalyStats.length > 0
+        ? anomalyStats.reduce((sum, s) => sum + s.stddev_tokens, 0) /
+          anomalyStats.length
+        : 0;
 
-  // High risk: stddev > 2x average
-  const highRiskTenants = anomalyStats.filter(
-    (s) => s.stddev_tokens > s.avg_tokens * 2
-  ).length;
+    // High risk: stddev > 2x average
+    const highRiskTenants = anomalyStats.filter(
+      (s) => s.stddev_tokens > s.avg_tokens * 2
+    ).length;
 
-  // Token efficiency KPIs
-  const avgEfficiency =
-    tokenEfficiency.length > 0
-      ? tokenEfficiency.reduce((sum, t) => sum + (t.efficiency_ratio || 0), 0) /
-        tokenEfficiency.length
-      : 0;
+    // Token efficiency KPIs
+    const avgEfficiency =
+      tokenEfficiency.length > 0
+        ? tokenEfficiency.reduce((sum, t) => sum + (t.efficiency_ratio || 0), 0) /
+          tokenEfficiency.length
+        : 0;
 
-  const avgTokens =
-    tokenEfficiency.length > 0
-      ? tokenEfficiency.reduce((sum, t) => sum + t.total_tokens, 0) /
-        tokenEfficiency.length
-      : 0;
+    const avgTokens =
+      tokenEfficiency.length > 0
+        ? tokenEfficiency.reduce((sum, t) => sum + t.total_tokens, 0) /
+          tokenEfficiency.length
+        : 0;
 
-  const successCount = tokenEfficiency.filter((t) => t.success === true).length;
-  const successRate =
-    tokenEfficiency.length > 0
-      ? (successCount / tokenEfficiency.length) * 100
-      : 0;
+    const successCount = tokenEfficiency.filter((t) => t.success === true).length;
+    const successRate =
+      tokenEfficiency.length > 0
+        ? (successCount / tokenEfficiency.length) * 100
+        : 0;
 
-  const totalP99 = anomalyStats.reduce(
-    (max, s) => Math.max(max, s.p99_tokens || 0),
-    0
-  );
+    const totalP99 = anomalyStats.reduce(
+      (max, s) => Math.max(max, s.p99_tokens || 0),
+      0
+    );
 
-  const kpis = {
-    tenantsWithAnomalies,
-    avgTokenStdDev,
-    highRiskTenants,
-    avgEfficiency,
-    avgTokens,
-    successRate,
-    totalP99,
-  };
+    return {
+      tenantsWithAnomalies,
+      avgTokenStdDev,
+      highRiskTenants,
+      avgEfficiency,
+      avgTokens,
+      successRate,
+      totalP99,
+    };
+  }, [anomalyStats, tokenEfficiency]);
 
   const refetch = () => {
     anomalyQuery.refetch();

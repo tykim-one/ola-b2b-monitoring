@@ -112,9 +112,7 @@ export class ServiceHealthService {
       serviceId: 'ibk',
       status: successRate >= 95 ? 'healthy' : 'warning',
       statusReason:
-        successRate >= 95
-          ? 'Batch jobs running smoothly'
-          : 'Some jobs failed',
+        successRate >= 95 ? 'Batch jobs running smoothly' : 'Some jobs failed',
       lastChecked: now.toISOString(),
       kpis: {
         lastRunTime: lastRunTime.toISOString(),

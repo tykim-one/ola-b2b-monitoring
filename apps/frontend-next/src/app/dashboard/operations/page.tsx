@@ -1,13 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { Activity, AlertTriangle, Zap, Users } from 'lucide-react';
 import { useOperationsDashboard } from '@/hooks/queries/use-dashboard';
 import { Dashboard } from '@/components/compound/Dashboard';
 import KPICard from '@/components/kpi/KPICard';
-import RealtimeTrafficChart from '@/components/charts/RealtimeTrafficChart';
-import ErrorGauge from '@/components/charts/ErrorGauge';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
+
+const RealtimeTrafficChart = dynamic(
+  () => import('@/components/charts/RealtimeTrafficChart'),
+  { ssr: false, loading: () => <div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
+
+const ErrorGauge = dynamic(
+  () => import('@/components/charts/ErrorGauge'),
+  { ssr: false, loading: () => <div className="h-[200px] bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
 
 const PROJECT_ID = 'ibks';
 
@@ -69,17 +78,19 @@ export default function OperationsPage() {
         </Dashboard.KPISection>
 
         {/* Charts */}
-        <Dashboard.ChartsSection columns={2}>
-          <RealtimeTrafficChart
-            data={hourlyTraffic}
-            title={`시간별 트래픽 (${daysLabel})`}
-          />
-          <ErrorGauge
-            errorRate={realtimeKPI?.error_rate || 0}
-            threshold={1}
-            title="서비스 가용성"
-          />
-        </Dashboard.ChartsSection>
+        <Suspense fallback={<div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" />}>
+          <Dashboard.ChartsSection columns={2}>
+            <RealtimeTrafficChart
+              data={hourlyTraffic}
+              title={`시간별 트래픽 (${daysLabel})`}
+            />
+            <ErrorGauge
+              errorRate={realtimeKPI?.error_rate || 0}
+              threshold={1}
+              title="서비스 가용성"
+            />
+          </Dashboard.ChartsSection>
+        </Suspense>
 
         {/* System Health */}
         <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">

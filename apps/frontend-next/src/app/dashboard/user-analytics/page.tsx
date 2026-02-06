@@ -349,14 +349,19 @@ export default function UserAnalyticsPage() {
   ];
 
   // Summary stats for userList
-  const totalUsers = userList.length;
-  const totalQuestions = userList.reduce((sum: number, d: UserListItem) => sum + d.questionCount, 0);
-  const avgSuccessRate = totalUsers > 0 ? userList.reduce((sum: number, d: UserListItem) => sum + d.successRate, 0) / totalUsers : 0;
+  const { totalUsers, totalQuestions, avgSuccessRate } = useMemo(() => {
+    const total = userList.length;
+    const questions = userList.reduce((sum: number, d: UserListItem) => sum + d.questionCount, 0);
+    const avgRate = total > 0 ? userList.reduce((sum: number, d: UserListItem) => sum + d.successRate, 0) / total : 0;
+    return { totalUsers: total, totalQuestions: questions, avgSuccessRate: avgRate };
+  }, [userList]);
 
   // Summary stats for userPatterns
-  const uniquePatternUsers = new Set(userPatterns.map((p: UserQuestionPattern) => p.userId)).size;
-  const totalPatterns = userPatterns.length;
-  const totalFrequency = userPatterns.reduce((sum: number, d: UserQuestionPattern) => sum + d.frequency, 0);
+  const { uniquePatternUsers, totalPatterns, totalFrequency } = useMemo(() => ({
+    uniquePatternUsers: new Set(userPatterns.map((p: UserQuestionPattern) => p.userId)).size,
+    totalPatterns: userPatterns.length,
+    totalFrequency: userPatterns.reduce((sum: number, d: UserQuestionPattern) => sum + d.frequency, 0),
+  }), [userPatterns]);
 
   return (
     <Dashboard isLoading={false} error={error as Error | null}>

@@ -1,23 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { Activity, MessageSquare, TrendingUp, FileQuestion, Users, Clock } from 'lucide-react';
 import { useQualityDashboard } from '@/hooks/queries/use-quality';
 import { Dashboard } from '@/components/compound/Dashboard';
 import KPICard from '@/components/kpi/KPICard';
-import TokenEfficiencyTrendChart from '@/components/charts/TokenEfficiencyTrendChart';
-import QueryResponseScatterPlot from '@/components/charts/QueryResponseScatterPlot';
 import { DataTable, type Column } from '@/components/compound/DataTable';
-import FAQAnalysisSection from '@/components/faq-analysis/FAQAnalysisSection';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
+
+const TokenEfficiencyTrendChart = dynamic(
+  () => import('@/components/charts/TokenEfficiencyTrendChart'),
+  { ssr: false, loading: () => <div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
+
+const QueryResponseScatterPlot = dynamic(
+  () => import('@/components/charts/QueryResponseScatterPlot'),
+  { ssr: false, loading: () => <div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
+
+const FAQAnalysisSection = dynamic(
+  () => import('@/components/faq-analysis/FAQAnalysisSection'),
+  { loading: () => <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse" /> }
+);
 
 const PROJECT_ID = 'ibks';
 
 export default function QualityPage() {
   const [dateRange, setDateRange] = useState<DateRange>({ startDate: '', endDate: '', days: 30 });
 
-  const { efficiencyTrend, correlation, repeatedPatterns, kpis, isLoading, error, refetch } =
-    useQualityDashboard(PROJECT_ID, dateRange.days);
+  const {
+    efficiencyTrend, correlation, repeatedPatterns, kpis,
+    isLoading, isEfficiencyLoading, isCorrelationLoading, isPatternsLoading,
+    error, refetch,
+  } = useQualityDashboard(PROJECT_ID, dateRange.days);
 
   // ---- Helpers for RepeatedQueries ----
   const formatDate = (date: string): string => {
@@ -35,7 +51,7 @@ export default function QualityPage() {
   };
 
   // Total occurrences for stats
-  const totalOccurrences = repeatedPatterns.reduce((sum: number, d: any) => sum + d.occurrence_count, 0);
+  const totalOccurrences = useMemo(() => repeatedPatterns.reduce((sum: number, d: any) => sum + d.occurrence_count, 0), [repeatedPatterns]);
 
   const repeatedColumns: Column<any>[] = [
     { key: 'query_pattern', header: '질문 패턴',
@@ -122,58 +138,71 @@ export default function QualityPage() {
         </Dashboard.KPISection>
 
         {/* Charts Row */}
-        <Dashboard.ChartsSection columns={2}>
-          <TokenEfficiencyTrendChart
-            data={efficiencyTrend}
-            title={`토큰 효율성 트렌드 (${dateRange.days}일)`}
-          />
-          <QueryResponseScatterPlot
-            data={correlation}
-            title="질문-응답 길이 상관관계"
-          />
-        </Dashboard.ChartsSection>
+        <Suspense fallback={<div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" />}>
+          <Dashboard.ChartsSection columns={2}>
+            {isEfficiencyLoading ? (
+              <div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" />
+            ) : (
+              <TokenEfficiencyTrendChart
+                data={efficiencyTrend}
+                title={`토큰 효율성 트렌드 (${dateRange.days}일)`}
+              />
+            )}
+            {isCorrelationLoading ? (
+              <div className="h-[300px] bg-slate-800/50 rounded-lg animate-pulse" />
+            ) : (
+              <QueryResponseScatterPlot
+                data={correlation}
+                title="질문-응답 길이 상관관계"
+              />
+            )}
+          </Dashboard.ChartsSection>
+        </Suspense>
 
         {/* Repeated Queries Table */}
         <div className="mb-8">
-          <DataTable data={repeatedPatterns.slice(0, 20)} columns={repeatedColumns}>
-            <DataTable.Toolbar>
-              <h3 className="text-lg font-semibold text-gray-900">반복 질문 패턴 (FAQ 후보)</h3>
-              <DataTable.Stats>
-                <DataTable.StatItem label="총 패턴" value={`${repeatedPatterns.length}개`} colorClass="text-blue-400" />
-                <DataTable.StatItem label="총 반복" value={`${totalOccurrences.toLocaleString()}회`} colorClass="text-emerald-400" />
-              </DataTable.Stats>
-            </DataTable.Toolbar>
-            <DataTable.Content>
-              <DataTable.Header />
-              <DataTable.Body
-                expandable
-                renderExpandedRow={(row: any) => (
-                  <div className="space-y-2">
-                    <div className="text-gray-500 text-xs">전체 질문 패턴:</div>
-                    <div className="text-gray-900 bg-white p-3 rounded-lg text-xs break-all">{row.query_pattern}</div>
-                    <div className="flex gap-6 mt-3 text-xs">
-                      <div>
-                        <span className="text-gray-500">첫 발생:</span>{' '}
-                        <span className="text-gray-600">{formatDate(row.first_seen)}</span>
+          {isPatternsLoading ? (
+            <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse" />
+          ) : (
+            <>
+              <DataTable data={repeatedPatterns} columns={repeatedColumns}>
+                <DataTable.Toolbar>
+                  <h3 className="text-lg font-semibold text-gray-900">반복 질문 패턴 (FAQ 후보)</h3>
+                  <DataTable.Stats>
+                    <DataTable.StatItem label="총 패턴" value={`${repeatedPatterns.length}개`} colorClass="text-blue-400" />
+                    <DataTable.StatItem label="총 반복" value={`${totalOccurrences.toLocaleString()}회`} colorClass="text-emerald-400" />
+                  </DataTable.Stats>
+                </DataTable.Toolbar>
+                <DataTable.Content>
+                  <DataTable.Header />
+                  <DataTable.Body
+                    expandable
+                    renderExpandedRow={(row: any) => (
+                      <div className="space-y-2">
+                        <div className="text-gray-500 text-xs">전체 질문 패턴:</div>
+                        <div className="text-gray-900 bg-white p-3 rounded-lg text-xs break-all">{row.query_pattern}</div>
+                        <div className="flex gap-6 mt-3 text-xs">
+                          <div>
+                            <span className="text-gray-500">첫 발생:</span>{' '}
+                            <span className="text-gray-600">{formatDate(row.first_seen)}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">평균 토큰:</span>{' '}
+                            <span className="text-gray-600">{row.avg_output_tokens.toLocaleString()}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-gray-500">평균 토큰:</span>{' '}
-                        <span className="text-gray-600">{row.avg_output_tokens.toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                emptyMessage="반복 질문 패턴이 없습니다."
-              />
-            </DataTable.Content>
-            <DataTable.Footer />
-          </DataTable>
-          {repeatedPatterns.length > 20 && (
-            <p className="text-xs text-gray-400 mt-2 text-center">
-              상위 20개 패턴 표시 중 (전체 {repeatedPatterns.length}개)
-            </p>
+                    )}
+                    emptyMessage="반복 질문 패턴이 없습니다."
+                  />
+                </DataTable.Content>
+                <DataTable.Pagination pageSize={20} />
+                <DataTable.Footer />
+              </DataTable>
+            </>
           )}
         </div>
+
 
         {/* FAQ Analysis Section */}
         <div className="mb-8">

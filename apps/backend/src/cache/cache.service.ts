@@ -25,9 +25,10 @@ export class CacheService {
   constructor() {
     this.cache = new NodeCache({
       stdTTL: CacheTTL.MEDIUM,
-      checkperiod: 120,
+      checkperiod: 60,
       useClones: false,
       deleteOnExpire: true,
+      maxKeys: 500,
     });
 
     this.cache.on('expired', (key) => {

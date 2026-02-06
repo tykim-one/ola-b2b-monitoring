@@ -957,3 +957,82 @@ export interface ProblematicChatStats {
 // ==================== 서비스 구성 타입 ====================
 
 export * from './service.types';
+
+// ==================== UI 체크 모니터링 타입 ====================
+
+export type UiCheckType =
+  | 'element_exists'
+  | 'element_count_min'
+  | 'no_error_text'
+  | 'chart_rendered'
+  | 'no_console_errors'
+  | 'no_empty_page';
+
+export type UiCheckStatus = 'pass' | 'fail' | 'error' | 'timeout';
+export type UiTargetStatus = 'healthy' | 'degraded' | 'broken';
+
+export interface SingleCheckResult {
+  type: UiCheckType;
+  description: string;
+  status: UiCheckStatus;
+  message?: string;
+  selector?: string;
+  expected?: string;
+  actual?: string;
+  durationMs: number;
+}
+
+export interface UiPageCheckResult {
+  targetId: string;
+  targetName: string;
+  url: string;
+  reportType?: string;
+  status: UiTargetStatus;
+  checks: SingleCheckResult[];
+  passedCount: number;
+  failedCount: number;
+  errorCount: number;
+  consoleErrors: string[];
+  screenshotPath?: string;
+  pageLoadTimeMs: number;
+  checkedAt: string;
+}
+
+export interface UiMonitoringSummary {
+  totalTargets: number;
+  healthyTargets: number;
+  degradedTargets: number;
+  brokenTargets: number;
+  totalChecks: number;
+  passedChecks: number;
+  failedChecks: number;
+}
+
+export interface UiMonitoringResult {
+  results: UiPageCheckResult[];
+  summary: UiMonitoringSummary;
+  authSucceeded: boolean;
+  totalDurationMs: number;
+  timestamp: string;
+}
+
+export interface UiCheckHistoryItem {
+  id: string;
+  trigger: string;
+  totalTargets: number;
+  healthyTargets: number;
+  degradedTargets: number;
+  brokenTargets: number;
+  totalChecks: number;
+  passedChecks: number;
+  failedChecks: number;
+  authSucceeded: boolean;
+  totalDurationMs: number;
+  hasIssues: boolean;
+  checkedAt: string;
+}
+
+export interface UiCheckHistoryResponse {
+  items: UiCheckHistoryItem[];
+  total: number;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   AreaChart,
   Area,
@@ -35,14 +35,26 @@ const formatHour = (hour: string): string => {
   }
 };
 
-const RealtimeTrafficChart: React.FC<RealtimeTrafficChartProps> = ({
+const tooltipFormatter = (value: unknown, name: unknown): [string, string] => {
+  const labels: Record<string, string> = {
+    request_count: '요청 수',
+    success_count: '성공',
+    fail_count: '실패',
+  };
+  const numValue = typeof value === 'number' ? value : 0;
+  const strName = String(name);
+  return [numValue.toLocaleString(), labels[strName] || strName];
+};
+
+const RealtimeTrafficChart: React.FC<RealtimeTrafficChartProps> = React.memo(({
   data,
   title = '실시간 트래픽',
 }) => {
   // 시간순 정렬 (오래된 것부터)
-  const sortedData = [...data].sort((a, b) =>
-    new Date(a.hour).getTime() - new Date(b.hour).getTime()
-  );
+  const sortedData = useMemo(() =>
+    [...data].sort((a, b) =>
+      new Date(a.hour).getTime() - new Date(b.hour).getTime()
+    ), [data]);
 
   return (
     <Chart title={title} height={300}>
@@ -73,16 +85,7 @@ const RealtimeTrafficChart: React.FC<RealtimeTrafficChartProps> = ({
             borderRadius: '8px',
           }}
           labelFormatter={formatHour}
-          formatter={(value, name) => {
-            const labels: Record<string, string> = {
-              request_count: '요청 수',
-              success_count: '성공',
-              fail_count: '실패',
-            };
-            const numValue = typeof value === 'number' ? value : 0;
-            const strName = String(name);
-            return [numValue.toLocaleString(), labels[strName] || strName];
-          }}
+          formatter={tooltipFormatter}
         />
         <Area
           type="monotone"
@@ -103,6 +106,6 @@ const RealtimeTrafficChart: React.FC<RealtimeTrafficChartProps> = ({
       </AreaChart>
     </Chart>
   );
-};
+});
 
 export default RealtimeTrafficChart;

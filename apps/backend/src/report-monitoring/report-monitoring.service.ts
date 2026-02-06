@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SlackNotificationService } from '../notifications/slack-notification.service';
+import { PrismaService } from '../admin/database/prisma.service';
 import { ExternalDbService } from './external-db.service';
 import { TargetLoaderService } from './target-loader.service';
 import {
@@ -26,6 +27,7 @@ export class ReportMonitoringService {
     private readonly externalDb: ExternalDbService,
     private readonly targetLoader: TargetLoaderService,
     private readonly slackService: SlackNotificationService,
+    private readonly prisma: PrismaService,
   ) {
     this.tableConfigs = this.loadTableConfigs();
   }
@@ -57,7 +59,9 @@ export class ReportMonitoringService {
   /**
    * 전체 리포트 체크 실행
    */
-  async runFullCheck(): Promise<MonitoringResult> {
+  async runFullCheck(
+    trigger: 'manual' | 'scheduled' = 'manual',
+  ): Promise<MonitoringResult> {
     this.logger.log('Starting full report monitoring check...');
 
     if (!this.externalDb.isConnected()) {
@@ -109,6 +113,8 @@ export class ReportMonitoringService {
 
     // 결과 캐시
     this.lastResult = monitoringResult;
+
+    await this.saveHistory(monitoringResult, trigger);
 
     this.logger.log(
       `Monitoring completed: ${issueReports}/${results.length} reports have issues ` +
@@ -429,5 +435,90 @@ export class ReportMonitoringService {
       dbType: dbHealth.type,
       availableTargetFiles: files,
     };
+  }
+
+  /**
+   * 체크 결과를 DB에 저장
+   */
+  private async saveHistory(
+    result: MonitoringResult,
+    trigger: 'manual' | 'scheduled',
+  ): Promise<void> {
+    try {
+      await this.prisma.reportMonitoringHistory.create({
+        data: {
+          trigger,
+          totalReports: result.summary.totalReports,
+          healthyReports: result.summary.healthyReports,
+          issueReports: result.summary.issueReports,
+          totalMissing: result.summary.totalMissing,
+          totalIncomplete: result.summary.totalIncomplete,
+          totalSuspicious: result.summary.totalSuspicious,
+          totalStale: result.summary.totalStale,
+          hasIssues: result.summary.issueReports > 0,
+          results: JSON.stringify(result.results),
+          checkedAt: result.timestamp,
+        },
+      });
+      this.logger.debug('Monitoring result saved to history');
+    } catch (error) {
+      this.logger.error(`Failed to save history: ${error.message}`);
+      // 이력 저장 실패가 체크 자체를 중단시키지 않도록
+    }
+  }
+
+  /**
+   * 체크 이력 조회 (페이지네이션)
+   */
+  async getHistory(params: {
+    limit?: number;
+    offset?: number;
+    hasIssues?: boolean;
+  }): Promise<{
+    items: Array<{
+      id: string;
+      trigger: string;
+      totalReports: number;
+      healthyReports: number;
+      issueReports: number;
+      totalMissing: number;
+      totalIncomplete: number;
+      totalSuspicious: number;
+      totalStale: number;
+      hasIssues: boolean;
+      checkedAt: Date;
+    }>;
+    total: number;
+  }> {
+    const where: Record<string, unknown> = {};
+    if (params.hasIssues !== undefined) {
+      where.hasIssues = params.hasIssues;
+    }
+
+    const [items, total] = await Promise.all([
+      this.prisma.reportMonitoringHistory.findMany({
+        where,
+        orderBy: { checkedAt: 'desc' },
+        take: params.limit || 20,
+        skip: params.offset || 0,
+        select: {
+          id: true,
+          trigger: true,
+          totalReports: true,
+          healthyReports: true,
+          issueReports: true,
+          totalMissing: true,
+          totalIncomplete: true,
+          totalSuspicious: true,
+          totalStale: true,
+          hasIssues: true,
+          checkedAt: true,
+          // results JSON은 목록에서 제외 (대역폭 절약)
+        },
+      }),
+      this.prisma.reportMonitoringHistory.count({ where }),
+    ]);
+
+    return { items, total };
   }
 }

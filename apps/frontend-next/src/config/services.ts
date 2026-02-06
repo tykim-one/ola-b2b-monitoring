@@ -22,6 +22,7 @@ export const serviceConfigs: ServiceConfig[] = [
       { id: 'users', label: '유저 분석', path: '/users' },
       { id: 'ai-performance', label: 'AI 성능', path: '/ai-performance' },
       { id: 'batch-analysis', label: '배치 분석', path: '/batch-analysis' },
+      { id: 'business', label: '비즈니스 분석', path: '/business' },
     ]
   },
   {

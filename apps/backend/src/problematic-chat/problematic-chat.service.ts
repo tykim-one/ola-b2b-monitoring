@@ -501,7 +501,10 @@ export class ProblematicChatService {
   }
 
   private escapeForLike(str: string): string {
-    return str.replace(/'/g, "''").replace(/%/g, '\\\\%').replace(/_/g, '\\\\_');
+    return str
+      .replace(/'/g, "''")
+      .replace(/%/g, '\\\\%')
+      .replace(/_/g, '\\\\_');
   }
 
   /**
@@ -900,9 +903,7 @@ export class ProblematicChatService {
     // CTE가 필요한 규칙은 단순 COUNT에서 건너뜀
     const config = rule.config;
     const needsCTE = isCompoundConfig(config)
-      ? config.conditions.some(
-          (c) => getFieldDefinition(c.field)?.requiresCTE,
-        )
+      ? config.conditions.some((c) => getFieldDefinition(c.field)?.requiresCTE)
       : getFieldDefinition(config.field)?.requiresCTE === true;
     if (needsCTE) return 0;
 

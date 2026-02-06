@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import {
   BarChart,
@@ -90,13 +90,15 @@ export default function IssueFrequencyPage() {
     '#10b981', // emerald-500
   ];
 
-  const chartData = data?.issues.map((item, index) => ({
-    name: item.issue.length > 30 ? item.issue.substring(0, 30) + '...' : item.issue,
-    fullName: item.issue,
-    count: item.count,
-    percentage: item.percentage,
-    color: COLORS[index % COLORS.length],
-  })) || [];
+  const chartData = useMemo(() =>
+    data?.issues.map((item, index) => ({
+      name: item.issue.length > 30 ? item.issue.substring(0, 30) + '...' : item.issue,
+      fullName: item.issue,
+      count: item.count,
+      percentage: item.percentage,
+      color: COLORS[index % COLORS.length],
+    })) || [],
+    [data?.issues]);
 
   return (
     <div className="p-6 bg-white min-h-screen text-gray-900">

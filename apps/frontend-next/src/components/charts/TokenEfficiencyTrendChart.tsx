@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -39,20 +39,44 @@ const formatDate = (date: string): string => {
   }
 };
 
-const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
+const yAxisTickFormatter = (v: number) => `${v.toFixed(1)}x`;
+
+const tooltipFormatter = (value: unknown, name: unknown): [string, string] => {
+  const labels: Record<string, string> = {
+    avg_efficiency_ratio: '평균 효율성',
+    min_efficiency_ratio: '최소 효율성',
+    max_efficiency_ratio: '최대 효율성',
+  };
+  const numValue = typeof value === 'number' ? value : 0;
+  return [`${numValue.toFixed(3)}x`, labels[String(name)] || String(name)];
+};
+
+const legendFormatter = (value: string) => {
+  const labels: Record<string, string> = {
+    avg_efficiency_ratio: '평균',
+    min_efficiency_ratio: '최소',
+    max_efficiency_ratio: '최대',
+  };
+  return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
+};
+
+const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = React.memo(({
   data,
   title = '토큰 효율성 트렌드',
 }) => {
   // 날짜순 정렬 (오래된 것부터)
-  const sortedData = [...data].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  const sortedData = useMemo(() =>
+    [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+    [data]
   );
 
   // 평균 효율성 계산
-  const avgEfficiency =
+  const avgEfficiency = useMemo(() =>
     data.length > 0
       ? data.reduce((sum, d) => sum + (d.avg_efficiency_ratio || 0), 0) / data.length
-      : 0;
+      : 0,
+    [data]
+  );
 
   return (
     <Chart
@@ -79,7 +103,7 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
           stroke={CHART_COLORS.axis}
           fontSize={12}
           tickLine={false}
-          tickFormatter={(v) => `${v.toFixed(1)}x`}
+          tickFormatter={yAxisTickFormatter}
           domain={['auto', 'auto']}
         />
         <Tooltip
@@ -88,26 +112,9 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
             borderRadius: '8px',
           }}
           labelFormatter={formatDate}
-          formatter={(value, name) => {
-            const labels: Record<string, string> = {
-              avg_efficiency_ratio: '평균 효율성',
-              min_efficiency_ratio: '최소 효율성',
-              max_efficiency_ratio: '최대 효율성',
-            };
-            const numValue = typeof value === 'number' ? value : 0;
-            return [`${numValue.toFixed(3)}x`, labels[String(name)] || String(name)];
-          }}
+          formatter={tooltipFormatter}
         />
-        <Legend
-          formatter={(value) => {
-            const labels: Record<string, string> = {
-              avg_efficiency_ratio: '평균',
-              min_efficiency_ratio: '최소',
-              max_efficiency_ratio: '최대',
-            };
-            return <span className="text-gray-500 text-xs">{labels[value] || value}</span>;
-          }}
-        />
+        <Legend formatter={legendFormatter} />
         {/* 최소-최대 영역 */}
         <Area
           type="monotone"
@@ -151,6 +158,6 @@ const TokenEfficiencyTrendChart: React.FC<TokenEfficiencyTrendChartProps> = ({
       </ComposedChart>
     </Chart>
   );
-};
+});
 
 export default TokenEfficiencyTrendChart;

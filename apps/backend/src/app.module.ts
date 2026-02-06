@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MetricsModule } from './metrics/metrics.module';
@@ -27,6 +29,12 @@ import { ServiceHealthModule } from './service-health/service-health.module';
       envFilePath: '.env',
     }),
     ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1분 (밀리초)
+        limit: 100, // 분당 100 요청
+      },
+    ]),
     CacheModule,
     MetricsModule,
     MlModule,
@@ -45,6 +53,12 @@ import { ServiceHealthModule } from './service-health/service-health.module';
     ServiceHealthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

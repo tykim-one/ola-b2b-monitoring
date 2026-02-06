@@ -16,7 +16,8 @@ export class ServiceHealthController {
   @ApiOperation({ summary: 'Get service health status and KPIs' })
   @ApiParam({
     name: 'serviceId',
-    description: 'Service identifier (e.g., ibk-chat, ibk, wind-etl, minkabu-etl)',
+    description:
+      'Service identifier (e.g., ibk-chat, ibk, wind-etl, minkabu-etl)',
     example: 'ibk-chat',
   })
   @ApiResponse({
@@ -35,7 +36,10 @@ export class ServiceHealthController {
               enum: ['healthy', 'warning', 'error'],
               example: 'healthy',
             },
-            statusReason: { type: 'string', example: 'All systems operational' },
+            statusReason: {
+              type: 'string',
+              example: 'All systems operational',
+            },
             lastChecked: { type: 'string', format: 'date-time' },
             kpis: {
               type: 'object',

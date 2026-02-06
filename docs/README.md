@@ -8,16 +8,17 @@ B2B LLM 서비스의 로그를 모니터링하고 분석하는 대시보드 시�
 
 ```
 docs/
-├── README.md                # 이 문서 (네비게이션 허브)
-├── backend/                 # 백엔드 기술 문서
-│   ├── ARCHITECTURE.md      # 아키텍처 설계도
-│   ├── API_REFERENCE.md     # API 엔드포인트 명세
-│   └── DATABASE_SCHEMA.md   # 데이터베이스 스키마
-├── frontend/                # 프론트엔드 기술 문서
-│   ├── ARCHITECTURE.md      # 아키텍처 설계도
-│   └── ROUTES.md            # 라우팅 및 페이지 구조
-└── learning/                # 학습 자료
-    └── *.md                 # NestJS, DataSource 패턴 등
+├── README.md                           # 이 문서 (네비게이션 허브)
+├── performance-refactoring-guide.md    # 프론트엔드 성능 최적화 가이드
+├── backend/                            # 백엔드 기술 문서
+│   ├── ARCHITECTURE.md                 # 아키텍처 설계도
+│   ├── API_REFERENCE.md                # API 엔드포인트 명세
+│   └── DATABASE_SCHEMA.md              # 데이터베이스 스키마
+├── frontend/                           # 프론트엔드 기술 문서
+│   ├── ARCHITECTURE.md                 # 아키텍처 설계도
+│   └── ROUTES.md                       # 라우팅 및 페이지 구조
+└── learning/                           # 학습 자료
+    └── *.md                            # NestJS, DataSource 패턴 등
 ```
 
 ---
@@ -38,6 +39,7 @@ docs/
 |------|------|----------|
 | [ARCHITECTURE.md](./frontend/ARCHITECTURE.md) | 컴포넌트 구조, 상태관리, API 클라이언트 | 프론트엔드 개발자 |
 | [ROUTES.md](./frontend/ROUTES.md) | 페이지 라우팅, 레이아웃 구조, 접근 제어 | 프론트엔드 개발자 |
+| [성능 최적화 가이드](./performance-refactoring-guide.md) | 렌더링 성능, 번들 최적화, 로딩 전략 | 프론트엔드 개발자 |
 
 ### Learning Materials
 
@@ -64,6 +66,7 @@ docs/
 1. [Frontend ARCHITECTURE](./frontend/ARCHITECTURE.md) - 컴포넌트, 상태관리
 2. [ROUTES](./frontend/ROUTES.md) - 페이지 구조 파악
 3. [API_REFERENCE](./backend/API_REFERENCE.md) - API 연동 시 참고
+4. [성능 최적화 가이드](./performance-refactoring-guide.md) - 대시보드 성능 개선 체크리스트
 
 ### 신규 팀원 온보딩
 1. 루트 [CLAUDE.md](../CLAUDE.md) - 프로젝트 전체 개요

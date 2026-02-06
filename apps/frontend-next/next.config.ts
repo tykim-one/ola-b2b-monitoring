@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    turbopackFileSystemCacheForBuild: false,
-    turbopackFileSystemCacheForDev: false,
+    turbopackFileSystemCacheForBuild: true,
+    turbopackFileSystemCacheForDev: true,
   },
 };
 
