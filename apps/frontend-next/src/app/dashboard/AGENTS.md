@@ -16,6 +16,10 @@
 - `chatbot-quality/` - 챗봇 품질 분석 (대화 품질 점수), see chatbot-quality/AGENTS.md
 - `user-analytics/` - 유저별 활동 분석 (x_enc_data 기준), see user-analytics/AGENTS.md
 - `etl/` - ETL 모니터링 (minkabu, wind), see etl/AGENTS.md
+- `report-monitoring/` - 리포트 데이터 품질 체크 (존재/완전성/신선도), see report-monitoring/AGENTS.md
+- `ui-check/` - UI 모니터링 (Playwright 기반 구조/콘텐츠/렌더링 체크), see ui-check/AGENTS.md
+- `services/` - 서비스별 상세 모니터링, see services/AGENTS.md
+- `home/` - 대시보드 홈, see home/AGENTS.md
 
 ## For AI Agents
 - **URL 경로**: `/dashboard/*`

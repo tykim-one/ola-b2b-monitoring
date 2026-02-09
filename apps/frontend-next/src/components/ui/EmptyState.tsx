@@ -48,7 +48,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <div className={combinedClasses}>
       {icon && (
-        <div className="mx-auto mb-4">{icon}</div>
+        <div className="w-full flex justify-center mb-4">{icon}</div>
       )}
       {title && (
         <h3 className={`${isCompact ? 'text-base' : 'text-xl'} font-semibold text-gray-900 mb-2`}>{title}</h3>

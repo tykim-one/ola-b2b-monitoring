@@ -1,13 +1,19 @@
 /**
  * 리포트 타입 정의
  */
-export type ReportType = 'ai_stock' | 'commodity' | 'forex' | 'dividend';
+export type ReportType =
+  | 'ai_stock'
+  | 'commodity'
+  | 'forex'
+  | 'dividend'
+  | 'summary';
 
 export const REPORT_TYPES: ReportType[] = [
   'ai_stock',
   'commodity',
   'forex',
   'dividend',
+  'summary',
 ];
 
 /**

@@ -240,6 +240,7 @@ export class ReportMonitoringService {
       commodity: '원자재',
       forex: '환율',
       dividend: '배당주',
+      summary: 'Summary',
     };
 
     const fields = [

@@ -13,9 +13,11 @@ async function bootstrap() {
   // Enable CORS for frontend
   const corsOrigin = process.env.CORS_ORIGIN;
   app.enableCors({
-    origin: corsOrigin === '*'
-      ? true
-      : corsOrigin?.split(',').map(o => o.trim()) || 'http://192.168.1.42:3001',
+    origin:
+      corsOrigin === '*'
+        ? true
+        : corsOrigin?.split(',').map((o) => o.trim()) ||
+          'http://192.168.1.42:3001',
     credentials: true,
   });
 

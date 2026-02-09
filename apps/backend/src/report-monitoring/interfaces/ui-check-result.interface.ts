@@ -15,6 +15,8 @@ export interface SingleCheckResult {
   expected?: string;
   actual?: string;
   durationMs: number;
+  category?: 'structure' | 'content' | 'rendering' | 'error';
+  details?: Record<string, unknown>;
 }
 
 export interface UiPageCheckResult {

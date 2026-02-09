@@ -27,6 +27,8 @@ export interface UiCheckTarget {
   id: string;
   name: string;
   url: string;
+  urlTemplate?: string;
+  theme?: string;
   reportType?: ReportType;
   checks: UiCheckDefinition[];
 }
@@ -37,7 +39,11 @@ export type UiCheckType =
   | 'no_error_text'
   | 'chart_rendered'
   | 'no_console_errors'
-  | 'no_empty_page';
+  | 'no_empty_page'
+  | 'section_exists'
+  | 'table_structure'
+  | 'no_empty_cells'
+  | 'content_not_empty';
 
 export interface UiCheckDefinition {
   type: UiCheckType;
@@ -46,4 +52,21 @@ export interface UiCheckDefinition {
   patterns?: string[];
   minContentLength?: number;
   description: string;
+  // section_exists용
+  sections?: Array<{
+    name: string;
+    sectionSelector: string;
+    headingText?: string;
+  }>;
+  // table_structure용
+  minColumns?: number;
+  tableName?: string;
+  // no_empty_cells용
+  emptyPatterns?: string[];
+  columnIndices?: number[];
+  maxEmptyCells?: number;
+  // content_not_empty용
+  itemSelector?: string;
+  minItems?: number;
+  sectionName?: string;
 }

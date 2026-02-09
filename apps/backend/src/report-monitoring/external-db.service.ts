@@ -601,6 +601,55 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
+   * 오늘 생성된 리포트의 UUID 조회 (UI 체크용)
+   * gold.daily_content_list 테이블에서 theme별 UUID를 가져옴
+   */
+  async getTodayReportUuids(themes: string[]): Promise<Map<string, string>> {
+    const result = new Map<string, string>();
+    if (!this.isEnabled || themes.length === 0) return result;
+
+    try {
+      if (this.dbType === 'postgresql' && this.pgPool) {
+        const query = `
+          SELECT theme, uuid::text
+          FROM gold.daily_content_list
+          WHERE published_date = (NOW() AT TIME ZONE 'Asia/Seoul')::date
+            AND period_type = 'DAILY'
+            AND theme = ANY($1)
+        `;
+        const res = await this.pgPool.query(query, [themes]);
+        for (const row of res.rows) {
+          result.set(row.theme, row.uuid);
+        }
+      } else if (this.dbType === 'mysql' && this.mysqlPool) {
+        const placeholders = themes.map(() => '?').join(',');
+        const query = `
+          SELECT theme, uuid
+          FROM gold.daily_content_list
+          WHERE published_date = DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul'))
+            AND period_type = 'DAILY'
+            AND theme IN (${placeholders})
+        `;
+        const [rows] = await this.mysqlPool.execute<mysql.RowDataPacket[]>(
+          query,
+          themes,
+        );
+        for (const row of rows) {
+          result.set(row.theme as string, row.uuid as string);
+        }
+      }
+
+      this.logger.debug(
+        `Resolved ${result.size} report UUIDs for themes: ${themes.join(', ')}`,
+      );
+      return result;
+    } catch (error) {
+      this.logger.error(`getTodayReportUuids failed: ${error.message}`);
+      return result;
+    }
+  }
+
+  /**
    * 헬스 체크
    */
   async healthCheck(): Promise<{ connected: boolean; type: string | null }> {

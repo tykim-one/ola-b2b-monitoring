@@ -33,6 +33,7 @@ const REPORT_TYPE_LABELS: Record<ReportType, string> = {
   commodity: 'Commodity',
   forex: 'Forex',
   dividend: 'Dividend',
+  summary: 'Summary',
 };
 
 function formatDateTime(dateString: string) {

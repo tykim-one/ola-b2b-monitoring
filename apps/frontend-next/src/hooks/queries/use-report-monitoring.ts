@@ -28,6 +28,7 @@ export const reportMonitoringKeys = {
   uiCheckResult: () => [...reportMonitoringKeys.all, 'ui-check', 'result'] as const,
   uiCheckHistory: () => [...reportMonitoringKeys.all, 'ui-check', 'history'] as const,
   uiCheckHealth: () => [...reportMonitoringKeys.all, 'ui-check', 'health'] as const,
+  uiCheckConfig: () => [...reportMonitoringKeys.all, 'ui-check', 'config'] as const,
 };
 
 // ==================== Query Hooks ====================
@@ -146,6 +147,51 @@ export function useUiCheckHistory(
     queryFn: () => reportMonitoringApi.getUiCheckHistory({ limit: 100 }),
     staleTime: CACHE_TIME.SHORT,
     ...options,
+  });
+}
+
+/**
+ * UI check config (설정 템플릿, LONG cache - 거의 변경 안 됨)
+ */
+export function useUiCheckConfig(
+  options?: Omit<UseQueryOptions<import('@/services/reportMonitoringService').UiCheckConfigResponse>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey: reportMonitoringKeys.uiCheckConfig(),
+    queryFn: () => reportMonitoringApi.getUiCheckConfig(),
+    staleTime: CACHE_TIME.LONG,
+    ...options,
+  });
+}
+
+/**
+ * UI check history detail (특정 이력의 전체 결과 조회)
+ */
+export function useUiCheckHistoryDetail(id: string | null) {
+  return useQuery({
+    queryKey: [...reportMonitoringKeys.uiCheckHistory(), 'detail', id],
+    queryFn: async (): Promise<UiMonitoringResult | null> => {
+      if (!id) return null;
+      const data = await reportMonitoringApi.getUiCheckHistoryDetail(id);
+      return 'message' in data ? null : data;
+    },
+    enabled: !!id,
+    staleTime: CACHE_TIME.LONG,
+  });
+}
+
+/**
+ * Mutation: update UI check config threshold
+ */
+export function useUpdateUiCheckConfig() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: { targetId: string; checkIndex: number; values: Record<string, unknown> }) =>
+      reportMonitoringApi.updateUiCheckConfig(params),
+    onSuccess: (data) => {
+      queryClient.setQueryData(reportMonitoringKeys.uiCheckConfig(), data);
+    },
   });
 }
 

@@ -966,7 +966,11 @@ export type UiCheckType =
   | 'no_error_text'
   | 'chart_rendered'
   | 'no_console_errors'
-  | 'no_empty_page';
+  | 'no_empty_page'
+  | 'section_exists'
+  | 'table_structure'
+  | 'no_empty_cells'
+  | 'content_not_empty';
 
 export type UiCheckStatus = 'pass' | 'fail' | 'error' | 'timeout';
 export type UiTargetStatus = 'healthy' | 'degraded' | 'broken';
@@ -980,6 +984,8 @@ export interface SingleCheckResult {
   expected?: string;
   actual?: string;
   durationMs: number;
+  category?: 'structure' | 'content' | 'rendering' | 'error';
+  details?: Record<string, unknown>;
 }
 
 export interface UiPageCheckResult {

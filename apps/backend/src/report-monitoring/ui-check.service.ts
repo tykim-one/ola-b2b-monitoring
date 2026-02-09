@@ -1,10 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { chromium, Browser, BrowserContext, Page } from 'playwright';
 import * as fs from 'fs';
 import * as path from 'path';
 import { PrismaService } from '../admin/database/prisma.service';
 import { SlackNotificationService } from '../notifications/slack-notification.service';
+import { ExternalDbService } from './external-db.service';
 import {
   UiCheckConfig,
   AuthConfig,
@@ -35,6 +36,7 @@ export class UiCheckService {
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
     private readonly slackService: SlackNotificationService,
+    private readonly externalDbService: ExternalDbService,
   ) {}
 
   // ==================== Public API ====================
@@ -77,6 +79,43 @@ export class UiCheckService {
       const config = this.loadConfig();
       this.logger.debug(`Loaded config: ${config.targets.length} targets`);
 
+      // 1.5. 동적 URL 해결 (DB에서 UUID 조회)
+      config.targets = await this.resolveReportUrls(config.targets);
+
+      // 1.6. 미생성 리포트 처리
+      const preResults: UiPageCheckResult[] = [];
+      const activeTargets: UiCheckTarget[] = [];
+
+      for (const target of config.targets) {
+        if (target.urlTemplate && !target.url) {
+          preResults.push({
+            targetId: target.id,
+            targetName: target.name,
+            url: '',
+            reportType: target.reportType,
+            status: 'broken',
+            checks: [
+              {
+                type: 'element_exists' as UiCheckType,
+                description: '리포트 생성 여부',
+                status: 'fail',
+                message: `오늘 리포트가 생성되지 않았습니다 (theme: ${target.theme}, UUID 미발견)`,
+                category: 'structure',
+                durationMs: 0,
+              },
+            ],
+            passedCount: 0,
+            failedCount: 1,
+            errorCount: 0,
+            consoleErrors: [],
+            pageLoadTimeMs: 0,
+            checkedAt: new Date(),
+          });
+        } else {
+          activeTargets.push(target);
+        }
+      }
+
       // 2. 브라우저 시작
       browser = await chromium.launch({
         headless: true,
@@ -107,8 +146,8 @@ export class UiCheckService {
       const context = await browser.newContext(contextOptions);
 
       // 5. 각 타겟 순차 체크 (동시 실행 시 서버 부하 방지)
-      const results: UiPageCheckResult[] = [];
-      for (const target of config.targets) {
+      const results: UiPageCheckResult[] = [...preResults];
+      for (const target of activeTargets) {
         try {
           const result = await this.checkPage(context, target, config.defaults);
           results.push(result);
@@ -170,6 +209,76 @@ export class UiCheckService {
    */
   getLastResult(): UiMonitoringResult | null {
     return this.lastResult;
+  }
+
+  /**
+   * UI 체크 설정 조회 (targets + checks 정의)
+   * auth 정보는 제외하고 타겟/체크 항목만 반환
+   */
+  getCheckConfig() {
+    const config = this.loadConfig();
+    return {
+      defaults: config.defaults,
+      targets: config.targets.map((target) => ({
+        id: target.id,
+        name: target.name,
+        urlTemplate: target.urlTemplate || target.url,
+        theme: target.theme,
+        reportType: target.reportType,
+        checksCount: target.checks.length,
+        checks: target.checks.map((check) => ({
+          type: check.type,
+          description: check.description,
+          selector: check.selector,
+          minCount: check.minCount,
+          minContentLength: check.minContentLength,
+          patterns: check.patterns,
+          sections: check.sections,
+          minItems: check.minItems,
+          sectionName: check.sectionName,
+        })),
+      })),
+    };
+  }
+
+  /**
+   * UI 체크 설정 임계값 수정
+   * 수정 가능한 필드: minCount, minContentLength, minItems, maxEmptyCells, minColumns, patterns, description
+   * 수정 불가 필드: type, selector, sections (구조적 변경 방지)
+   */
+  updateCheckConfig(updates: { targetId: string; checkIndex: number; values: Record<string, unknown> }) {
+    const EDITABLE_FIELDS = ['minCount', 'minContentLength', 'minItems', 'maxEmptyCells', 'minColumns', 'patterns', 'description'];
+
+    const configPath = path.join(process.cwd(), 'config', 'ui-checks.json');
+    const raw = fs.readFileSync(configPath, 'utf-8');
+    const config: UiCheckConfig = JSON.parse(raw);
+
+    const target = config.targets.find(t => t.id === updates.targetId);
+    if (!target) {
+      throw new NotFoundException(`Target not found: ${updates.targetId}`);
+    }
+
+    if (updates.checkIndex < 0 || updates.checkIndex >= target.checks.length) {
+      throw new BadRequestException(`Invalid check index: ${updates.checkIndex}`);
+    }
+
+    const check = target.checks[updates.checkIndex];
+
+    // 수정 가능한 필드만 업데이트
+    for (const [key, value] of Object.entries(updates.values)) {
+      if (!EDITABLE_FIELDS.includes(key)) {
+        throw new BadRequestException(`Field '${key}' is not editable. Editable fields: ${EDITABLE_FIELDS.join(', ')}`);
+      }
+      (check as unknown as Record<string, unknown>)[key] = value;
+    }
+
+    // JSON 파일에 저장
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+
+    this.logger.log(`Updated UI check config: target=${updates.targetId}, checkIndex=${updates.checkIndex}, fields=${Object.keys(updates.values).join(', ')}`);
+
+    // 수정된 설정 반환
+    return this.getCheckConfig();
   }
 
   /**
@@ -316,6 +425,36 @@ export class UiCheckService {
     }
   }
 
+  /**
+   * 동적 URL 해결: urlTemplate의 {uuid}를 DB에서 조회한 실제 UUID로 치환
+   */
+  private async resolveReportUrls(
+    targets: UiCheckTarget[],
+  ): Promise<UiCheckTarget[]> {
+    const dynamicTargets = targets.filter((t) => t.theme && t.urlTemplate);
+    if (dynamicTargets.length === 0) return targets;
+
+    const themes = dynamicTargets.map((t) => t.theme!);
+    const uuids = await this.externalDbService.getTodayReportUuids(themes);
+
+    this.logger.debug(
+      `Resolved UUIDs: ${Array.from(uuids.entries())
+        .map(([k, v]) => `${k}=${v}`)
+        .join(', ')}`,
+    );
+
+    return targets.map((t) => {
+      if (t.theme && t.urlTemplate) {
+        const uuid = uuids.get(t.theme);
+        if (uuid) {
+          return { ...t, url: t.urlTemplate.replace('{uuid}', uuid) };
+        }
+        return { ...t, url: '' };
+      }
+      return t;
+    });
+  }
+
   // ==================== Authentication ====================
 
   /**
@@ -421,7 +560,11 @@ export class UiCheckService {
       const checks: SingleCheckResult[] = [];
       for (const checkDef of target.checks) {
         const result = await this.runSingleCheck(page, checkDef, consoleErrors);
-        checks.push(result);
+        if (Array.isArray(result)) {
+          checks.push(...result);
+        } else {
+          checks.push(result);
+        }
       }
 
       // 통계 계산
@@ -498,7 +641,7 @@ export class UiCheckService {
     page: Page,
     check: UiCheckDefinition,
     consoleErrors: string[],
-  ): Promise<SingleCheckResult> {
+  ): Promise<SingleCheckResult | SingleCheckResult[]> {
     const startTime = Date.now();
 
     try {
@@ -520,6 +663,18 @@ export class UiCheckService {
 
         case 'no_empty_page':
           return await this.checkNoEmptyPage(page, check, startTime);
+
+        case 'section_exists':
+          return await this.checkSectionExists(page, check, startTime);
+
+        case 'table_structure':
+          return await this.checkTableStructure(page, check, startTime);
+
+        case 'no_empty_cells':
+          return await this.checkNoEmptyCells(page, check, startTime);
+
+        case 'content_not_empty':
+          return await this.checkContentNotEmpty(page, check, startTime);
 
         default:
           return {
@@ -567,6 +722,7 @@ export class UiCheckService {
       expected: 'exists',
       actual: `count=${count}`,
       durationMs: Date.now() - startTime,
+      category: 'rendering',
     };
   }
 
@@ -594,6 +750,7 @@ export class UiCheckService {
       expected: `>= ${minCount}`,
       actual: `${count}`,
       durationMs: Date.now() - startTime,
+      category: 'rendering',
     };
   }
 
@@ -628,6 +785,7 @@ export class UiCheckService {
       expected: 'no error patterns',
       actual: passed ? 'clean' : `matched: [${foundPatterns.join(', ')}]`,
       durationMs: Date.now() - startTime,
+      category: 'error',
     };
   }
 
@@ -655,6 +813,7 @@ export class UiCheckService {
       expected: 'chart rendered',
       actual: `count=${count}`,
       durationMs: Date.now() - startTime,
+      category: 'rendering',
     };
   }
 
@@ -678,6 +837,7 @@ export class UiCheckService {
       expected: '0 console errors',
       actual: `${consoleErrors.length} errors`,
       durationMs: Date.now() - startTime,
+      category: 'error',
     };
   }
 
@@ -703,6 +863,240 @@ export class UiCheckService {
         : `Page appears empty or too short (${contentLength} chars, min: ${minContentLength})`,
       expected: `>= ${minContentLength} chars`,
       actual: `${contentLength} chars`,
+      durationMs: Date.now() - startTime,
+      category: 'rendering',
+    };
+  }
+
+  /**
+   * 필수 섹션 존재 여부 체크 (배열 반환 -- 섹션마다 개별 결과)
+   */
+  private async checkSectionExists(
+    page: Page,
+    check: UiCheckDefinition,
+    startTime: number,
+  ): Promise<SingleCheckResult[]> {
+    const results: SingleCheckResult[] = [];
+    if (!check.sections) return results;
+
+    for (const section of check.sections) {
+      const sectionStart = Date.now();
+      let found = false;
+
+      // 전략 1: sectionSelector로 찾기 ("..."이 아닌 경우만)
+      if (section.sectionSelector && section.sectionSelector !== '...') {
+        const count = await page.locator(section.sectionSelector).count();
+        found = count > 0;
+      }
+
+      // 전략 2 (fallback): headingText로 페이지 전체에서 텍스트 검색
+      if (!found && section.headingText) {
+        const textLocator = page.getByText(section.headingText, {
+          exact: false,
+        });
+        found = (await textLocator.count()) > 0;
+      }
+
+      results.push({
+        type: 'section_exists',
+        description: `섹션: ${section.name}`,
+        status: found ? 'pass' : 'fail',
+        message: found
+          ? `"${section.name}" 섹션 발견`
+          : `"${section.name}" 섹션 누락`,
+        selector: section.sectionSelector,
+        category: 'structure',
+        durationMs: Date.now() - sectionStart,
+      });
+    }
+    return results;
+  }
+
+  /**
+   * 테이블 구조 체크 (최소 행/열 수)
+   */
+  private async checkTableStructure(
+    page: Page,
+    check: UiCheckDefinition,
+    startTime: number,
+  ): Promise<SingleCheckResult> {
+    const selector = check.selector || 'table';
+
+    // 셀렉터 미설정("...") 시 에러로 반환
+    if (selector === '...') {
+      return {
+        type: 'table_structure',
+        description: check.description,
+        status: 'error',
+        message: `셀렉터 미설정 (${check.tableName || '테이블'}): DevTools에서 확인 후 설정 필요`,
+        category: 'structure',
+        durationMs: Date.now() - startTime,
+      };
+    }
+
+    const table = page.locator(selector).first();
+    const tableExists = (await table.count()) > 0;
+
+    if (!tableExists) {
+      return {
+        type: 'table_structure',
+        description: check.description,
+        status: 'fail',
+        message: `테이블 미발견: ${selector}`,
+        selector,
+        category: 'structure',
+        durationMs: Date.now() - startTime,
+      };
+    }
+
+    const rowCount = await table.locator('tbody tr').count();
+    const minCount = check.minCount || 1;
+    const rowPassed = rowCount >= minCount;
+
+    let colPassed = true;
+    let colCount = 0;
+    if (check.minColumns) {
+      colCount = await table
+        .locator('thead th, tbody tr:first-child td')
+        .count();
+      colPassed = colCount >= check.minColumns;
+    }
+
+    const passed = rowPassed && colPassed;
+    return {
+      type: 'table_structure',
+      description: check.description,
+      status: passed ? 'pass' : 'fail',
+      message: passed
+        ? `${check.tableName || '테이블'}: ${rowCount}행${check.minColumns ? `, ${colCount}열` : ''}`
+        : `${check.tableName || '테이블'}: ${rowCount}행 (최소 ${minCount})${!colPassed ? `, ${colCount}열 (최소 ${check.minColumns})` : ''}`,
+      selector,
+      expected: `>= ${minCount} rows`,
+      actual: `${rowCount} rows`,
+      category: 'structure',
+      durationMs: Date.now() - startTime,
+    };
+  }
+
+  /**
+   * 테이블 빈 셀 감지
+   */
+  private async checkNoEmptyCells(
+    page: Page,
+    check: UiCheckDefinition,
+    startTime: number,
+  ): Promise<SingleCheckResult> {
+    const selector = check.selector || 'table';
+
+    // 셀렉터 미설정("...") 시 에러로 반환
+    if (selector === '...') {
+      return {
+        type: 'no_empty_cells',
+        description: check.description,
+        status: 'error',
+        message: `셀렉터 미설정 (${check.tableName || '테이블'}): DevTools에서 확인 후 설정 필요`,
+        category: 'content',
+        durationMs: Date.now() - startTime,
+      };
+    }
+
+    const emptyPatterns = check.emptyPatterns || ['', '-', 'N/A', 'null', '--'];
+    const maxEmpty = check.maxEmptyCells ?? 0;
+
+    const rows = await page.locator(`${selector} tbody tr`).all();
+    let emptyCellCount = 0;
+    const emptyPositions: string[] = [];
+
+    for (let rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+      const cells = await rows[rowIdx].locator('td').all();
+      for (let colIdx = 0; colIdx < cells.length; colIdx++) {
+        if (check.columnIndices && !check.columnIndices.includes(colIdx))
+          continue;
+        const text = ((await cells[colIdx].textContent()) || '').trim();
+        if (emptyPatterns.includes(text)) {
+          emptyCellCount++;
+          emptyPositions.push(`row${rowIdx + 1}:col${colIdx + 1}`);
+        }
+      }
+    }
+
+    const passed = emptyCellCount <= maxEmpty;
+    return {
+      type: 'no_empty_cells',
+      description: check.description,
+      status: passed ? 'pass' : 'fail',
+      message: passed
+        ? `${check.tableName || '테이블'}: 빈 셀 없음`
+        : `${check.tableName || '테이블'}: ${emptyCellCount}개 빈 셀 (${emptyPositions.slice(0, 5).join(', ')}${emptyPositions.length > 5 ? '...' : ''})`,
+      selector,
+      expected: `<= ${maxEmpty} empty cells`,
+      actual: `${emptyCellCount}`,
+      category: 'content',
+      details: { emptyCellCount, emptyPositions: emptyPositions.slice(0, 20) },
+      durationMs: Date.now() - startTime,
+    };
+  }
+
+  /**
+   * 텍스트 섹션 최소 콘텐츠 길이 체크
+   */
+  private async checkContentNotEmpty(
+    page: Page,
+    check: UiCheckDefinition,
+    startTime: number,
+  ): Promise<SingleCheckResult> {
+    const selector = check.selector || 'body';
+
+    // 셀렉터 미설정("...") 시 에러로 반환
+    if (selector === '...') {
+      return {
+        type: 'content_not_empty',
+        description: check.description,
+        status: 'error',
+        message: `셀렉터 미설정 (${check.sectionName || '섹션'}): DevTools에서 확인 후 설정 필요`,
+        category: 'content',
+        durationMs: Date.now() - startTime,
+      };
+    }
+
+    const container = page.locator(selector).first();
+    const exists = (await container.count()) > 0;
+
+    if (!exists) {
+      return {
+        type: 'content_not_empty',
+        description: check.description,
+        status: 'fail',
+        message: `컨테이너 미발견: ${selector}`,
+        selector,
+        category: 'content',
+        durationMs: Date.now() - startTime,
+      };
+    }
+
+    const text = ((await container.textContent()) || '').trim();
+    const minLen = check.minContentLength || 50;
+    const lenPassed = text.length >= minLen;
+
+    let itemPassed = true;
+    let itemCount = 0;
+    if (check.itemSelector && check.minItems) {
+      itemCount = await container.locator(check.itemSelector).count();
+      itemPassed = itemCount >= check.minItems;
+    }
+
+    const passed = lenPassed && itemPassed;
+    return {
+      type: 'content_not_empty',
+      description: check.description,
+      status: passed ? 'pass' : 'fail',
+      message: passed
+        ? `${check.sectionName || '섹션'}: ${text.length}자${check.minItems ? `, ${itemCount}개 항목` : ''}`
+        : `${check.sectionName || '섹션'}: ${text.length}자 (최소 ${minLen})${!itemPassed ? `, ${itemCount}개 (최소 ${check.minItems})` : ''}`,
+      selector,
+      expected: `>= ${minLen} chars`,
+      actual: `${text.length} chars`,
+      category: 'content',
       durationMs: Date.now() - startTime,
     };
   }
@@ -878,18 +1272,61 @@ export class UiCheckService {
   private async sendSlackAlert(result: UiMonitoringResult): Promise<void> {
     const severity = result.summary.brokenTargets > 0 ? 'critical' : 'warning';
 
-    // 이슈 타겟 상세 정보
+    // 이슈 타겟 상세 정보 (category별 그룹핑)
     const issueDetails = result.results
       .filter((r) => r.status !== 'healthy')
       .map((r) => {
-        const failedChecks = r.checks
-          .filter((c) => c.status !== 'pass')
-          .map((c) => c.description)
-          .join(', ');
-        return `- *${r.targetName}* (${r.status}): ${failedChecks}`;
+        const byCategory = {
+          structure: r.checks.filter(
+            (c) => c.status !== 'pass' && c.category === 'structure',
+          ),
+          content: r.checks.filter(
+            (c) => c.status !== 'pass' && c.category === 'content',
+          ),
+          rendering: r.checks.filter(
+            (c) => c.status !== 'pass' && c.category === 'rendering',
+          ),
+          error: r.checks.filter(
+            (c) => c.status !== 'pass' && c.category === 'error',
+          ),
+          uncategorized: r.checks.filter(
+            (c) => c.status !== 'pass' && !c.category,
+          ),
+        };
+        const lines: string[] = [];
+        if (byCategory.structure.length)
+          lines.push(
+            ...byCategory.structure.map(
+              (c) => `  📋 [구조] ${c.description}: ${c.message}`,
+            ),
+          );
+        if (byCategory.content.length)
+          lines.push(
+            ...byCategory.content.map(
+              (c) => `  📝 [콘텐츠] ${c.description}: ${c.message}`,
+            ),
+          );
+        if (byCategory.rendering.length)
+          lines.push(
+            ...byCategory.rendering.map(
+              (c) => `  🖥️ [렌더링] ${c.description}: ${c.message}`,
+            ),
+          );
+        if (byCategory.error.length)
+          lines.push(
+            ...byCategory.error.map(
+              (c) => `  ⚠️ [에러] ${c.description}: ${c.message}`,
+            ),
+          );
+        if (byCategory.uncategorized.length)
+          lines.push(
+            ...byCategory.uncategorized.map(
+              (c) => `  ❓ ${c.description}: ${c.message}`,
+            ),
+          );
+        return `*${r.targetName}* (${r.status}):\n${lines.slice(0, 10).join('\n')}`;
       })
-      .slice(0, 10)
-      .join('\n');
+      .join('\n\n');
 
     const fields = [
       {

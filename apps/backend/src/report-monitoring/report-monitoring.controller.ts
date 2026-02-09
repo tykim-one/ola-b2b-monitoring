@@ -2,8 +2,10 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Param,
   Query,
+  Body,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -183,6 +185,22 @@ export class ReportMonitoringController {
   }
 
   // ==================== UI Check Endpoints ====================
+
+  @Get('ui-check/config')
+  @ApiOperation({ summary: 'UI 체크 설정(타겟/체크 항목) 조회' })
+  @ApiResponse({ status: 200, description: 'UI 체크 설정' })
+  async getUiCheckConfig() {
+    return this.uiCheckService.getCheckConfig();
+  }
+
+  @Patch('ui-check/config')
+  @ApiOperation({ summary: 'UI 체크 설정 임계값 수정' })
+  @ApiResponse({ status: 200, description: '수정된 UI 체크 설정' })
+  async updateUiCheckConfig(
+    @Body() updates: { targetId: string; checkIndex: number; values: Record<string, unknown> },
+  ) {
+    return this.uiCheckService.updateCheckConfig(updates);
+  }
 
   @Post('ui-check')
   @ApiOperation({ summary: 'UI 렌더링 체크 실행' })

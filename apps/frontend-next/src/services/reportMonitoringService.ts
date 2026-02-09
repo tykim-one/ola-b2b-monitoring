@@ -1,7 +1,7 @@
 const API_BASE = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/report-monitoring`;
 
 // Types (Date → string으로 직렬화)
-export type ReportType = 'ai_stock' | 'commodity' | 'forex' | 'dividend';
+export type ReportType = 'ai_stock' | 'commodity' | 'forex' | 'dividend' | 'summary';
 
 export interface StaleDetail {
   symbol: string;
@@ -101,6 +101,34 @@ export function isMonitoringResult(
   return 'results' in data && 'summary' in data;
 }
 
+// UI Check Config Types
+export interface UiCheckConfigCheck {
+  type: string;
+  description: string;
+  selector?: string;
+  minCount?: number;
+  minContentLength?: number;
+  patterns?: string[];
+  sections?: Array<{ name: string; sectionSelector: string; headingText?: string }>;
+  minItems?: number;
+  sectionName?: string;
+}
+
+export interface UiCheckConfigTarget {
+  id: string;
+  name: string;
+  urlTemplate: string;
+  theme?: string;
+  reportType?: string;
+  checksCount: number;
+  checks: UiCheckConfigCheck[];
+}
+
+export interface UiCheckConfigResponse {
+  defaults: { timeout: number; waitForSelector: string; viewport: { width: number; height: number } };
+  targets: UiCheckConfigTarget[];
+}
+
 // API Methods
 export const reportMonitoringApi = {
   async getStatus(): Promise<MonitoringResult | NoCheckMessage> {
@@ -169,6 +197,26 @@ export const reportMonitoringApi = {
   async getUiCheckHistoryDetail(id: string): Promise<import('@ola/shared-types').UiMonitoringResult | NoCheckMessage> {
     const response = await fetch(`${API_BASE}/ui-check/history/${id}`);
     if (!response.ok) throw new Error('Failed to fetch UI check history detail');
+    return response.json();
+  },
+
+  async updateUiCheckConfig(params: {
+    targetId: string;
+    checkIndex: number;
+    values: Record<string, unknown>;
+  }): Promise<UiCheckConfigResponse> {
+    const response = await fetch(`${API_BASE}/ui-check/config`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) throw new Error('Failed to update UI check config');
+    return response.json();
+  },
+
+  async getUiCheckConfig(): Promise<UiCheckConfigResponse> {
+    const response = await fetch(`${API_BASE}/ui-check/config`);
+    if (!response.ok) throw new Error('Failed to fetch UI check config');
     return response.json();
   },
 
