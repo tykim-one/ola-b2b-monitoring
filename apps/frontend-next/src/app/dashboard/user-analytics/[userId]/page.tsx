@@ -15,8 +15,7 @@ import {
 } from '@/services/userProfilingService';
 import { fetchUserList } from '@/services/userAnalyticsService';
 import { UserListItem } from '@ola/shared-types';
-
-const PROJECT_ID = 'ibks';
+import { PROJECT_ID } from '@/lib/config';
 
 export default function UserDetailPage() {
   const params = useParams();

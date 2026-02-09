@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -10,14 +11,15 @@ async function bootstrap() {
   // Enable cookie parsing (required for refresh token)
   app.use(cookieParser());
 
+  // Enable Helmet security headers
+  app.use(helmet());
+
   // Enable CORS for frontend
-  const corsOrigin = process.env.CORS_ORIGIN;
+  const corsOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+    : ['http://localhost:3001'];
   app.enableCors({
-    origin:
-      corsOrigin === '*'
-        ? true
-        : corsOrigin?.split(',').map((o) => o.trim()) ||
-          'http://192.168.1.42:3001',
+    origin: corsOrigins,
     credentials: true,
   });
 
@@ -30,21 +32,25 @@ async function bootstrap() {
     }),
   );
 
-  // Swagger Setup
-  const config = new DocumentBuilder()
-    .setTitle('OLA B2B Monitoring API')
-    .setDescription('API for querying BigQuery logs')
-    .setVersion('1.0')
-    .addTag('bigquery')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // Swagger Setup (disabled in production)
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('OLA B2B Monitoring API')
+      .setDescription('API for querying BigQuery logs')
+      .setVersion('1.0')
+      .addTag('bigquery')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+  }
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`🚀 NestJS Backend running on http://192.168.1.42:${port}`);
-  console.log(
-    `📑 Swagger Documentation available at http://192.168.1.42:${port}/api`,
-  );
+  console.log(`🚀 NestJS Backend running on http://localhost:${port}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(
+      `📑 Swagger Documentation available at http://localhost:${port}/api`,
+    );
+  }
 }
 bootstrap();

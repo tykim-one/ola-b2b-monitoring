@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   ArrowLeft,
@@ -49,7 +49,7 @@ export default function JobDetailPage() {
   });
   const [showFilters, setShowFilters] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -80,7 +80,7 @@ export default function JobDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jobId, filters.minAvgScore, filters.maxAvgScore, filters.sentiment, filters.hasIssues]);
 
   const handleResetFilters = () => {
     setFilters({
@@ -106,7 +106,7 @@ export default function JobDetailPage() {
       }
     }, 5000);
     return () => clearInterval(interval);
-  }, [jobId, job?.status, filters]);
+  }, [jobId, job?.status, fetchData]);
 
   const handleRunJob = async () => {
     try {

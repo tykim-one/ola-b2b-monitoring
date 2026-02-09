@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from '@/lib/recharts';
 import { UserTokenUsage } from '@ola/shared-types';
 import { Chart } from '@/components/compound/Chart';
 import { TOOLTIP_STYLE } from './chart-theme';

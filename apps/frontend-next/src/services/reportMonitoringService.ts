@@ -1,4 +1,6 @@
-const API_BASE = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/report-monitoring`;
+import apiClient from '../lib/api-client';
+
+const API_PATH = '/api/report-monitoring';
 
 // Types (Date → string으로 직렬화)
 export type ReportType = 'ai_stock' | 'commodity' | 'forex' | 'dividend' | 'summary';
@@ -132,21 +134,18 @@ export interface UiCheckConfigResponse {
 // API Methods
 export const reportMonitoringApi = {
   async getStatus(): Promise<MonitoringResult | NoCheckMessage> {
-    const response = await fetch(`${API_BASE}/status`);
-    if (!response.ok) throw new Error('Failed to fetch status');
-    return response.json();
+    const response = await apiClient.get<MonitoringResult | NoCheckMessage>(`${API_PATH}/status`);
+    return response.data;
   },
 
   async runFullCheck(): Promise<MonitoringResult> {
-    const response = await fetch(`${API_BASE}/check`, { method: 'POST' });
-    if (!response.ok) throw new Error('Failed to run check');
-    return response.json();
+    const response = await apiClient.post<MonitoringResult>(`${API_PATH}/check`);
+    return response.data;
   },
 
   async getHealth(): Promise<HealthResponse> {
-    const response = await fetch(`${API_BASE}/health`);
-    if (!response.ok) throw new Error('Failed to fetch health');
-    return response.json();
+    const response = await apiClient.get<HealthResponse>(`${API_PATH}/health`);
+    return response.data;
   },
 
   async getHistory(params?: {
@@ -154,28 +153,25 @@ export const reportMonitoringApi = {
     offset?: number;
     hasIssues?: boolean;
   }): Promise<MonitoringHistoryResponse> {
-    const searchParams = new URLSearchParams();
-    if (params?.limit) searchParams.set('limit', String(params.limit));
-    if (params?.offset) searchParams.set('offset', String(params.offset));
-    if (params?.hasIssues !== undefined) searchParams.set('hasIssues', String(params.hasIssues));
-
-    const qs = searchParams.toString();
-    const response = await fetch(`${API_BASE}/history${qs ? '?' + qs : ''}`);
-    if (!response.ok) throw new Error('Failed to fetch history');
-    return response.json();
+    const response = await apiClient.get<MonitoringHistoryResponse>(`${API_PATH}/history`, {
+      params: {
+        ...(params?.limit && { limit: params.limit }),
+        ...(params?.offset && { offset: params.offset }),
+        ...(params?.hasIssues !== undefined && { hasIssues: params.hasIssues }),
+      },
+    });
+    return response.data;
   },
 
   // UI Check endpoints
   async runUiCheck(): Promise<import('@ola/shared-types').UiMonitoringResult> {
-    const response = await fetch(`${API_BASE}/ui-check`, { method: 'POST' });
-    if (!response.ok) throw new Error('Failed to run UI check');
-    return response.json();
+    const response = await apiClient.post<import('@ola/shared-types').UiMonitoringResult>(`${API_PATH}/ui-check`);
+    return response.data;
   },
 
   async getUiCheckStatus(): Promise<import('@ola/shared-types').UiMonitoringResult | NoCheckMessage> {
-    const response = await fetch(`${API_BASE}/ui-check/status`);
-    if (!response.ok) throw new Error('Failed to fetch UI check status');
-    return response.json();
+    const response = await apiClient.get<import('@ola/shared-types').UiMonitoringResult | NoCheckMessage>(`${API_PATH}/ui-check/status`);
+    return response.data;
   },
 
   async getUiCheckHistory(params?: {
@@ -183,21 +179,19 @@ export const reportMonitoringApi = {
     offset?: number;
     hasIssues?: boolean;
   }): Promise<import('@ola/shared-types').UiCheckHistoryResponse> {
-    const searchParams = new URLSearchParams();
-    if (params?.limit) searchParams.set('limit', String(params.limit));
-    if (params?.offset) searchParams.set('offset', String(params.offset));
-    if (params?.hasIssues !== undefined) searchParams.set('hasIssues', String(params.hasIssues));
-
-    const qs = searchParams.toString();
-    const response = await fetch(`${API_BASE}/ui-check/history${qs ? '?' + qs : ''}`);
-    if (!response.ok) throw new Error('Failed to fetch UI check history');
-    return response.json();
+    const response = await apiClient.get<import('@ola/shared-types').UiCheckHistoryResponse>(`${API_PATH}/ui-check/history`, {
+      params: {
+        ...(params?.limit && { limit: params.limit }),
+        ...(params?.offset && { offset: params.offset }),
+        ...(params?.hasIssues !== undefined && { hasIssues: params.hasIssues }),
+      },
+    });
+    return response.data;
   },
 
   async getUiCheckHistoryDetail(id: string): Promise<import('@ola/shared-types').UiMonitoringResult | NoCheckMessage> {
-    const response = await fetch(`${API_BASE}/ui-check/history/${id}`);
-    if (!response.ok) throw new Error('Failed to fetch UI check history detail');
-    return response.json();
+    const response = await apiClient.get<import('@ola/shared-types').UiMonitoringResult | NoCheckMessage>(`${API_PATH}/ui-check/history/${id}`);
+    return response.data;
   },
 
   async updateUiCheckConfig(params: {
@@ -205,19 +199,13 @@ export const reportMonitoringApi = {
     checkIndex: number;
     values: Record<string, unknown>;
   }): Promise<UiCheckConfigResponse> {
-    const response = await fetch(`${API_BASE}/ui-check/config`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    });
-    if (!response.ok) throw new Error('Failed to update UI check config');
-    return response.json();
+    const response = await apiClient.patch<UiCheckConfigResponse>(`${API_PATH}/ui-check/config`, params);
+    return response.data;
   },
 
   async getUiCheckConfig(): Promise<UiCheckConfigResponse> {
-    const response = await fetch(`${API_BASE}/ui-check/config`);
-    if (!response.ok) throw new Error('Failed to fetch UI check config');
-    return response.json();
+    const response = await apiClient.get<UiCheckConfigResponse>(`${API_PATH}/ui-check/config`);
+    return response.data;
   },
 
   async getUiCheckHealth(): Promise<{
@@ -233,8 +221,7 @@ export const reportMonitoringApi = {
       summary: import('@ola/shared-types').UiMonitoringSummary;
     } | null;
   }> {
-    const response = await fetch(`${API_BASE}/ui-check/health`);
-    if (!response.ok) throw new Error('Failed to fetch UI check health');
-    return response.json();
+    const response = await apiClient.get(`${API_PATH}/ui-check/health`);
+    return response.data;
   },
 };

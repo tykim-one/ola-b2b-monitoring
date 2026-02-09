@@ -24,9 +24,7 @@ const UsageHeatmap = dynamic(
   () => import('@/components/charts/UsageHeatmap'),
   { ssr: false, loading: () => <div className="h-64 bg-slate-800/50 rounded-lg animate-pulse" /> }
 );
-
-// 현재 projectId - 추후 동적으로 변경 가능
-const PROJECT_ID = 'ibks';
+import { PROJECT_ID } from '@/lib/config';
 
 // 테넌트 테이블 컬럼 정의
 const tenantColumns: Column<TenantUsage>[] = [

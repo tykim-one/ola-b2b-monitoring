@@ -247,7 +247,7 @@ export class UserProfilingService implements OnModuleInit {
     days: number = 30,
     limit: number = 100,
   ): Promise<UserMessage[]> {
-    const query = MetricsQueries.userActivityDetail(
+    const { query, params } = MetricsQueries.userActivityDetail(
       this.projectId,
       this.datasetId,
       this.tableName,
@@ -260,6 +260,7 @@ export class UserProfilingService implements OnModuleInit {
     try {
       const [rows] = await this.bigQueryClient.query({
         query,
+        params,
         location: this.location,
       });
 
@@ -418,15 +419,16 @@ export class UserProfilingService implements OnModuleInit {
         request_metadata.x_enc_data AS userId,
         tenant_id AS tenantId
       FROM \`${this.projectId}.${this.datasetId}.${this.tableName}\`
-      WHERE DATE(timestamp) = '${targetDate}'
+      WHERE DATE(timestamp, 'Asia/Seoul') = '${targetDate}'
         AND request_metadata.x_enc_data IS NOT NULL
-        ${tenantId ? `AND tenant_id = '${tenantId}'` : ''}
+        ${tenantId ? `AND tenant_id = @tenantId` : ''}
       LIMIT 1000
     `;
 
     try {
       const [rows] = await this.bigQueryClient.query({
         query,
+        params: tenantId ? { tenantId } : {},
         location: this.location,
       });
       return rows.map((row: any) => ({

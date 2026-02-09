@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState,
   useCallback,
+  useMemo,
   ReactNode,
 } from 'react';
 import { usePathname } from 'next/navigation';
@@ -101,7 +102,7 @@ export function ChatbotProvider({ children }: ChatbotProviderProps) {
     setError(null);
   }, []);
 
-  const value: ChatbotContextType = {
+  const value: ChatbotContextType = useMemo(() => ({
     isOpen,
     messages,
     sessionId,
@@ -113,7 +114,7 @@ export function ChatbotProvider({ children }: ChatbotProviderProps) {
     closeChatbot,
     sendMessage,
     clearChat,
-  };
+  }), [isOpen, messages, sessionId, isLoading, error, pathname, toggleChatbot, openChatbot, closeChatbot, sendMessage, clearChat]);
 
   return (
     <ChatbotContext.Provider value={value}>{children}</ChatbotContext.Provider>

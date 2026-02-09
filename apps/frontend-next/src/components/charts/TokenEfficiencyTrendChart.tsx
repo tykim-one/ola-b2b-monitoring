@@ -11,7 +11,7 @@ import {
   Legend,
   Area,
   ComposedChart,
-} from 'recharts';
+} from '@/lib/recharts';
 import { Chart } from '@/components/compound/Chart';
 import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';
 

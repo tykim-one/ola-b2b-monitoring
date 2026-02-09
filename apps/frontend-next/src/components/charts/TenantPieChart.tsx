@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from '@/lib/recharts';
 import { Chart } from '@/components/compound/Chart';
 import { TOOLTIP_STYLE } from './chart-theme';
 

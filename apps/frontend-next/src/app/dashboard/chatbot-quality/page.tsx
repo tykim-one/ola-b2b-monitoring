@@ -20,8 +20,8 @@ import type {
   RephrasedQueryPattern,
   TenantQualitySummary,
 } from '@ola/shared-types';
+import { PROJECT_ID } from '@/lib/config';
 
-const PROJECT_ID = 'ibks';
 const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
 
 // Table column definitions

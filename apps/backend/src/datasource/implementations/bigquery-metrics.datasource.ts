@@ -153,6 +153,56 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
   }
 
   /**
+   * Execute a parameterized SQL query with named params to prevent SQL injection.
+   */
+  private async executeParameterizedQuery<T>(
+    query: string,
+    params: Record<string, unknown>,
+    maxResults: number = 1000,
+  ): Promise<T[]> {
+    if (!this.bigQueryClient) {
+      throw new Error(
+        'BigQuery client not initialized. Call initialize() first.',
+      );
+    }
+
+    try {
+      this.logger.debug(
+        `Executing parameterized query: ${query.substring(0, 100)}...`,
+      );
+
+      const options = {
+        query,
+        params,
+        location: this.config.location,
+        maxResults,
+        jobTimeoutMs: 30000,
+      };
+
+      const [job] = await this.bigQueryClient.createQueryJob(options);
+      this.logger.debug(`Job ${job.id} started.`);
+
+      const [rows] = await job.getQueryResults();
+      this.logger.debug(`Query returned ${rows.length} rows`);
+
+      return rows as T[];
+    } catch (error) {
+      this.logger.error(
+        `Parameterized query execution failed: ${error.message}`,
+        error.stack,
+      );
+      const isTimeout =
+        error.message?.includes('timeout') ||
+        error.code === 'DEADLINE_EXCEEDED';
+      throw new Error(
+        isTimeout
+          ? `BigQuery query timed out after 30s: ${error.message}`
+          : `BigQuery query failed: ${error.message}`,
+      );
+    }
+  }
+
+  /**
    * Get the fully qualified table reference.
    */
   private get tableRef(): {
@@ -338,19 +388,19 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     const { projectId, datasetId, tableName } = this.tableRef;
     // BigQuery TIMESTAMP()는 마이크로초(6자리)까지만 지원 — 나노초(9자리) 제거
     const normalizedTs = timestamp.replace(/(\.\d{6})\d*Z$/, '$1Z');
-    const query = MetricsQueries.queryResponseDetail(
+    const { query, params } = MetricsQueries.queryResponseDetail(
       projectId,
       datasetId,
       tableName,
       normalizedTs,
       tenantId,
     );
-    const rows = await this.executeQuery<{
+    const rows = await this.executeParameterizedQuery<{
       user_input: string;
       llm_response: string;
       tenant_id: string;
       timestamp: any;
-    }>(query, 1);
+    }>(query, params, 1);
     return rows.length > 0
       ? { user_input: rows[0].user_input, llm_response: rows[0].llm_response }
       : null;
@@ -412,7 +462,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     limit: number = 1000,
   ): Promise<UserQuestionPattern[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.userQuestionPatterns(
+    const { query, params } = MetricsQueries.userQuestionPatterns(
       projectId,
       datasetId,
       tableName,
@@ -420,7 +470,11 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
       days,
       limit,
     );
-    const rows = await this.executeQuery<UserQuestionPattern>(query, limit);
+    const rows = await this.executeParameterizedQuery<UserQuestionPattern>(
+      query,
+      params,
+      limit,
+    );
     return rows.map((row) => ({
       ...row,
       lastAsked: this.normalizeDate(row.lastAsked),
@@ -454,7 +508,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     offset: number = 0,
   ): Promise<UserActivityDetail[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.userActivityDetail(
+    const { query, params } = MetricsQueries.userActivityDetail(
       projectId,
       datasetId,
       tableName,
@@ -463,7 +517,11 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
       limit,
       offset,
     );
-    const rows = await this.executeQuery<UserActivityDetail>(query, limit);
+    const rows = await this.executeParameterizedQuery<UserActivityDetail>(
+      query,
+      params,
+      limit,
+    );
     return rows.map((row) => ({
       ...row,
       timestamp: this.normalizeDate(row.timestamp),
@@ -559,15 +617,53 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
   /**
    * Execute a raw query against BigQuery.
    * Replaces {{TABLE}} placeholder with the actual table reference.
+   *
+   * Security: Only SELECT queries are allowed, with dangerous keywords blocked.
+   * Automatically enforces a LIMIT of 1000 rows if not specified.
+   *
    * @param query The raw query string
    * @returns Array of result rows
+   * @throws Error if query contains dangerous keywords or is not a SELECT
    */
   async executeRawQuery<T = Record<string, unknown>>(
     query: string,
   ): Promise<T[]> {
+    // Defense-in-depth: only allow SELECT statements
+    const normalizedQuery = query.trim().toUpperCase();
+    if (!normalizedQuery.startsWith('SELECT')) {
+      throw new Error('Only SELECT queries are allowed');
+    }
+
+    // Block dangerous keywords
+    const dangerousKeywords = [
+      'DROP',
+      'DELETE',
+      'UPDATE',
+      'INSERT',
+      'ALTER',
+      'CREATE',
+      'TRUNCATE',
+      'EXEC',
+      'EXECUTE',
+      'MERGE',
+    ];
+    for (const keyword of dangerousKeywords) {
+      // Match keyword as a whole word (not inside identifiers)
+      const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+      if (regex.test(query)) {
+        throw new Error(`Query contains prohibited keyword: ${keyword}`);
+      }
+    }
+
     const { projectId, datasetId, tableName } = this.tableRef;
     const tableReference = `${projectId}.${datasetId}.${tableName}`;
-    const processedQuery = query.replace(/\{\{TABLE\}\}/g, tableReference);
+    let processedQuery = query.replace(/\{\{TABLE\}\}/g, tableReference);
+
+    // Enforce row limit if not already specified
+    if (!normalizedQuery.includes('LIMIT')) {
+      processedQuery = processedQuery + ' LIMIT 1000';
+    }
+
     return this.executeQuery<T>(processedQuery, 1000);
   }
 

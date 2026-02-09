@@ -17,7 +17,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-} from 'recharts';
+} from '@/lib/recharts';
 import { useMinkabuETLDashboard } from '@/hooks/queries/use-etl';
 import { Dashboard } from '@/components/compound/Dashboard';
 import { Chart } from '@/components/compound/Chart';

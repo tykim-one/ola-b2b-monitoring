@@ -11,6 +11,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { MetricsService } from './metrics.service';
 import { QueryDto } from './dto/query.dto';
 import { Public } from '../admin/auth/decorators/public.decorator';
+import { Permissions } from '../admin/auth/decorators/permissions.decorator';
 
 function clampLimit(
   value: string | undefined,
@@ -32,7 +33,7 @@ function clampDays(
 
 @ApiTags('metrics')
 @Controller('projects/:projectId/api')
-@Public() // Phase 1: Keep metrics API public for backward compatibility
+// Auth: Individual endpoints marked @Public() for read-only access; admin endpoints require JWT
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
@@ -42,6 +43,7 @@ export class MetricsController {
    * POST /projects/:projectId/api/query
    * Execute a custom BigQuery SQL query
    */
+  @Permissions('admin:query')
   @ApiOperation({ summary: 'Execute custom SQL query' })
   @ApiResponse({ status: 200, description: 'Query executed successfully' })
   @Post('query')
@@ -119,6 +121,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/metrics/realtime
    * 실시간 KPI 메트릭 (최근 24시간)
    */
+  @Public()
   @ApiOperation({ summary: 'Get realtime KPI metrics (last 24h)' })
   @ApiResponse({ status: 200, description: 'Realtime KPI data returned' })
   @Get('metrics/realtime')
@@ -136,6 +139,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/metrics/hourly
    * 시간별 트래픽 (최근 24시간)
    */
+  @Public()
   @ApiOperation({ summary: 'Get hourly traffic data (last 24h)' })
   @ApiResponse({ status: 200, description: 'Hourly traffic data returned' })
   @Get('metrics/hourly')
@@ -154,11 +158,18 @@ export class MetricsController {
    * GET /projects/:projectId/api/metrics/daily
    * 일별 트래픽 (최근 30일)
    */
+  @Public()
   @ApiOperation({ summary: 'Get daily traffic data (last 30 days)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
   @ApiResponse({ status: 200, description: 'Daily traffic data returned' })
   @Get('metrics/daily')
-  async getDailyTraffic() {
-    const data = await this.metricsService.getDailyTraffic();
+  async getDailyTraffic(@Query('days') days?: string) {
+    const daysNum = clampDays(days, 30, 90);
+    const data = await this.metricsService.getDailyTraffic(daysNum);
     return {
       success: true,
       count: data.length,
@@ -174,6 +185,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/tenant-usage
    * 테넌트별 사용량
    */
+  @Public()
   @ApiOperation({ summary: 'Get tenant usage analytics' })
   @ApiQuery({
     name: 'days',
@@ -198,6 +210,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/heatmap
    * 사용량 히트맵 (요일 x 시간)
    */
+  @Public()
   @ApiOperation({ summary: 'Get usage heatmap (day of week x hour)' })
   @ApiResponse({ status: 200, description: 'Heatmap data returned' })
   @Get('analytics/heatmap')
@@ -216,6 +229,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/cost-trend
    * 비용 트렌드 (일별)
    */
+  @Public()
   @ApiOperation({ summary: 'Get daily cost trend' })
   @ApiResponse({ status: 200, description: 'Cost trend data returned' })
   @Get('analytics/cost-trend')
@@ -234,6 +248,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/errors
    * 에러 분석
    */
+  @Public()
   @ApiOperation({ summary: 'Get error analysis' })
   @ApiResponse({ status: 200, description: 'Error analysis data returned' })
   @Get('analytics/errors')
@@ -254,6 +269,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/ai/token-efficiency
    * 토큰 효율성 분석
    */
+  @Public()
   @ApiOperation({ summary: 'Get token efficiency analysis' })
   @ApiQuery({
     name: 'days',
@@ -278,6 +294,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/ai/anomaly-stats
    * 이상 탐지용 통계
    */
+  @Public()
   @ApiOperation({ summary: 'Get anomaly detection statistics' })
   @ApiQuery({
     name: 'days',
@@ -302,6 +319,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/ai/query-patterns
    * 사용자 질의 패턴
    */
+  @Public()
   @ApiOperation({ summary: 'Get user query patterns' })
   @ApiResponse({ status: 200, description: 'Query pattern data returned' })
   @Get('ai/query-patterns')
@@ -322,6 +340,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/efficiency-trend
    * 일별 토큰 효율성 트렌드
    */
+  @Public()
   @ApiOperation({ summary: 'Get daily token efficiency trend' })
   @ApiQuery({
     name: 'days',
@@ -349,6 +368,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/query-response-correlation
    * 질문-응답 길이 상관관계
    */
+  @Public()
   @ApiOperation({ summary: 'Get query-response length correlation' })
   @ApiQuery({
     name: 'days',
@@ -373,6 +393,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/query-response-detail
    * 질문-응답 상세 조회 (클릭 시 단건)
    */
+  @Public()
   @ApiOperation({
     summary: 'Get query-response detail for a specific data point',
   })
@@ -403,6 +424,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/repeated-patterns
    * 반복 질문 패턴 (FAQ 후보)
    */
+  @Public()
   @ApiOperation({ summary: 'Get repeated query patterns (FAQ candidates)' })
   @ApiQuery({
     name: 'days',
@@ -429,6 +451,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/emerging-patterns
    * 신규/급증 질문 패턴
    */
+  @Public()
   @ApiOperation({ summary: 'Get emerging/new query patterns' })
   @ApiQuery({
     name: 'recentDays',
@@ -465,6 +488,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/sentiment
    * 감정/불만 분석
    */
+  @Public()
   @ApiOperation({
     summary: 'Get sentiment analysis (frustrated/emotional queries)',
   })
@@ -491,6 +515,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/rephrased-queries
    * 재질문 패턴 (세션 내 유사 질문 반복)
    */
+  @Public()
   @ApiOperation({
     summary: 'Get rephrased query patterns (dissatisfaction signal)',
   })
@@ -520,6 +545,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/sessions
    * 세션별 대화 분석
    */
+  @Public()
   @ApiOperation({ summary: 'Get session-level analytics' })
   @ApiQuery({
     name: 'days',
@@ -544,6 +570,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/tenant-summary
    * 테넌트별 품질 요약
    */
+  @Public()
   @ApiOperation({
     summary: 'Get tenant quality summary (including frustration rate)',
   })
@@ -570,6 +597,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/quality/response-metrics
    * 응답 품질 지표
    */
+  @Public()
   @ApiOperation({
     summary: 'Get response quality metrics (length distribution)',
   })
@@ -601,6 +629,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/user-requests
    * 유저별 요청 수
    */
+  @Public()
   @ApiOperation({ summary: 'Get user request counts (by x_enc_data)' })
   @ApiQuery({
     name: 'days',
@@ -637,6 +666,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/user-tokens
    * 유저별 토큰 사용량
    */
+  @Public()
   @ApiOperation({ summary: 'Get user token usage (by x_enc_data)' })
   @ApiQuery({
     name: 'days',
@@ -670,6 +700,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/user-patterns
    * 유저별 자주 묻는 질문 패턴
    */
+  @Public()
   @ApiOperation({ summary: 'Get user question patterns (by x_enc_data)' })
   @ApiQuery({
     name: 'userId',
@@ -716,6 +747,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/user-list
    * 유저 목록 (통합 통계)
    */
+  @Public()
   @ApiOperation({ summary: 'Get user list with aggregated statistics' })
   @ApiQuery({
     name: 'days',
@@ -749,6 +781,7 @@ export class MetricsController {
    * GET /projects/:projectId/api/analytics/user-activity/:userId
    * 유저 활동 상세
    */
+  @Public()
   @ApiOperation({ summary: 'Get user activity details (conversation history)' })
   @ApiQuery({
     name: 'days',

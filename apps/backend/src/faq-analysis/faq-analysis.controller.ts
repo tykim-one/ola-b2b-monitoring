@@ -25,6 +25,7 @@ import {
   FAQJobDto,
   FAQJobResultDto,
 } from './dto/faq-analysis.dto';
+import { Permissions } from '../admin/auth/decorators/permissions.decorator';
 
 /**
  * FAQ Analysis Controller
@@ -40,6 +41,7 @@ export class FAQAnalysisController {
   /**
    * FAQ 분석 실행
    */
+  @Permissions('analysis:write')
   @Post()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -69,6 +71,7 @@ export class FAQAnalysisController {
   /**
    * 사용 가능한 테넌트 목록 조회
    */
+  @Permissions('analysis:read')
   @Get('tenants')
   @ApiOperation({
     summary: '테넌트 목록 조회',
@@ -90,6 +93,7 @@ export class FAQAnalysisController {
   /**
    * FAQ Job 목록 조회
    */
+  @Permissions('analysis:read')
   @Get('jobs')
   @ApiOperation({
     summary: 'FAQ Job 목록 조회',
@@ -116,6 +120,7 @@ export class FAQAnalysisController {
   /**
    * FAQ Job 상세 조회
    */
+  @Permissions('analysis:read')
   @Get('jobs/:id')
   @ApiOperation({
     summary: 'FAQ Job 상세 조회',
@@ -138,6 +143,7 @@ export class FAQAnalysisController {
   /**
    * FAQ Job 생성
    */
+  @Permissions('analysis:write')
   @Post('jobs')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -156,6 +162,7 @@ export class FAQAnalysisController {
   /**
    * FAQ Job 실행
    */
+  @Permissions('analysis:write')
   @Post('jobs/:id/run')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -179,6 +186,7 @@ export class FAQAnalysisController {
   /**
    * FAQ Job 삭제
    */
+  @Permissions('analysis:delete')
   @Delete('jobs/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
@@ -201,6 +209,7 @@ export class FAQAnalysisController {
   /**
    * FAQ Job 결과 조회
    */
+  @Permissions('analysis:read')
   @Get('jobs/:id/results')
   @ApiOperation({
     summary: 'FAQ Job 결과 조회',

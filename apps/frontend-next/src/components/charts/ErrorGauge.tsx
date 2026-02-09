@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
+import { RadialBarChart, RadialBar, ResponsiveContainer } from '@/lib/recharts';
 import { Chart } from '@/components/compound/Chart';
 import { CHART_COLORS } from './chart-theme';
 

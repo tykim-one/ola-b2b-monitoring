@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   ZAxis,
   Legend,
-} from 'recharts';
+} from '@/lib/recharts';
 import Modal from '../ui/Modal';
 import MarkdownViewer from '../markdown/MarkdownViewer';
 import { Chart } from '@/components/compound/Chart';

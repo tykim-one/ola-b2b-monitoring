@@ -444,9 +444,9 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
        FROM ${tableRef} t
        LEFT JOIN ${tableRef} y
          ON t.${symbolColumn} = y.${symbolColumn}
-         AND DATE(y.updated_at) = DATE(t.updated_at) - INTERVAL '1 day'
+         AND DATE(y.updated_at AT TIME ZONE 'Asia/Seoul') = DATE(t.updated_at AT TIME ZONE 'Asia/Seoul') - INTERVAL '1 day'
        WHERE t.${symbolColumn} IN (${placeholders})
-         AND DATE(t.updated_at) = CURRENT_DATE`,
+         AND DATE(t.updated_at AT TIME ZONE 'Asia/Seoul') = (NOW() AT TIME ZONE 'Asia/Seoul')::date`,
       symbols,
     );
 

@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   BarChart, Bar
-} from 'recharts';
+} from '@/lib/recharts';
 import { MetricData } from '@/types';
 import { CHART_COLORS, TOOLTIP_STYLE } from './charts/chart-theme';
 import { Chart } from '@/components/compound/Chart';

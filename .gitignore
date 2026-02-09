@@ -47,3 +47,8 @@ coverage/
 *.swp
 *.swo
 *~
+
+# Database
+*.db
+*.db-journal
+*.db-wal

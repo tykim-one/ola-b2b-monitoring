@@ -16,6 +16,7 @@ import {
   ApiBearerAuth,
   ApiBody,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -30,6 +31,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Admin user login' })
@@ -55,6 +57,10 @@ export class AuthController {
   @ApiResponse({
     status: 401,
     description: 'Invalid credentials or account locked',
+  })
+  @ApiResponse({
+    status: 429,
+    description: 'Too many login attempts',
   })
   async login(
     @Body() loginDto: LoginDto,

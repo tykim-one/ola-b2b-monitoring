@@ -16,7 +16,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-} from 'recharts';
+} from '@/lib/recharts';
 
 // ======= 프론트엔드 UI용 인터페이스 =======
 interface ETLRun {

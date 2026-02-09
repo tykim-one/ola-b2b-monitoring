@@ -7,6 +7,7 @@ import { useOperationsDashboard } from '@/hooks/queries/use-dashboard';
 import { Dashboard } from '@/components/compound/Dashboard';
 import KPICard from '@/components/kpi/KPICard';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
+import { PROJECT_ID } from '@/lib/config';
 
 const RealtimeTrafficChart = dynamic(
   () => import('@/components/charts/RealtimeTrafficChart'),
@@ -17,8 +18,6 @@ const ErrorGauge = dynamic(
   () => import('@/components/charts/ErrorGauge'),
   { ssr: false, loading: () => <div className="h-[200px] bg-slate-800/50 rounded-lg animate-pulse" /> }
 );
-
-const PROJECT_ID = 'ibks';
 
 export default function OperationsPage() {
   const [dateRange, setDateRange] = useState<DateRange>({ startDate: '', endDate: '', days: 1 });

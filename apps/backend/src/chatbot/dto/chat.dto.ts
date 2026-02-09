@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, MaxLength } from 'class-validator';
 
 /**
  * Request DTO for chatbot chat endpoint
@@ -6,10 +6,12 @@ import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 export class ChatRequestDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(5000)
   message: string;
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(500)
   pageContext: string;
 
   @IsString()

@@ -9,8 +9,7 @@ import KPICard from '@/components/kpi/KPICard';
 import TokenScatterPlot from '@/components/charts/TokenScatterPlot';
 import DateRangeFilter, { type DateRange } from '@/components/ui/DateRangeFilter';
 import type { AnomalyStats } from '@ola/shared-types';
-
-const PROJECT_ID = 'ibks';
+import { PROJECT_ID } from '@/lib/config';
 
 // Anomaly stats table column definitions
 const anomalyColumns: Column<AnomalyStats>[] = [

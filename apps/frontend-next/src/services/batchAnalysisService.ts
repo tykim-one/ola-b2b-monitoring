@@ -288,7 +288,6 @@ export const batchAnalysisApi = {
     const response = await apiClient.get<AnalysisPromptTemplate[]>(
       '/api/admin/batch-analysis/prompts'
     );
-    console.log(response)
     return response.data;
   },
 

@@ -25,7 +25,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-} from 'recharts';
+} from '@/lib/recharts';
 
 // ======= Report Batch Status Component =======
 const REPORT_TYPE_LABELS: Record<ReportType, string> = {

@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { chromium, Browser, BrowserContext, Page } from 'playwright';
 import * as fs from 'fs';
@@ -76,7 +81,7 @@ export class UiCheckService {
       this.logger.log(`Starting full UI check (trigger: ${trigger})...`);
 
       // 1. 설정 로드
-      const config = this.loadConfig();
+      const config = await this.loadConfig();
       this.logger.debug(`Loaded config: ${config.targets.length} targets`);
 
       // 1.5. 동적 URL 해결 (DB에서 UUID 조회)
@@ -139,8 +144,13 @@ export class UiCheckService {
         viewport: config.defaults.viewport,
       };
 
-      if (authSucceeded && fs.existsSync(config.auth.storageStatePath)) {
-        contextOptions.storageState = config.auth.storageStatePath;
+      if (authSucceeded) {
+        try {
+          await fs.promises.access(config.auth.storageStatePath);
+          contextOptions.storageState = config.auth.storageStatePath;
+        } catch {
+          // Storage state file doesn't exist, skip setting it
+        }
       }
 
       const context = await browser.newContext(contextOptions);
@@ -215,8 +225,8 @@ export class UiCheckService {
    * UI 체크 설정 조회 (targets + checks 정의)
    * auth 정보는 제외하고 타겟/체크 항목만 반환
    */
-  getCheckConfig() {
-    const config = this.loadConfig();
+  async getCheckConfig() {
+    const config = await this.loadConfig();
     return {
       defaults: config.defaults,
       targets: config.targets.map((target) => ({
@@ -246,20 +256,34 @@ export class UiCheckService {
    * 수정 가능한 필드: minCount, minContentLength, minItems, maxEmptyCells, minColumns, patterns, description
    * 수정 불가 필드: type, selector, sections (구조적 변경 방지)
    */
-  updateCheckConfig(updates: { targetId: string; checkIndex: number; values: Record<string, unknown> }) {
-    const EDITABLE_FIELDS = ['minCount', 'minContentLength', 'minItems', 'maxEmptyCells', 'minColumns', 'patterns', 'description'];
+  async updateCheckConfig(updates: {
+    targetId: string;
+    checkIndex: number;
+    values: Record<string, unknown>;
+  }) {
+    const EDITABLE_FIELDS = [
+      'minCount',
+      'minContentLength',
+      'minItems',
+      'maxEmptyCells',
+      'minColumns',
+      'patterns',
+      'description',
+    ];
 
     const configPath = path.join(process.cwd(), 'config', 'ui-checks.json');
-    const raw = fs.readFileSync(configPath, 'utf-8');
+    const raw = await fs.promises.readFile(configPath, 'utf-8');
     const config: UiCheckConfig = JSON.parse(raw);
 
-    const target = config.targets.find(t => t.id === updates.targetId);
+    const target = config.targets.find((t) => t.id === updates.targetId);
     if (!target) {
       throw new NotFoundException(`Target not found: ${updates.targetId}`);
     }
 
     if (updates.checkIndex < 0 || updates.checkIndex >= target.checks.length) {
-      throw new BadRequestException(`Invalid check index: ${updates.checkIndex}`);
+      throw new BadRequestException(
+        `Invalid check index: ${updates.checkIndex}`,
+      );
     }
 
     const check = target.checks[updates.checkIndex];
@@ -267,15 +291,23 @@ export class UiCheckService {
     // 수정 가능한 필드만 업데이트
     for (const [key, value] of Object.entries(updates.values)) {
       if (!EDITABLE_FIELDS.includes(key)) {
-        throw new BadRequestException(`Field '${key}' is not editable. Editable fields: ${EDITABLE_FIELDS.join(', ')}`);
+        throw new BadRequestException(
+          `Field '${key}' is not editable. Editable fields: ${EDITABLE_FIELDS.join(', ')}`,
+        );
       }
       (check as unknown as Record<string, unknown>)[key] = value;
     }
 
     // JSON 파일에 저장
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+    await fs.promises.writeFile(
+      configPath,
+      JSON.stringify(config, null, 2) + '\n',
+      'utf-8',
+    );
 
-    this.logger.log(`Updated UI check config: target=${updates.targetId}, checkIndex=${updates.checkIndex}, fields=${Object.keys(updates.values).join(', ')}`);
+    this.logger.log(
+      `Updated UI check config: target=${updates.targetId}, checkIndex=${updates.checkIndex}, fields=${Object.keys(updates.values).join(', ')}`,
+    );
 
     // 수정된 설정 반환
     return this.getCheckConfig();
@@ -394,14 +426,16 @@ export class UiCheckService {
   /**
    * 설정 파일 로드 및 환경변수 치환
    */
-  private loadConfig(): UiCheckConfig {
+  private async loadConfig(): Promise<UiCheckConfig> {
     const configPath = path.join(process.cwd(), 'config/ui-checks.json');
 
-    if (!fs.existsSync(configPath)) {
+    try {
+      await fs.promises.access(configPath);
+    } catch {
       throw new Error(`UI check config not found: ${configPath}`);
     }
 
-    let configContent = fs.readFileSync(configPath, 'utf-8');
+    let configContent = await fs.promises.readFile(configPath, 'utf-8');
 
     // ${ENV_VAR} 패턴을 실제 환경변수 값으로 치환
     configContent = configContent.replace(

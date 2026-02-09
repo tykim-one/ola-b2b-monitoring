@@ -2,9 +2,11 @@ import {
   Injectable,
   UnauthorizedException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { PrismaService } from '../database/prisma.service';
@@ -35,6 +37,7 @@ export interface RefreshResponse {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   private readonly MAX_FAILED_ATTEMPTS = 5;
   private readonly LOCKOUT_DURATION_MINUTES = 15;
   private readonly ACCESS_TOKEN_EXPIRY = '15m';
@@ -287,12 +290,22 @@ export class AuthService {
     return token;
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async cleanupExpiredTokens(): Promise<void> {
-    // Delete expired refresh tokens
-    await this.prisma.refreshToken.deleteMany({
-      where: {
-        OR: [{ expiresAt: { lt: new Date() } }, { revokedAt: { not: null } }],
-      },
-    });
+    this.logger.log('Running scheduled cleanup of expired refresh tokens');
+    try {
+      // Delete expired refresh tokens
+      const result = await this.prisma.refreshToken.deleteMany({
+        where: {
+          OR: [{ expiresAt: { lt: new Date() } }, { revokedAt: { not: null } }],
+        },
+      });
+      this.logger.log(
+        `Successfully cleaned up ${result.count} expired/revoked refresh tokens`,
+      );
+    } catch (error) {
+      this.logger.error('Failed to cleanup expired tokens', error);
+      throw error;
+    }
   }
 }

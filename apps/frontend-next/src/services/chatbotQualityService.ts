@@ -7,8 +7,7 @@ import type {
   ResponseQualityMetrics,
   ApiResponse,
 } from '@ola/shared-types';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import apiClient from '@/lib/api-client';
 
 /**
  * 신규/급증 질문 패턴 조회
@@ -21,11 +20,11 @@ export async function getEmergingPatterns(
   recentDays = 7,
   historicalDays = 30
 ): Promise<EmergingQueryPattern[]> {
-  const url = `${API_BASE_URL}/projects/${projectId}/api/quality/emerging-patterns?recentDays=${recentDays}&historicalDays=${historicalDays}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch emerging patterns');
-  const data: ApiResponse<EmergingQueryPattern[]> = await response.json();
-  return data.data;
+  const response = await apiClient.get<ApiResponse<EmergingQueryPattern[]>>(
+    `/projects/${projectId}/api/quality/emerging-patterns`,
+    { params: { recentDays, historicalDays } }
+  );
+  return response.data.data;
 }
 
 /**
@@ -37,11 +36,11 @@ export async function getSentimentAnalysis(
   projectId: string,
   days = 7
 ): Promise<SentimentAnalysisResult[]> {
-  const url = `${API_BASE_URL}/projects/${projectId}/api/quality/sentiment?days=${days}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch sentiment analysis');
-  const data: ApiResponse<SentimentAnalysisResult[]> = await response.json();
-  return data.data;
+  const response = await apiClient.get<ApiResponse<SentimentAnalysisResult[]>>(
+    `/projects/${projectId}/api/quality/sentiment`,
+    { params: { days } }
+  );
+  return response.data.data;
 }
 
 /**
@@ -53,11 +52,11 @@ export async function getRephrasedQueries(
   projectId: string,
   days = 7
 ): Promise<RephrasedQueryPattern[]> {
-  const url = `${API_BASE_URL}/projects/${projectId}/api/quality/rephrased-queries?days=${days}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch rephrased queries');
-  const data: ApiResponse<RephrasedQueryPattern[]> = await response.json();
-  return data.data;
+  const response = await apiClient.get<ApiResponse<RephrasedQueryPattern[]>>(
+    `/projects/${projectId}/api/quality/rephrased-queries`,
+    { params: { days } }
+  );
+  return response.data.data;
 }
 
 /**
@@ -69,11 +68,11 @@ export async function getSessionAnalytics(
   projectId: string,
   days = 7
 ): Promise<SessionAnalytics[]> {
-  const url = `${API_BASE_URL}/projects/${projectId}/api/quality/sessions?days=${days}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch session analytics');
-  const data: ApiResponse<SessionAnalytics[]> = await response.json();
-  return data.data;
+  const response = await apiClient.get<ApiResponse<SessionAnalytics[]>>(
+    `/projects/${projectId}/api/quality/sessions`,
+    { params: { days } }
+  );
+  return response.data.data;
 }
 
 /**
@@ -85,11 +84,11 @@ export async function getTenantQualitySummary(
   projectId: string,
   days = 30
 ): Promise<TenantQualitySummary[]> {
-  const url = `${API_BASE_URL}/projects/${projectId}/api/quality/tenant-summary?days=${days}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch tenant quality summary');
-  const data: ApiResponse<TenantQualitySummary[]> = await response.json();
-  return data.data;
+  const response = await apiClient.get<ApiResponse<TenantQualitySummary[]>>(
+    `/projects/${projectId}/api/quality/tenant-summary`,
+    { params: { days } }
+  );
+  return response.data.data;
 }
 
 /**
@@ -101,9 +100,9 @@ export async function getResponseQualityMetrics(
   projectId: string,
   days = 30
 ): Promise<ResponseQualityMetrics[]> {
-  const url = `${API_BASE_URL}/projects/${projectId}/api/quality/response-metrics?days=${days}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch response quality metrics');
-  const data: ApiResponse<ResponseQualityMetrics[]> = await response.json();
-  return data.data;
+  const response = await apiClient.get<ApiResponse<ResponseQualityMetrics[]>>(
+    `/projects/${projectId}/api/quality/response-metrics`,
+    { params: { days } }
+  );
+  return response.data.data;
 }

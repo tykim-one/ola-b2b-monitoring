@@ -23,8 +23,7 @@ const FAQAnalysisSection = dynamic(
   () => import('@/components/faq-analysis/FAQAnalysisSection'),
   { loading: () => <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse" /> }
 );
-
-const PROJECT_ID = 'ibks';
+import { PROJECT_ID } from '@/lib/config';
 
 export default function QualityPage() {
   const [dateRange, setDateRange] = useState<DateRange>({ startDate: '', endDate: '', days: 30 });

@@ -186,12 +186,17 @@ export class MetricsService implements OnModuleInit {
   /**
    * 일별 트래픽 (캐시 TTL: 15분)
    */
-  async getDailyTraffic(): Promise<DailyTraffic[]> {
-    const cacheKey = CacheService.generateKey('metrics', 'daily', 'traffic');
+  async getDailyTraffic(days: number = 30): Promise<DailyTraffic[]> {
+    const cacheKey = CacheService.generateKey(
+      'metrics',
+      'daily',
+      'traffic',
+      days,
+    );
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getDailyTraffic(),
+      async () => this.metricsDataSource.getDailyTraffic(days),
       CacheTTL.MEDIUM,
     );
   }

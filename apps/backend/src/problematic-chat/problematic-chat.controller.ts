@@ -17,8 +17,6 @@ import {
   ProblematicChatFilterDto,
   ProblematicChatStatsFilterDto,
 } from './dto';
-import { Public } from '../admin/auth/decorators/public.decorator';
-
 @Controller('api/problematic-chat')
 export class ProblematicChatController {
   constructor(private readonly service: ProblematicChatService) {}
@@ -26,7 +24,6 @@ export class ProblematicChatController {
   // ==================== 규칙 API ====================
 
   @Get('rules')
-  @Public()
   async getAllRules() {
     const rules = await this.service.getAllRules();
     return {
@@ -37,7 +34,6 @@ export class ProblematicChatController {
   }
 
   @Get('rules/:id')
-  @Public()
   async getRuleById(@Param('id') id: string) {
     const rule = await this.service.getRuleById(id);
     return {
@@ -47,7 +43,6 @@ export class ProblematicChatController {
   }
 
   @Get('rules/:id/preview-query')
-  @Public()
   async getRulePreviewQuery(
     @Param('id') id: string,
     @Query('days') days?: string,
@@ -88,7 +83,6 @@ export class ProblematicChatController {
   // ==================== 문제 채팅 조회 API ====================
 
   @Get('chats')
-  @Public()
   async getProblematicChats(@Query() filter: ProblematicChatFilterDto) {
     const chats = await this.service.getProblematicChats(filter);
     return {
@@ -104,7 +98,6 @@ export class ProblematicChatController {
   }
 
   @Get('stats')
-  @Public()
   async getProblematicChatStats(
     @Query() filter: ProblematicChatStatsFilterDto,
   ) {

@@ -17,7 +17,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-} from 'recharts';
+} from '@/lib/recharts';
 
 interface DailyLoadData {
   date: string;

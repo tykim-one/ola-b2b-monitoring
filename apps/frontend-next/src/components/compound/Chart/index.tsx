@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { ResponsiveContainer } from 'recharts';
+import { ResponsiveContainer } from '@/lib/recharts';
 
 // ==================== Root Component ====================
 

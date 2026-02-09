@@ -16,8 +16,6 @@ import {
   CreateProfilingJobDto,
   GetJobsDto,
 } from './dto/user-profile.dto';
-import { Public } from '../admin/auth/decorators/public.decorator';
-
 @Controller('api/user-profiling')
 export class UserProfilingController {
   constructor(private readonly userProfilingService: UserProfilingService) {}
@@ -25,7 +23,6 @@ export class UserProfilingController {
   /**
    * 유저 프로필 조회
    */
-  @Public()
   @Get(':userId')
   async getUserProfile(
     @Param('userId') userId: string,
@@ -48,7 +45,6 @@ export class UserProfilingController {
   /**
    * 유저 실시간 감정 분석
    */
-  @Public()
   @Get(':userId/sentiment')
   async getUserSentiment(
     @Param('userId') userId: string,
@@ -73,7 +69,6 @@ export class UserProfilingController {
   /**
    * 유저 카테고리 분포 조회
    */
-  @Public()
   @Get(':userId/categories')
   async getUserCategories(
     @Param('userId') userId: string,
@@ -103,7 +98,6 @@ export class UserProfilingController {
   /**
    * 프로필링 배치 작업 목록 조회
    */
-  @Public()
   @Get('jobs')
   async getJobs(@Query() query: GetJobsDto) {
     try {
@@ -123,7 +117,6 @@ export class UserProfilingController {
   /**
    * 프로필링 배치 작업 생성
    */
-  @Public()
   @Post('jobs')
   async createJob(@Body() body: CreateProfilingJobDto) {
     try {
@@ -143,7 +136,6 @@ export class UserProfilingController {
   /**
    * 프로필링 배치 작업 실행
    */
-  @Public()
   @Post('jobs/:jobId/run')
   async runJob(@Param('jobId') jobId: string) {
     try {

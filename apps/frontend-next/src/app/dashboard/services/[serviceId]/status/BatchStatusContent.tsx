@@ -17,7 +17,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-} from 'recharts';
+} from '@/lib/recharts';
 
 interface BatchJob {
   id: string;

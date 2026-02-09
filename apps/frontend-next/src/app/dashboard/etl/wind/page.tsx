@@ -19,7 +19,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-} from 'recharts';
+} from '@/lib/recharts';
 import { useWindETLDashboard } from '@/hooks/queries/use-etl';
 import { Dashboard } from '@/components/compound/Dashboard';
 import { Chart } from '@/components/compound/Chart';

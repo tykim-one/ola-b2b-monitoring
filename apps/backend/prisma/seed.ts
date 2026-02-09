@@ -233,7 +233,11 @@ async function main() {
   });
 
   if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash('admin123', 12);
+    const adminPassword = process.env.ADMIN_SEED_PASSWORD;
+    if (!adminPassword) {
+      throw new Error('ADMIN_SEED_PASSWORD environment variable is required for seeding');
+    }
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
     const adminUser = await prisma.user.create({
       data: {
         email: adminEmail,
@@ -255,7 +259,7 @@ async function main() {
         },
       });
     }
-    console.log(`✅ Created admin user: ${adminEmail} (password: admin123)`);
+    console.log(`✅ Created admin user: ${adminEmail}`);
   } else {
     console.log(`⏭️ Admin user already exists: ${adminEmail}`);
   }

@@ -41,8 +41,7 @@ import {
   isCompoundConfig,
 } from '@ola/shared-types';
 import type { UserListItem, UserQuestionPattern } from '@ola/shared-types';
-
-const PROJECT_ID = 'ibks';
+import { PROJECT_ID } from '@/lib/config';
 
 type TabType = 'users' | 'problematic';
 

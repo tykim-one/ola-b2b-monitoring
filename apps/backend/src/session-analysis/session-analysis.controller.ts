@@ -19,6 +19,7 @@ import {
   SessionTimeline,
   LLMSessionAnalysis,
 } from './interfaces';
+import { Permissions } from '../admin/auth/decorators/permissions.decorator';
 
 @Controller('api/admin/session-analysis')
 export class SessionAnalysisController {
@@ -30,6 +31,7 @@ export class SessionAnalysisController {
    * Get session statistics (real-time)
    * GET /api/admin/session-analysis/stats
    */
+  @Permissions('analysis:read')
   @Get('stats')
   async getSessionStats(
     @Query() filter: SessionFilterDto,
@@ -41,6 +43,7 @@ export class SessionAnalysisController {
    * Get paginated session list (real-time)
    * GET /api/admin/session-analysis/sessions
    */
+  @Permissions('analysis:read')
   @Get('sessions')
   async getSessions(
     @Query() filter: SessionFilterDto,
@@ -52,6 +55,7 @@ export class SessionAnalysisController {
    * Get session timeline with conversation history
    * GET /api/admin/session-analysis/sessions/:sessionId/timeline
    */
+  @Permissions('analysis:read')
   @Get('sessions/:sessionId/timeline')
   async getSessionTimeline(
     @Param('sessionId') sessionId: string,
@@ -63,6 +67,7 @@ export class SessionAnalysisController {
    * Analyze session with LLM for deep insights
    * POST /api/admin/session-analysis/sessions/:sessionId/analyze
    */
+  @Permissions('analysis:write')
   @Post('sessions/:sessionId/analyze')
   async analyzeSession(
     @Param('sessionId') sessionId: string,
@@ -74,6 +79,7 @@ export class SessionAnalysisController {
    * Get available tenants for filtering
    * GET /api/admin/session-analysis/tenants
    */
+  @Permissions('analysis:read')
   @Get('tenants')
   async getTenants(@Query('days') days?: number): Promise<string[]> {
     return this.sessionAnalysisService.getTenants(days || 7);

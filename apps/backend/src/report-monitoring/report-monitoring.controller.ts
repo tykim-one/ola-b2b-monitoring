@@ -10,7 +10,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { Public } from '../admin/auth/decorators/public.decorator';
 import { ReportMonitoringService } from './report-monitoring.service';
 import { ReportMonitoringScheduler } from './report-monitoring.scheduler';
 import { UiCheckService } from './ui-check.service';
@@ -26,7 +25,6 @@ import { MonitoringResultDto, ReportCheckResultDto } from './dto';
 
 @ApiTags('Report Monitoring')
 @Controller('api/report-monitoring')
-@Public()
 export class ReportMonitoringController {
   constructor(
     private readonly monitoringService: ReportMonitoringService,
@@ -197,7 +195,12 @@ export class ReportMonitoringController {
   @ApiOperation({ summary: 'UI 체크 설정 임계값 수정' })
   @ApiResponse({ status: 200, description: '수정된 UI 체크 설정' })
   async updateUiCheckConfig(
-    @Body() updates: { targetId: string; checkIndex: number; values: Record<string, unknown> },
+    @Body()
+    updates: {
+      targetId: string;
+      checkIndex: number;
+      values: Record<string, unknown>;
+    },
   ) {
     return this.uiCheckService.updateCheckConfig(updates);
   }

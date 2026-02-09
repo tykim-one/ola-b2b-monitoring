@@ -10,7 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
-} from 'recharts';
+} from '@/lib/recharts';
 import { UserRequestCount } from '@ola/shared-types';
 import { Chart } from '@/components/compound/Chart';
 import { CHART_COLORS, TOOLTIP_STYLE } from './chart-theme';

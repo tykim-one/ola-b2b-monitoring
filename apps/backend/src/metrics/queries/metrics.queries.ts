@@ -6,6 +6,12 @@
  * - tenant_id: 루트 레벨 STRING
  */
 
+import {
+  FRUSTRATION_REGEX_KR_SQL,
+  FRUSTRATION_REGEX_EN_SQL,
+  FRUSTRATION_REGEX_ALL_SQL,
+} from '../../common/constants/frustration-keywords';
+
 export const MetricsQueries = {
   /**
    * 실시간 KPI 메트릭 (최근 24시간)
@@ -282,17 +288,20 @@ export const MetricsQueries = {
     tableName: string,
     timestamp: string,
     tenantId: string,
-  ) => `
+  ) => ({
+    query: `
     SELECT
       tenant_id,
       SUBSTR(user_input, 1, 2000) as user_input,
       SUBSTR(llm_response, 1, 2000) as llm_response,
       timestamp
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp = TIMESTAMP('${timestamp}')
-      AND tenant_id = '${tenantId}'
+    WHERE timestamp = TIMESTAMP(@timestamp)
+      AND tenant_id = @tenantId
     LIMIT 1
   `,
+    params: { timestamp, tenantId },
+  }),
 
   /**
    * 반복 질문 패턴 분석 (정규화된 질문으로 그룹핑)
@@ -398,7 +407,8 @@ export const MetricsQueries = {
     userId: string | null = null,
     days: number = 7,
     limit: number = 1000,
-  ) => `
+  ) => ({
+    query: `
     SELECT
       request_metadata.x_enc_data AS userId,
       LEFT(user_input, 100) AS question,
@@ -409,12 +419,14 @@ export const MetricsQueries = {
       AND request_metadata.x_enc_data IS NOT NULL
       AND user_input IS NOT NULL
       AND LENGTH(user_input) > 5
-      ${userId ? `AND request_metadata.x_enc_data = '${userId}'` : ''}
+      ${userId ? `AND request_metadata.x_enc_data = @userId` : ''}
     GROUP BY userId, question
     HAVING COUNT(*) >= 2
     ORDER BY frequency DESC
     LIMIT ${limit}
   `,
+    params: userId ? { userId } : {},
+  }),
 
   /**
    * 유저 목록 (통합 통계)
@@ -455,7 +467,8 @@ export const MetricsQueries = {
     days: number = 7,
     limit: number = 20,
     offset: number = 0,
-  ) => `
+  ) => ({
+    query: `
     SELECT
       timestamp,
       SUBSTR(user_input, 1, 500) AS userInput,
@@ -465,11 +478,13 @@ export const MetricsQueries = {
       CAST(COALESCE(CAST(total_tokens AS FLOAT64), 0) AS INT64) AS totalTokens,
       success
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE request_metadata.x_enc_data = '${userId}'
+    WHERE request_metadata.x_enc_data = @userId
       AND timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
     ORDER BY timestamp DESC
     LIMIT ${limit} OFFSET ${offset}
   `,
+    params: { userId },
+  }),
 
   // ==================== 챗봇 품질 분석 쿼리 ====================
 
@@ -555,15 +570,15 @@ export const MetricsQueries = {
         success,
         request_metadata.session_id AS session_id,
         -- 불만 키워드 탐지 (한국어)
-        REGEXP_CONTAINS(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고)') AS has_kr_frustration,
+        REGEXP_CONTAINS(LOWER(user_input), r'${FRUSTRATION_REGEX_KR_SQL}') AS has_kr_frustration,
         -- 불만 키워드 탐지 (영어)
-        REGEXP_CONTAINS(LOWER(user_input), r'(stupid|useless|terrible|worst|angry|frustrated|refund|sue|report|ridiculous|awful|horrible)') AS has_en_frustration,
+        REGEXP_CONTAINS(LOWER(user_input), r'${FRUSTRATION_REGEX_EN_SQL}') AS has_en_frustration,
         -- 감정 표현 패턴
         REGEXP_CONTAINS(user_input, r'(ㅠㅠ|ㅜㅜ|ㅡㅡ|;;|!{3,}|\\?{3,})') AS has_emotional_pattern,
         -- 긴급 키워드
         REGEXP_CONTAINS(LOWER(user_input), r'(급해|빨리|긴급|urgent|asap|immediately|hurry|지금당장)') AS has_urgency,
         -- 키워드 추출
-        REGEXP_EXTRACT_ALL(LOWER(user_input), r'(왜|도대체|짜증|화나|답답|이상해|바보|멍청|안돼|못해|실망|최악|쓰레기|환불|고소|신고|stupid|useless|terrible|worst|angry|frustrated|refund)') AS frustration_keywords
+        REGEXP_EXTRACT_ALL(LOWER(user_input), r'${FRUSTRATION_REGEX_ALL_SQL}') AS frustration_keywords
       FROM \`${projectId}.${datasetId}.${tableName}\`
       WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
         AND user_input IS NOT NULL

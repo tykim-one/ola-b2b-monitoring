@@ -10,7 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   Cell,
-} from 'recharts';
+} from '@/lib/recharts';
 import {
   batchAnalysisApi,
   IssueFrequencyResponse,
