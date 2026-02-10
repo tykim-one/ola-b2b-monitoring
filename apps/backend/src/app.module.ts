@@ -21,6 +21,7 @@ import { MinkabuETLModule } from './minkabu-etl/minkabu-etl.module';
 import { ReportMonitoringModule } from './report-monitoring/report-monitoring.module';
 import { ProblematicChatModule } from './problematic-chat/problematic-chat.module';
 import { ServiceHealthModule } from './service-health/service-health.module';
+import { JobMonitoringModule } from './job-monitoring/job-monitoring.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { ServiceHealthModule } from './service-health/service-health.module';
     ReportMonitoringModule,
     ProblematicChatModule,
     ServiceHealthModule,
+    JobMonitoringModule,
   ],
   controllers: [AppController],
   providers: [
