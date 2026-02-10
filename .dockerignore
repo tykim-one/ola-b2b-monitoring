@@ -1,0 +1,41 @@
+node_modules
+**/node_modules
+.git
+*.md
+!packages/shared-types/**/*.md
+
+# Environment and secrets
+.env
+.env.*
+**/.env
+**/.env.*
+**/service-account.json
+
+# Build outputs
+dist
+**/dist
+.next
+**/.next
+
+# Database files
+*.db
+*.db-journal
+*.db-wal
+
+# IDE and OS
+.vscode
+.idea
+.DS_Store
+
+# Test and coverage
+coverage
+**/coverage
+
+# Docker files
+Dockerfile*
+docker-compose*
+
+# Misc
+.omc
+.claude
+screenshots

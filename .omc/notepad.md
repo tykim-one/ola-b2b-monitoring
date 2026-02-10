@@ -3,7 +3,7 @@
 
 ## Priority Context
 <!-- ALWAYS loaded. Keep under 500 chars. Critical discoveries only. -->
-JOB MONITORING 구현 대기: .omc/plans/job-monitoring.md 참조. 10개 TODO (8 new + 2 modify). 다음 세션에서 "job-monitoring 플랜 구현해줘"로 시작. Wind ETL 패턴 따름. BQ뷰: finola-global.ola_logging_monitoring.v_job_execution_logs
+DOCKER 구현 완료 (2026-02-10): 6 CREATE (.dockerignore, 2x Dockerfile, entrypoint.sh, docker-compose.yml, secrets/.gitkeep). .gitignore 이미 secrets/ 포함. 배포: secrets/에 service-account.json 배치 → ADMIN_SEED_PASSWORD=xxx docker compose build → docker compose up -d.
 
 ## UI Check 기능 현황 (2026-02-09)
 - 백엔드: UI Check 서비스 완전 동작 ✅ (인증, UUID resolve, 페이지 체크, DB 이력, Slack 알림)
