@@ -3,7 +3,7 @@
 
 ## Priority Context
 <!-- ALWAYS loaded. Keep under 500 chars. Critical discoveries only. -->
-CODE REVIEW 2026-02-09: 53 issues (6C/15H/20M/12L). Full doc: docs/CODE_REVIEW_2026-02-09.md. Next session: Phase 1 (C1-C3 critical security fixes) then Phase 2 (H1-H10 hardening). Start by reading the review doc.
+JOB MONITORING 구현 대기: .omc/plans/job-monitoring.md 참조. 10개 TODO (8 new + 2 modify). 다음 세션에서 "job-monitoring 플랜 구현해줘"로 시작. Wind ETL 패턴 따름. BQ뷰: finola-global.ola_logging_monitoring.v_job_execution_logs
 
 ## UI Check 기능 현황 (2026-02-09)
 - 백엔드: UI Check 서비스 완전 동작 ✅ (인증, UUID resolve, 페이지 체크, DB 이력, Slack 알림)
@@ -30,6 +30,20 @@ CODE REVIEW 2026-02-09: 53 issues (6C/15H/20M/12L). Full doc: docs/CODE_REVIEW_2
 ## Working Memory
 <!-- Session notes. Auto-pruned after 7 days. -->
 ### 2026-02-08 23:39
+### 2026-02-08 23:50
+### 2026-02-09 00:57
+### 2026-02-09 04:39
+Code Review completed 2026-02-09. Key findings:
+- CRITICAL: SQL injection in metrics.queries.ts (10+ locations), unauthenticated /query endpoint, JWT secret fallback, weak seed password
+- HIGH: @Public() abuse on 8+ controllers, no Helmet, LLM prompt injection, CORS wildcard+credentials
+- Frontend: token refresh race condition, chatbotQualityService uses raw fetch(), Recharts SSR not disabled (14 files), AuthContext missing useMemo
+- Architecture: 4 services bypass DataSource pattern, batch-analysis.service.ts is 1405-line God Object
+- Doc saved to: docs/CODE_REVIEW_2026-02-09.md with 5-phase remediation roadmap
+### 2026-02-09 23:58
+Docker 구현 완료 (2026-02-10): 12개 파일 생성/수정. 계획: .omc/plans/dockerize-deployment.md. 코드 변경: seed.ts (DATABASE_URL), ui-check.service.ts (UI_CHECKS_CONFIG_PATH), datasource.config.ts (DATASOURCES_CONFIG_PATH). Docker Desktop 시작 후 docker compose build && docker compose up 실행 필요.
+
+
+## 2026-02-08 23:39
 ### 2026-02-08 23:50
 ### 2026-02-09 00:57
 ### 2026-02-09 04:39

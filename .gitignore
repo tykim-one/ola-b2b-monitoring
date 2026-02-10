@@ -52,3 +52,8 @@ coverage/
 *.db
 *.db-journal
 *.db-wal
+
+# Docker
+.env.docker
+**/.env.docker
+secrets/

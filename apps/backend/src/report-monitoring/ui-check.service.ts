@@ -271,7 +271,9 @@ export class UiCheckService {
       'description',
     ];
 
-    const configPath = path.join(process.cwd(), 'config', 'ui-checks.json');
+    const configPath = process.env.UI_CHECKS_CONFIG_PATH
+      ? path.resolve(process.cwd(), process.env.UI_CHECKS_CONFIG_PATH)
+      : path.join(process.cwd(), 'config', 'ui-checks.json');
     const raw = await fs.promises.readFile(configPath, 'utf-8');
     const config: UiCheckConfig = JSON.parse(raw);
 
@@ -427,7 +429,9 @@ export class UiCheckService {
    * 설정 파일 로드 및 환경변수 치환
    */
   private async loadConfig(): Promise<UiCheckConfig> {
-    const configPath = path.join(process.cwd(), 'config/ui-checks.json');
+    const configPath = process.env.UI_CHECKS_CONFIG_PATH
+      ? path.resolve(process.cwd(), process.env.UI_CHECKS_CONFIG_PATH)
+      : path.join(process.cwd(), 'config', 'ui-checks.json');
 
     try {
       await fs.promises.access(configPath);

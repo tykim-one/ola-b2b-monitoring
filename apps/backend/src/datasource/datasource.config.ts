@@ -21,12 +21,11 @@ export class DataSourceConfigService implements OnModuleInit {
   private readonly configPath: string;
 
   constructor(private readonly configService: ConfigService) {
-    // Config file is in apps/backend/config/datasources.config.json
-    this.configPath = path.resolve(
-      process.cwd(),
-      'config',
-      'datasources.config.json',
-    );
+    // Config file path: configurable via env var for Docker, defaults to local path
+    const envPath = process.env.DATASOURCES_CONFIG_PATH;
+    this.configPath = envPath
+      ? path.resolve(process.cwd(), envPath)
+      : path.resolve(process.cwd(), 'config', 'datasources.config.json');
   }
 
   onModuleInit() {

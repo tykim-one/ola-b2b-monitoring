@@ -2,4 +2,4 @@ packages:
   - apps/*
   - packages/*
 
-onlyBuiltDependencies: better-sqlite3 prisma
+onlyBuiltDependencies: better-sqlite3 prisma bcrypt

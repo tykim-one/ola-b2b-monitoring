@@ -259,7 +259,7 @@ export default function UserAnalyticsPage() {
     { key: 'lastActivity', header: '마지막 활동', sortable: true, align: 'center',
       render: (v) => <span className="text-gray-500 text-xs">{formatDate(v as string)}</span>,
     },
-    { key: 'userId' as any, header: '프로필', align: 'center',
+    { key: 'profile' as any, header: '프로필', align: 'center',
       className: 'w-20',
       render: (_, row) => (
         <button

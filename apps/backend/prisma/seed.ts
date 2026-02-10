@@ -1,14 +1,25 @@
-import 'dotenv/config';
+// Load .env for local development; in Docker, env vars are injected directly
+try { require('dotenv/config'); } catch { /* not available in production */ }
 import { PrismaClient } from '../src/generated/prisma';
 import { PrismaLibSql } from '@prisma/adapter-libsql';
 import * as bcrypt from 'bcrypt';
 import * as path from 'path';
 
-// Resolve database path - the db is in the same directory as this seed file
-const absoluteDbPath = path.join(__dirname, 'admin.db');
+// Resolve database path from DATABASE_URL env var (Docker/production)
+// Fallback to __dirname-relative path (local development with ts-node)
+function resolveDatabaseUrl(): string {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (databaseUrl) {
+    const filePath = databaseUrl.replace(/^file:/, '');
+    const absolutePath = path.isAbsolute(filePath)
+      ? filePath
+      : path.resolve(process.cwd(), filePath);
+    return `file:${absolutePath}`;
+  }
+  return `file:${path.join(__dirname, 'admin.db')}`;
+}
 
-// Create Prisma with libSQL adapter (supports local SQLite files via file: protocol)
-const adapter = new PrismaLibSql({ url: `file:${absoluteDbPath}` });
+const adapter = new PrismaLibSql({ url: resolveDatabaseUrl() });
 const prisma = new PrismaClient({ adapter });
 
 // 기본 권한 정의

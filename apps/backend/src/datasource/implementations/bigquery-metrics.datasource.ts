@@ -618,7 +618,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
    * Execute a raw query against BigQuery.
    * Replaces {{TABLE}} placeholder with the actual table reference.
    *
-   * Security: Only SELECT queries are allowed, with dangerous keywords blocked.
+   * Security: Only SELECT/WITH (CTE) queries are allowed, with dangerous keywords blocked.
    * Automatically enforces a LIMIT of 1000 rows if not specified.
    *
    * @param query The raw query string
@@ -628,9 +628,12 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
   async executeRawQuery<T = Record<string, unknown>>(
     query: string,
   ): Promise<T[]> {
-    // Defense-in-depth: only allow SELECT statements
+    // Defense-in-depth: only allow SELECT statements (including CTEs)
     const normalizedQuery = query.trim().toUpperCase();
-    if (!normalizedQuery.startsWith('SELECT')) {
+    if (
+      !normalizedQuery.startsWith('SELECT') &&
+      !normalizedQuery.startsWith('WITH')
+    ) {
       throw new Error('Only SELECT queries are allowed');
     }
 
