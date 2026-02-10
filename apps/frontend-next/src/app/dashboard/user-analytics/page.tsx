@@ -307,7 +307,7 @@ export default function UserAnalyticsPage() {
     { key: 'timestamp', header: '시간', sortable: true,
       render: (v) => <span className="text-gray-600 whitespace-nowrap">{formatTimestamp(v as string)}</span>,
     },
-    { key: 'userId', header: '유저',
+    { key: 'sessionId', header: '유저',
       render: (v) => <span className="text-gray-600 text-xs truncate max-w-[180px]" title={v as string}>{(v as string) || '-'}</span>,
     },
     { key: 'userInput', header: '입력',

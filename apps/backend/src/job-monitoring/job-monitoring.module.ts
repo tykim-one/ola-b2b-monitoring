@@ -4,6 +4,7 @@ import { JobMonitoringController } from './job-monitoring.controller';
 import { JobMonitoringService } from './job-monitoring.service';
 import { JobMonitoringDataSource } from './job-monitoring.datasource';
 import { CacheModule } from '../cache/cache.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 /**
  * Job 모니터링 모듈
@@ -22,7 +23,7 @@ import { CacheModule } from '../cache/cache.module';
  * - JOB_LOGS_BQ_VIEW (default: v_job_execution_logs)
  */
 @Module({
-  imports: [ConfigModule, CacheModule],
+  imports: [ConfigModule, CacheModule, NotificationsModule],
   controllers: [JobMonitoringController],
   providers: [JobMonitoringDataSource, JobMonitoringService],
   exports: [JobMonitoringService],

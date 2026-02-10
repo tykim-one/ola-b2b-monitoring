@@ -145,6 +145,36 @@ export class JobMonitoringDataSource {
     return rows[0] || this.getEmptySummary();
   }
 
+  async getRecentFailedJobs(
+    configNames: string[],
+    minutesAgo: number = 10,
+  ): Promise<JobExecutionLog[]> {
+    const view = this.getViewRef();
+    const nameList = configNames.map(n => `'${n}'`).join(', ');
+    const query = `
+      SELECT
+        insertId,
+        config_name AS configName,
+        SAFE_CAST(duration_ms AS FLOAT64) AS durationMs,
+        SAFE_CAST(fetched AS FLOAT64) AS fetched,
+        SAFE_CAST(failed AS FLOAT64) AS failed,
+        SAFE_CAST(processed AS FLOAT64) AS processed,
+        SAFE_CAST(saved AS FLOAT64) AS saved,
+        SAFE_CAST(success_rate AS FLOAT64) AS successRate,
+        step,
+        message,
+        FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%S', app_timestamp, 'Asia/Seoul') AS appTimestamp,
+        FORMAT_TIMESTAMP('%Y-%m-%dT%H:%M:%S', log_timestamp, 'Asia/Seoul') AS logTimestamp
+      FROM ${view}
+      WHERE config_name IN (${nameList})
+        AND step = 'job_complete'
+        AND SAFE_CAST(failed AS FLOAT64) > 0
+        AND app_timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${minutesAgo} MINUTE)
+      ORDER BY app_timestamp DESC
+    `;
+    return this.executeQuery<JobExecutionLog>(query);
+  }
+
   private getEmptySummary(): JobMonitoringSummary {
     return {
       totalJobs: 0,

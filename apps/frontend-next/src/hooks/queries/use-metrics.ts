@@ -168,7 +168,7 @@ export function useErrorAnalysis(
   return useQuery({
     queryKey: metricsKeys.errors(projectId),
     queryFn: () => fetchJson<ErrorAnalysis[]>(
-      `${API_BASE}/projects/${projectId}/api/ai/error-analysis`
+      `${API_BASE}/projects/${projectId}/api/analytics/errors`
     ),
     staleTime: CACHE_TIME.SHORT,
     ...options,

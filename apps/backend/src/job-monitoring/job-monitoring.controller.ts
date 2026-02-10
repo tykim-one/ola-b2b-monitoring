@@ -86,4 +86,15 @@ export class JobMonitoringController {
       cacheTTL: '5 minutes',
     };
   }
+
+  @Get('test-alert')
+  @ApiOperation({ summary: '테스트용 Slack 알림 전송' })
+  @ApiResponse({ status: 200, description: '테스트 알림 전송 결과' })
+  async testAlert() {
+    await this.jobMonitoringService.sendTestAlert();
+    return {
+      success: true,
+      message: 'Test Slack alert sent',
+    };
+  }
 }
