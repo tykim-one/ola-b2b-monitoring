@@ -487,6 +487,49 @@ async function main() {
   }
   console.log(`✅ Processed ${problematicRules.length} problematic chat rules`);
 
+  // 7. 알림 스케줄 기본값 생성
+  console.log('Creating default alarm schedules...');
+  const alarmSchedules = [
+    {
+      module: 'job-monitoring',
+      name: 'Job 실패 알림',
+      description: 'ETL Job 실패 감지 시 Slack 알림 (minkabu/wind news translation)',
+      cronExpression: '*/10 * * * *',
+      timezone: 'Asia/Seoul',
+      isEnabled: true,
+    },
+    {
+      module: 'report-monitoring',
+      name: '리포트 데이터 품질 체크',
+      description: '리포트 데이터 누락/불완전/의심/노후 체크',
+      cronExpression: '0 8 * * *',
+      timezone: 'Asia/Seoul',
+      isEnabled: true,
+    },
+    {
+      module: 'ui-check',
+      name: 'UI 렌더링 체크',
+      description: 'Playwright 기반 UI 렌더링 이슈 감지',
+      cronExpression: '30 8 * * *',
+      timezone: 'Asia/Seoul',
+      isEnabled: true,
+    },
+  ];
+
+  for (const schedule of alarmSchedules) {
+    const existing = await prisma.alarmSchedule.findUnique({
+      where: { module: schedule.module },
+    });
+
+    if (!existing) {
+      await prisma.alarmSchedule.create({ data: schedule });
+      console.log(`  ✅ Created alarm schedule: "${schedule.name}" (${schedule.cronExpression})`);
+    } else {
+      console.log(`  ⏭️ Alarm schedule already exists: "${schedule.name}"`);
+    }
+  }
+  console.log(`✅ Processed ${alarmSchedules.length} alarm schedules`);
+
   console.log('🎉 Seeding completed!');
 }
 

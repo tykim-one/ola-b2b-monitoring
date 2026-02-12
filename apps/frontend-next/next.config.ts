@@ -6,6 +6,15 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForBuild: true,
     turbopackFileSystemCacheForDev: true,
   },
+  async rewrites() {
+    const backendUrl = process.env.INTERNAL_API_URL || 'http://localhost:3000';
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

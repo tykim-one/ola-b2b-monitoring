@@ -21,7 +21,7 @@ import {
   ChatbotSession,
 } from '@ola/shared-types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({

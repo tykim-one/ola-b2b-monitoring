@@ -160,15 +160,18 @@ export function useHeatmap(
 
 /**
  * 에러 분석 조회 (5분 캐시)
+ * @param days - 조회 기간 (기본: 서버 기본값)
  */
 export function useErrorAnalysis(
   projectId: string,
+  days?: number,
   options?: Omit<UseQueryOptions<ErrorAnalysis[]>, 'queryKey' | 'queryFn'>
 ) {
+  const daysParam = days ? `?days=${days}` : '';
   return useQuery({
-    queryKey: metricsKeys.errors(projectId),
+    queryKey: [...metricsKeys.errors(projectId), { days }],
     queryFn: () => fetchJson<ErrorAnalysis[]>(
-      `${API_BASE}/projects/${projectId}/api/analytics/errors`
+      `${API_BASE}/projects/${projectId}/api/analytics/errors${daysParam}`
     ),
     staleTime: CACHE_TIME.SHORT,
     ...options,

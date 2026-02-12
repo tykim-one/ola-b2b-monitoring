@@ -138,7 +138,7 @@ export function useOperationsDashboard(
 ): OperationsDashboardData {
   const realtimeQuery = useRealtimeKPI(projectId, days);
   const hourlyQuery = useHourlyTraffic(projectId, days);
-  const errorsQuery = useErrorAnalysis(projectId);
+  const errorsQuery = useErrorAnalysis(projectId, days);
 
   const isLoading =
     realtimeQuery.isLoading || hourlyQuery.isLoading || errorsQuery.isLoading;

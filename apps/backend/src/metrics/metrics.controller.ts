@@ -123,10 +123,16 @@ export class MetricsController {
    */
   @Public()
   @ApiOperation({ summary: 'Get realtime KPI metrics (last 24h)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 1)',
+  })
   @ApiResponse({ status: 200, description: 'Realtime KPI data returned' })
   @Get('metrics/realtime')
-  async getRealtimeKPI() {
-    const data = await this.metricsService.getRealtimeKPI();
+  async getRealtimeKPI(@Query('days') days?: string) {
+    const daysNum = clampDays(days, 1, 90);
+    const data = await this.metricsService.getRealtimeKPI(daysNum);
     return {
       success: true,
       data,
@@ -141,10 +147,16 @@ export class MetricsController {
    */
   @Public()
   @ApiOperation({ summary: 'Get hourly traffic data (last 24h)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 1)',
+  })
   @ApiResponse({ status: 200, description: 'Hourly traffic data returned' })
   @Get('metrics/hourly')
-  async getHourlyTraffic() {
-    const data = await this.metricsService.getHourlyTraffic();
+  async getHourlyTraffic(@Query('days') days?: string) {
+    const daysNum = clampDays(days, 1, 90);
+    const data = await this.metricsService.getHourlyTraffic(daysNum);
     return {
       success: true,
       count: data.length,
@@ -250,10 +262,16 @@ export class MetricsController {
    */
   @Public()
   @ApiOperation({ summary: 'Get error analysis' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 7)',
+  })
   @ApiResponse({ status: 200, description: 'Error analysis data returned' })
   @Get('analytics/errors')
-  async getErrorAnalysis() {
-    const data = await this.metricsService.getErrorAnalysis();
+  async getErrorAnalysis(@Query('days') days?: string) {
+    const daysNum = clampDays(days, 7, 90);
+    const data = await this.metricsService.getErrorAnalysis(daysNum);
     return {
       success: true,
       count: data.length,

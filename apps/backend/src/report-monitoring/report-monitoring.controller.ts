@@ -14,6 +14,7 @@ import { ReportMonitoringService } from './report-monitoring.service';
 import { ReportMonitoringScheduler } from './report-monitoring.scheduler';
 import { UiCheckService } from './ui-check.service';
 import { UiCheckScheduler } from './ui-check.scheduler';
+import { AlarmScheduleService } from '../alarm-schedule/alarm-schedule.service';
 import {
   ReportType,
   REPORT_TYPES,
@@ -31,6 +32,7 @@ export class ReportMonitoringController {
     private readonly scheduler: ReportMonitoringScheduler,
     private readonly uiCheckService: UiCheckService,
     private readonly uiCheckScheduler: UiCheckScheduler,
+    private readonly alarmScheduleService: AlarmScheduleService,
   ) {}
 
   /**
@@ -102,19 +104,15 @@ export class ReportMonitoringController {
   @Get('health')
   @ApiOperation({ summary: '서비스 헬스 상태 조회' })
   @ApiResponse({ status: 200, description: '헬스 상태' })
-  async getHealth(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    db: { connected: boolean; type: string | null };
-    scheduler: {
-      isRunning: boolean;
-      cronExpression: string;
-      timezone: string;
-      nextExecution: Date | null;
-    };
-    targetFiles: Array<{ reportType: ReportType; filename: string }>;
-  }> {
+  async getHealth() {
     const healthStatus = await this.monitoringService.getHealthStatus();
-    const schedulerStatus = this.scheduler.getSchedulerStatus();
+
+    let schedulerInfo = null;
+    try {
+      schedulerInfo = await this.alarmScheduleService.findByModule('report-monitoring');
+    } catch {
+      // schedule not found in DB
+    }
 
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
@@ -130,7 +128,7 @@ export class ReportMonitoringController {
         connected: healthStatus.dbConnected,
         type: healthStatus.dbType,
       },
-      scheduler: schedulerStatus,
+      scheduler: schedulerInfo,
       targetFiles: healthStatus.availableTargetFiles,
     };
   }
@@ -242,11 +240,17 @@ export class ReportMonitoringController {
   @ApiOperation({ summary: 'UI 체크 헬스 상태 조회' })
   @ApiResponse({ status: 200, description: 'UI 체크 헬스 상태' })
   async getUiCheckHealth() {
-    const uiSchedulerStatus = this.uiCheckScheduler.getSchedulerStatus();
+    let uiSchedulerInfo = null;
+    try {
+      uiSchedulerInfo = await this.alarmScheduleService.findByModule('ui-check');
+    } catch {
+      // schedule not found in DB
+    }
+
     const lastResult = this.uiCheckService.getLastResult();
 
     return {
-      scheduler: uiSchedulerStatus,
+      scheduler: uiSchedulerInfo,
       lastCheck: lastResult
         ? {
             timestamp: lastResult.timestamp,

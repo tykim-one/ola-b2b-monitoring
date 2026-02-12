@@ -1,42 +1,51 @@
+# Stage 1: Base
 FROM node:22-bookworm-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@9.15.1 --activate
-WORKDIR /app
 
+# Stage 2: Dependencies
 FROM base AS deps
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
-COPY packages/shared-types/package.json ./packages/shared-types/
+WORKDIR /app
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/frontend-next/package.json ./apps/frontend-next/
-RUN pnpm install --frozen-lockfile
+COPY packages/shared-types/package.json ./packages/shared-types/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
+# Stage 3: Build
 FROM deps AS build
+WORKDIR /app
 COPY packages/shared-types/ ./packages/shared-types/
-RUN pnpm --filter @ola/shared-types build
-
 COPY apps/frontend-next/ ./apps/frontend-next/
-
-ARG NEXT_PUBLIC_API_URL=http://localhost:3000
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-
+RUN pnpm --filter @ola/shared-types build
+# K8s 환경: Next.js rewrites가 INTERNAL_API_URL로 서버사이드 프록시
+# NEXT_PUBLIC_API_URL은 빈 문자열 → 브라우저에서 상대경로(/api/*) 사용
+ENV NEXT_PUBLIC_API_URL=""
+ENV INTERNAL_API_URL="http://backend-svc:3000"
 RUN pnpm --filter frontend-next build
 
+# Stage 4: Runner
 FROM node:22-bookworm-slim AS runner
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs nextjs
+RUN groupadd --gid 1001 nodejs && useradd --uid 1001 --gid nodejs nextjs
 
 WORKDIR /app
 
+# standalone output 복사 (Critical fix: C1 - server.js는 standalone 루트에 위치)
 COPY --from=build /app/apps/frontend-next/.next/standalone ./
+# static 파일 복사 (Critical fix: C5 - 클라이언트 JS에도 sed 치환 적용되어야 함)
 COPY --from=build /app/apps/frontend-next/.next/static ./apps/frontend-next/.next/static
+# public 파일 복사
 COPY --from=build /app/apps/frontend-next/public ./apps/frontend-next/public
 
-ENV NODE_ENV=production
+# Entrypoint
+COPY apps/frontend-next/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
+
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
 ENV PORT=3001
 ENV HOSTNAME=0.0.0.0
-
-USER nextjs
 EXPOSE 3001
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
-    CMD node -e "fetch('http://localhost:3001').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))"
-
-CMD ["node", "apps/frontend-next/server.js"]
+ENTRYPOINT ["./docker-entrypoint.sh"]

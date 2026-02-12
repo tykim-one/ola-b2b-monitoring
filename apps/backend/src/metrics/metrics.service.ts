@@ -160,12 +160,12 @@ export class MetricsService implements OnModuleInit {
   /**
    * 실시간 KPI 메트릭 (캐시 TTL: 5분)
    */
-  async getRealtimeKPI(): Promise<RealtimeKPI> {
-    const cacheKey = CacheService.generateKey('metrics', 'realtime', 'kpi');
+  async getRealtimeKPI(days: number = 1): Promise<RealtimeKPI> {
+    const cacheKey = CacheService.generateKey('metrics', 'realtime', 'kpi', days);
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getRealtimeKPI(),
+      async () => this.metricsDataSource.getRealtimeKPI(days),
       CacheTTL.SHORT,
     );
   }
@@ -173,12 +173,12 @@ export class MetricsService implements OnModuleInit {
   /**
    * 시간별 트래픽 (캐시 TTL: 15분)
    */
-  async getHourlyTraffic(): Promise<HourlyTraffic[]> {
-    const cacheKey = CacheService.generateKey('metrics', 'hourly', 'traffic');
+  async getHourlyTraffic(days: number = 1): Promise<HourlyTraffic[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'hourly', 'traffic', days);
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getHourlyTraffic(),
+      async () => this.metricsDataSource.getHourlyTraffic(days),
       CacheTTL.MEDIUM,
     );
   }
@@ -235,12 +235,12 @@ export class MetricsService implements OnModuleInit {
   /**
    * 에러 분석 (캐시 TTL: 5분)
    */
-  async getErrorAnalysis(): Promise<ErrorAnalysis[]> {
-    const cacheKey = CacheService.generateKey('metrics', 'error', 'analysis');
+  async getErrorAnalysis(days: number = 7): Promise<ErrorAnalysis[]> {
+    const cacheKey = CacheService.generateKey('metrics', 'error', 'analysis', days);
 
     return this.cacheService.getOrSet(
       cacheKey,
-      async () => this.metricsDataSource.getErrorAnalysis(),
+      async () => this.metricsDataSource.getErrorAnalysis(days),
       CacheTTL.SHORT,
     );
   }

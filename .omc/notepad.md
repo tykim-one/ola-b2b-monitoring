@@ -3,7 +3,7 @@
 
 ## Priority Context
 <!-- ALWAYS loaded. Keep under 500 chars. Critical discoveries only. -->
-DOCKER 구현 완료 (2026-02-10): 6 CREATE (.dockerignore, 2x Dockerfile, entrypoint.sh, docker-compose.yml, secrets/.gitkeep). .gitignore 이미 secrets/ 포함. 배포: secrets/에 service-account.json 배치 → ADMIN_SEED_PASSWORD=xxx docker compose build → docker compose up -d.
+CODE REVIEW 2026-02-09: 53 issues (6C/15H/20M/12L). Full doc: docs/CODE_REVIEW_2026-02-09.md. Next session: Phase 1 (C1-C3 critical security fixes) then Phase 2 (H1-H10 hardening). Start by reading the review doc.
 
 ## UI Check 기능 현황 (2026-02-09)
 - 백엔드: UI Check 서비스 완전 동작 ✅ (인증, UUID resolve, 페이지 체크, DB 이력, Slack 알림)
@@ -30,20 +30,6 @@ DOCKER 구현 완료 (2026-02-10): 6 CREATE (.dockerignore, 2x Dockerfile, entry
 ## Working Memory
 <!-- Session notes. Auto-pruned after 7 days. -->
 ### 2026-02-08 23:39
-### 2026-02-08 23:50
-### 2026-02-09 00:57
-### 2026-02-09 04:39
-Code Review completed 2026-02-09. Key findings:
-- CRITICAL: SQL injection in metrics.queries.ts (10+ locations), unauthenticated /query endpoint, JWT secret fallback, weak seed password
-- HIGH: @Public() abuse on 8+ controllers, no Helmet, LLM prompt injection, CORS wildcard+credentials
-- Frontend: token refresh race condition, chatbotQualityService uses raw fetch(), Recharts SSR not disabled (14 files), AuthContext missing useMemo
-- Architecture: 4 services bypass DataSource pattern, batch-analysis.service.ts is 1405-line God Object
-- Doc saved to: docs/CODE_REVIEW_2026-02-09.md with 5-phase remediation roadmap
-### 2026-02-09 23:58
-Docker 구현 완료 (2026-02-10): 12개 파일 생성/수정. 계획: .omc/plans/dockerize-deployment.md. 코드 변경: seed.ts (DATABASE_URL), ui-check.service.ts (UI_CHECKS_CONFIG_PATH), datasource.config.ts (DATASOURCES_CONFIG_PATH). Docker Desktop 시작 후 docker compose build && docker compose up 실행 필요.
-
-
-## 2026-02-08 23:39
 ### 2026-02-08 23:50
 ### 2026-02-09 00:57
 ### 2026-02-09 04:39
@@ -153,3 +139,95 @@ Code Review completed 2026-02-09. Key findings:
 ## MANUAL
 <!-- User content. Never auto-pruned. -->
 
+[{
+  "insertId": "698a12a9000acb75fade835a",
+  "config_name": "ibks_chat_recommend_questions_generator",
+  "duration_ms": "12257",
+  "failed": "19",
+  "fetched": "20",
+  "processed": "1",
+  "saved": "1",
+  "success_rate": "5.0",
+  "step": "job_complete",
+  "message": "[ibks_chat_recommend_questions_generator] Job completed | fetched\u003d20 | processed\u003d1 | saved\u003d1 | failed\u003d19 | success_rate\u003d5.0% | duration\u003d12.3s",
+  "app_timestamp": "2026-02-09 17:00:25.000000 UTC",
+  "log_timestamp": "2026-02-09 17:00:25.707445 UTC"
+}, {
+  "insertId": "698a20ba0006d718fc90da5f",
+  "config_name": "ibks_chat_recommend_questions_generator",
+  "duration_ms": "12861",
+  "failed": "19",
+  "fetched": "20",
+  "processed": "1",
+  "saved": "1",
+  "success_rate": "5.0",
+  "step": "job_complete",
+  "message": "[ibks_chat_recommend_questions_generator] Job completed | fetched\u003d20 | processed\u003d1 | saved\u003d1 | failed\u003d19 | success_rate\u003d5.0% | duration\u003d12.9s",
+  "app_timestamp": "2026-02-09 18:00:26.000000 UTC",
+  "log_timestamp": "2026-02-09 18:00:26.448280 UTC"
+}, {
+  "insertId": "698a2ecc0002d4b39b1080c1",
+  "config_name": "ibks_chat_recommend_questions_generator",
+  "duration_ms": "13214",
+  "failed": "19",
+  "fetched": "20",
+  "processed": "1",
+  "saved": "1",
+  "success_rate": "5.0",
+  "step": "job_complete",
+  "message": "[ibks_chat_recommend_questions_generator] Job completed | fetched\u003d20 | processed\u003d1 | saved\u003d1 | failed\u003d19 | success_rate\u003d5.0% | duration\u003d13.2s",
+  "app_timestamp": "2026-02-09 19:00:28.000000 UTC",
+  "log_timestamp": "2026-02-09 19:00:28.185523 UTC"
+}, {
+  "insertId": "6989f68e000cce66e3e40214",
+  "config_name": "ibks_chat_recommend_questions_generator",
+  "duration_ms": "13595",
+  "failed": "19",
+  "fetched": "20",
+  "processed": "1",
+  "saved": "1",
+  "success_rate": "5.0",
+  "step": "job_complete",
+  "message": "[ibks_chat_recommend_questions_generator] Job completed | fetched\u003d20 | processed\u003d1 | saved\u003d1 | failed\u003d19 | success_rate\u003d5.0% | duration\u003d13.6s",
+  "app_timestamp": "2026-02-09 15:00:30.000000 UTC",
+  "log_timestamp": "2026-02-09 15:00:30.839270 UTC"
+}, {
+  "insertId": "698a04a100061105aa109772",
+  "config_name": "ibks_chat_recommend_questions_generator",
+  "duration_ms": "17883",
+  "failed": "19",
+  "fetched": "20",
+  "processed": "1",
+  "saved": "1",
+  "success_rate": "5.0",
+  "step": "job_complete",
+  "message": "[ibks_chat_recommend_questions_generator] Job completed | fetched\u003d20 | processed\u003d1 | saved\u003d1 | failed\u003d19 | success_rate\u003d5.0% | duration\u003d17.9s",
+  "app_timestamp": "2026-02-09 16:00:33.000000 UTC",
+  "log_timestamp": "2026-02-09 16:00:33.397573 UTC"
+}, {
+  "insertId": "698a12aa00076b29b7d25ebd",
+  "config_name": "ibks_market_situation_summary",
+  "duration_ms": "11295",
+  "failed": "0",
+  "fetched": "1",
+  "processed": "1",
+  "saved": "1",
+  "success_rate": "100.0",
+  "step": "job_complete",
+  "message": "[ibks_market_situation_summary] Job completed | fetched\u003d1 | processed\u003d1 | saved\u003d1 | success_rate\u003d100.0% | duration\u003d11.3s",
+  "app_timestamp": "2026-02-09 17:00:26.000000 UTC",
+  "log_timestamp": "2026-02-09 17:00:26.486185 UTC"
+}, {
+  "insertId": "698a0496000ee50f7e2e9743",
+  "config_name": "ibks_market_situation_summary",
+  "duration_ms": "9330",
+  "failed": "0",
+  "fetched": "1",
+  "processed": "1",
+  "saved": "1",
+  "success_rate": "100.0",
+  "step": "job_complete",
+  "message": "[ibks_market_situation_summary] Job completed | fetched\u003d1 | processed\u003d1 | saved\u003d1 | success_rate\u003d100.0% | duration\u003d9.3s",
+  "app_timestamp": "2026-02-09 16:00:22.000000 UTC",
+  "log_timestamp": "2026-02-09 16:00:22.976143 UTC"
+},

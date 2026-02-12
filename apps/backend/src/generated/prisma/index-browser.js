@@ -409,6 +409,18 @@ exports.Prisma.UiCheckHistoryScalarFieldEnum = {
   checkedAt: 'checkedAt'
 };
 
+exports.Prisma.AlarmScheduleScalarFieldEnum = {
+  id: 'id',
+  module: 'module',
+  name: 'name',
+  description: 'description',
+  cronExpression: 'cronExpression',
+  timezone: 'timezone',
+  isEnabled: 'isEnabled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -443,7 +455,8 @@ exports.Prisma.ModelName = {
   UserProfilingJob: 'UserProfilingJob',
   ProblematicChatRule: 'ProblematicChatRule',
   ReportMonitoringHistory: 'ReportMonitoringHistory',
-  UiCheckHistory: 'UiCheckHistory'
+  UiCheckHistory: 'UiCheckHistory',
+  AlarmSchedule: 'AlarmSchedule'
 };
 
 /**

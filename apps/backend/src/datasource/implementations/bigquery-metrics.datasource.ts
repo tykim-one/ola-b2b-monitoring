@@ -236,17 +236,18 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   // ==================== Metrics Methods ====================
 
-  async getRealtimeKPI(): Promise<RealtimeKPI> {
+  async getRealtimeKPI(days: number = 1): Promise<RealtimeKPI> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.realtimeKPI(projectId, datasetId, tableName);
+    const query = MetricsQueries.realtimeKPI(projectId, datasetId, tableName, days);
     const rows = await this.executeQuery<RealtimeKPI>(query, 1);
     return rows[0] ?? this.getEmptyRealtimeKPI();
   }
 
-  async getHourlyTraffic(): Promise<HourlyTraffic[]> {
+  async getHourlyTraffic(days: number = 1): Promise<HourlyTraffic[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.hourlyTraffic(projectId, datasetId, tableName);
-    const rows = await this.executeQuery<HourlyTraffic>(query, 100);
+    const query = MetricsQueries.hourlyTraffic(projectId, datasetId, tableName, days);
+    const maxRows = days * 24;
+    const rows = await this.executeQuery<HourlyTraffic>(query, maxRows);
     return rows.map((row) => ({
       ...row,
       hour: this.normalizeDate(row.hour),
@@ -255,7 +256,7 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
 
   async getDailyTraffic(days: number = 30): Promise<DailyTraffic[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.dailyTraffic(projectId, datasetId, tableName);
+    const query = MetricsQueries.dailyTraffic(projectId, datasetId, tableName, days);
     const rows = await this.executeQuery<DailyTraffic>(query, 100);
     return rows.map((row) => ({
       ...row,
@@ -280,9 +281,9 @@ export class BigQueryMetricsDataSource implements MetricsDataSource {
     return this.executeQuery<UsageHeatmapCell>(query, 200);
   }
 
-  async getErrorAnalysis(): Promise<ErrorAnalysis[]> {
+  async getErrorAnalysis(days: number = 7): Promise<ErrorAnalysis[]> {
     const { projectId, datasetId, tableName } = this.tableRef;
-    const query = MetricsQueries.errorAnalysis(projectId, datasetId, tableName);
+    const query = MetricsQueries.errorAnalysis(projectId, datasetId, tableName, days);
     return this.executeQuery<ErrorAnalysis>(query, 100);
   }
 

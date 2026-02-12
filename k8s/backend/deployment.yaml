@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ola-backend
+  namespace: ola-monitoring
+  labels:
+    app.kubernetes.io/name: ola-backend
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: ola-monitoring
+    app.kubernetes.io/managed-by: deploy-script
+spec:
+  replicas: 1    # SQLite 단일 writer 제약
+  strategy:
+    type: Recreate    # SQLite 동시 접근 방지
+  selector:
+    matchLabels:
+      app: ola-backend
+  template:
+    metadata:
+      labels:
+        app: ola-backend
+        app.kubernetes.io/name: ola-backend
+        app.kubernetes.io/component: api
+      annotations:
+        configmap/hash: CONFIG_HASH_PLACEHOLDER
+    spec:
+      containers:
+        - name: backend
+          image: ola-backend:TAG_PLACEHOLDER
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secrets
+          volumeMounts:
+            - name: backend-data
+              mountPath: /app/apps/backend/data
+            - name: gcp-sa
+              mountPath: /app/secrets
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            timeoutSeconds: 5
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            timeoutSeconds: 5
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            periodSeconds: 5
+            failureThreshold: 24    # 최대 120초 대기
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+      volumes:
+        - name: backend-data
+          persistentVolumeClaim:
+            claimName: backend-data-pvc
+        - name: gcp-sa
+          secret:
+            secretName: gcp-sa-secret

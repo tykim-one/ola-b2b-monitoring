@@ -57,13 +57,13 @@ export interface MetricsDataSource {
    * Get real-time KPI metrics for the last 24 hours.
    * Returns aggregate statistics including request counts, tokens, and error rates.
    */
-  getRealtimeKPI(): Promise<RealtimeKPI>;
+  getRealtimeKPI(days?: number): Promise<RealtimeKPI>;
 
   /**
    * Get hourly traffic breakdown for the last 24 hours.
    * Returns request counts and token usage per hour.
    */
-  getHourlyTraffic(): Promise<HourlyTraffic[]>;
+  getHourlyTraffic(days?: number): Promise<HourlyTraffic[]>;
 
   /**
    * Get daily traffic breakdown for the specified number of days.
@@ -87,7 +87,7 @@ export interface MetricsDataSource {
    * Get error analysis data.
    * Returns failure counts grouped by tenant.
    */
-  getErrorAnalysis(): Promise<ErrorAnalysis[]>;
+  getErrorAnalysis(days?: number): Promise<ErrorAnalysis[]>;
 
   /**
    * Get token efficiency metrics.

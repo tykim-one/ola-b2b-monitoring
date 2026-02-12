@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: ola-monitoring
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  CORS_ORIGIN: "http://frontend-svc.ola-monitoring:3001"
+  DATABASE_URL: "file:./data/db/admin.db"
+  DATASOURCES_CONFIG_PATH: "./data/config/datasources.config.json"
+  UI_CHECKS_CONFIG_PATH: "./data/config/ui-checks.json"
+  UI_CHECK_SCREENSHOT_DIR: "./data/screenshots"
+  PLAYWRIGHT_STORAGE_STATE_PATH: "./data/playwright-auth-state.json"
+  GCP_BQ_LOCATION: "asia-northeast3"
+  GOOGLE_APPLICATION_CREDENTIALS: "/app/secrets/service-account.json"
+  LLM_PROVIDER: "gemini"
+  GEMINI_MODEL: "gemini-2.0-flash"
+  REPORT_MONITOR_TIMEZONE: "Asia/Seoul"
+  REPORT_MONITOR_CRON: "0 8 * * *"
+  COOKIE_SECURE: "false"
+  UI_CHECK_ENABLED: "true"
+  JOB_LOGS_BQ_PROJECT: "finola-global"
+  JOB_LOGS_BQ_DATASET: "ola_logging_monitoring"
+  JOB_LOGS_BQ_VIEW: "v_job_execution_logs"

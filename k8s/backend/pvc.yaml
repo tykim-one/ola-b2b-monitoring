@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backend-data-pvc
+  namespace: ola-monitoring
+spec:
+  storageClassName: ""    # 빈 문자열 = 동적 프로비저닝 비활성화, 수동 PV 바인딩
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi

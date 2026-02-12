@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
+import { AlarmScheduleModule } from '../alarm-schedule/alarm-schedule.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { DatabaseModule } from '../admin/database/database.module';
 import { ReportMonitoringService } from './report-monitoring.service';
@@ -14,7 +14,7 @@ import { UiCheckScheduler } from './ui-check.scheduler';
 @Module({
   imports: [
     ConfigModule,
-    ScheduleModule.forRoot(),
+    AlarmScheduleModule,
     NotificationsModule,
     DatabaseModule,
   ],

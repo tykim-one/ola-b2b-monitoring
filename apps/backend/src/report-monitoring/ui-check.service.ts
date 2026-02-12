@@ -206,7 +206,7 @@ export class UiCheckService {
       throw error;
     } finally {
       if (browser) {
-        await browser.close().catch((err) => {
+        await browser.close().catch((err: Error) => {
           this.logger.error(`Failed to close browser: ${err.message}`);
         });
       }
@@ -564,7 +564,7 @@ export class UiCheckService {
     const pageStartTime = Date.now();
 
     // 콘솔 에러 수집
-    page.on('console', (msg) => {
+    page.on('console', (msg: any) => {
       if (msg.type() === 'error') {
         consoleErrors.push(msg.text());
       }

@@ -501,3 +501,18 @@ model UiCheckHistory {
   @@index([checkedAt])
   @@index([hasIssues])
 }
+
+// ==================== 알림 스케줄 설정 테이블 ====================
+
+/// 알림 스케줄 설정 (모듈별 cron 실행 시간 관리)
+model AlarmSchedule {
+  id             Int      @id @default(autoincrement())
+  module         String   @unique // 'job-monitoring' | 'report-monitoring' | 'ui-check'
+  name           String // 표시 이름 (예: 'Job 실패 알림')
+  description    String? // 설명
+  cronExpression String // cron 표현식 (예: '*/10 * * * *')
+  timezone       String   @default("Asia/Seoul")
+  isEnabled      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

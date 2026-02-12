@@ -75,8 +75,8 @@ export class AuthController {
     // Use 'lax' for sameSite to allow cross-origin requests in development (different ports)
     response.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      secure: process.env.COOKIE_SECURE === 'true',
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: '/',
     });
@@ -157,8 +157,8 @@ export class AuthController {
     const clearRefreshCookie = () => {
       response.clearCookie('refreshToken', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        secure: process.env.COOKIE_SECURE === 'true',
+        sameSite: 'lax',
         path: '/',
       });
     };
@@ -174,8 +174,8 @@ export class AuthController {
       // Update refresh token cookie
       response.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        secure: process.env.COOKIE_SECURE === 'true',
+        sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/',
       });

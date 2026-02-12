@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { JobMonitoringDataSource } from './job-monitoring.datasource';
 import { CacheService, CacheTTL } from '../cache/cache.service';
 import { SlackNotificationService } from '../notifications/slack-notification.service';
+import { AlarmScheduleService } from '../alarm-schedule/alarm-schedule.service';
 import {
   JobExecutionLog,
   JobConfigSummary,
@@ -16,7 +16,7 @@ const MONITORED_CONFIGS = [
 ];
 
 @Injectable()
-export class JobMonitoringService {
+export class JobMonitoringService implements OnModuleInit {
   private readonly logger = new Logger(JobMonitoringService.name);
   private readonly lastAlertedIds = new Set<string>();
 
@@ -24,7 +24,15 @@ export class JobMonitoringService {
     private readonly dataSource: JobMonitoringDataSource,
     private readonly cacheService: CacheService,
     private readonly slackNotificationService: SlackNotificationService,
+    private readonly alarmScheduleService: AlarmScheduleService,
   ) {}
+
+  onModuleInit() {
+    this.alarmScheduleService.registerModuleCallback(
+      'job-monitoring',
+      () => this.checkAndAlertFailedJobs(),
+    );
+  }
 
   async isHealthy(): Promise<boolean> {
     return this.dataSource.isHealthy();
@@ -77,7 +85,6 @@ export class JobMonitoringService {
 
   // --- NEW: Cron-based failure alert ---
 
-  @Cron('*/10 * * * *')
   async checkAndAlertFailedJobs(): Promise<void> {
     try {
       const failedJobs = await this.dataSource.getRecentFailedJobs(

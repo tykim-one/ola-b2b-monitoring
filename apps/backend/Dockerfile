@@ -1,120 +1,83 @@
-# ============================================================
-# Stage 1: Base - Node.js + pnpm (full bookworm for native compilation)
-# ============================================================
+# Stage 1: Base
 FROM node:22-bookworm AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@9.15.1 --activate
-WORKDIR /app
 
-# ============================================================
 # Stage 2: Dependencies
-# ============================================================
 FROM base AS deps
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
-COPY packages/shared-types/package.json ./packages/shared-types/
-COPY apps/backend/package.json ./apps/backend/
-RUN pnpm install --frozen-lockfile
-
-# ============================================================
-# Stage 3: Build + Template DB 생성
-# ============================================================
-FROM deps AS build
-
-# 1) shared-types 빌드
-COPY packages/shared-types/ ./packages/shared-types/
-RUN pnpm --filter @ola/shared-types build
-
-# 2) backend 소스 전체 복사
-COPY apps/backend/ ./apps/backend/
-
-# 3) Prisma client 생성
-RUN cd apps/backend && pnpm prisma:generate
-
-# 4) NestJS 빌드
-RUN pnpm --filter backend build
-
-# 5) 템플릿 DB 생성 (빌드 시점 - devDep 사용 가능)
-#    prisma.config.ts가 dotenv/config를 import하므로 빌드 단계에서만 실행 가능
-ENV DATABASE_URL=file:./prisma/template.db
-RUN cd apps/backend && npx prisma db push
-
-# 6) 시드 데이터 (ADMIN_SEED_PASSWORD 제공 시)
-ARG ADMIN_SEED_PASSWORD
-RUN cd apps/backend && \
-    if [ -n "$ADMIN_SEED_PASSWORD" ]; then \
-      echo "Seeding template DB..." && \
-      ADMIN_SEED_PASSWORD=$ADMIN_SEED_PASSWORD \
-      DATABASE_URL=file:./prisma/template.db \
-      npx ts-node prisma/seed.ts && \
-      echo "Template DB seeded successfully."; \
-    else \
-      echo "ADMIN_SEED_PASSWORD not provided - template DB has schema only."; \
-    fi
-
-# ============================================================
-# Stage 4: Production dependencies only (clean install from base)
-# ============================================================
-FROM base AS prod-deps
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
-COPY packages/shared-types/package.json ./packages/shared-types/
-COPY apps/backend/package.json ./apps/backend/
-RUN pnpm install --frozen-lockfile --prod
-
-# ============================================================
-# Stage 5: Runner - 최소 프로덕션 이미지
-# ============================================================
-FROM node:22-bookworm-slim AS runner
-
-# Playwright Chromium 시스템 의존성
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 \
-    libdrm2 libdbus-1-3 libxkbcommon0 libxcomposite1 libxdamage1 \
-    libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 \
-    libasound2 libatspi2.0-0 libwayland-client0 fonts-noto-cjk \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs nestjs
-
 WORKDIR /app
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/backend/package.json ./apps/backend/
+COPY packages/shared-types/package.json ./packages/shared-types/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# Production node_modules
-COPY --from=prod-deps /app/node_modules ./node_modules
-COPY --from=prod-deps /app/apps/backend/node_modules ./apps/backend/node_modules
-COPY --from=build /app/packages/shared-types/ ./packages/shared-types/
-
-# 빌드된 앱
-COPY --from=build /app/apps/backend/dist ./apps/backend/dist
-
-# 템플릿 DB (첫 실행 시 data 볼륨으로 복사됨)
-COPY --from=build /app/apps/backend/prisma/template.db ./apps/backend/data-template/admin.db
-
-# Config 파일 기본값
-COPY --from=build /app/apps/backend/config/ ./apps/backend/config-defaults/
-
-# Entrypoint
-COPY apps/backend/docker-entrypoint.sh ./apps/backend/docker-entrypoint.sh
-RUN chmod +x ./apps/backend/docker-entrypoint.sh
-
-# Playwright 브라우저 (non-root 접근 가능 경로)
+# Stage 3: Build
+FROM deps AS build
+WORKDIR /app
+COPY packages/shared-types/ ./packages/shared-types/
+COPY apps/backend/ ./apps/backend/
+RUN pnpm --filter @ola/shared-types build
+RUN pnpm --filter backend build
+# Prisma generate
+RUN cd apps/backend && npx prisma generate
+# Template DB 생성
+ARG ADMIN_SEED_PASSWORD=admin123
+RUN cd apps/backend && DATABASE_URL="file:./prisma/template.db" npx prisma db push
+RUN cd apps/backend && DATABASE_URL="file:./prisma/template.db" ADMIN_SEED_PASSWORD=${ADMIN_SEED_PASSWORD} npx ts-node prisma/seed.ts
+# Playwright Chromium 설치 (Critical fix: C4)
 ENV PLAYWRIGHT_BROWSERS_PATH=/app/apps/backend/.playwright-browsers
 RUN cd apps/backend && npx playwright install chromium
 
-# 데이터 디렉토리 + 권한
-RUN mkdir -p /app/apps/backend/data/db \
-             /app/apps/backend/data/config \
-    && chown -R nestjs:nodejs /app/apps/backend/data \
-    && chown -R nestjs:nodejs /app/apps/backend/data-template \
-    && chown -R nestjs:nodejs /app/apps/backend/.playwright-browsers
+# Stage 4: Production Dependencies
+FROM base AS prod-deps
+WORKDIR /app
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/backend/package.json ./apps/backend/
+COPY packages/shared-types/package.json ./packages/shared-types/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --prod
 
-ENV NODE_ENV=production
-ENV PORT=3000
+# Stage 5: Runner
+FROM node:22-bookworm-slim AS runner
+# Playwright 시스템 라이브러리
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+    libdbus-1-3 libxkbcommon0 libatspi2.0-0 libgbm1 libpango-1.0-0 \
+    libcairo2 libasound2 libxrandr2 libxdamage1 libxcomposite1 \
+    fonts-noto-cjk ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd --gid 1001 nodejs && useradd --uid 1001 --gid nodejs nestjs
+
+# WORKDIR 명시 (Critical fix: H4) - 모든 상대 경로의 기준
+WORKDIR /app/apps/backend
+
+# Production dependencies
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=prod-deps /app/apps/backend/node_modules ./node_modules
+COPY --from=prod-deps /app/packages/shared-types /app/packages/shared-types
+
+# Build artifacts
+COPY --from=build /app/apps/backend/dist ./dist
+COPY --from=build /app/apps/backend/src/generated ./src/generated
+
+# Template DB & config defaults
+COPY --from=build /app/apps/backend/prisma/template.db ./data-template/admin.db
+COPY --from=build /app/apps/backend/config/ ./config-defaults/
+
+# Playwright browsers (Critical fix: C4)
+COPY --from=build /app/apps/backend/.playwright-browsers ./.playwright-browsers
+ENV PLAYWRIGHT_BROWSERS_PATH=/app/apps/backend/.playwright-browsers
+
+# Entrypoint
+COPY apps/backend/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
+
+# 디렉토리 소유권
+RUN mkdir -p ./data/db ./data/config ./data/screenshots && \
+    chown -R nestjs:nodejs ./data ./data-template
 
 USER nestjs
-WORKDIR /app/apps/backend
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD node -e "fetch('http://localhost:3000/health').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))"
-
 ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["node", "dist/main"]

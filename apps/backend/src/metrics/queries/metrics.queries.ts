@@ -16,7 +16,7 @@ export const MetricsQueries = {
   /**
    * 실시간 KPI 메트릭 (최근 24시간)
    */
-  realtimeKPI: (projectId: string, datasetId: string, tableName: string) => `
+  realtimeKPI: (projectId: string, datasetId: string, tableName: string, days: number = 1) => `
     SELECT
       COUNT(*) as total_requests,
       COUNTIF(success = TRUE) as success_count,
@@ -28,13 +28,13 @@ export const MetricsQueries = {
       CAST(COALESCE(SUM(CAST(output_tokens AS FLOAT64)), 0) AS INT64) as total_output_tokens,
       COUNT(DISTINCT tenant_id) as active_tenants
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
   `,
 
   /**
    * 시간별 트래픽 (최근 24시간)
    */
-  hourlyTraffic: (projectId: string, datasetId: string, tableName: string) => `
+  hourlyTraffic: (projectId: string, datasetId: string, tableName: string, days: number = 1) => `
     SELECT
       TIMESTAMP_TRUNC(timestamp, HOUR) as hour,
       COUNT(*) as request_count,
@@ -43,7 +43,7 @@ export const MetricsQueries = {
       CAST(COALESCE(SUM(CAST(total_tokens AS FLOAT64)), 0) AS INT64) as total_tokens,
       ROUND(AVG(CAST(total_tokens AS FLOAT64)), 2) as avg_tokens
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
     GROUP BY hour
     ORDER BY hour DESC
   `,
@@ -51,7 +51,7 @@ export const MetricsQueries = {
   /**
    * 일별 트래픽 (최근 30일)
    */
-  dailyTraffic: (projectId: string, datasetId: string, tableName: string) => `
+  dailyTraffic: (projectId: string, datasetId: string, tableName: string, days: number = 30) => `
     SELECT
       DATE(timestamp, 'Asia/Seoul') as date,
       COUNT(*) as request_count,
@@ -61,7 +61,7 @@ export const MetricsQueries = {
       ROUND(AVG(CAST(total_tokens AS FLOAT64)), 2) as avg_tokens,
       COUNT(DISTINCT tenant_id) as active_tenants
     FROM \`${projectId}.${datasetId}.${tableName}\`
-    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+    WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
     GROUP BY date
     ORDER BY date DESC
   `,
@@ -108,14 +108,14 @@ export const MetricsQueries = {
   /**
    * 에러 분석 (success = FALSE인 경우)
    */
-  errorAnalysis: (projectId: string, datasetId: string, tableName: string) => `
+  errorAnalysis: (projectId: string, datasetId: string, tableName: string, days: number = 7) => `
     SELECT
       'Request Failed' as fail_reason,
       COUNT(*) as count,
       tenant_id
     FROM \`${projectId}.${datasetId}.${tableName}\`
     WHERE success = FALSE
-      AND timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
+      AND timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${days} DAY)
     GROUP BY tenant_id
     ORDER BY count DESC
     LIMIT 100

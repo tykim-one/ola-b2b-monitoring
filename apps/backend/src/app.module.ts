@@ -22,6 +22,7 @@ import { ReportMonitoringModule } from './report-monitoring/report-monitoring.mo
 import { ProblematicChatModule } from './problematic-chat/problematic-chat.module';
 import { ServiceHealthModule } from './service-health/service-health.module';
 import { JobMonitoringModule } from './job-monitoring/job-monitoring.module';
+import { AlarmScheduleModule } from './alarm-schedule/alarm-schedule.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { JobMonitoringModule } from './job-monitoring/job-monitoring.module';
     ProblematicChatModule,
     ServiceHealthModule,
     JobMonitoringModule,
+    AlarmScheduleModule,
   ],
   controllers: [AppController],
   providers: [
