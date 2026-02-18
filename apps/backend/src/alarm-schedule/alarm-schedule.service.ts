@@ -6,6 +6,18 @@ import { AlarmScheduleResponse, UpdateAlarmScheduleDto } from './dto/alarm-sched
 
 type ModuleCallback = () => Promise<void>;
 
+type AlarmScheduleEntity = {
+  id: number;
+  module: string;
+  name: string;
+  description: string | null;
+  cronExpression: string;
+  timezone: string;
+  isEnabled: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 @Injectable()
 export class AlarmScheduleService implements OnModuleInit {
   private readonly logger = new Logger(AlarmScheduleService.name);
@@ -117,7 +129,7 @@ export class AlarmScheduleService implements OnModuleInit {
       orderBy: { id: 'asc' },
     });
 
-    return schedules.map((s) => this.toResponse(s));
+    return schedules.map((s: AlarmScheduleEntity) => this.toResponse(s));
   }
 
   /**
@@ -184,7 +196,7 @@ export class AlarmScheduleService implements OnModuleInit {
   /**
    * DB 모델 → Response DTO 변환
    */
-  private toResponse(schedule: any): AlarmScheduleResponse {
+  private toResponse(schedule: AlarmScheduleEntity): AlarmScheduleResponse {
     const jobName = `alarm-${schedule.module}`;
     let nextExecution: string | null = null;
     let isRunning = false;

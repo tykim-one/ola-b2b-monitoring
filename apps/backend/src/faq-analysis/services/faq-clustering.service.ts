@@ -6,7 +6,6 @@ import {
   MergedCluster,
   LLMClusteringResponse,
 } from '../interfaces/faq-cluster.interface';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * 키워드 사전: 핵심 토픽별 동의어 패턴
@@ -161,7 +160,7 @@ export class FAQClusteringService {
     // NormalizedGroup 배열로 변환 및 빈도순 정렬
     const groups: NormalizedGroup[] = Array.from(groupMap.entries()).map(
       ([key, data]) => ({
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         normalizedText: key,
         representativeQuestion: data.representativeQuestion,
         frequency: data.totalFrequency,
@@ -326,7 +325,7 @@ ${groupList}
       }
 
       clusters.push({
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         representativeQuestion: merged.representativeQuestion,
         frequency: totalFrequency,
         questions: mergedQuestions,

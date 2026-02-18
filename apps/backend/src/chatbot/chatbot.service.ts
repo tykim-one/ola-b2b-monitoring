@@ -7,7 +7,6 @@ import {
 import { MetricsService } from '../metrics/metrics.service';
 import { LLMService } from '../admin/analysis/llm/llm.service';
 import { Message } from '../admin/analysis/llm/providers/llm-provider.interface';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Page to Metrics Mapping
@@ -114,7 +113,7 @@ export class ChatbotService implements OnModuleInit, OnModuleDestroy {
 
     // Create user message
     const userMessage: ChatMessage = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       role: 'user',
       content: message,
       timestamp: new Date().toISOString(),
@@ -143,7 +142,7 @@ export class ChatbotService implements OnModuleInit, OnModuleDestroy {
 
     // Create assistant message
     const assistantMessage: ChatMessage = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       role: 'assistant',
       content: llmResponse.content,
       timestamp: new Date().toISOString(),
@@ -199,7 +198,7 @@ export class ChatbotService implements OnModuleInit, OnModuleDestroy {
     }
 
     const session: ChatSession = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       messages: [],
       createdAt: new Date().toISOString(),
       lastActivity: new Date().toISOString(),

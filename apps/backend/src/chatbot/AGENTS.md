@@ -46,4 +46,4 @@ The service maps page contexts to relevant metrics:
 
 - `MetricsModule` - For fetching dashboard metrics data
 - `LLMModule` (from admin/analysis) - For AI response generation
-- `uuid` - For session and message ID generation
+- `crypto.randomUUID()` (Node.js built-in) - For session and message ID generation

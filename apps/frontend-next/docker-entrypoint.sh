@@ -2,4 +2,4 @@
 set -e
 
 echo "[entrypoint] Starting Next.js frontend..."
-exec node server.js
+exec node apps/frontend-next/server.js

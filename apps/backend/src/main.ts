@@ -15,9 +15,11 @@ async function bootstrap() {
   app.use(helmet());
 
   // Enable CORS for frontend
-  const corsOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-    : ['http://localhost:3001'];
+  const corsOriginEnv = process.env.CORS_ORIGIN;
+  const corsOrigins =
+    corsOriginEnv && corsOriginEnv !== '*'
+      ? corsOriginEnv.split(',').map((o) => o.trim())
+      : true;
   app.enableCors({
     origin: corsOrigins,
     credentials: true,
