@@ -409,6 +409,20 @@ exports.Prisma.UiCheckHistoryScalarFieldEnum = {
   checkedAt: 'checkedAt'
 };
 
+exports.Prisma.IbkChatDailyReportScalarFieldEnum = {
+  id: 'id',
+  targetDate: 'targetDate',
+  status: 'status',
+  reportMarkdown: 'reportMarkdown',
+  reportMetadata: 'reportMetadata',
+  errorMessage: 'errorMessage',
+  durationMs: 'durationMs',
+  rowCount: 'rowCount',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+};
+
 exports.Prisma.AlarmScheduleScalarFieldEnum = {
   id: 'id',
   module: 'module',
@@ -456,6 +470,7 @@ exports.Prisma.ModelName = {
   ProblematicChatRule: 'ProblematicChatRule',
   ReportMonitoringHistory: 'ReportMonitoringHistory',
   UiCheckHistory: 'UiCheckHistory',
+  IbkChatDailyReport: 'IbkChatDailyReport',
   AlarmSchedule: 'AlarmSchedule'
 };
 

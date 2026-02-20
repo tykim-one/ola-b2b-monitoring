@@ -18,11 +18,12 @@ export const serviceConfigs: ServiceConfig[] = [
       chart: { type: 'line', dataKey: 'traffic', label: '실시간 트래픽' }
     },
     menu: [
-      { id: 'quality', label: '품질 분석', path: '/quality' },
-      { id: 'users', label: '유저 분석', path: '/users' },
-      { id: 'ai-performance', label: 'AI 성능', path: '/ai-performance' },
-      { id: 'batch-analysis', label: '배치 분석', path: '/batch-analysis' },
-      { id: 'business', label: '비즈니스 분석', path: '/business' },
+      { id: 'quality', label: '품질 분석', path: '/quality', permission: 'analysis:read' },
+      { id: 'users', label: '유저 분석', path: '/users', permission: 'analysis:read' },
+      { id: 'ai-performance', label: 'AI 성능', path: '/ai-performance', permission: 'metrics:read' },
+      { id: 'batch-analysis', label: '배치 분석', path: '/batch-analysis', permission: 'analysis:read' },
+      { id: 'business', label: '비즈니스 분석', path: '/business', permission: 'metrics:read' },
+      { id: 'daily-report', label: '일일 리포트', path: '/daily-report', permission: 'analysis:read' },
     ]
   },
   {

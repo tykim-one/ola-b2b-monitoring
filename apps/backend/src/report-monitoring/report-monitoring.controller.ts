@@ -9,7 +9,8 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import { Permissions } from '../admin/auth/decorators/permissions.decorator';
 import { ReportMonitoringService } from './report-monitoring.service';
 import { ReportMonitoringScheduler } from './report-monitoring.scheduler';
 import { UiCheckService } from './ui-check.service';
@@ -25,6 +26,7 @@ import {
 import { MonitoringResultDto, ReportCheckResultDto } from './dto';
 
 @ApiTags('Report Monitoring')
+@ApiBearerAuth()
 @Controller('api/report-monitoring')
 export class ReportMonitoringController {
   constructor(
@@ -38,6 +40,7 @@ export class ReportMonitoringController {
   /**
    * 전체 리포트 체크 실행 (수동)
    */
+  @Permissions('metrics:write')
   @Post('check')
   @ApiOperation({ summary: '전체 리포트 데이터 체크 실행' })
   @ApiResponse({
@@ -52,6 +55,7 @@ export class ReportMonitoringController {
   /**
    * 특정 리포트 타입만 체크
    */
+  @Permissions('metrics:write')
   @Post('check/:reportType')
   @ApiOperation({ summary: '특정 리포트 타입 체크' })
   @ApiParam({
@@ -81,6 +85,7 @@ export class ReportMonitoringController {
   /**
    * 마지막 체크 결과 조회
    */
+  @Permissions('metrics:read')
   @Get('status')
   @ApiOperation({ summary: '마지막 체크 결과 조회' })
   @ApiResponse({
@@ -101,6 +106,7 @@ export class ReportMonitoringController {
   /**
    * 서비스 헬스 상태 조회
    */
+  @Permissions('metrics:read')
   @Get('health')
   @ApiOperation({ summary: '서비스 헬스 상태 조회' })
   @ApiResponse({ status: 200, description: '헬스 상태' })
@@ -136,6 +142,7 @@ export class ReportMonitoringController {
   /**
    * 스케줄러 수동 트리거
    */
+  @Permissions('metrics:write')
   @Post('trigger')
   @ApiOperation({ summary: '스케줄러 수동 트리거 (테스트용)' })
   @ApiResponse({ status: 200, description: '트리거 결과' })
@@ -150,6 +157,7 @@ export class ReportMonitoringController {
   /**
    * 타겟 파일 목록 조회
    */
+  @Permissions('metrics:read')
   @Get('targets')
   @ApiOperation({ summary: '타겟 파일 목록 조회' })
   @ApiResponse({ status: 200, description: '타겟 파일 목록' })
@@ -165,6 +173,7 @@ export class ReportMonitoringController {
   /**
    * 체크 이력 조회
    */
+  @Permissions('metrics:read')
   @Get('history')
   @ApiOperation({ summary: '체크 이력 조회 (페이지네이션)' })
   @ApiResponse({ status: 200, description: '체크 이력 목록' })
@@ -182,6 +191,7 @@ export class ReportMonitoringController {
 
   // ==================== UI Check Endpoints ====================
 
+  @Permissions('metrics:read')
   @Get('ui-check/config')
   @ApiOperation({ summary: 'UI 체크 설정(타겟/체크 항목) 조회' })
   @ApiResponse({ status: 200, description: 'UI 체크 설정' })
@@ -189,6 +199,7 @@ export class ReportMonitoringController {
     return this.uiCheckService.getCheckConfig();
   }
 
+  @Permissions('metrics:write')
   @Patch('ui-check/config')
   @ApiOperation({ summary: 'UI 체크 설정 임계값 수정' })
   @ApiResponse({ status: 200, description: '수정된 UI 체크 설정' })
@@ -203,6 +214,7 @@ export class ReportMonitoringController {
     return this.uiCheckService.updateCheckConfig(updates);
   }
 
+  @Permissions('metrics:write')
   @Post('ui-check')
   @ApiOperation({ summary: 'UI 렌더링 체크 실행' })
   @ApiResponse({ status: 200, description: 'UI 체크 결과' })
@@ -210,6 +222,7 @@ export class ReportMonitoringController {
     return this.uiCheckService.runFullUiCheck('manual');
   }
 
+  @Permissions('metrics:read')
   @Get('ui-check/status')
   @ApiOperation({ summary: 'UI 체크 마지막 결과 조회' })
   @ApiResponse({ status: 200, description: 'UI 체크 마지막 결과' })
@@ -221,6 +234,7 @@ export class ReportMonitoringController {
     return result;
   }
 
+  @Permissions('metrics:read')
   @Get('ui-check/history')
   @ApiOperation({ summary: 'UI 체크 이력 조회' })
   @ApiResponse({ status: 200, description: 'UI 체크 이력 목록' })
@@ -236,6 +250,7 @@ export class ReportMonitoringController {
     });
   }
 
+  @Permissions('metrics:read')
   @Get('ui-check/health')
   @ApiOperation({ summary: 'UI 체크 헬스 상태 조회' })
   @ApiResponse({ status: 200, description: 'UI 체크 헬스 상태' })
@@ -263,6 +278,7 @@ export class ReportMonitoringController {
     };
   }
 
+  @Permissions('metrics:write')
   @Post('ui-check/trigger')
   @ApiOperation({ summary: 'UI 체크 스케줄러 수동 트리거' })
   @ApiResponse({ status: 200, description: '트리거 결과' })
@@ -277,6 +293,7 @@ export class ReportMonitoringController {
     };
   }
 
+  @Permissions('metrics:read')
   @Get('ui-check/history/:id')
   @ApiOperation({ summary: 'UI 체크 상세 이력 조회' })
   @ApiResponse({ status: 200, description: 'UI 체크 상세 결과' })

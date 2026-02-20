@@ -1,0 +1,15 @@
+category,final_cnt,high_risk_cnt,high_risk_rate_pct,medium_risk_cnt
+comparison,5,2,40.0,0
+trading,12,2,16.67,3
+etf_fund,29,3,10.34,5
+analyst,134,10,7.46,6
+financial,114,7,6.14,7
+forecast,44,2,4.55,6
+simple_name,97,3,3.09,8
+other,79,2,2.53,12
+news,103,1,0.97,0
+stock_price,104,1,0.96,1
+comprehensive_analysis,1027,1,0.1,25
+sector_theme,10,0,0.0,4
+brokerage,1,0,0.0,0
+howto,10,0,0.0,1

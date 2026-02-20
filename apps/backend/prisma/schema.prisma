@@ -504,6 +504,28 @@ model UiCheckHistory {
 
 // ==================== 알림 스케줄 설정 테이블 ====================
 
+// ==================== IBK-CHAT 일일 리포트 테이블 ====================
+
+/// IBK-CHAT 일일 리포트 (BigQuery 로그 기반 LLM 분석)
+model IbkChatDailyReport {
+  id             String    @id @default(cuid())
+  targetDate     DateTime  @unique  // KST 날짜를 UTC midnight으로 저장 (예: 2026-02-18 → 2026-02-17T15:00:00Z)
+  status         String    @default("PENDING") // PENDING | RUNNING | COMPLETED | FAILED | SKIPPED
+  reportMarkdown String?   // 전체 Markdown 리포트 본문 (최대 수백KB)
+  reportMetadata String?   // JSON 문자열: { totalRequests, successRate, failCount, topQuestionTypes, tokenP99 }
+  errorMessage   String?
+  durationMs     Int?      // 생성 소요 시간 (ms)
+  rowCount       Int?      // 해당 날짜 BigQuery row 수
+  createdAt      DateTime  @default(now())
+  startedAt      DateTime?
+  completedAt    DateTime?
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ==================== 알림 스케줄 설정 테이블 ====================
+
 /// 알림 스케줄 설정 (모듈별 cron 실행 시간 관리)
 model AlarmSchedule {
   id              Int      @id @default(autoincrement())

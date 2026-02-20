@@ -41,12 +41,20 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
    * DB 연결 초기화
    */
   private async initializeConnection(): Promise<void> {
-    const dbType = this.configService.get<string>('REPORT_DB_TYPE');
-    const host = this.configService.get<string>('REPORT_DB_HOST');
-    const port = this.configService.get<number>('REPORT_DB_PORT');
-    const user = this.configService.get<string>('REPORT_DB_USER');
-    const password = this.configService.get<string>('REPORT_DB_PASSWORD');
-    const database = this.configService.get<string>('REPORT_DB_NAME');
+    const dbType = this.normalizeDbType(
+      this.configService.get<string>('REPORT_DB_TYPE'),
+    );
+    const host = this.normalizeValue(this.configService.get<string>('REPORT_DB_HOST'));
+    const port = this.normalizePort(
+      this.configService.get<string | number>('REPORT_DB_PORT'),
+    );
+    const user = this.normalizeValue(this.configService.get<string>('REPORT_DB_USER'));
+    const password = this.normalizeValue(
+      this.configService.get<string>('REPORT_DB_PASSWORD'),
+    );
+    const database = this.normalizeValue(
+      this.configService.get<string>('REPORT_DB_NAME'),
+    );
 
     // 필수 환경변수 체크
     if (!dbType || !host || !database) {
@@ -102,13 +110,33 @@ export class ExternalDbService implements OnModuleInit, OnModuleDestroy {
         );
       } else {
         this.logger.warn(
-          `Unsupported DB type: ${dbType}. Use 'mysql' or 'postgresql'.`,
+          `Unsupported DB type: ${this.configService.get<string>('REPORT_DB_TYPE')}. Use 'mysql' or 'postgresql'.`,
         );
       }
     } catch (error) {
       this.logger.error(`Failed to connect to report DB: ${error.message}`);
       this.isEnabled = false;
     }
+  }
+
+  private normalizeValue(value: string | undefined): string | undefined {
+    const normalized = value?.trim();
+    return normalized ? normalized : undefined;
+  }
+
+  private normalizeDbType(value: string | undefined): DbType | undefined {
+    const normalized = value?.trim().toLowerCase();
+    if (normalized === 'mysql' || normalized === 'postgresql') {
+      return normalized;
+    }
+    return undefined;
+  }
+
+  private normalizePort(value: string | number | undefined): number | undefined {
+    if (value === undefined || value === null) return undefined;
+    if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
+    const parsed = Number.parseInt(value.trim(), 10);
+    return Number.isFinite(parsed) ? parsed : undefined;
   }
 
   /**

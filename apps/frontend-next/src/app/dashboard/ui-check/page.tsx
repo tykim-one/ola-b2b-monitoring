@@ -797,13 +797,13 @@ function SystemStatusFooter({ uiHealth }: {
           <div className="flex items-center gap-2">
             <span
               className={`w-3 h-3 rounded-full ${
-                uiHealth?.scheduler.isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
+                uiHealth?.scheduler?.isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
               }`}
             />
             <span
-              className={uiHealth?.scheduler.isRunning ? 'text-emerald-400' : 'text-gray-500'}
+              className={uiHealth?.scheduler?.isRunning ? 'text-emerald-400' : 'text-gray-500'}
             >
-              {uiHealth?.scheduler.isRunning ? '실행 중' : '중지됨'}
+              {uiHealth?.scheduler?.isRunning ? '실행 중' : '중지됨'}
             </span>
           </div>
           {uiHealth?.scheduler && (

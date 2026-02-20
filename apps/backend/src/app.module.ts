@@ -23,6 +23,7 @@ import { ProblematicChatModule } from './problematic-chat/problematic-chat.modul
 import { ServiceHealthModule } from './service-health/service-health.module';
 import { JobMonitoringModule } from './job-monitoring/job-monitoring.module';
 import { AlarmScheduleModule } from './alarm-schedule/alarm-schedule.module';
+import { IbkChatReportModule } from './ibk-chat-report/ibk-chat-report.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { AlarmScheduleModule } from './alarm-schedule/alarm-schedule.module';
     ServiceHealthModule,
     JobMonitoringModule,
     AlarmScheduleModule,
+    IbkChatReportModule,
   ],
   controllers: [AppController],
   providers: [

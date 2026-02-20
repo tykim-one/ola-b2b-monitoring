@@ -2,11 +2,32 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  permission?: string;
+}
+
+interface NavSection {
+  section: string;
+  permission?: string;
+  items: NavItem[];
+}
+
+type NavEntry = NavItem | NavSection;
+
+function isSection(entry: NavEntry): entry is NavSection {
+  return 'section' in entry;
+}
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const { hasPermission, isAuthenticated } = useAuth();
 
-  const navItems = [
+  const navItems: NavEntry[] = [
     {
       href: '/dashboard/home',
       label: '홈',
@@ -70,6 +91,7 @@ const Sidebar = () => {
     // },
     {
       section: '모니터링',
+      permission: 'metrics:read',
       items: [
         {
           href: '/dashboard/operations',
@@ -95,6 +117,7 @@ const Sidebar = () => {
     },
     {
       section: 'IBK 챗봇 분석',
+      permission: 'analysis:read',
       items: [
         {
           href: '/dashboard/quality',
@@ -152,6 +175,7 @@ const Sidebar = () => {
     },
     {
       section: '비즈니스',
+      permission: 'metrics:read',
       items: [
         {
           href: '/dashboard/business',
@@ -168,6 +192,7 @@ const Sidebar = () => {
     },
     {
       section: '데이터 파이프라인',
+      permission: 'metrics:read',
       items: [
         {
           href: '/dashboard/etl/wind',
@@ -231,6 +256,7 @@ const Sidebar = () => {
     },
     {
       section: '시스템 관리',
+      permission: 'admin:read',
       items: [
         {
           href: '/dashboard/admin/users',
@@ -319,14 +345,21 @@ const Sidebar = () => {
       </div>
 
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {navItems.map((item, index) => {
-          if ('section' in item) {
+        {navItems.map((item) => {
+          if (isSection(item)) {
+            if (item.permission && isAuthenticated && !hasPermission(item.permission)) {
+              return null;
+            }
+            const visibleItems = item.items.filter(
+              (sub) => !sub.permission || !isAuthenticated || hasPermission(sub.permission),
+            );
+            if (visibleItems.length === 0) return null;
             return (
               <div key={item.section} className="pt-4 pb-2">
                 <div className="px-4 py-2 text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
                   {item.section}
                 </div>
-                {item.items?.map((subItem) => (
+                {visibleItems.map((subItem) => (
                   <Link
                     key={subItem.href}
                     href={subItem.href}
@@ -342,6 +375,9 @@ const Sidebar = () => {
                 ))}
               </div>
             );
+          }
+          if (item.permission && isAuthenticated && !hasPermission(item.permission)) {
+            return null;
           }
           return (
             <Link

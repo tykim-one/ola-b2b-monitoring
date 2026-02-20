@@ -117,6 +117,9 @@ export interface ServiceMenuItem {
 
   /** Optional icon name */
   icon?: string;
+
+  /** Required permission to see this menu item (e.g. 'analysis:read') */
+  permission?: string;
 }
 
 /**

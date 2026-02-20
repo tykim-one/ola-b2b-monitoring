@@ -19,4 +19,4 @@ if [ ! -f "./data/config/datasources.config.json" ]; then
 fi
 
 echo "[entrypoint] Starting NestJS backend..."
-exec node dist/src/main
+exec node dist/main.js

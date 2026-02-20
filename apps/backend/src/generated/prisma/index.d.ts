@@ -127,8 +127,17 @@ export type ReportMonitoringHistory = $Result.DefaultSelection<Prisma.$ReportMon
  * Model UiCheckHistory
  * UI 렌더링 체크 이력
  */
-export type UiCheckHistory =
-  $Result.DefaultSelection<Prisma.$UiCheckHistoryPayload>;
+export type UiCheckHistory = $Result.DefaultSelection<Prisma.$UiCheckHistoryPayload>
+/**
+ * Model IbkChatDailyReport
+ * IBK-CHAT 일일 리포트 (BigQuery 로그 기반 LLM 분석)
+ */
+export type IbkChatDailyReport = $Result.DefaultSelection<Prisma.$IbkChatDailyReportPayload>
+/**
+ * Model AlarmSchedule
+ * 알림 스케줄 설정 (모듈별 cron 실행 시간 관리)
+ */
+export type AlarmSchedule = $Result.DefaultSelection<Prisma.$AlarmSchedulePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -476,6 +485,16 @@ export class PrismaClient<
     * ```
     */
   get uiCheckHistory(): Prisma.UiCheckHistoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ibkChatDailyReport`: Exposes CRUD operations for the **IbkChatDailyReport** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more IbkChatDailyReports
+    * const ibkChatDailyReports = await prisma.ibkChatDailyReport.findMany()
+    * ```
+    */
+  get ibkChatDailyReport(): Prisma.IbkChatDailyReportDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.alarmSchedule`: Exposes CRUD operations for the **AlarmSchedule** model.
@@ -920,29 +939,31 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    User: 'User';
-    Role: 'Role';
-    Permission: 'Permission';
-    UserRole: 'UserRole';
-    RolePermission: 'RolePermission';
-    RefreshToken: 'RefreshToken';
-    SavedFilter: 'SavedFilter';
-    AnalysisSession: 'AnalysisSession';
-    AnalysisMessage: 'AnalysisMessage';
-    AuditLog: 'AuditLog';
-    ApiKey: 'ApiKey';
-    BatchAnalysisJob: 'BatchAnalysisJob';
-    BatchAnalysisResult: 'BatchAnalysisResult';
-    AnalysisPromptTemplate: 'AnalysisPromptTemplate';
-    BatchSchedulerConfig: 'BatchSchedulerConfig';
-    FAQAnalysisJob: 'FAQAnalysisJob';
-    FAQAnalysisResult: 'FAQAnalysisResult';
-    UserProfile: 'UserProfile';
-    MessageCategoryAnalysis: 'MessageCategoryAnalysis';
-    UserProfilingJob: 'UserProfilingJob';
-    ProblematicChatRule: 'ProblematicChatRule';
-    ReportMonitoringHistory: 'ReportMonitoringHistory';
-    UiCheckHistory: 'UiCheckHistory';
+    User: 'User',
+    Role: 'Role',
+    Permission: 'Permission',
+    UserRole: 'UserRole',
+    RolePermission: 'RolePermission',
+    RefreshToken: 'RefreshToken',
+    SavedFilter: 'SavedFilter',
+    AnalysisSession: 'AnalysisSession',
+    AnalysisMessage: 'AnalysisMessage',
+    AuditLog: 'AuditLog',
+    ApiKey: 'ApiKey',
+    BatchAnalysisJob: 'BatchAnalysisJob',
+    BatchAnalysisResult: 'BatchAnalysisResult',
+    AnalysisPromptTemplate: 'AnalysisPromptTemplate',
+    BatchSchedulerConfig: 'BatchSchedulerConfig',
+    FAQAnalysisJob: 'FAQAnalysisJob',
+    FAQAnalysisResult: 'FAQAnalysisResult',
+    UserProfile: 'UserProfile',
+    MessageCategoryAnalysis: 'MessageCategoryAnalysis',
+    UserProfilingJob: 'UserProfilingJob',
+    ProblematicChatRule: 'ProblematicChatRule',
+    ReportMonitoringHistory: 'ReportMonitoringHistory',
+    UiCheckHistory: 'UiCheckHistory',
+    IbkChatDailyReport: 'IbkChatDailyReport',
+    AlarmSchedule: 'AlarmSchedule'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -958,32 +979,9 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps:
-        | 'user'
-        | 'role'
-        | 'permission'
-        | 'userRole'
-        | 'rolePermission'
-        | 'refreshToken'
-        | 'savedFilter'
-        | 'analysisSession'
-        | 'analysisMessage'
-        | 'auditLog'
-        | 'apiKey'
-        | 'batchAnalysisJob'
-        | 'batchAnalysisResult'
-        | 'analysisPromptTemplate'
-        | 'batchSchedulerConfig'
-        | 'fAQAnalysisJob'
-        | 'fAQAnalysisResult'
-        | 'userProfile'
-        | 'messageCategoryAnalysis'
-        | 'userProfilingJob'
-        | 'problematicChatRule'
-        | 'reportMonitoringHistory'
-        | 'uiCheckHistory';
-      txIsolationLevel: Prisma.TransactionIsolationLevel;
-    };
+      modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "refreshToken" | "savedFilter" | "analysisSession" | "analysisMessage" | "auditLog" | "apiKey" | "batchAnalysisJob" | "batchAnalysisResult" | "analysisPromptTemplate" | "batchSchedulerConfig" | "fAQAnalysisJob" | "fAQAnalysisResult" | "userProfile" | "messageCategoryAnalysis" | "userProfilingJob" | "problematicChatRule" | "reportMonitoringHistory" | "uiCheckHistory" | "ibkChatDailyReport" | "alarmSchedule"
+      txIsolationLevel: Prisma.TransactionIsolationLevel
+    }
     model: {
       User: {
         payload: Prisma.$UserPayload<ExtArgs>
@@ -2682,14 +2680,160 @@ export namespace Prisma {
             result: $Utils.Optional<UiCheckHistoryGroupByOutputType>[]
           }
           count: {
-            args: Prisma.UiCheckHistoryCountArgs<ExtArgs>;
-            result:
-              | $Utils.Optional<UiCheckHistoryCountAggregateOutputType>
-              | number;
-          };
-        };
-      };
-    };
+            args: Prisma.UiCheckHistoryCountArgs<ExtArgs>
+            result: $Utils.Optional<UiCheckHistoryCountAggregateOutputType> | number
+          }
+        }
+      }
+      IbkChatDailyReport: {
+        payload: Prisma.$IbkChatDailyReportPayload<ExtArgs>
+        fields: Prisma.IbkChatDailyReportFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.IbkChatDailyReportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.IbkChatDailyReportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>
+          }
+          findFirst: {
+            args: Prisma.IbkChatDailyReportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.IbkChatDailyReportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>
+          }
+          findMany: {
+            args: Prisma.IbkChatDailyReportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>[]
+          }
+          create: {
+            args: Prisma.IbkChatDailyReportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>
+          }
+          createMany: {
+            args: Prisma.IbkChatDailyReportCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.IbkChatDailyReportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>[]
+          }
+          delete: {
+            args: Prisma.IbkChatDailyReportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>
+          }
+          update: {
+            args: Prisma.IbkChatDailyReportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>
+          }
+          deleteMany: {
+            args: Prisma.IbkChatDailyReportDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.IbkChatDailyReportUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.IbkChatDailyReportUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>[]
+          }
+          upsert: {
+            args: Prisma.IbkChatDailyReportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IbkChatDailyReportPayload>
+          }
+          aggregate: {
+            args: Prisma.IbkChatDailyReportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateIbkChatDailyReport>
+          }
+          groupBy: {
+            args: Prisma.IbkChatDailyReportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<IbkChatDailyReportGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.IbkChatDailyReportCountArgs<ExtArgs>
+            result: $Utils.Optional<IbkChatDailyReportCountAggregateOutputType> | number
+          }
+        }
+      }
+      AlarmSchedule: {
+        payload: Prisma.$AlarmSchedulePayload<ExtArgs>
+        fields: Prisma.AlarmScheduleFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AlarmScheduleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AlarmScheduleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>
+          }
+          findFirst: {
+            args: Prisma.AlarmScheduleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AlarmScheduleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>
+          }
+          findMany: {
+            args: Prisma.AlarmScheduleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>[]
+          }
+          create: {
+            args: Prisma.AlarmScheduleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>
+          }
+          createMany: {
+            args: Prisma.AlarmScheduleCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AlarmScheduleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>[]
+          }
+          delete: {
+            args: Prisma.AlarmScheduleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>
+          }
+          update: {
+            args: Prisma.AlarmScheduleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>
+          }
+          deleteMany: {
+            args: Prisma.AlarmScheduleDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AlarmScheduleUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AlarmScheduleUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>[]
+          }
+          upsert: {
+            args: Prisma.AlarmScheduleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlarmSchedulePayload>
+          }
+          aggregate: {
+            args: Prisma.AlarmScheduleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAlarmSchedule>
+          }
+          groupBy: {
+            args: Prisma.AlarmScheduleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AlarmScheduleGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AlarmScheduleCountArgs<ExtArgs>
+            result: $Utils.Optional<AlarmScheduleCountAggregateOutputType> | number
+          }
+        }
+      }
+    }
   } & {
     other: {
       payload: any
@@ -2797,30 +2941,32 @@ export namespace Prisma {
     comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
-    user?: UserOmit;
-    role?: RoleOmit;
-    permission?: PermissionOmit;
-    userRole?: UserRoleOmit;
-    rolePermission?: RolePermissionOmit;
-    refreshToken?: RefreshTokenOmit;
-    savedFilter?: SavedFilterOmit;
-    analysisSession?: AnalysisSessionOmit;
-    analysisMessage?: AnalysisMessageOmit;
-    auditLog?: AuditLogOmit;
-    apiKey?: ApiKeyOmit;
-    batchAnalysisJob?: BatchAnalysisJobOmit;
-    batchAnalysisResult?: BatchAnalysisResultOmit;
-    analysisPromptTemplate?: AnalysisPromptTemplateOmit;
-    batchSchedulerConfig?: BatchSchedulerConfigOmit;
-    fAQAnalysisJob?: FAQAnalysisJobOmit;
-    fAQAnalysisResult?: FAQAnalysisResultOmit;
-    userProfile?: UserProfileOmit;
-    messageCategoryAnalysis?: MessageCategoryAnalysisOmit;
-    userProfilingJob?: UserProfilingJobOmit;
-    problematicChatRule?: ProblematicChatRuleOmit;
-    reportMonitoringHistory?: ReportMonitoringHistoryOmit;
-    uiCheckHistory?: UiCheckHistoryOmit;
-  };
+    user?: UserOmit
+    role?: RoleOmit
+    permission?: PermissionOmit
+    userRole?: UserRoleOmit
+    rolePermission?: RolePermissionOmit
+    refreshToken?: RefreshTokenOmit
+    savedFilter?: SavedFilterOmit
+    analysisSession?: AnalysisSessionOmit
+    analysisMessage?: AnalysisMessageOmit
+    auditLog?: AuditLogOmit
+    apiKey?: ApiKeyOmit
+    batchAnalysisJob?: BatchAnalysisJobOmit
+    batchAnalysisResult?: BatchAnalysisResultOmit
+    analysisPromptTemplate?: AnalysisPromptTemplateOmit
+    batchSchedulerConfig?: BatchSchedulerConfigOmit
+    fAQAnalysisJob?: FAQAnalysisJobOmit
+    fAQAnalysisResult?: FAQAnalysisResultOmit
+    userProfile?: UserProfileOmit
+    messageCategoryAnalysis?: MessageCategoryAnalysisOmit
+    userProfilingJob?: UserProfilingJobOmit
+    problematicChatRule?: ProblematicChatRuleOmit
+    reportMonitoringHistory?: ReportMonitoringHistoryOmit
+    uiCheckHistory?: UiCheckHistoryOmit
+    ibkChatDailyReport?: IbkChatDailyReportOmit
+    alarmSchedule?: AlarmScheduleOmit
+  }
 
   /* Types for Logging */
   export type LogLevel = 'info' | 'query' | 'warn' | 'error'
@@ -29130,8 +29276,2197 @@ export namespace Prisma {
     /**
      * Omit specific fields from the UiCheckHistory
      */
-    omit?: UiCheckHistoryOmit<ExtArgs> | null;
-  };
+    omit?: UiCheckHistoryOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model IbkChatDailyReport
+   */
+
+  export type AggregateIbkChatDailyReport = {
+    _count: IbkChatDailyReportCountAggregateOutputType | null
+    _avg: IbkChatDailyReportAvgAggregateOutputType | null
+    _sum: IbkChatDailyReportSumAggregateOutputType | null
+    _min: IbkChatDailyReportMinAggregateOutputType | null
+    _max: IbkChatDailyReportMaxAggregateOutputType | null
+  }
+
+  export type IbkChatDailyReportAvgAggregateOutputType = {
+    durationMs: number | null
+    rowCount: number | null
+  }
+
+  export type IbkChatDailyReportSumAggregateOutputType = {
+    durationMs: number | null
+    rowCount: number | null
+  }
+
+  export type IbkChatDailyReportMinAggregateOutputType = {
+    id: string | null
+    targetDate: Date | null
+    status: string | null
+    reportMarkdown: string | null
+    reportMetadata: string | null
+    errorMessage: string | null
+    durationMs: number | null
+    rowCount: number | null
+    createdAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type IbkChatDailyReportMaxAggregateOutputType = {
+    id: string | null
+    targetDate: Date | null
+    status: string | null
+    reportMarkdown: string | null
+    reportMetadata: string | null
+    errorMessage: string | null
+    durationMs: number | null
+    rowCount: number | null
+    createdAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type IbkChatDailyReportCountAggregateOutputType = {
+    id: number
+    targetDate: number
+    status: number
+    reportMarkdown: number
+    reportMetadata: number
+    errorMessage: number
+    durationMs: number
+    rowCount: number
+    createdAt: number
+    startedAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type IbkChatDailyReportAvgAggregateInputType = {
+    durationMs?: true
+    rowCount?: true
+  }
+
+  export type IbkChatDailyReportSumAggregateInputType = {
+    durationMs?: true
+    rowCount?: true
+  }
+
+  export type IbkChatDailyReportMinAggregateInputType = {
+    id?: true
+    targetDate?: true
+    status?: true
+    reportMarkdown?: true
+    reportMetadata?: true
+    errorMessage?: true
+    durationMs?: true
+    rowCount?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+  }
+
+  export type IbkChatDailyReportMaxAggregateInputType = {
+    id?: true
+    targetDate?: true
+    status?: true
+    reportMarkdown?: true
+    reportMetadata?: true
+    errorMessage?: true
+    durationMs?: true
+    rowCount?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+  }
+
+  export type IbkChatDailyReportCountAggregateInputType = {
+    id?: true
+    targetDate?: true
+    status?: true
+    reportMarkdown?: true
+    reportMetadata?: true
+    errorMessage?: true
+    durationMs?: true
+    rowCount?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type IbkChatDailyReportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IbkChatDailyReport to aggregate.
+     */
+    where?: IbkChatDailyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IbkChatDailyReports to fetch.
+     */
+    orderBy?: IbkChatDailyReportOrderByWithRelationInput | IbkChatDailyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: IbkChatDailyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IbkChatDailyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IbkChatDailyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned IbkChatDailyReports
+    **/
+    _count?: true | IbkChatDailyReportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: IbkChatDailyReportAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: IbkChatDailyReportSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: IbkChatDailyReportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: IbkChatDailyReportMaxAggregateInputType
+  }
+
+  export type GetIbkChatDailyReportAggregateType<T extends IbkChatDailyReportAggregateArgs> = {
+        [P in keyof T & keyof AggregateIbkChatDailyReport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateIbkChatDailyReport[P]>
+      : GetScalarType<T[P], AggregateIbkChatDailyReport[P]>
+  }
+
+
+
+
+  export type IbkChatDailyReportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IbkChatDailyReportWhereInput
+    orderBy?: IbkChatDailyReportOrderByWithAggregationInput | IbkChatDailyReportOrderByWithAggregationInput[]
+    by: IbkChatDailyReportScalarFieldEnum[] | IbkChatDailyReportScalarFieldEnum
+    having?: IbkChatDailyReportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: IbkChatDailyReportCountAggregateInputType | true
+    _avg?: IbkChatDailyReportAvgAggregateInputType
+    _sum?: IbkChatDailyReportSumAggregateInputType
+    _min?: IbkChatDailyReportMinAggregateInputType
+    _max?: IbkChatDailyReportMaxAggregateInputType
+  }
+
+  export type IbkChatDailyReportGroupByOutputType = {
+    id: string
+    targetDate: Date
+    status: string
+    reportMarkdown: string | null
+    reportMetadata: string | null
+    errorMessage: string | null
+    durationMs: number | null
+    rowCount: number | null
+    createdAt: Date
+    startedAt: Date | null
+    completedAt: Date | null
+    _count: IbkChatDailyReportCountAggregateOutputType | null
+    _avg: IbkChatDailyReportAvgAggregateOutputType | null
+    _sum: IbkChatDailyReportSumAggregateOutputType | null
+    _min: IbkChatDailyReportMinAggregateOutputType | null
+    _max: IbkChatDailyReportMaxAggregateOutputType | null
+  }
+
+  type GetIbkChatDailyReportGroupByPayload<T extends IbkChatDailyReportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<IbkChatDailyReportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof IbkChatDailyReportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], IbkChatDailyReportGroupByOutputType[P]>
+            : GetScalarType<T[P], IbkChatDailyReportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type IbkChatDailyReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    targetDate?: boolean
+    status?: boolean
+    reportMarkdown?: boolean
+    reportMetadata?: boolean
+    errorMessage?: boolean
+    durationMs?: boolean
+    rowCount?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["ibkChatDailyReport"]>
+
+  export type IbkChatDailyReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    targetDate?: boolean
+    status?: boolean
+    reportMarkdown?: boolean
+    reportMetadata?: boolean
+    errorMessage?: boolean
+    durationMs?: boolean
+    rowCount?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["ibkChatDailyReport"]>
+
+  export type IbkChatDailyReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    targetDate?: boolean
+    status?: boolean
+    reportMarkdown?: boolean
+    reportMetadata?: boolean
+    errorMessage?: boolean
+    durationMs?: boolean
+    rowCount?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["ibkChatDailyReport"]>
+
+  export type IbkChatDailyReportSelectScalar = {
+    id?: boolean
+    targetDate?: boolean
+    status?: boolean
+    reportMarkdown?: boolean
+    reportMetadata?: boolean
+    errorMessage?: boolean
+    durationMs?: boolean
+    rowCount?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type IbkChatDailyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "targetDate" | "status" | "reportMarkdown" | "reportMetadata" | "errorMessage" | "durationMs" | "rowCount" | "createdAt" | "startedAt" | "completedAt", ExtArgs["result"]["ibkChatDailyReport"]>
+
+  export type $IbkChatDailyReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "IbkChatDailyReport"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      targetDate: Date
+      status: string
+      reportMarkdown: string | null
+      reportMetadata: string | null
+      errorMessage: string | null
+      durationMs: number | null
+      rowCount: number | null
+      createdAt: Date
+      startedAt: Date | null
+      completedAt: Date | null
+    }, ExtArgs["result"]["ibkChatDailyReport"]>
+    composites: {}
+  }
+
+  type IbkChatDailyReportGetPayload<S extends boolean | null | undefined | IbkChatDailyReportDefaultArgs> = $Result.GetResult<Prisma.$IbkChatDailyReportPayload, S>
+
+  type IbkChatDailyReportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<IbkChatDailyReportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: IbkChatDailyReportCountAggregateInputType | true
+    }
+
+  export interface IbkChatDailyReportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['IbkChatDailyReport'], meta: { name: 'IbkChatDailyReport' } }
+    /**
+     * Find zero or one IbkChatDailyReport that matches the filter.
+     * @param {IbkChatDailyReportFindUniqueArgs} args - Arguments to find a IbkChatDailyReport
+     * @example
+     * // Get one IbkChatDailyReport
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends IbkChatDailyReportFindUniqueArgs>(args: SelectSubset<T, IbkChatDailyReportFindUniqueArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one IbkChatDailyReport that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {IbkChatDailyReportFindUniqueOrThrowArgs} args - Arguments to find a IbkChatDailyReport
+     * @example
+     * // Get one IbkChatDailyReport
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends IbkChatDailyReportFindUniqueOrThrowArgs>(args: SelectSubset<T, IbkChatDailyReportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IbkChatDailyReport that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IbkChatDailyReportFindFirstArgs} args - Arguments to find a IbkChatDailyReport
+     * @example
+     * // Get one IbkChatDailyReport
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends IbkChatDailyReportFindFirstArgs>(args?: SelectSubset<T, IbkChatDailyReportFindFirstArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IbkChatDailyReport that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IbkChatDailyReportFindFirstOrThrowArgs} args - Arguments to find a IbkChatDailyReport
+     * @example
+     * // Get one IbkChatDailyReport
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends IbkChatDailyReportFindFirstOrThrowArgs>(args?: SelectSubset<T, IbkChatDailyReportFindFirstOrThrowArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more IbkChatDailyReports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IbkChatDailyReportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all IbkChatDailyReports
+     * const ibkChatDailyReports = await prisma.ibkChatDailyReport.findMany()
+     * 
+     * // Get first 10 IbkChatDailyReports
+     * const ibkChatDailyReports = await prisma.ibkChatDailyReport.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ibkChatDailyReportWithIdOnly = await prisma.ibkChatDailyReport.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends IbkChatDailyReportFindManyArgs>(args?: SelectSubset<T, IbkChatDailyReportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a IbkChatDailyReport.
+     * @param {IbkChatDailyReportCreateArgs} args - Arguments to create a IbkChatDailyReport.
+     * @example
+     * // Create one IbkChatDailyReport
+     * const IbkChatDailyReport = await prisma.ibkChatDailyReport.create({
+     *   data: {
+     *     // ... data to create a IbkChatDailyReport
+     *   }
+     * })
+     * 
+     */
+    create<T extends IbkChatDailyReportCreateArgs>(args: SelectSubset<T, IbkChatDailyReportCreateArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many IbkChatDailyReports.
+     * @param {IbkChatDailyReportCreateManyArgs} args - Arguments to create many IbkChatDailyReports.
+     * @example
+     * // Create many IbkChatDailyReports
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends IbkChatDailyReportCreateManyArgs>(args?: SelectSubset<T, IbkChatDailyReportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many IbkChatDailyReports and returns the data saved in the database.
+     * @param {IbkChatDailyReportCreateManyAndReturnArgs} args - Arguments to create many IbkChatDailyReports.
+     * @example
+     * // Create many IbkChatDailyReports
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many IbkChatDailyReports and only return the `id`
+     * const ibkChatDailyReportWithIdOnly = await prisma.ibkChatDailyReport.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends IbkChatDailyReportCreateManyAndReturnArgs>(args?: SelectSubset<T, IbkChatDailyReportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a IbkChatDailyReport.
+     * @param {IbkChatDailyReportDeleteArgs} args - Arguments to delete one IbkChatDailyReport.
+     * @example
+     * // Delete one IbkChatDailyReport
+     * const IbkChatDailyReport = await prisma.ibkChatDailyReport.delete({
+     *   where: {
+     *     // ... filter to delete one IbkChatDailyReport
+     *   }
+     * })
+     * 
+     */
+    delete<T extends IbkChatDailyReportDeleteArgs>(args: SelectSubset<T, IbkChatDailyReportDeleteArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one IbkChatDailyReport.
+     * @param {IbkChatDailyReportUpdateArgs} args - Arguments to update one IbkChatDailyReport.
+     * @example
+     * // Update one IbkChatDailyReport
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends IbkChatDailyReportUpdateArgs>(args: SelectSubset<T, IbkChatDailyReportUpdateArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more IbkChatDailyReports.
+     * @param {IbkChatDailyReportDeleteManyArgs} args - Arguments to filter IbkChatDailyReports to delete.
+     * @example
+     * // Delete a few IbkChatDailyReports
+     * const { count } = await prisma.ibkChatDailyReport.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends IbkChatDailyReportDeleteManyArgs>(args?: SelectSubset<T, IbkChatDailyReportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IbkChatDailyReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IbkChatDailyReportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many IbkChatDailyReports
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends IbkChatDailyReportUpdateManyArgs>(args: SelectSubset<T, IbkChatDailyReportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IbkChatDailyReports and returns the data updated in the database.
+     * @param {IbkChatDailyReportUpdateManyAndReturnArgs} args - Arguments to update many IbkChatDailyReports.
+     * @example
+     * // Update many IbkChatDailyReports
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more IbkChatDailyReports and only return the `id`
+     * const ibkChatDailyReportWithIdOnly = await prisma.ibkChatDailyReport.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends IbkChatDailyReportUpdateManyAndReturnArgs>(args: SelectSubset<T, IbkChatDailyReportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one IbkChatDailyReport.
+     * @param {IbkChatDailyReportUpsertArgs} args - Arguments to update or create a IbkChatDailyReport.
+     * @example
+     * // Update or create a IbkChatDailyReport
+     * const ibkChatDailyReport = await prisma.ibkChatDailyReport.upsert({
+     *   create: {
+     *     // ... data to create a IbkChatDailyReport
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the IbkChatDailyReport we want to update
+     *   }
+     * })
+     */
+    upsert<T extends IbkChatDailyReportUpsertArgs>(args: SelectSubset<T, IbkChatDailyReportUpsertArgs<ExtArgs>>): Prisma__IbkChatDailyReportClient<$Result.GetResult<Prisma.$IbkChatDailyReportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of IbkChatDailyReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IbkChatDailyReportCountArgs} args - Arguments to filter IbkChatDailyReports to count.
+     * @example
+     * // Count the number of IbkChatDailyReports
+     * const count = await prisma.ibkChatDailyReport.count({
+     *   where: {
+     *     // ... the filter for the IbkChatDailyReports we want to count
+     *   }
+     * })
+    **/
+    count<T extends IbkChatDailyReportCountArgs>(
+      args?: Subset<T, IbkChatDailyReportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], IbkChatDailyReportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a IbkChatDailyReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IbkChatDailyReportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends IbkChatDailyReportAggregateArgs>(args: Subset<T, IbkChatDailyReportAggregateArgs>): Prisma.PrismaPromise<GetIbkChatDailyReportAggregateType<T>>
+
+    /**
+     * Group by IbkChatDailyReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IbkChatDailyReportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends IbkChatDailyReportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: IbkChatDailyReportGroupByArgs['orderBy'] }
+        : { orderBy?: IbkChatDailyReportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, IbkChatDailyReportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetIbkChatDailyReportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the IbkChatDailyReport model
+   */
+  readonly fields: IbkChatDailyReportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for IbkChatDailyReport.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__IbkChatDailyReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the IbkChatDailyReport model
+   */
+  interface IbkChatDailyReportFieldRefs {
+    readonly id: FieldRef<"IbkChatDailyReport", 'String'>
+    readonly targetDate: FieldRef<"IbkChatDailyReport", 'DateTime'>
+    readonly status: FieldRef<"IbkChatDailyReport", 'String'>
+    readonly reportMarkdown: FieldRef<"IbkChatDailyReport", 'String'>
+    readonly reportMetadata: FieldRef<"IbkChatDailyReport", 'String'>
+    readonly errorMessage: FieldRef<"IbkChatDailyReport", 'String'>
+    readonly durationMs: FieldRef<"IbkChatDailyReport", 'Int'>
+    readonly rowCount: FieldRef<"IbkChatDailyReport", 'Int'>
+    readonly createdAt: FieldRef<"IbkChatDailyReport", 'DateTime'>
+    readonly startedAt: FieldRef<"IbkChatDailyReport", 'DateTime'>
+    readonly completedAt: FieldRef<"IbkChatDailyReport", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * IbkChatDailyReport findUnique
+   */
+  export type IbkChatDailyReportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which IbkChatDailyReport to fetch.
+     */
+    where: IbkChatDailyReportWhereUniqueInput
+  }
+
+  /**
+   * IbkChatDailyReport findUniqueOrThrow
+   */
+  export type IbkChatDailyReportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which IbkChatDailyReport to fetch.
+     */
+    where: IbkChatDailyReportWhereUniqueInput
+  }
+
+  /**
+   * IbkChatDailyReport findFirst
+   */
+  export type IbkChatDailyReportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which IbkChatDailyReport to fetch.
+     */
+    where?: IbkChatDailyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IbkChatDailyReports to fetch.
+     */
+    orderBy?: IbkChatDailyReportOrderByWithRelationInput | IbkChatDailyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IbkChatDailyReports.
+     */
+    cursor?: IbkChatDailyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IbkChatDailyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IbkChatDailyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IbkChatDailyReports.
+     */
+    distinct?: IbkChatDailyReportScalarFieldEnum | IbkChatDailyReportScalarFieldEnum[]
+  }
+
+  /**
+   * IbkChatDailyReport findFirstOrThrow
+   */
+  export type IbkChatDailyReportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which IbkChatDailyReport to fetch.
+     */
+    where?: IbkChatDailyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IbkChatDailyReports to fetch.
+     */
+    orderBy?: IbkChatDailyReportOrderByWithRelationInput | IbkChatDailyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IbkChatDailyReports.
+     */
+    cursor?: IbkChatDailyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IbkChatDailyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IbkChatDailyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IbkChatDailyReports.
+     */
+    distinct?: IbkChatDailyReportScalarFieldEnum | IbkChatDailyReportScalarFieldEnum[]
+  }
+
+  /**
+   * IbkChatDailyReport findMany
+   */
+  export type IbkChatDailyReportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which IbkChatDailyReports to fetch.
+     */
+    where?: IbkChatDailyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IbkChatDailyReports to fetch.
+     */
+    orderBy?: IbkChatDailyReportOrderByWithRelationInput | IbkChatDailyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing IbkChatDailyReports.
+     */
+    cursor?: IbkChatDailyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IbkChatDailyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IbkChatDailyReports.
+     */
+    skip?: number
+    distinct?: IbkChatDailyReportScalarFieldEnum | IbkChatDailyReportScalarFieldEnum[]
+  }
+
+  /**
+   * IbkChatDailyReport create
+   */
+  export type IbkChatDailyReportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * The data needed to create a IbkChatDailyReport.
+     */
+    data: XOR<IbkChatDailyReportCreateInput, IbkChatDailyReportUncheckedCreateInput>
+  }
+
+  /**
+   * IbkChatDailyReport createMany
+   */
+  export type IbkChatDailyReportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many IbkChatDailyReports.
+     */
+    data: IbkChatDailyReportCreateManyInput | IbkChatDailyReportCreateManyInput[]
+  }
+
+  /**
+   * IbkChatDailyReport createManyAndReturn
+   */
+  export type IbkChatDailyReportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * The data used to create many IbkChatDailyReports.
+     */
+    data: IbkChatDailyReportCreateManyInput | IbkChatDailyReportCreateManyInput[]
+  }
+
+  /**
+   * IbkChatDailyReport update
+   */
+  export type IbkChatDailyReportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * The data needed to update a IbkChatDailyReport.
+     */
+    data: XOR<IbkChatDailyReportUpdateInput, IbkChatDailyReportUncheckedUpdateInput>
+    /**
+     * Choose, which IbkChatDailyReport to update.
+     */
+    where: IbkChatDailyReportWhereUniqueInput
+  }
+
+  /**
+   * IbkChatDailyReport updateMany
+   */
+  export type IbkChatDailyReportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update IbkChatDailyReports.
+     */
+    data: XOR<IbkChatDailyReportUpdateManyMutationInput, IbkChatDailyReportUncheckedUpdateManyInput>
+    /**
+     * Filter which IbkChatDailyReports to update
+     */
+    where?: IbkChatDailyReportWhereInput
+    /**
+     * Limit how many IbkChatDailyReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * IbkChatDailyReport updateManyAndReturn
+   */
+  export type IbkChatDailyReportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * The data used to update IbkChatDailyReports.
+     */
+    data: XOR<IbkChatDailyReportUpdateManyMutationInput, IbkChatDailyReportUncheckedUpdateManyInput>
+    /**
+     * Filter which IbkChatDailyReports to update
+     */
+    where?: IbkChatDailyReportWhereInput
+    /**
+     * Limit how many IbkChatDailyReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * IbkChatDailyReport upsert
+   */
+  export type IbkChatDailyReportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * The filter to search for the IbkChatDailyReport to update in case it exists.
+     */
+    where: IbkChatDailyReportWhereUniqueInput
+    /**
+     * In case the IbkChatDailyReport found by the `where` argument doesn't exist, create a new IbkChatDailyReport with this data.
+     */
+    create: XOR<IbkChatDailyReportCreateInput, IbkChatDailyReportUncheckedCreateInput>
+    /**
+     * In case the IbkChatDailyReport was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<IbkChatDailyReportUpdateInput, IbkChatDailyReportUncheckedUpdateInput>
+  }
+
+  /**
+   * IbkChatDailyReport delete
+   */
+  export type IbkChatDailyReportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+    /**
+     * Filter which IbkChatDailyReport to delete.
+     */
+    where: IbkChatDailyReportWhereUniqueInput
+  }
+
+  /**
+   * IbkChatDailyReport deleteMany
+   */
+  export type IbkChatDailyReportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IbkChatDailyReports to delete
+     */
+    where?: IbkChatDailyReportWhereInput
+    /**
+     * Limit how many IbkChatDailyReports to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * IbkChatDailyReport without action
+   */
+  export type IbkChatDailyReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IbkChatDailyReport
+     */
+    select?: IbkChatDailyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IbkChatDailyReport
+     */
+    omit?: IbkChatDailyReportOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AlarmSchedule
+   */
+
+  export type AggregateAlarmSchedule = {
+    _count: AlarmScheduleCountAggregateOutputType | null
+    _avg: AlarmScheduleAvgAggregateOutputType | null
+    _sum: AlarmScheduleSumAggregateOutputType | null
+    _min: AlarmScheduleMinAggregateOutputType | null
+    _max: AlarmScheduleMaxAggregateOutputType | null
+  }
+
+  export type AlarmScheduleAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AlarmScheduleSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AlarmScheduleMinAggregateOutputType = {
+    id: number | null
+    module: string | null
+    name: string | null
+    description: string | null
+    cronExpression: string | null
+    timezone: string | null
+    isEnabled: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AlarmScheduleMaxAggregateOutputType = {
+    id: number | null
+    module: string | null
+    name: string | null
+    description: string | null
+    cronExpression: string | null
+    timezone: string | null
+    isEnabled: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AlarmScheduleCountAggregateOutputType = {
+    id: number
+    module: number
+    name: number
+    description: number
+    cronExpression: number
+    timezone: number
+    isEnabled: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AlarmScheduleAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type AlarmScheduleSumAggregateInputType = {
+    id?: true
+  }
+
+  export type AlarmScheduleMinAggregateInputType = {
+    id?: true
+    module?: true
+    name?: true
+    description?: true
+    cronExpression?: true
+    timezone?: true
+    isEnabled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AlarmScheduleMaxAggregateInputType = {
+    id?: true
+    module?: true
+    name?: true
+    description?: true
+    cronExpression?: true
+    timezone?: true
+    isEnabled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AlarmScheduleCountAggregateInputType = {
+    id?: true
+    module?: true
+    name?: true
+    description?: true
+    cronExpression?: true
+    timezone?: true
+    isEnabled?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AlarmScheduleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AlarmSchedule to aggregate.
+     */
+    where?: AlarmScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlarmSchedules to fetch.
+     */
+    orderBy?: AlarmScheduleOrderByWithRelationInput | AlarmScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AlarmScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlarmSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlarmSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AlarmSchedules
+    **/
+    _count?: true | AlarmScheduleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AlarmScheduleAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AlarmScheduleSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AlarmScheduleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AlarmScheduleMaxAggregateInputType
+  }
+
+  export type GetAlarmScheduleAggregateType<T extends AlarmScheduleAggregateArgs> = {
+        [P in keyof T & keyof AggregateAlarmSchedule]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAlarmSchedule[P]>
+      : GetScalarType<T[P], AggregateAlarmSchedule[P]>
+  }
+
+
+
+
+  export type AlarmScheduleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AlarmScheduleWhereInput
+    orderBy?: AlarmScheduleOrderByWithAggregationInput | AlarmScheduleOrderByWithAggregationInput[]
+    by: AlarmScheduleScalarFieldEnum[] | AlarmScheduleScalarFieldEnum
+    having?: AlarmScheduleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AlarmScheduleCountAggregateInputType | true
+    _avg?: AlarmScheduleAvgAggregateInputType
+    _sum?: AlarmScheduleSumAggregateInputType
+    _min?: AlarmScheduleMinAggregateInputType
+    _max?: AlarmScheduleMaxAggregateInputType
+  }
+
+  export type AlarmScheduleGroupByOutputType = {
+    id: number
+    module: string
+    name: string
+    description: string | null
+    cronExpression: string
+    timezone: string
+    isEnabled: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: AlarmScheduleCountAggregateOutputType | null
+    _avg: AlarmScheduleAvgAggregateOutputType | null
+    _sum: AlarmScheduleSumAggregateOutputType | null
+    _min: AlarmScheduleMinAggregateOutputType | null
+    _max: AlarmScheduleMaxAggregateOutputType | null
+  }
+
+  type GetAlarmScheduleGroupByPayload<T extends AlarmScheduleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AlarmScheduleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AlarmScheduleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AlarmScheduleGroupByOutputType[P]>
+            : GetScalarType<T[P], AlarmScheduleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AlarmScheduleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    module?: boolean
+    name?: boolean
+    description?: boolean
+    cronExpression?: boolean
+    timezone?: boolean
+    isEnabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["alarmSchedule"]>
+
+  export type AlarmScheduleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    module?: boolean
+    name?: boolean
+    description?: boolean
+    cronExpression?: boolean
+    timezone?: boolean
+    isEnabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["alarmSchedule"]>
+
+  export type AlarmScheduleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    module?: boolean
+    name?: boolean
+    description?: boolean
+    cronExpression?: boolean
+    timezone?: boolean
+    isEnabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["alarmSchedule"]>
+
+  export type AlarmScheduleSelectScalar = {
+    id?: boolean
+    module?: boolean
+    name?: boolean
+    description?: boolean
+    cronExpression?: boolean
+    timezone?: boolean
+    isEnabled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AlarmScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "module" | "name" | "description" | "cronExpression" | "timezone" | "isEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["alarmSchedule"]>
+
+  export type $AlarmSchedulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AlarmSchedule"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      module: string
+      name: string
+      description: string | null
+      cronExpression: string
+      timezone: string
+      isEnabled: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["alarmSchedule"]>
+    composites: {}
+  }
+
+  type AlarmScheduleGetPayload<S extends boolean | null | undefined | AlarmScheduleDefaultArgs> = $Result.GetResult<Prisma.$AlarmSchedulePayload, S>
+
+  type AlarmScheduleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AlarmScheduleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AlarmScheduleCountAggregateInputType | true
+    }
+
+  export interface AlarmScheduleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AlarmSchedule'], meta: { name: 'AlarmSchedule' } }
+    /**
+     * Find zero or one AlarmSchedule that matches the filter.
+     * @param {AlarmScheduleFindUniqueArgs} args - Arguments to find a AlarmSchedule
+     * @example
+     * // Get one AlarmSchedule
+     * const alarmSchedule = await prisma.alarmSchedule.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AlarmScheduleFindUniqueArgs>(args: SelectSubset<T, AlarmScheduleFindUniqueArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AlarmSchedule that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AlarmScheduleFindUniqueOrThrowArgs} args - Arguments to find a AlarmSchedule
+     * @example
+     * // Get one AlarmSchedule
+     * const alarmSchedule = await prisma.alarmSchedule.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AlarmScheduleFindUniqueOrThrowArgs>(args: SelectSubset<T, AlarmScheduleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AlarmSchedule that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlarmScheduleFindFirstArgs} args - Arguments to find a AlarmSchedule
+     * @example
+     * // Get one AlarmSchedule
+     * const alarmSchedule = await prisma.alarmSchedule.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AlarmScheduleFindFirstArgs>(args?: SelectSubset<T, AlarmScheduleFindFirstArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AlarmSchedule that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlarmScheduleFindFirstOrThrowArgs} args - Arguments to find a AlarmSchedule
+     * @example
+     * // Get one AlarmSchedule
+     * const alarmSchedule = await prisma.alarmSchedule.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AlarmScheduleFindFirstOrThrowArgs>(args?: SelectSubset<T, AlarmScheduleFindFirstOrThrowArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AlarmSchedules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlarmScheduleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AlarmSchedules
+     * const alarmSchedules = await prisma.alarmSchedule.findMany()
+     * 
+     * // Get first 10 AlarmSchedules
+     * const alarmSchedules = await prisma.alarmSchedule.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const alarmScheduleWithIdOnly = await prisma.alarmSchedule.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AlarmScheduleFindManyArgs>(args?: SelectSubset<T, AlarmScheduleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AlarmSchedule.
+     * @param {AlarmScheduleCreateArgs} args - Arguments to create a AlarmSchedule.
+     * @example
+     * // Create one AlarmSchedule
+     * const AlarmSchedule = await prisma.alarmSchedule.create({
+     *   data: {
+     *     // ... data to create a AlarmSchedule
+     *   }
+     * })
+     * 
+     */
+    create<T extends AlarmScheduleCreateArgs>(args: SelectSubset<T, AlarmScheduleCreateArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AlarmSchedules.
+     * @param {AlarmScheduleCreateManyArgs} args - Arguments to create many AlarmSchedules.
+     * @example
+     * // Create many AlarmSchedules
+     * const alarmSchedule = await prisma.alarmSchedule.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AlarmScheduleCreateManyArgs>(args?: SelectSubset<T, AlarmScheduleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AlarmSchedules and returns the data saved in the database.
+     * @param {AlarmScheduleCreateManyAndReturnArgs} args - Arguments to create many AlarmSchedules.
+     * @example
+     * // Create many AlarmSchedules
+     * const alarmSchedule = await prisma.alarmSchedule.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AlarmSchedules and only return the `id`
+     * const alarmScheduleWithIdOnly = await prisma.alarmSchedule.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AlarmScheduleCreateManyAndReturnArgs>(args?: SelectSubset<T, AlarmScheduleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AlarmSchedule.
+     * @param {AlarmScheduleDeleteArgs} args - Arguments to delete one AlarmSchedule.
+     * @example
+     * // Delete one AlarmSchedule
+     * const AlarmSchedule = await prisma.alarmSchedule.delete({
+     *   where: {
+     *     // ... filter to delete one AlarmSchedule
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AlarmScheduleDeleteArgs>(args: SelectSubset<T, AlarmScheduleDeleteArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AlarmSchedule.
+     * @param {AlarmScheduleUpdateArgs} args - Arguments to update one AlarmSchedule.
+     * @example
+     * // Update one AlarmSchedule
+     * const alarmSchedule = await prisma.alarmSchedule.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AlarmScheduleUpdateArgs>(args: SelectSubset<T, AlarmScheduleUpdateArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AlarmSchedules.
+     * @param {AlarmScheduleDeleteManyArgs} args - Arguments to filter AlarmSchedules to delete.
+     * @example
+     * // Delete a few AlarmSchedules
+     * const { count } = await prisma.alarmSchedule.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AlarmScheduleDeleteManyArgs>(args?: SelectSubset<T, AlarmScheduleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AlarmSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlarmScheduleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AlarmSchedules
+     * const alarmSchedule = await prisma.alarmSchedule.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AlarmScheduleUpdateManyArgs>(args: SelectSubset<T, AlarmScheduleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AlarmSchedules and returns the data updated in the database.
+     * @param {AlarmScheduleUpdateManyAndReturnArgs} args - Arguments to update many AlarmSchedules.
+     * @example
+     * // Update many AlarmSchedules
+     * const alarmSchedule = await prisma.alarmSchedule.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AlarmSchedules and only return the `id`
+     * const alarmScheduleWithIdOnly = await prisma.alarmSchedule.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AlarmScheduleUpdateManyAndReturnArgs>(args: SelectSubset<T, AlarmScheduleUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AlarmSchedule.
+     * @param {AlarmScheduleUpsertArgs} args - Arguments to update or create a AlarmSchedule.
+     * @example
+     * // Update or create a AlarmSchedule
+     * const alarmSchedule = await prisma.alarmSchedule.upsert({
+     *   create: {
+     *     // ... data to create a AlarmSchedule
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AlarmSchedule we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AlarmScheduleUpsertArgs>(args: SelectSubset<T, AlarmScheduleUpsertArgs<ExtArgs>>): Prisma__AlarmScheduleClient<$Result.GetResult<Prisma.$AlarmSchedulePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AlarmSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlarmScheduleCountArgs} args - Arguments to filter AlarmSchedules to count.
+     * @example
+     * // Count the number of AlarmSchedules
+     * const count = await prisma.alarmSchedule.count({
+     *   where: {
+     *     // ... the filter for the AlarmSchedules we want to count
+     *   }
+     * })
+    **/
+    count<T extends AlarmScheduleCountArgs>(
+      args?: Subset<T, AlarmScheduleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AlarmScheduleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AlarmSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlarmScheduleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AlarmScheduleAggregateArgs>(args: Subset<T, AlarmScheduleAggregateArgs>): Prisma.PrismaPromise<GetAlarmScheduleAggregateType<T>>
+
+    /**
+     * Group by AlarmSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlarmScheduleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AlarmScheduleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AlarmScheduleGroupByArgs['orderBy'] }
+        : { orderBy?: AlarmScheduleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AlarmScheduleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAlarmScheduleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AlarmSchedule model
+   */
+  readonly fields: AlarmScheduleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AlarmSchedule.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AlarmScheduleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AlarmSchedule model
+   */
+  interface AlarmScheduleFieldRefs {
+    readonly id: FieldRef<"AlarmSchedule", 'Int'>
+    readonly module: FieldRef<"AlarmSchedule", 'String'>
+    readonly name: FieldRef<"AlarmSchedule", 'String'>
+    readonly description: FieldRef<"AlarmSchedule", 'String'>
+    readonly cronExpression: FieldRef<"AlarmSchedule", 'String'>
+    readonly timezone: FieldRef<"AlarmSchedule", 'String'>
+    readonly isEnabled: FieldRef<"AlarmSchedule", 'Boolean'>
+    readonly createdAt: FieldRef<"AlarmSchedule", 'DateTime'>
+    readonly updatedAt: FieldRef<"AlarmSchedule", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AlarmSchedule findUnique
+   */
+  export type AlarmScheduleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which AlarmSchedule to fetch.
+     */
+    where: AlarmScheduleWhereUniqueInput
+  }
+
+  /**
+   * AlarmSchedule findUniqueOrThrow
+   */
+  export type AlarmScheduleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which AlarmSchedule to fetch.
+     */
+    where: AlarmScheduleWhereUniqueInput
+  }
+
+  /**
+   * AlarmSchedule findFirst
+   */
+  export type AlarmScheduleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which AlarmSchedule to fetch.
+     */
+    where?: AlarmScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlarmSchedules to fetch.
+     */
+    orderBy?: AlarmScheduleOrderByWithRelationInput | AlarmScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AlarmSchedules.
+     */
+    cursor?: AlarmScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlarmSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlarmSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AlarmSchedules.
+     */
+    distinct?: AlarmScheduleScalarFieldEnum | AlarmScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * AlarmSchedule findFirstOrThrow
+   */
+  export type AlarmScheduleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which AlarmSchedule to fetch.
+     */
+    where?: AlarmScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlarmSchedules to fetch.
+     */
+    orderBy?: AlarmScheduleOrderByWithRelationInput | AlarmScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AlarmSchedules.
+     */
+    cursor?: AlarmScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlarmSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlarmSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AlarmSchedules.
+     */
+    distinct?: AlarmScheduleScalarFieldEnum | AlarmScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * AlarmSchedule findMany
+   */
+  export type AlarmScheduleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which AlarmSchedules to fetch.
+     */
+    where?: AlarmScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlarmSchedules to fetch.
+     */
+    orderBy?: AlarmScheduleOrderByWithRelationInput | AlarmScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AlarmSchedules.
+     */
+    cursor?: AlarmScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlarmSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlarmSchedules.
+     */
+    skip?: number
+    distinct?: AlarmScheduleScalarFieldEnum | AlarmScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * AlarmSchedule create
+   */
+  export type AlarmScheduleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AlarmSchedule.
+     */
+    data: XOR<AlarmScheduleCreateInput, AlarmScheduleUncheckedCreateInput>
+  }
+
+  /**
+   * AlarmSchedule createMany
+   */
+  export type AlarmScheduleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AlarmSchedules.
+     */
+    data: AlarmScheduleCreateManyInput | AlarmScheduleCreateManyInput[]
+  }
+
+  /**
+   * AlarmSchedule createManyAndReturn
+   */
+  export type AlarmScheduleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to create many AlarmSchedules.
+     */
+    data: AlarmScheduleCreateManyInput | AlarmScheduleCreateManyInput[]
+  }
+
+  /**
+   * AlarmSchedule update
+   */
+  export type AlarmScheduleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AlarmSchedule.
+     */
+    data: XOR<AlarmScheduleUpdateInput, AlarmScheduleUncheckedUpdateInput>
+    /**
+     * Choose, which AlarmSchedule to update.
+     */
+    where: AlarmScheduleWhereUniqueInput
+  }
+
+  /**
+   * AlarmSchedule updateMany
+   */
+  export type AlarmScheduleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AlarmSchedules.
+     */
+    data: XOR<AlarmScheduleUpdateManyMutationInput, AlarmScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which AlarmSchedules to update
+     */
+    where?: AlarmScheduleWhereInput
+    /**
+     * Limit how many AlarmSchedules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AlarmSchedule updateManyAndReturn
+   */
+  export type AlarmScheduleUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to update AlarmSchedules.
+     */
+    data: XOR<AlarmScheduleUpdateManyMutationInput, AlarmScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which AlarmSchedules to update
+     */
+    where?: AlarmScheduleWhereInput
+    /**
+     * Limit how many AlarmSchedules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AlarmSchedule upsert
+   */
+  export type AlarmScheduleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AlarmSchedule to update in case it exists.
+     */
+    where: AlarmScheduleWhereUniqueInput
+    /**
+     * In case the AlarmSchedule found by the `where` argument doesn't exist, create a new AlarmSchedule with this data.
+     */
+    create: XOR<AlarmScheduleCreateInput, AlarmScheduleUncheckedCreateInput>
+    /**
+     * In case the AlarmSchedule was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AlarmScheduleUpdateInput, AlarmScheduleUncheckedUpdateInput>
+  }
+
+  /**
+   * AlarmSchedule delete
+   */
+  export type AlarmScheduleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+    /**
+     * Filter which AlarmSchedule to delete.
+     */
+    where: AlarmScheduleWhereUniqueInput
+  }
+
+  /**
+   * AlarmSchedule deleteMany
+   */
+  export type AlarmScheduleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AlarmSchedules to delete
+     */
+    where?: AlarmScheduleWhereInput
+    /**
+     * Limit how many AlarmSchedules to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AlarmSchedule without action
+   */
+  export type AlarmScheduleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlarmSchedule
+     */
+    select?: AlarmScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlarmSchedule
+     */
+    omit?: AlarmScheduleOmit<ExtArgs> | null
+  }
+
 
   /**
    * Enums
@@ -29502,8 +31837,40 @@ export namespace Prisma {
     checkedAt: 'checkedAt'
   };
 
-  export type UiCheckHistoryScalarFieldEnum =
-    (typeof UiCheckHistoryScalarFieldEnum)[keyof typeof UiCheckHistoryScalarFieldEnum];
+  export type UiCheckHistoryScalarFieldEnum = (typeof UiCheckHistoryScalarFieldEnum)[keyof typeof UiCheckHistoryScalarFieldEnum]
+
+
+  export const IbkChatDailyReportScalarFieldEnum: {
+    id: 'id',
+    targetDate: 'targetDate',
+    status: 'status',
+    reportMarkdown: 'reportMarkdown',
+    reportMetadata: 'reportMetadata',
+    errorMessage: 'errorMessage',
+    durationMs: 'durationMs',
+    rowCount: 'rowCount',
+    createdAt: 'createdAt',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt'
+  };
+
+  export type IbkChatDailyReportScalarFieldEnum = (typeof IbkChatDailyReportScalarFieldEnum)[keyof typeof IbkChatDailyReportScalarFieldEnum]
+
+
+  export const AlarmScheduleScalarFieldEnum: {
+    id: 'id',
+    module: 'module',
+    name: 'name',
+    description: 'description',
+    cronExpression: 'cronExpression',
+    timezone: 'timezone',
+    isEnabled: 'isEnabled',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AlarmScheduleScalarFieldEnum = (typeof AlarmScheduleScalarFieldEnum)[keyof typeof AlarmScheduleScalarFieldEnum]
+
 
   export const SortOrder: {
     asc: 'asc',
@@ -31378,28 +33745,182 @@ export namespace Prisma {
   }
 
   export type UiCheckHistoryScalarWhereWithAggregatesInput = {
-    AND?:
-      | UiCheckHistoryScalarWhereWithAggregatesInput
-      | UiCheckHistoryScalarWhereWithAggregatesInput[];
-    OR?: UiCheckHistoryScalarWhereWithAggregatesInput[];
-    NOT?:
-      | UiCheckHistoryScalarWhereWithAggregatesInput
-      | UiCheckHistoryScalarWhereWithAggregatesInput[];
-    id?: StringWithAggregatesFilter<'UiCheckHistory'> | string;
-    trigger?: StringWithAggregatesFilter<'UiCheckHistory'> | string;
-    totalTargets?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    healthyTargets?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    degradedTargets?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    brokenTargets?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    totalChecks?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    passedChecks?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    failedChecks?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    authSucceeded?: BoolWithAggregatesFilter<'UiCheckHistory'> | boolean;
-    totalDurationMs?: IntWithAggregatesFilter<'UiCheckHistory'> | number;
-    hasIssues?: BoolWithAggregatesFilter<'UiCheckHistory'> | boolean;
-    results?: StringWithAggregatesFilter<'UiCheckHistory'> | string;
-    checkedAt?: DateTimeWithAggregatesFilter<'UiCheckHistory'> | Date | string;
-  };
+    AND?: UiCheckHistoryScalarWhereWithAggregatesInput | UiCheckHistoryScalarWhereWithAggregatesInput[]
+    OR?: UiCheckHistoryScalarWhereWithAggregatesInput[]
+    NOT?: UiCheckHistoryScalarWhereWithAggregatesInput | UiCheckHistoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UiCheckHistory"> | string
+    trigger?: StringWithAggregatesFilter<"UiCheckHistory"> | string
+    totalTargets?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    healthyTargets?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    degradedTargets?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    brokenTargets?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    totalChecks?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    passedChecks?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    failedChecks?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    authSucceeded?: BoolWithAggregatesFilter<"UiCheckHistory"> | boolean
+    totalDurationMs?: IntWithAggregatesFilter<"UiCheckHistory"> | number
+    hasIssues?: BoolWithAggregatesFilter<"UiCheckHistory"> | boolean
+    results?: StringWithAggregatesFilter<"UiCheckHistory"> | string
+    checkedAt?: DateTimeWithAggregatesFilter<"UiCheckHistory"> | Date | string
+  }
+
+  export type IbkChatDailyReportWhereInput = {
+    AND?: IbkChatDailyReportWhereInput | IbkChatDailyReportWhereInput[]
+    OR?: IbkChatDailyReportWhereInput[]
+    NOT?: IbkChatDailyReportWhereInput | IbkChatDailyReportWhereInput[]
+    id?: StringFilter<"IbkChatDailyReport"> | string
+    targetDate?: DateTimeFilter<"IbkChatDailyReport"> | Date | string
+    status?: StringFilter<"IbkChatDailyReport"> | string
+    reportMarkdown?: StringNullableFilter<"IbkChatDailyReport"> | string | null
+    reportMetadata?: StringNullableFilter<"IbkChatDailyReport"> | string | null
+    errorMessage?: StringNullableFilter<"IbkChatDailyReport"> | string | null
+    durationMs?: IntNullableFilter<"IbkChatDailyReport"> | number | null
+    rowCount?: IntNullableFilter<"IbkChatDailyReport"> | number | null
+    createdAt?: DateTimeFilter<"IbkChatDailyReport"> | Date | string
+    startedAt?: DateTimeNullableFilter<"IbkChatDailyReport"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"IbkChatDailyReport"> | Date | string | null
+  }
+
+  export type IbkChatDailyReportOrderByWithRelationInput = {
+    id?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    reportMarkdown?: SortOrderInput | SortOrder
+    reportMetadata?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    durationMs?: SortOrderInput | SortOrder
+    rowCount?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+  }
+
+  export type IbkChatDailyReportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    targetDate?: Date | string
+    AND?: IbkChatDailyReportWhereInput | IbkChatDailyReportWhereInput[]
+    OR?: IbkChatDailyReportWhereInput[]
+    NOT?: IbkChatDailyReportWhereInput | IbkChatDailyReportWhereInput[]
+    status?: StringFilter<"IbkChatDailyReport"> | string
+    reportMarkdown?: StringNullableFilter<"IbkChatDailyReport"> | string | null
+    reportMetadata?: StringNullableFilter<"IbkChatDailyReport"> | string | null
+    errorMessage?: StringNullableFilter<"IbkChatDailyReport"> | string | null
+    durationMs?: IntNullableFilter<"IbkChatDailyReport"> | number | null
+    rowCount?: IntNullableFilter<"IbkChatDailyReport"> | number | null
+    createdAt?: DateTimeFilter<"IbkChatDailyReport"> | Date | string
+    startedAt?: DateTimeNullableFilter<"IbkChatDailyReport"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"IbkChatDailyReport"> | Date | string | null
+  }, "id" | "targetDate">
+
+  export type IbkChatDailyReportOrderByWithAggregationInput = {
+    id?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    reportMarkdown?: SortOrderInput | SortOrder
+    reportMetadata?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    durationMs?: SortOrderInput | SortOrder
+    rowCount?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    _count?: IbkChatDailyReportCountOrderByAggregateInput
+    _avg?: IbkChatDailyReportAvgOrderByAggregateInput
+    _max?: IbkChatDailyReportMaxOrderByAggregateInput
+    _min?: IbkChatDailyReportMinOrderByAggregateInput
+    _sum?: IbkChatDailyReportSumOrderByAggregateInput
+  }
+
+  export type IbkChatDailyReportScalarWhereWithAggregatesInput = {
+    AND?: IbkChatDailyReportScalarWhereWithAggregatesInput | IbkChatDailyReportScalarWhereWithAggregatesInput[]
+    OR?: IbkChatDailyReportScalarWhereWithAggregatesInput[]
+    NOT?: IbkChatDailyReportScalarWhereWithAggregatesInput | IbkChatDailyReportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"IbkChatDailyReport"> | string
+    targetDate?: DateTimeWithAggregatesFilter<"IbkChatDailyReport"> | Date | string
+    status?: StringWithAggregatesFilter<"IbkChatDailyReport"> | string
+    reportMarkdown?: StringNullableWithAggregatesFilter<"IbkChatDailyReport"> | string | null
+    reportMetadata?: StringNullableWithAggregatesFilter<"IbkChatDailyReport"> | string | null
+    errorMessage?: StringNullableWithAggregatesFilter<"IbkChatDailyReport"> | string | null
+    durationMs?: IntNullableWithAggregatesFilter<"IbkChatDailyReport"> | number | null
+    rowCount?: IntNullableWithAggregatesFilter<"IbkChatDailyReport"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"IbkChatDailyReport"> | Date | string
+    startedAt?: DateTimeNullableWithAggregatesFilter<"IbkChatDailyReport"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"IbkChatDailyReport"> | Date | string | null
+  }
+
+  export type AlarmScheduleWhereInput = {
+    AND?: AlarmScheduleWhereInput | AlarmScheduleWhereInput[]
+    OR?: AlarmScheduleWhereInput[]
+    NOT?: AlarmScheduleWhereInput | AlarmScheduleWhereInput[]
+    id?: IntFilter<"AlarmSchedule"> | number
+    module?: StringFilter<"AlarmSchedule"> | string
+    name?: StringFilter<"AlarmSchedule"> | string
+    description?: StringNullableFilter<"AlarmSchedule"> | string | null
+    cronExpression?: StringFilter<"AlarmSchedule"> | string
+    timezone?: StringFilter<"AlarmSchedule"> | string
+    isEnabled?: BoolFilter<"AlarmSchedule"> | boolean
+    createdAt?: DateTimeFilter<"AlarmSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"AlarmSchedule"> | Date | string
+  }
+
+  export type AlarmScheduleOrderByWithRelationInput = {
+    id?: SortOrder
+    module?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    cronExpression?: SortOrder
+    timezone?: SortOrder
+    isEnabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AlarmScheduleWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    module?: string
+    AND?: AlarmScheduleWhereInput | AlarmScheduleWhereInput[]
+    OR?: AlarmScheduleWhereInput[]
+    NOT?: AlarmScheduleWhereInput | AlarmScheduleWhereInput[]
+    name?: StringFilter<"AlarmSchedule"> | string
+    description?: StringNullableFilter<"AlarmSchedule"> | string | null
+    cronExpression?: StringFilter<"AlarmSchedule"> | string
+    timezone?: StringFilter<"AlarmSchedule"> | string
+    isEnabled?: BoolFilter<"AlarmSchedule"> | boolean
+    createdAt?: DateTimeFilter<"AlarmSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"AlarmSchedule"> | Date | string
+  }, "id" | "module">
+
+  export type AlarmScheduleOrderByWithAggregationInput = {
+    id?: SortOrder
+    module?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    cronExpression?: SortOrder
+    timezone?: SortOrder
+    isEnabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AlarmScheduleCountOrderByAggregateInput
+    _avg?: AlarmScheduleAvgOrderByAggregateInput
+    _max?: AlarmScheduleMaxOrderByAggregateInput
+    _min?: AlarmScheduleMinOrderByAggregateInput
+    _sum?: AlarmScheduleSumOrderByAggregateInput
+  }
+
+  export type AlarmScheduleScalarWhereWithAggregatesInput = {
+    AND?: AlarmScheduleScalarWhereWithAggregatesInput | AlarmScheduleScalarWhereWithAggregatesInput[]
+    OR?: AlarmScheduleScalarWhereWithAggregatesInput[]
+    NOT?: AlarmScheduleScalarWhereWithAggregatesInput | AlarmScheduleScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AlarmSchedule"> | number
+    module?: StringWithAggregatesFilter<"AlarmSchedule"> | string
+    name?: StringWithAggregatesFilter<"AlarmSchedule"> | string
+    description?: StringNullableWithAggregatesFilter<"AlarmSchedule"> | string | null
+    cronExpression?: StringWithAggregatesFilter<"AlarmSchedule"> | string
+    timezone?: StringWithAggregatesFilter<"AlarmSchedule"> | string
+    isEnabled?: BoolWithAggregatesFilter<"AlarmSchedule"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"AlarmSchedule"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AlarmSchedule"> | Date | string
+  }
 
   export type UserCreateInput = {
     id?: string
@@ -33465,21 +35986,200 @@ export namespace Prisma {
   }
 
   export type UiCheckHistoryUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string;
-    trigger?: StringFieldUpdateOperationsInput | string;
-    totalTargets?: IntFieldUpdateOperationsInput | number;
-    healthyTargets?: IntFieldUpdateOperationsInput | number;
-    degradedTargets?: IntFieldUpdateOperationsInput | number;
-    brokenTargets?: IntFieldUpdateOperationsInput | number;
-    totalChecks?: IntFieldUpdateOperationsInput | number;
-    passedChecks?: IntFieldUpdateOperationsInput | number;
-    failedChecks?: IntFieldUpdateOperationsInput | number;
-    authSucceeded?: BoolFieldUpdateOperationsInput | boolean;
-    totalDurationMs?: IntFieldUpdateOperationsInput | number;
-    hasIssues?: BoolFieldUpdateOperationsInput | boolean;
-    results?: StringFieldUpdateOperationsInput | string;
-    checkedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-  };
+    id?: StringFieldUpdateOperationsInput | string
+    trigger?: StringFieldUpdateOperationsInput | string
+    totalTargets?: IntFieldUpdateOperationsInput | number
+    healthyTargets?: IntFieldUpdateOperationsInput | number
+    degradedTargets?: IntFieldUpdateOperationsInput | number
+    brokenTargets?: IntFieldUpdateOperationsInput | number
+    totalChecks?: IntFieldUpdateOperationsInput | number
+    passedChecks?: IntFieldUpdateOperationsInput | number
+    failedChecks?: IntFieldUpdateOperationsInput | number
+    authSucceeded?: BoolFieldUpdateOperationsInput | boolean
+    totalDurationMs?: IntFieldUpdateOperationsInput | number
+    hasIssues?: BoolFieldUpdateOperationsInput | boolean
+    results?: StringFieldUpdateOperationsInput | string
+    checkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IbkChatDailyReportCreateInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    reportMarkdown?: string | null
+    reportMetadata?: string | null
+    errorMessage?: string | null
+    durationMs?: number | null
+    rowCount?: number | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+  }
+
+  export type IbkChatDailyReportUncheckedCreateInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    reportMarkdown?: string | null
+    reportMetadata?: string | null
+    errorMessage?: string | null
+    durationMs?: number | null
+    rowCount?: number | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+  }
+
+  export type IbkChatDailyReportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    reportMarkdown?: NullableStringFieldUpdateOperationsInput | string | null
+    reportMetadata?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMs?: NullableIntFieldUpdateOperationsInput | number | null
+    rowCount?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type IbkChatDailyReportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    reportMarkdown?: NullableStringFieldUpdateOperationsInput | string | null
+    reportMetadata?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMs?: NullableIntFieldUpdateOperationsInput | number | null
+    rowCount?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type IbkChatDailyReportCreateManyInput = {
+    id?: string
+    targetDate: Date | string
+    status?: string
+    reportMarkdown?: string | null
+    reportMetadata?: string | null
+    errorMessage?: string | null
+    durationMs?: number | null
+    rowCount?: number | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+  }
+
+  export type IbkChatDailyReportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    reportMarkdown?: NullableStringFieldUpdateOperationsInput | string | null
+    reportMetadata?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMs?: NullableIntFieldUpdateOperationsInput | number | null
+    rowCount?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type IbkChatDailyReportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    reportMarkdown?: NullableStringFieldUpdateOperationsInput | string | null
+    reportMetadata?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMs?: NullableIntFieldUpdateOperationsInput | number | null
+    rowCount?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AlarmScheduleCreateInput = {
+    module: string
+    name: string
+    description?: string | null
+    cronExpression: string
+    timezone?: string
+    isEnabled?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AlarmScheduleUncheckedCreateInput = {
+    id?: number
+    module: string
+    name: string
+    description?: string | null
+    cronExpression: string
+    timezone?: string
+    isEnabled?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AlarmScheduleUpdateInput = {
+    module?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlarmScheduleUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    module?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlarmScheduleCreateManyInput = {
+    id?: number
+    module: string
+    name: string
+    description?: string | null
+    cronExpression: string
+    timezone?: string
+    isEnabled?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AlarmScheduleUpdateManyMutationInput = {
+    module?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlarmScheduleUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    module?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
 
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
@@ -34893,15 +37593,111 @@ export namespace Prisma {
   }
 
   export type UiCheckHistorySumOrderByAggregateInput = {
-    totalTargets?: SortOrder;
-    healthyTargets?: SortOrder;
-    degradedTargets?: SortOrder;
-    brokenTargets?: SortOrder;
-    totalChecks?: SortOrder;
-    passedChecks?: SortOrder;
-    failedChecks?: SortOrder;
-    totalDurationMs?: SortOrder;
-  };
+    totalTargets?: SortOrder
+    healthyTargets?: SortOrder
+    degradedTargets?: SortOrder
+    brokenTargets?: SortOrder
+    totalChecks?: SortOrder
+    passedChecks?: SortOrder
+    failedChecks?: SortOrder
+    totalDurationMs?: SortOrder
+  }
+
+  export type IbkChatDailyReportCountOrderByAggregateInput = {
+    id?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    reportMarkdown?: SortOrder
+    reportMetadata?: SortOrder
+    errorMessage?: SortOrder
+    durationMs?: SortOrder
+    rowCount?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type IbkChatDailyReportAvgOrderByAggregateInput = {
+    durationMs?: SortOrder
+    rowCount?: SortOrder
+  }
+
+  export type IbkChatDailyReportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    reportMarkdown?: SortOrder
+    reportMetadata?: SortOrder
+    errorMessage?: SortOrder
+    durationMs?: SortOrder
+    rowCount?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type IbkChatDailyReportMinOrderByAggregateInput = {
+    id?: SortOrder
+    targetDate?: SortOrder
+    status?: SortOrder
+    reportMarkdown?: SortOrder
+    reportMetadata?: SortOrder
+    errorMessage?: SortOrder
+    durationMs?: SortOrder
+    rowCount?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type IbkChatDailyReportSumOrderByAggregateInput = {
+    durationMs?: SortOrder
+    rowCount?: SortOrder
+  }
+
+  export type AlarmScheduleCountOrderByAggregateInput = {
+    id?: SortOrder
+    module?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    cronExpression?: SortOrder
+    timezone?: SortOrder
+    isEnabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AlarmScheduleAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type AlarmScheduleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    module?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    cronExpression?: SortOrder
+    timezone?: SortOrder
+    isEnabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AlarmScheduleMinOrderByAggregateInput = {
+    id?: SortOrder
+    module?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    cronExpression?: SortOrder
+    timezone?: SortOrder
+    isEnabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AlarmScheduleSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
 
   export type UserRoleCreateNestedManyWithoutUserInput = {
     create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]

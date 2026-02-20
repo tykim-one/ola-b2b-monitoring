@@ -3,12 +3,14 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getServiceConfig } from '@/config/services';
+import { useAuth } from '@/contexts/AuthContext';
 import * as LucideIcons from 'lucide-react';
 
 export default function ServiceLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
   const serviceId = params?.serviceId as string | undefined;
   const config = serviceId ? getServiceConfig(serviceId) : undefined;
+  const { hasPermission, isAuthenticated } = useAuth();
 
   if (!config) {
     return (
@@ -51,7 +53,9 @@ export default function ServiceLayout({ children }: { children: React.ReactNode 
           >
             개요
           </Link>
-          {config.menu.map((item) => (
+          {config.menu
+            .filter((item) => !item.permission || !isAuthenticated || hasPermission(item.permission))
+            .map((item) => (
             <Link
               key={item.id}
               href={`/dashboard/services/${serviceId}${item.path}`}

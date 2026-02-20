@@ -390,13 +390,13 @@ function SystemStatusFooter({ dbConnected, health }: {
           <div className="flex items-center gap-2">
             <span
               className={`w-3 h-3 rounded-full ${
-                health?.scheduler.isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
+                health?.scheduler?.isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
               }`}
             />
             <span
-              className={health?.scheduler.isRunning ? 'text-emerald-400' : 'text-gray-500'}
+              className={health?.scheduler?.isRunning ? 'text-emerald-400' : 'text-gray-500'}
             >
-              {health?.scheduler.isRunning ? '실행 중' : '중지됨'}
+              {health?.scheduler?.isRunning ? '실행 중' : '중지됨'}
             </span>
           </div>
           {health?.scheduler && (

@@ -43,7 +43,7 @@ FROM node:22-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
     libdbus-1-3 libxkbcommon0 libatspi2.0-0 libgbm1 libpango-1.0-0 \
-    libcairo2 libasound2 libxrandr2 libxdamage1 libxcomposite1 \
+    libcairo2 libasound2 libxrandr2 libxdamage1 libxcomposite1 libxfixes3 \
     fonts-noto-cjk ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
@@ -56,6 +56,7 @@ WORKDIR /app/apps/backend
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=prod-deps /app/apps/backend/node_modules ./node_modules
 COPY --from=prod-deps /app/packages/shared-types /app/packages/shared-types
+COPY --from=build /app/packages/shared-types/dist /app/packages/shared-types/dist
 
 # Build artifacts
 COPY --from=build /app/apps/backend/dist ./dist
