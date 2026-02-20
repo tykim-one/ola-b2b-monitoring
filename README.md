@@ -50,3 +50,4 @@ pnpm dev:backend   # 백엔드만
 
 - **Frontend**: React 19, Vite, Tailwind CSS, Recharts
 - **Backend**: NestJS, @google-cloud/bigquery, TypeScript
+# ola-b2b-monitoring
