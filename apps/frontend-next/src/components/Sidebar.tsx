@@ -191,6 +191,32 @@ const Sidebar = () => {
       ],
     },
     {
+      section: 'Hana MTS',
+      items: [
+        {
+          href: '/dashboard/services/hana-mts/api-traffic',
+          label: 'API 트래픽',
+          icon: (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          ),
+        },
+        {
+          href: '/dashboard/services/hana-mts/batch',
+          label: '배치 모니터링',
+          icon: (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+          ),
+        },
+      ],
+    },
+    {
       section: '데이터 파이프라인',
       permission: 'metrics:read',
       items: [

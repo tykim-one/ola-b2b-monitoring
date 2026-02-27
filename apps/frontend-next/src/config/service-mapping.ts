@@ -25,6 +25,10 @@ export const SERVICE_PROJECT_MAPPING: Record<string, ServiceMapping> = {
     apiPrefix: '/api/minkabu-etl',
     etlApiPrefix: '/api/minkabu-etl',
   },
+  'hana-mts': {
+    projectId: 'hana-mts',
+    apiPrefix: '/api/hana-mts',
+  },
 };
 
 export function getServiceMapping(serviceId: string): ServiceMapping | undefined {

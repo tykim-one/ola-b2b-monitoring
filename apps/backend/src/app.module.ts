@@ -24,6 +24,7 @@ import { ServiceHealthModule } from './service-health/service-health.module';
 import { JobMonitoringModule } from './job-monitoring/job-monitoring.module';
 import { AlarmScheduleModule } from './alarm-schedule/alarm-schedule.module';
 import { IbkChatReportModule } from './ibk-chat-report/ibk-chat-report.module';
+import { HanaMtsModule } from './hana-mts/hana-mts.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { IbkChatReportModule } from './ibk-chat-report/ibk-chat-report.module';
     JobMonitoringModule,
     AlarmScheduleModule,
     IbkChatReportModule,
+    HanaMtsModule,
   ],
   controllers: [AppController],
   providers: [

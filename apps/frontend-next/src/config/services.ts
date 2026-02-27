@@ -83,6 +83,25 @@ export const serviceConfigs: ServiceConfig[] = [
       { id: 'logs', label: '에러 로그', path: '/logs' },
     ]
   },
+  {
+    id: 'hana-mts',
+    name: 'Hana MTS',
+    type: 'custom',
+    icon: 'Globe',
+    description: 'API 트래픽 & 배치 동기화 모니터링',
+    card: {
+      kpis: [
+        { key: 'totalRequests', label: '총 요청', format: 'number' },
+        { key: 'errorRate', label: '에러율', format: 'percentage', thresholds: { warning: 1, error: 5 } },
+        { key: 'avgResponseTime', label: '평균 응답', format: 'duration' },
+      ],
+      chart: { type: 'line', dataKey: 'traffic', label: '시간별 트래픽' }
+    },
+    menu: [
+      { id: 'api-traffic', label: 'API 트래픽', path: '/api-traffic' },
+      { id: 'batch', label: '배치 모니터링', path: '/batch' },
+    ]
+  },
 ];
 
 // 서비스 ID로 설정 찾기
